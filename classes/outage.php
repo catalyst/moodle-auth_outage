@@ -28,12 +28,12 @@ namespace auth_outage;
 class outage
 {
     public $id;
-    public $start_time;
-    public $stop_time;
-    public $warning_minutes;
+    public $starttime;
+    public $stoptime;
+    public $warningminutes;
     public $title;
     public $description;
-    public $created_by;
-    public $modified_by;
-    public $last_modified;
+    public $createdby;
+    public $modifiedby;
+    public $lastmodified;
 }

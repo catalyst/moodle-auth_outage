@@ -45,9 +45,9 @@ if ($hassiteconfig) {
     $ADMIN->add('auth_outage', $settings);
     // Clear '$settings' to prevent adding again outsite category.
     $settings = null;
-    // Add list page.
+    // Add options.
     $ADMIN->add('auth_outage',
-        new admin_externalpage('auth_outage_list', 'Outage List',
+        new admin_externalpage('auth_outage_manage', 'Manage',
             new moodle_url($CFG->wwwroot . '/auth/outage/list.php')
         ));
 }

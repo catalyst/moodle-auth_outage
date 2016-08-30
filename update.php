@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List outages
+ * Update outages (create, update, delete).
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -28,32 +28,31 @@ use \auth_outage\outage;
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-// TODO Check parameters.
+// Check parameters.
+require_sesskey();
+$action = required_param('action', PARAM_ALPHA);
+switch ($action) {
+    case 'add':
+        $title = 'Add new Outage';
+        break;
+    default:
+        print_error('auth_outage_invalidaction1');
+}
 
-// Read https://docs.moodle.org/dev/Page_API#.24PAGE_The_Moodle_page_global for Page API info.
-admin_externalpage_setup('auth_outage_manage'); // Does require_login and set_context inside.
-$PAGE->set_url(new moodle_url('/auth/outage/list.php'));
-$PAGE->set_title('Outage List');
-$PAGE->set_heading('List of registered outages.');
-
+admin_externalpage_setup('auth_outage_manage');
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
+$PAGE->set_url(new moodle_url('/auth/outage/update.php'));
 $renderer = $PAGE->get_renderer('auth_outage');
-
-$outagelist = [];
-for ($i = 1; $i <= 10; $i++) {
-    $outagelist[$i] = new outage();
-    $outagelist[$i]->id = $i;
-    $outagelist[$i]->starttime = time();
-    $outagelist[$i]->stoptime = time() + 60 * 60 * 4; // 4 hours.
-    $outagelist[$i]->warningminutes = 10 * $i;
-    $outagelist[$i]->title = 'Outage #' . $i;
-    $outagelist[$i]->description = 'This is the Outage #' . $i . ', backup creation.';
-    $outagelist[$i]->createdby = 1;
-    $outagelist[$i]->modifiedby = 1;
-    $outagelist[$i]->lastmodified = time() - 60 * 60 * 10; // 10 hours ago.
-};
 
 echo $OUTPUT->header();
 
-echo $renderer->renderoutagelist($outagelist);
+switch ($action) {
+    case 'add':
+        $outage = new outage();
+        break;
+    default:
+        print_error('auth_outage_invalidaction2');
+}
 
 echo $OUTPUT->footer();

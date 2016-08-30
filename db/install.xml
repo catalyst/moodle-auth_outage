@@ -7,14 +7,14 @@
     <TABLE NAME="auth_outage" COMMENT="Table used for auth/outage plugin. Holds information about all past, current and future outages.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
-        <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
+        <FIELD NAME="start_time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
+        <FIELD NAME="stop_time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
         <FIELD NAME="warning_minutes" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="How many minutes before the outage to display a warning to all users."/>
         <FIELD NAME="title" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the outage (short description)."/>
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="More information about the outage."/>
-        <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>
-        <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who last modified this entry."/>
-        <FIELD NAME="lastmod" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When was this entry last modified."/>
+        <FIELD NAME="created_by" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>
+        <FIELD NAME="modified_by" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who last modified this entry."/>
+        <FIELD NAME="last_modified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When was this entry last modified."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

@@ -35,32 +35,11 @@ require_once($CFG->libdir . '/authlib.php');
  */
 class auth_plugin_outage extends auth_plugin_base
 {
-    public function __construct() {
-        $this->pluginconfig = 'auth_outage';
-        $this->authtype = 'outage';
-        $this->roleauth = 'auth_outage';
-        $this->component = 'auth_outage';
-        $this->errorlogtag = '[AUTH_OUTAGE]';
-        $this->config = get_config('auth_outage');
-    }
-
     /**
-     * This is the primary method that is used by the authenticate_user_login()
-     * function in moodlelib.php.
-     *
-     * This method should return a boolean indicating
-     * whether or not the username and password authenticate successfully.
-     *
-     * Returns true if the username and password work and false if they are
-     * wrong or don't exist.
-     *
-     * @param string $username The username (with system magic quotes)
-     * @param string $password The password (with system magic quotes)
-     *
-     * @return bool Authentication success or failure.
+     * Do not authenticate users.
+     * @return bool False
      */
     public function user_login($username, $password) {
-        // Do not authenticate users.
         return false;
     }
 }

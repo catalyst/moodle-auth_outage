@@ -31,6 +31,11 @@ if (!defined('MOODLE_INTERNAL')) {
  */
 class auth_outage_renderer extends plugin_renderer_base
 {
+    public function renderdeleteconfirmation(outage $outage) {
+        return html_writer::tag('h3', 'You are about to remove the following outage:')
+        . $this->renderoutage($outage, false);
+    }
+
     public function renderoutagelist(array $outages) {
         global $OUTPUT;
 
@@ -38,7 +43,7 @@ class auth_outage_renderer extends plugin_renderer_base
 
         // Generate list of outages.
         foreach ($outages as $outage) {
-            $html .= $this->renderoutagelistentry($outage);
+            $html .= $this->renderoutage($outage, true);
         }
 
         // Add 'add' button.
@@ -52,7 +57,7 @@ class auth_outage_renderer extends plugin_renderer_base
         return $html;
     }
 
-    private function renderoutagelistentry(outage $outage) {
+    private function renderoutage(outage $outage, $buttons) {
         global $OUTPUT;
 
         $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
@@ -98,8 +103,7 @@ class auth_outage_renderer extends plugin_renderer_base
                     . userdate($outage->lastmodified, '%d %h %Y %l:%M%P')
                 )
                 . html_writer::empty_tag('br')
-                . $linkedit . $linkdelete
-                . html_writer::empty_tag('br')
+                . ($buttons ? $linkedit . $linkdelete . html_writer::empty_tag('br') : '')
                 . html_writer::empty_tag('br')
             )
         );

@@ -88,8 +88,12 @@ final class outagedb
     public function getbyid($id) {
         global $DB;
 
-        if (!is_int($id)) throw new InvalidArgumentException('$id must be an int.');
-        if ($id <= 0) throw new InvalidArgumentException('$id must be positive.');
+        if (!is_int($id)) {
+            throw new InvalidArgumentException('$id must be an int.');
+        }
+        if ($id <= 0) {
+            throw new InvalidArgumentException('$id must be positive.');
+        }
 
         $outage = $DB->get_record('auth_outage', ['id' => $id]);
         if ($outage === false) {
@@ -129,5 +133,23 @@ final class outagedb
         unset($outage->createdby);
         $DB->update_record('auth_outage', $outage);
         return $outage->id;
+    }
+
+    /**
+     * Deletes an outage from the database.
+     *
+     * @param $id Outage ID to delete
+     */
+    public function delete($id) {
+        global $DB;
+
+        if (!is_int($id)) {
+            throw new InvalidArgumentException('$id must be an int.');
+        }
+        if ($id <= 0) {
+            throw new InvalidArgumentException('$id must be positive.');
+        }
+
+        $DB->delete_records('auth_outage', ['id' => $id]);
     }
 }

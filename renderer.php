@@ -54,19 +54,19 @@ class auth_outage_renderer extends plugin_renderer_base
     private function renderoutagelistentry(outage $outage) {
         global $OUTPUT;
 
-        $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
+        $created = core_user::get_user($outage->get_createdby(), 'firstname,lastname', MUST_EXIST);
         $created = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->createdby]),
+            new moodle_url('/user/profile.php', ['id' => $outage->get_createdby()]),
             trim($created->firstname . ' ' . $created->lastname)
         );
 
-        $modified = core_user::get_user($outage->modifiedby, 'firstname,lastname', MUST_EXIST);
+        $modified = core_user::get_user($outage->get_modifiedby(), 'firstname,lastname', MUST_EXIST);
         $modified = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->modifiedby]),
+            new moodle_url('/user/profile.php', ['id' => $outage->get_modifiedby()]),
             trim($modified->firstname . ' ' . $modified->lastname)
         );
 
-        $url = new moodle_url('/auth/outage/update.php', ['id' => $outage->id, 'sesskey' => sesskey()]);
+        $url = new moodle_url('/auth/outage/update.php', ['id' => $outage->get_id(), 'sesskey' => sesskey()]);
 
         $url->param('action', 'edit');
         $img = html_writer::empty_tag('img',
@@ -80,21 +80,27 @@ class auth_outage_renderer extends plugin_renderer_base
 
         return html_writer::div(
             html_writer::span(
-                html_writer::tag('b', $outage->title, ['data-id' => $outage->id])
+                html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->get_id()])
                 . html_writer::empty_tag('br')
-                . html_writer::tag('i', $outage->description)
+                . html_writer::tag('i', $outage->get_description())
                 . html_writer::empty_tag('br')
-                . html_writer::tag('b', 'Warning: ') . userdate($outage->starttime - ($outage->warningminutes * 60))
+                . html_writer::tag('b', 'Warning: ')
+                . userdate($outage->get_starttime() - ($outage->get_warningminutes() * 60))
                 . html_writer::empty_tag('br')
-                . html_writer::tag('b', 'Starts: ') . userdate($outage->starttime, '%d %h %Y %l:%M%P')
+                . html_writer::tag('b', 'Starts: ')
+                . userdate($outage->get_starttime(), '%d %h %Y %l:%M%P')
                 . html_writer::empty_tag('br')
-                . html_writer::tag('b', 'Stops: ') . userdate($outage->stoptime, '%d %h %Y %l:%M%P')
+                . html_writer::tag('b', 'Stops: ')
+                . userdate($outage->get_stoptime(), '%d %h %Y %l:%M%P')
                 . html_writer::empty_tag('br')
                 . html_writer::tag('small',
-                    'Created by ' . $created . ', modified by ' . $modified . ' on '
-                    . userdate($outage->lastmodified, '%d %h %Y %l:%M%P')
-                ) . html_writer::empty_tag('br')
-                . $linkedit . $linkdelete . html_writer::empty_tag('br')
+                    'Created by ' . $created
+                    . ', modified by ' . $modified . ' on '
+                    . userdate($outage->get_lastmodified(), '%d %h %Y %l:%M%P')
+                )
+                . html_writer::empty_tag('br')
+                . $linkedit . $linkdelete
+                . html_writer::empty_tag('br')
                 . html_writer::empty_tag('br')
             )
         );

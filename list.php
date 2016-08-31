@@ -24,6 +24,7 @@
  */
 
 use \auth_outage\outage;
+use \auth_outage\outagedb;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -38,22 +39,10 @@ $PAGE->set_heading('List of registered outages.');
 
 $renderer = $PAGE->get_renderer('auth_outage');
 
-$outagelist = [];
-for ($i = 1; $i <= 10; $i++) {
-    $outagelist[$i] = new outage();
-    $outagelist[$i]->id = $i;
-    $outagelist[$i]->starttime = time();
-    $outagelist[$i]->stoptime = time() + 60 * 60 * 4; // 4 hours.
-    $outagelist[$i]->warningminutes = 10 * $i;
-    $outagelist[$i]->title = 'Outage #' . $i;
-    $outagelist[$i]->description = 'This is the Outage #' . $i . ', backup creation.';
-    $outagelist[$i]->createdby = 1;
-    $outagelist[$i]->modifiedby = 1;
-    $outagelist[$i]->lastmodified = time() - 60 * 60 * 10; // 10 hours ago.
-};
+// TODO Add paging or limiting past entries displayed.
 
 echo $OUTPUT->header();
 
-echo $renderer->renderoutagelist($outagelist);
+echo $renderer->renderoutagelist(outagedb::get()->getall());
 
 echo $OUTPUT->footer();

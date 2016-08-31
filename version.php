@@ -20,6 +20,7 @@
  * @package   auth_outage
  * @author    Marcus Boon <marcus@catalyst-au.net>
  * @author    Brendan Heywood <brendan@catalyst-au.net>
+ * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
-$plugin->version   = 2016083000;     // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2016083101;     // The current plugin version (Date: YYYYMMDDXX).
 $plugin->release   = $plugin->version;     // Same as version
 $plugin->requires  = 2014051200;     // Requires Moodle 2.7 or later.
 $plugin->component = "auth_outage";

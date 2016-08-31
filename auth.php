@@ -36,6 +36,13 @@ require_once($CFG->libdir . '/authlib.php');
 class auth_plugin_outage extends auth_plugin_base
 {
     /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->authtype = 'outage';
+    }
+
+    /**
      * Do not authenticate users.
      * @return bool False
      */

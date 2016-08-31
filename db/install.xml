@@ -9,7 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
         <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
-        <FIELD NAME="warningminutes" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="How many minutes before the outage to display a warning to all users."/>
+        <FIELD NAME="warningduration" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="How many seconds before the outage to display a warning to all users."/>
         <FIELD NAME="title" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the outage (short description)."/>
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="More information about the outage."/>
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>

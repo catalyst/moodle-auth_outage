@@ -45,11 +45,6 @@ final class outagedb
     }
 
     /**
-     * @var Referente to Moodle global $DB.
-     */
-    private $db;
-
-    /**
      * Private clone method to prevent cloning singleton.
      *
      * @return void
@@ -69,40 +64,38 @@ final class outagedb
      * Private constructor (singleton), use outagedb::get() instead.
      */
     private function __construct() {
-        global $DB;
-        $this->db = $DB;
-    }
-
-    /**
-     * Converts an stdClass object to an outage.
-     *
-     * @param \stdClass $obj Object from DB.
-     * @return outage
-     */
-    private function object2outage(\stdClass $obj) {
-        return new outage(
-            $obj->id,
-            $obj->starttime,
-            $obj->stoptime,
-            $obj->warningminutes,
-            $obj->title,
-            $obj->description,
-            $obj->createdby,
-            $obj->modifiedby,
-            $obj->lastmod
-        );
     }
 
     /**
      * Gets all outage entries.
      */
     public function getall() {
+        global $DB;
+
         $outages = [];
-        $rs = $this->db->get_recordset('auth_outage', null, 'starttime,stoptime,title');
+
+        $rs = $DB->get_recordset('auth_outage', null, 'starttime,stoptime,title');
         foreach ($rs as $r) {
-            $outages[] = $this->object2outage($r);
+            $outages[] = new outage($r);
         }
         $rs->close();
+
         return $outages;
+    }
+
+    public function save(outage $outage) {
+        global $DB, $USER;
+
+        // If new outage, set its creator.
+        if ($outage->id === null) {
+            $outage->createdby = $USER->id;
+        }
+
+        // Update control fields.
+        $outage->modifiedby = $USER->id;
+        $outage->lastmodified = time();
+
+        // Save it and return the id.
+        return $DB->insert_record('auth_outage', $outage, true);
     }
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Update outages (create, update, delete).
+ * Create new outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -24,35 +24,28 @@
  */
 
 use \auth_outage\outage;
+use \auth_outage\outageutils;
+use \auth_outage\outagedb;
+use \auth_outage\outageform;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/formslib.php');
 
-// Check parameters.
-require_sesskey();
-$action = required_param('action', PARAM_ALPHA);
-switch ($action) {
-    case 'add':
-        $title = 'Add new Outage';
-        break;
-    default:
-        print_error('auth_outage_invalidaction1');
+outageutils::pagesetup();
+
+$mform = new outageform();
+if ($mform->is_cancelled()) {
+    redirect($listurl);
+} else if ($fromform = $mform->get_data()) {
+    $fromform = outageutils::parseformdata($fromform);
+    $outage = new outage($fromform);
+    $id = outagedb::get()->save($outage);
+    redirect('/auth/outage/list.php#auth_outage_id=' . $id);
 }
-
-admin_externalpage_setup('auth_outage_manage');
-$PAGE->set_title($title);
-$PAGE->set_heading($title);
-$PAGE->set_url(new moodle_url('/auth/outage/update.php'));
-$renderer = $PAGE->get_renderer('auth_outage');
 
 echo $OUTPUT->header();
 
-switch ($action) {
-    case 'add':
-        $outage = new outage();
-        break;
-    default:
-        print_error('auth_outage_invalidaction2');
-}
+$mform->display();
 
 echo $OUTPUT->footer();

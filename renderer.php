@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use \auth_outage\outage;
+use \auth_outage\outageform;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
@@ -41,7 +42,7 @@ class auth_outage_renderer extends plugin_renderer_base
         }
 
         // Add 'add' button.
-        $url = new moodle_url('/auth/outage/update.php', ['action' => 'add', 'sesskey' => sesskey()]);
+        $url = new moodle_url('/auth/outage/create.php');
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('add'), 'class' => 'iconsmall']);
         $html .= html_writer::empty_tag('br')
@@ -54,19 +55,19 @@ class auth_outage_renderer extends plugin_renderer_base
     private function renderoutagelistentry(outage $outage) {
         global $OUTPUT;
 
-        $created = core_user::get_user($outage->get_createdby(), 'firstname,lastname', MUST_EXIST);
+        $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
         $created = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->get_createdby()]),
+            new moodle_url('/user/profile.php', ['id' => $outage->createdby]),
             trim($created->firstname . ' ' . $created->lastname)
         );
 
-        $modified = core_user::get_user($outage->get_modifiedby(), 'firstname,lastname', MUST_EXIST);
+        $modified = core_user::get_user($outage->modifiedby, 'firstname,lastname', MUST_EXIST);
         $modified = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->get_modifiedby()]),
+            new moodle_url('/user/profile.php', ['id' => $outage->modifiedby]),
             trim($modified->firstname . ' ' . $modified->lastname)
         );
 
-        $url = new moodle_url('/auth/outage/update.php', ['id' => $outage->get_id(), 'sesskey' => sesskey()]);
+        $url = new moodle_url('/auth/outage/update.php', ['id' => $outage->id, 'sesskey' => sesskey()]);
 
         $url->param('action', 'edit');
         $img = html_writer::empty_tag('img',
@@ -80,23 +81,23 @@ class auth_outage_renderer extends plugin_renderer_base
 
         return html_writer::div(
             html_writer::span(
-                html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->get_id()])
+                html_writer::tag('b', $outage->title, ['data-id' => $outage->id])
                 . html_writer::empty_tag('br')
-                . html_writer::tag('i', $outage->get_description())
+                . html_writer::tag('i', $outage->description)
                 . html_writer::empty_tag('br')
                 . html_writer::tag('b', 'Warning: ')
-                . userdate($outage->get_starttime() - ($outage->get_warningminutes() * 60))
+                . userdate($outage->starttime - ($outage->warningduration * 60))
                 . html_writer::empty_tag('br')
                 . html_writer::tag('b', 'Starts: ')
-                . userdate($outage->get_starttime(), '%d %h %Y %l:%M%P')
+                . userdate($outage->starttime, '%d %h %Y %l:%M%P')
                 . html_writer::empty_tag('br')
                 . html_writer::tag('b', 'Stops: ')
-                . userdate($outage->get_stoptime(), '%d %h %Y %l:%M%P')
+                . userdate($outage->stoptime, '%d %h %Y %l:%M%P')
                 . html_writer::empty_tag('br')
                 . html_writer::tag('small',
                     'Created by ' . $created
                     . ', modified by ' . $modified . ' on '
-                    . userdate($outage->get_lastmodified(), '%d %h %Y %l:%M%P')
+                    . userdate($outage->lastmodified, '%d %h %Y %l:%M%P')
                 )
                 . html_writer::empty_tag('br')
                 . $linkedit . $linkdelete

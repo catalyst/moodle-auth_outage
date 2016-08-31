@@ -24,25 +24,17 @@
  */
 
 use \auth_outage\outage;
+use \auth_outage\outageutils;
 use \auth_outage\outagedb;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-// TODO Check parameters.
-
-// Read https://docs.moodle.org/dev/Page_API#.24PAGE_The_Moodle_page_global for Page API info.
-admin_externalpage_setup('auth_outage_manage'); // Does require_login and set_context inside.
-$PAGE->set_url(new moodle_url('/auth/outage/list.php'));
-$PAGE->set_title('Outage List');
-$PAGE->set_heading('List of registered outages.');
-
-$renderer = $PAGE->get_renderer('auth_outage');
-
-// TODO Add paging or limiting past entries displayed.
+$renderer = outageutils::pagesetup();
 
 echo $OUTPUT->header();
 
+// TODO Add paging or limiting past entries displayed.
 echo $renderer->renderoutagelist(outagedb::get()->getall());
 
 echo $OUTPUT->footer();

@@ -67,14 +67,12 @@ class auth_outage_renderer extends plugin_renderer_base
             trim($modified->firstname . ' ' . $modified->lastname)
         );
 
-        $url = new moodle_url('/auth/outage/update.php', ['id' => $outage->id, 'sesskey' => sesskey()]);
-
-        $url->param('action', 'edit');
+        $url = new moodle_url('/auth/outage/change.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']);
         $linkedit = html_writer::link($url, $img, ['title' => get_string('edit')]);
 
-        $url->param('action', 'delete');
+        $url = new moodle_url('/auth/outage/remove.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']);
         $linkdelete = html_writer::link($url, $img, ['title' => get_string('delete')]);

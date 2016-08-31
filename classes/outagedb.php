@@ -25,6 +25,8 @@
 
 namespace auth_outage;
 
+use Box\Spout\Common\Exception\InvalidArgumentException;
+
 final class outagedb
 {
     /**
@@ -83,8 +85,31 @@ final class outagedb
         return $outages;
     }
 
+    public function getbyid($id) {
+        global $DB;
+
+        if (!is_int($id)) throw new InvalidArgumentException('$id must be an int.');
+        if ($id <= 0) throw new InvalidArgumentException('$id must be positive.');
+
+        $outage = $DB->get_record('auth_outage', ['id' => $id]);
+        if ($outage === false) {
+            return null;
+        }
+
+        return new outage($outage);
+    }
+
+    /**
+     * Saves an outage to the database.
+     *
+     * @param outage $outage Outage to save.
+     * @return int Outage ID.
+     */
     public function save(outage $outage) {
         global $DB, $USER;
+
+        // Do not change the original object.
+        $outage = clone $outage;
 
         // If new outage, set its creator.
         if ($outage->id === null) {
@@ -95,7 +120,14 @@ final class outagedb
         $outage->modifiedby = $USER->id;
         $outage->lastmodified = time();
 
-        // Save it and return the id.
-        return $DB->insert_record('auth_outage', $outage, true);
+        // If new, create it and return the id.
+        if ($outage->id === null) {
+            return $DB->insert_record('auth_outage', $outage, true);
+        }
+
+        // Clean up the class (remove creator field), then update it and return its id.
+        unset($outage->createdby);
+        $DB->update_record('auth_outage', $outage);
+        return $outage->id;
     }
 }

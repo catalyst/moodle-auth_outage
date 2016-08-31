@@ -37,7 +37,9 @@ class outageform extends \moodleform {
      */
     public function definition() {
         $mform = $this->_form;
-        $data = $this->_customdata;
+
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
 
         $mform->addElement('date_time_selector', 'starttime', 'Start Time');
 

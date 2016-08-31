@@ -35,6 +35,7 @@ require_once($CFG->libdir . '/formslib.php');
 outageutils::pagesetup();
 
 $mform = new outageform();
+
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/list.php');
 } else if ($fromform = $mform->get_data()) {
@@ -43,6 +44,15 @@ if ($mform->is_cancelled()) {
     $id = outagedb::get()->save($outage);
     redirect('/auth/outage/list.php#auth_outage_id=' . $id);
 }
+
+$id = required_param('id', PARAM_INT);
+$outage = outagedb::get()->getbyid($id);
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
+}
+$data = get_object_vars($outage);
+$data['description'] = ['text' => $data['description'], 'format' => '1'];
+$mform->set_data($data);
 
 echo $OUTPUT->header();
 

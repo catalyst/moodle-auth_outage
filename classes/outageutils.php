@@ -83,6 +83,9 @@ class outageutils
         if ($data->description['format'] != '1') {
             throw new \InvalidArgumentException('Not implemented for format ' . $data->description['format']);
         }
+        if ($data->id === 0) {
+            $data->id = null;
+        }
         $data->description = $data->description['text'];
         return $data;
     }

@@ -41,7 +41,7 @@ class outagedeleteform extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $this->add_action_buttons(true, 'Remove');
+        $this->add_action_buttons(true, get_string('ok'));
     }
 
     /**

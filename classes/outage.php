@@ -74,7 +74,7 @@ class outage
 
     /**
      * outage constructor.
-     * @param mixed $data An object, an array or null.
+     * @param object|array|null The data for the outage.
      */
     public function __construct($data = null) {
         if (is_null($data)) {

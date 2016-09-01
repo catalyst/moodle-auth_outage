@@ -30,14 +30,14 @@ use Box\Spout\Common\Exception\InvalidArgumentException;
 final class outagedb
 {
     /**
-     * @var Singleton reference created on first use.
+     * @var outagedb Singleton reference created on first use.
      */
     private static $singleton = null;
 
     /**
      * Returns the singleton instance.
      *
-     * @return The singleton object.
+     * @return outagedb The singleton object.
      */
     public static function get() {
         if (is_null(self::$singleton)) {
@@ -138,7 +138,8 @@ final class outagedb
     /**
      * Deletes an outage from the database.
      *
-     * @param $id Outage ID to delete
+     * @param $id outage Outage ID to delete
+     * @throws InvalidArgumentException If ID is not valid.
      */
     public function delete($id) {
         global $DB;

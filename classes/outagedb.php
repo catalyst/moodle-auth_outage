@@ -25,8 +25,6 @@
 
 namespace auth_outage;
 
-use Box\Spout\Common\Exception\InvalidArgumentException;
-
 final class outagedb
 {
     /**

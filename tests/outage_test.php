@@ -35,7 +35,7 @@ class outage_test extends basic_testcase
         // Very important, this should never change.
         self::assertNull($outage->id, 'New empty outage can never have an id set.');
         // Ensure all other fields are also null.
-        foreach ($outage as $k=>$v) {
+        foreach ($outage as $v) {
             self::assertNull($v);
         }
     }

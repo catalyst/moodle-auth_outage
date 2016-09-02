@@ -47,9 +47,8 @@ class outagelib
      *
      * @param $data mixed An object or array.
      * @param $obj object Destination object to write the properties.
-     * @param $strict bool All data fields must be used in the destination object or an exception will be thrown.
      */
-    public static function data2object($data, $obj, $strict = false) {
+    public static function data2object($data, $obj) {
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
@@ -59,16 +58,9 @@ class outagelib
         if (!is_object($obj)) {
             throw new \InvalidArgumentException('$obj must be an object.');
         }
-        if (!is_bool($strict)) {
-            throw new \InvalidArgumentException('$strict must be a bool.');
-        }
 
         foreach ($data as $k => $v) {
-            if (!property_exists($obj, $k)) {
-                if ($strict) {
-                    throw new \InvalidArgumentException('$obj does not have a property called ' . $k);
-                }
-            } else {
+            if (property_exists($obj, $k)) {
                 if (method_exists($obj, $k)) {
                     throw new \InvalidArgumentException('$obj has a method called ' . $k);
                 }

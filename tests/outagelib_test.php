@@ -31,44 +31,22 @@ defined('MOODLE_INTERNAL') || die();
 class outagelib_test extends basic_testcase
 {
     public function test_data2object() {
-        // Using object data, no new fields, not strict.
+        // Using object data, no new fields.
         $obj = new stdClass();
         $obj->foo = 'bar';
         $obj->number = 42;
         $data = new stdClass();
         $data->foo = 'not bar';
-        outagelib::data2object($data, $obj, false);
+        outagelib::data2object($data, $obj);
         self::assertEquals(get_object_vars($obj), ['foo' => 'not bar', 'number' => 42], 'Invalid result.');
         self::assertEquals(get_object_vars($data), ['foo' => 'not bar'], 'Data should not change.');
 
-        // Using array data, with new fields, not strict.
+        // Using array data, with new fields.
         $obj = new stdClass();
         $obj->foo = 'bar';
         $obj->number = 42;
         $data = ['foo' => 'foobar', 'flag' => false];
-        outagelib::data2object($data, $obj, false);
+        outagelib::data2object($data, $obj);
         self::assertEquals(get_object_vars($obj), ['foo' => 'foobar', 'number' => 42], 'Invalid result.');
-
-        // Using object data, no new fields, strict.
-        $obj = new stdClass();
-        $obj->foo = 'bar';
-        $obj->number = 42;
-        $data = new stdClass();
-        $data->foo = 'not bar';
-        outagelib::data2object($data, $obj, true);
-        self::assertEquals(get_object_vars($obj), ['foo' => 'not bar', 'number' => 42], 'Invalid result.');
-        self::assertEquals(get_object_vars($data), ['foo' => 'not bar'], 'Data should not change.');
-
-        // Using array data, with new fields, strict.
-        $obj = new stdClass();
-        $obj->foo = 'bar';
-        $obj->number = 42;
-        $data = ['foo' => 'foobar', 'flag' => false];
-        try {
-            outagelib::data2object($data, $obj, true);
-            $this->fail('Exception was expected.');
-        }
-        catch (InvalidArgumentException $e){
-        }
     }
 }

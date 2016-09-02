@@ -32,7 +32,9 @@ if (!defined('MOODLE_INTERNAL')) {
 class auth_outage_renderer extends plugin_renderer_base
 {
     public function rendersubtitle($subtitlekey) {
-        if (!is_string($subtitlekey)) throw new \InvalidArgumentException('$subtitle is not a string.');
+        if (!is_string($subtitlekey)) {
+            throw new \InvalidArgumentException('$subtitle is not a string.');
+        }
         return html_writer::tag('h2', get_string($subtitlekey, 'auth_outage'));
     }
 

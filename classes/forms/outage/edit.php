@@ -64,7 +64,6 @@ class edit extends \moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-        $mform = $this->_form;
 
         return $errors;
     }

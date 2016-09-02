@@ -46,7 +46,7 @@ class auth_plugin_outage extends auth_plugin_base
      * Do not authenticate users.
      * @return bool False
      */
-    public function user_login($username, $password) {
+    public function user_login() {
         return false;
     }
 }

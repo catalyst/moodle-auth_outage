@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
+namespace auth_outage\forms\outage;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
@@ -30,7 +30,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outageform extends \moodleform {
+class edit extends \moodleform {
     /**
      * {@inheritDoc}
      * @see moodleform::definition()

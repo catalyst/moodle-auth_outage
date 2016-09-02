@@ -23,18 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \auth_outage\outage;
-use \auth_outage\outageutils;
-use \auth_outage\outagedb;
+use auth_outage\outagedb;
+use auth_outage\outagelib;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-$renderer = outageutils::pagesetup();
+$renderer = outagelib::pagesetup();
 
 echo $OUTPUT->header();
 
-// TODO Add paging or limiting past entries displayed.
-echo $renderer->renderoutagelist(outagedb::get()->getall());
+echo $renderer->renderoutagelist(outagedb::getall());
 
 echo $OUTPUT->footer();

@@ -23,7 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage;
+namespace auth_outage\models;
+
+use auth_outage\outagelib;
 
 class outage
 {
@@ -82,7 +84,7 @@ class outage
         }
 
         if (is_object($data) || is_array($data)) {
-            outageutils::data2object($data, $this);
+            outagelib::data2object($data, $this);
             return;
         }
 

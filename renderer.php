@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use \auth_outage\outage;
-use \auth_outage\outageform;
+use auth_outage\models\outage;
+use auth_outage\models\outageform;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.

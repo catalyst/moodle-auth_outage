@@ -28,7 +28,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outageutils
+class outagelib
 {
     /**
      * Initializes admin pages for outage.
@@ -43,7 +43,7 @@ class outageutils
     }
 
     /**
-     * Loads data from an object or array into another object.
+     * Loads data from an object or array into another object. It ensures no new fields are created in the $obj.
      *
      * @param $data mixed An object or array.
      * @param $obj object Destination object to write the properties.
@@ -77,7 +77,13 @@ class outageutils
         }
     }
 
-    public static function parseformdata($data) {
+    /**
+     * Parses data from the form ensuring it is valid for an outage object.
+     *
+     * @param $data stdClass The input data.
+     * @return stdClass The parsed data.
+     */
+    public static function parseformdata(\stdClass $data) {
         if ($data->description['format'] != '1') {
             throw new \InvalidArgumentException('Not implemented for format ' . $data->description['format']);
         }

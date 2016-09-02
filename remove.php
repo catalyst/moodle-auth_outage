@@ -23,27 +23,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \auth_outage\outage;
-use \auth_outage\outageutils;
-use \auth_outage\outagedb;
-use \auth_outage\outagedeleteform;
+use auth_outage\models\outage;
+use auth_outage\outagedb;
+use auth_outage\outagelib;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
 
-$renderer = outageutils::pagesetup();
+$renderer = outagelib::pagesetup();
 
-$mform = new outagedeleteform();
+$mform = new \auth_outage\forms\outage\delete();
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/list.php');
 } else if ($fromform = $mform->get_data()) {
-    outagedb::get()->delete($fromform->id);
+    outagedb::delete($fromform->id);
     redirect('/auth/outage/list.php');
 }
 
 $id = required_param('id', PARAM_INT);
-$outage = outagedb::get()->getbyid($id);
+$outage = outagedb::getbyid($id);
 if ($outage == null) {
     throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
 }

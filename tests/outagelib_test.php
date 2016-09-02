@@ -23,12 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \auth_outage\outageutils;
+use auth_outage\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
 
-class outageutils_test extends basic_testcase
+class outagelib_test extends basic_testcase
 {
     public function test_data2object() {
         // Using object data, no new fields, not strict.
@@ -37,7 +37,7 @@ class outageutils_test extends basic_testcase
         $obj->number = 42;
         $data = new stdClass();
         $data->foo = 'not bar';
-        outageutils::data2object($data, $obj, false);
+        outagelib::data2object($data, $obj, false);
         self::assertEquals(get_object_vars($obj), ['foo' => 'not bar', 'number' => 42], 'Invalid result.');
         self::assertEquals(get_object_vars($data), ['foo' => 'not bar'], 'Data should not change.');
 
@@ -46,7 +46,7 @@ class outageutils_test extends basic_testcase
         $obj->foo = 'bar';
         $obj->number = 42;
         $data = ['foo' => 'foobar', 'flag' => false];
-        outageutils::data2object($data, $obj, false);
+        outagelib::data2object($data, $obj, false);
         self::assertEquals(get_object_vars($obj), ['foo' => 'foobar', 'number' => 42], 'Invalid result.');
 
         // Using object data, no new fields, strict.
@@ -55,7 +55,7 @@ class outageutils_test extends basic_testcase
         $obj->number = 42;
         $data = new stdClass();
         $data->foo = 'not bar';
-        outageutils::data2object($data, $obj, true);
+        outagelib::data2object($data, $obj, true);
         self::assertEquals(get_object_vars($obj), ['foo' => 'not bar', 'number' => 42], 'Invalid result.');
         self::assertEquals(get_object_vars($data), ['foo' => 'not bar'], 'Data should not change.');
 
@@ -65,7 +65,7 @@ class outageutils_test extends basic_testcase
         $obj->number = 42;
         $data = ['foo' => 'foobar', 'flag' => false];
         try {
-            outageutils::data2object($data, $obj, true);
+            outagelib::data2object($data, $obj, true);
             $this->fail('Exception was expected.');
         }
         catch (InvalidArgumentException $e){

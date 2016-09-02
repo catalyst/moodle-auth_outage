@@ -25,43 +25,12 @@
 
 namespace auth_outage;
 
+use auth_outage\models\outage;
+
 final class outagedb
 {
     /**
-     * @var outagedb Singleton reference created on first use.
-     */
-    private static $singleton = null;
-
-    /**
-     * Returns the singleton instance.
-     *
-     * @return outagedb The singleton object.
-     */
-    public static function get() {
-        if (is_null(self::$singleton)) {
-            self::$singleton = new outagedb();
-        }
-        return self::$singleton;
-    }
-
-    /**
-     * Private clone method to prevent cloning singleton.
-     *
-     * @return void
-     */
-    private function __clone() {
-    }
-
-    /**
-     * Private unserialize method to prevent unserializing singleton.
-     *
-     * @return void
-     */
-    private function __wakeup() {
-    }
-
-    /**
-     * Private constructor (singleton), use outagedb::get() instead.
+     * Private constructor, use static methods instead.
      */
     private function __construct() {
     }
@@ -69,7 +38,7 @@ final class outagedb
     /**
      * Gets all outage entries.
      */
-    public function getall() {
+    public static function getall() {
         global $DB;
 
         $outages = [];
@@ -83,7 +52,11 @@ final class outagedb
         return $outages;
     }
 
-    public function getbyid($id) {
+    /**
+     * @param $id int Outage id to get.
+     * @return outage|null Returns the outage or null if not found.
+     */
+    public static function getbyid($id) {
         global $DB;
 
         if (!is_int($id)) {
@@ -107,7 +80,7 @@ final class outagedb
      * @param outage $outage Outage to save.
      * @return int Outage ID.
      */
-    public function save(outage $outage) {
+    public static function save(outage $outage) {
         global $DB, $USER;
 
         // Do not change the original object.
@@ -139,7 +112,7 @@ final class outagedb
      * @param $id outage Outage ID to delete
      * @throws InvalidArgumentException If ID is not valid.
      */
-    public function delete($id) {
+    public static function delete($id) {
         global $DB;
 
         if (!is_int($id)) {

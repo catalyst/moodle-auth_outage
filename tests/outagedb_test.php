@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \auth_outage\outage;
-use \auth_outage\outagedb;
+use auth_outage\models\outage;
+use auth_outage\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,24 +32,16 @@ defined('MOODLE_INTERNAL') || die();
 class outagedb_test extends advanced_testcase
 {
     /**
-     * Make sure the db context is a singleton.
-     */
-    public function test_singleton() {
-        self::assertSame(outagedb::get(), outagedb::get(), 'Must always get same instance.');
-    }
-
-    /**
      * Make sure we can save and update.
      */
     public function test_save() {
         $this->resetAfterTest(true);
-        $db = outagedb::get();
         // Save new outage.
-        $id = $db->save($this->createoutage(1));
+        $id = outagedb::save($this->createoutage(1));
         // Update it.
         $outage = $this->createoutage(2);
         $outage->id = $id;
-        $db->save($outage);
+        outagedb::save($outage);
     }
 
     /**
@@ -57,16 +49,15 @@ class outagedb_test extends advanced_testcase
      */
     public function test_getbyid() {
         $this->resetAfterTest(true);
-        $db = outagedb::get();
         // Create something.
-        $id = $db->save($this->createoutage(1));
+        $id = outagedb::save($this->createoutage(1));
         // Get should work.
-        $outage = $db->getbyid($id);
+        $outage = outagedb::getbyid($id);
         self::assertNotNull($outage);
         // Delete it.
-        $db->delete($id);
+        outagedb::delete($id);
         // Get should be null.
-        $outage = $db->getbyid($id);
+        $outage = outagedb::getbyid($id);
         self::assertNull($outage);
     }
 
@@ -75,13 +66,12 @@ class outagedb_test extends advanced_testcase
      */
     public function test_delete() {
         $this->resetAfterTest(true);
-        $db = outagedb::get();
         // Create something.
-        $id = $db->save($this->createoutage(1));
+        $id = outagedb::save($this->createoutage(1));
         // Delete it.
-        $db->delete($id);
+        outagedb::delete($id);
         // Should not exist anymore.
-        self::assertNull($db->getbyid($id));
+        self::assertNull(outagedb::getbyid($id));
     }
 
     /**
@@ -89,17 +79,16 @@ class outagedb_test extends advanced_testcase
      */
     public function test_getall() {
         $this->resetAfterTest(true);
-        $db = outagedb::get();
         $amount = 10;
         // Should start empty.
-        $outages = $db->getall();
+        $outages = outagedb::getall();
         self::assertSame([], $outages);
         // Create some stuff outages.
         for ($i = 0; $i < $amount; $i++) {
-            $db->save($this->createoutage($i));
+            outagedb::save($this->createoutage($i));
         }
         // Count entries created.
-        self::assertSame($amount, count($db->getall()));
+        self::assertSame($amount, count(outagedb::getall()));
     }
 
     /**
@@ -108,20 +97,19 @@ class outagedb_test extends advanced_testcase
     public function test_basiccrud() {
         return;
         $this->resetAfterTest(true);
-        $db = outagedb::get();
 
         // Create some outages.
         $outages = [];
         for ($i = 1; $i <= 10; $i++) {
             $outage = $this->createoutage($i);
-            $id = $db->save($outage);
+            $id = outagedb::save($outage);
             $outages[$id] = $outage;
         }
 
         // With all created outages.
         foreach ($outages as $id => $outage) {
             // Get it.
-            $inserted = $db->getbyid($id);
+            $inserted = outagedb::getbyid($id);
             self::assertNotNull($inserted);
             // Check its data.
             foreach (['starttime', 'stoptime', 'warningduration', 'title', 'description'] as $field) {
@@ -134,14 +122,14 @@ class outagedb_test extends advanced_testcase
             self::assertNotNull($inserted->modifiedby);
             // Change it.
             $inserted->title = 'Title ID' . $id;
-            $db->save($inserted);
+            outagedb::save($inserted);
             // Get it again and check data.
-            $updated = $db->getbyid($id);
+            $updated = outagedb::getbyid($id);
             self::assertSame('Title ID' . $id, $updated->title);
             self::assertSame($inserted->description, $updated->description);
             // Delete it.
-            $db->delete($id);
-            $deleted = $db->getbyid($id);
+            outagedb::delete($id);
+            $deleted = outagedb::getbyid($id);
             self::assertNull($deleted);
         }
     }

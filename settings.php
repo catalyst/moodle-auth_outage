@@ -28,28 +28,31 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
     // Configure default settings page.
-    $settings->visiblename = "Defaults";
+    $settings->visiblename = get_string('menudefaults', 'auth_outage');
     $settings->add(
         new admin_setting_configtext('auth_outage_warning_period',
-            "Default Warning Time",
-            "Default warning time (in minutes) for outages.",
+            get_string('defaultwarningtime', 'auth_outage'),
+            get_string('defaultwarningtimedescription', 'auth_outage'),
             120, PARAM_INT));
     $settings->add(
         new admin_setting_configtextarea('auth_outage_warning_text',
-            'Default Warning Message',
-            'Default warning message for outages. Use [from] and [until] placeholders as required.',
-            'There is an scheduled maintenance from [from] to [until] and our system will not be available during that time.',
+            get_string('defaultwarningmessage', 'auth_outage'),
+            get_string('defaultwarningmessagedescription', 'auth_outage'),
+            get_string('defaultwarningmessagevalue', 'auth_outage'),
             PARAM_TEXT)
     );
     // Create category for Outage.
-    $ADMIN->add('authsettings', new admin_category('auth_outage', 'Outage'));
+    $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));
     // Add settings page toconfigure defaults.
     $ADMIN->add('auth_outage', $settings);
     // Clear '$settings' to prevent adding again outsite category.
     $settings = null;
     // Add options.
     $ADMIN->add('auth_outage',
-        new admin_externalpage('auth_outage_manage', 'Manage',
+        new admin_externalpage(
+            'auth_outage_manage',
+            get_string('menumanage', 'auth_outage'),
             new moodle_url($CFG->wwwroot . '/auth/outage/list.php')
-        ));
+        )
+    );
 }

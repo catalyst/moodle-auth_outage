@@ -41,16 +41,16 @@ class edit extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('date_time_selector', 'starttime', 'Start Time');
+        $mform->addElement('date_time_selector', 'starttime', get_string('starttime', 'auth_outage'));
 
-        $mform->addElement('date_time_selector', 'stoptime', 'Stop Time');
+        $mform->addElement('date_time_selector', 'stoptime', get_string('stoptime', 'auth_outage'));
 
-        $mform->addElement('duration', 'warningduration', 'Warning Duration');
+        $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
 
-        $mform->addElement('text', 'title', 'Title');
+        $mform->addElement('text', 'title', get_string('title', 'auth_outage'));
         $mform->setType('title', PARAM_TEXT);
 
-        $mform->addElement('editor', 'description', 'Description');
+        $mform->addElement('editor', 'description', get_string('description', 'auth_outage'));
 
         $this->add_action_buttons();
     }

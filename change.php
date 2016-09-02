@@ -31,7 +31,7 @@ require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
 
-outagelib::pagesetup();
+$renderer = outagelib::pagesetup();
 
 $mform = new \auth_outage\forms\outage\edit();
 
@@ -53,8 +53,8 @@ $data = get_object_vars($outage);
 $data['description'] = ['text' => $data['description'], 'format' => '1'];
 $mform->set_data($data);
 
+
 echo $OUTPUT->header();
-
+echo $renderer->rendersubtitle('modifyoutage');
 $mform->display();
-
 echo $OUTPUT->footer();

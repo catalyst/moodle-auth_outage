@@ -27,7 +27,7 @@ $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a f
 $string['pluginname'] = 'Outage';
 
 $string['menudefaults'] = 'Default Settings';
-$string['manage'] = 'Manage';
+$string['menumanage'] = 'Manage';
 
 $string['defaultwarningtime'] = 'Default Warning Time';
 $string['defaultwarningtimedescription'] = 'Default warning time (in minutes) for outages.';

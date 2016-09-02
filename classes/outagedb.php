@@ -60,10 +60,10 @@ final class outagedb
         global $DB;
 
         if (!is_int($id)) {
-            throw new InvalidArgumentException('$id must be an int.');
+            throw new \InvalidArgumentException('$id must be an int.');
         }
         if ($id <= 0) {
-            throw new InvalidArgumentException('$id must be positive.');
+            throw new \InvalidArgumentException('$id must be positive.');
         }
 
         $outage = $DB->get_record('auth_outage', ['id' => $id]);
@@ -116,10 +116,10 @@ final class outagedb
         global $DB;
 
         if (!is_int($id)) {
-            throw new InvalidArgumentException('$id must be an int.');
+            throw new \InvalidArgumentException('$id must be an int.');
         }
         if ($id <= 0) {
-            throw new InvalidArgumentException('$id must be positive.');
+            throw new \InvalidArgumentException('$id must be positive.');
         }
 
         $DB->delete_records('auth_outage', ['id' => $id]);

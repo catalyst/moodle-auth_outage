@@ -4,8 +4,6 @@ notifications:
   email:
     recipients:
     - daniel.roperto@catalyst-au.net
-    - brendan.heywood@gmail.com
-    - marcus@boon.mx
 
 sudo: false
 

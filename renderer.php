@@ -29,8 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends plugin_renderer_base
-{
+class auth_outage_renderer extends plugin_renderer_base {
     public function rendersubtitle($subtitlekey) {
         if (!is_string($subtitlekey)) {
             throw new \InvalidArgumentException('$subtitle is not a string.');
@@ -122,6 +121,17 @@ class auth_outage_renderer extends plugin_renderer_base
                 . ($buttons ? $linkedit . $linkdelete . html_writer::empty_tag('br') : '')
                 . html_writer::empty_tag('br')
             )
+        );
+    }
+
+    public function renderbar($outage) {
+        global $PAGE;
+
+        $PAGE->requires->css(new moodle_url('/auth/outage/res/outage.css'));
+
+        return html_writer::div(
+            html_writer::tag('b', $outage->title),
+            'auth_outage_warningbar'
         );
     }
 }

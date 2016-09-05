@@ -49,4 +49,11 @@ class auth_plugin_outage extends auth_plugin_base
     public function user_login($username, $password) {
         return false;
     }
+
+    /**
+     * Login page hook.
+     */
+    function loginpage_hook() {
+        \auth_outage\outagelib::initialize();
+    }
 }

@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 // FIXME If plugin not installed, it is still generating the category Outage under Auth Plugins.
-
 if ($hassiteconfig) {
     // Configure default settings page.
     $settings->visiblename = get_string('menudefaults', 'auth_outage');

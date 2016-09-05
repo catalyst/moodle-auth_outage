@@ -23,3 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
+
+function auth_outage_extend_navigation_user() {
+    \auth_outage\outagelib::initialize();
+}
+
+function auth_outage_extend_navigation($data) {
+    // Never called?
+    \auth_outage\outagelib::initialize();
+}
+
+function auth_outage_extend_navigation_frontpage() {
+    \auth_outage\outagelib::initialize();
+}

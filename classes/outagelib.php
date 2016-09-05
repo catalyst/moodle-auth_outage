@@ -28,8 +28,9 @@ if (!defined('MOODLE_INTERNAL')) {
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outagelib
-{
+class outagelib {
+    private static $initialized = false;
+
     /**
      * Initializes admin pages for outage.
      *
@@ -39,7 +40,38 @@ class outagelib
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
         $PAGE->set_url(new \moodle_url('/auth/outage/list.php'));
+        return self::get_renderer();
+    }
+
+    /**
+     * Returns the outage renderer.
+     * @return \renderer_base
+     */
+    public static function get_renderer() {
+        global $PAGE;
         return $PAGE->get_renderer('auth_outage');
+    }
+
+    public static function initialize() {
+        global $CFG;
+
+        // Many hooks can call it, execute only once.
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+
+        // Stop if no current outage is found.
+        $outage = new \auth_outage\models\outage([
+            'starttime' => time() - 60, // 1 minute ago.
+            'stoptime' => time() + 60 * 60, // In 1 hour.
+            'warningduration' => 1, // Does not matter.
+            'title' => 'Fixed Outage',
+            'description' => '<p>This is an <b>OUTAGE</b>.</p>'
+        ]);
+        // FIXME Get from DB instead.
+        if (!$outage) return;
+        $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($outage);
     }
 
     /**

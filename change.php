@@ -41,7 +41,7 @@ if ($mform->is_cancelled()) {
     $fromform = outagelib::parseformdata($fromform);
     $outage = new outage($fromform);
     $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id=' . $id);
+    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
 }
 
 $id = required_param('id', PARAM_INT);

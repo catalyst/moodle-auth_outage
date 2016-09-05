@@ -14,37 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace auth_outage\event;
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Create new outage.
+ * The auth_outage outage deleted class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class outage_deleted extends \core\event\base {
+    /**
+     * Init method.
+     */
+    protected function init() {
+        $this->data['objecttable'] = 'auth_outage';
+        $this->data['crud'] = 'd';
+        $this->data['edulevel'] = self::LEVEL_OTHER;
+        $this->context = \context_system::instance();
+    }
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+    public function get_description() {
+        return "The user with the id '{$this->userid}' deleted the outage titled '{$this->other['title']}' "
+        . "with id '{$this->other['id']}'.";
+    }
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
-
-outagelib::pagesetup();
-
-$mform = new \auth_outage\forms\outage\edit();
-if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
-    $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
+    public function get_url() {
+        return new \moodle_url('/auth/outage/list.php#auth_outage_id_' . $this->other['id']);
+    }
 }
-
-echo $OUTPUT->header();
-
-$mform->display();
-
-echo $OUTPUT->footer();

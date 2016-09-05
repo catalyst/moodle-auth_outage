@@ -98,7 +98,7 @@ final class outagedb {
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
         } else {
-            // Not new, clean up the class (remove creator field) then update.
+            // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
             $DB->update_record('auth_outage', $outage);
             // Log it.

@@ -24,25 +24,27 @@
  */
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
-$string['pluginname'] = 'Outage';
-
-$string['menudefaults'] = 'Default Settings';
-$string['menumanage'] = 'Manage';
-
-$string['defaultwarningtime'] = 'Default Warning Time';
-$string['defaultwarningtimedescription'] = 'Default warning time (in minutes) for outages.';
 $string['defaultwarningmessage'] = 'Default Warning Message';
 $string['defaultwarningmessagedescription'] = 'Default warning message for outages. Use [from] and [until] placeholders as required.';
 $string['defaultwarningmessagevalue'] = 'There is an scheduled maintenance from [from] to [until] and our system will not be available during that time.';
-
-$string['starttime'] = 'Start date and time';
-$string['stoptime'] = 'Stop date and time';
-$string['warningduration'] = 'Warning duration';
-$string['title'] = 'Title';
+$string['defaultwarningtime'] = 'Default Warning Time';
+$string['defaultwarningtimedescription'] = 'Default warning time (in minutes) for outages.';
 $string['description'] = 'Public description';
-$string['modifyoutage'] = 'Modify Outage';
-$string['removeoutage'] = 'Remove Outage';
-$string['removeoutagewarning'] = 'You are about to permanently remove the outage below. This cannot be undone.';
-$string['outageslist'] = 'Outages List';
-$string['createoutage'] = 'Create Outage';
+$string['menudefaults'] = 'Default Settings';
+$string['menumanage'] = 'Manage';
 $string['modify'] = 'Modify';
+$string['modifyoutage'] = 'Modify Outage';
+$string['outagecreate'] = 'Create Outage';
+$string['outageremove'] = 'Remove Outage';
+$string['outageremovewarning'] = 'You are about to permanently remove the outage below. This cannot be undone.';
+$string['outageslist'] = 'Outages List';
+$string['pluginname'] = 'Outage';
+$string['starttimeerrornotinfuture'] = 'Start time must be in the future.';
+$string['starttime'] = 'Start date and time';
+$string['stoptimeerrornotafterstart'] = 'Stop time must be after start time.';
+$string['stoptime'] = 'Stop date and time';
+$string['titleerrorinvalid'] = 'Title cannot be left blank.';
+$string['titleerrortoolong'] = 'Title cannot have more than {$a} characters.';
+$string['title'] = 'Title';
+$string['warningdurationerrorinvalid'] = 'Warning duration cannot be zero.';
+$string['warningduration'] = 'Warning duration';

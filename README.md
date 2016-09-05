@@ -4,15 +4,6 @@
 
 # Outage Moodle Authentication Module
 
-Moodle Outage is an auth plugin that will
-* Allow for a configurable outage notification that will be displayed to users
-* Allow for only a range of IP addresses to connect prior to the outage window
-
-
-<a href="https://travis-ci.org/CatalystIT-AU/moodle-auth_basic">
-<img src="https://travis-ci.org/CatalystIT-AU/moodle-auth_basic.svg?branch=master">
-</a>
-
 * [What is this?](#what-is-this)
 * [Installation](#installation)
 * [Feedback and issues](#feedback-and-issues)

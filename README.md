@@ -5,6 +5,7 @@
 # Moodle Outage manager plugin
 
 * [What is this?](#what-is-this)
+* [Why is it an auth plugin](#why-it-is-an-auth-plugin)
 * [Installation](#installation)
 * [Feedback and issues](#feedback-and-issues)
 

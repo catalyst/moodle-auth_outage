@@ -2,7 +2,7 @@
 <img src="https://travis-ci.org/catalyst/moodle-auth_outage.svg?branch=master">
 </a>
 
-# Outage Moodle Authentication Module
+# Moodle Outage manager plugin
 
 * [What is this?](#what-is-this)
 * [Installation](#installation)

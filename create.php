@@ -43,6 +43,7 @@ if ($mform->is_cancelled()) {
     redirect('/auth/outage/list.php#auth_outage_id_' . $id);
 }
 
+$PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));
 echo $OUTPUT->header();
 
 $mform->display();

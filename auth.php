@@ -53,7 +53,7 @@ class auth_plugin_outage extends auth_plugin_base
     /**
      * Login page hook.
      */
-    function loginpage_hook() {
+    public function loginpage_hook() {
         \auth_outage\outagelib::initialize();
     }
 }

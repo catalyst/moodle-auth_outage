@@ -64,7 +64,9 @@ class outagelib {
         }
         self::$initialized = true;
 
-        if (($active = outagedb::getactive()) == null) return;
+        if (($active = outagedb::getactive()) == null) {
+            return;
+        }
 
         $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($active);
     }

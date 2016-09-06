@@ -52,6 +52,9 @@ class outagelib {
         return $PAGE->get_renderer('auth_outage');
     }
 
+    /**
+     * Will check for ongoing or warning outages and will attach the message bar as required.
+     */
     public static function initialize() {
         global $CFG;
 
@@ -61,17 +64,9 @@ class outagelib {
         }
         self::$initialized = true;
 
-        // Stop if no current outage is found.
-        $outage = new \auth_outage\models\outage([
-            'starttime' => time() - 60, // 1 minute ago.
-            'stoptime' => time() + 60 * 60, // In 1 hour.
-            'warningduration' => 1, // Does not matter.
-            'title' => 'Fixed Outage',
-            'description' => '<p>This is an <b>OUTAGE</b>.</p>'
-        ]);
-        // FIXME Get from DB instead.
-        if (!$outage) return;
-        $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($outage);
+        if (($active = outagedb::getactive()) == null) return;
+
+        $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($active);
     }
 
     /**

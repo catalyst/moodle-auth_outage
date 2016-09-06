@@ -135,4 +135,32 @@ final class outagedb {
 
         $DB->delete_records('auth_outage', ['id' => $id]);
     }
+
+    public static function getactive($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time must be null or an int.');
+        }
+
+        // TODO Is there a way to use Moodle API instead of writing SQL (conditions not equals)?
+        // TODO Query not fully using indexes (starttime + 90)
+        // Gets any active outage (already started or during warning period).
+        // Gets only one record if available, the one that starts(ed) first and that stops last.
+        $now = time();
+        $data = $DB->get_record_sql('
+                SELECT *
+                FROM {auth_outage}
+                WHERE (starttime - warningduration <= :now1 AND stoptime >= :now2) 
+                ORDER BY starttime ASC, stoptime DESC, title ASC
+                LIMIT 1
+            ',
+            ['now1' => $now, 'now2' => $now]
+        );
+
+        return ($data === false) ? null : new \auth_outage\models\outage($data);
+    }
 }

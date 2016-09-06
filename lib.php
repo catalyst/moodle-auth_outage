@@ -29,7 +29,14 @@ function auth_outage_extend_navigation_user() {
 }
 
 function auth_outage_extend_navigation($data) {
-    // Never called?
+    global $CFG;
+
+    // FIXME if function is not used, remove it completely.
+    if ($CFG->debugdisplay) {
+        var_dump($data);
+        throw new \Exception("Check outage/lib.php");
+    }
+
     \auth_outage\outagelib::initialize();
 }
 

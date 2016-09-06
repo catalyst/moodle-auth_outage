@@ -12,15 +12,15 @@
 What is this?
 -------------
 
-This is a Moodle plugin which makes the student expereince of planned outages nicer, and provides extra tools for administrators and testers that help before and after the outage window.
+This is a Moodle plugin which makes the student experience of planned outages nicer, and provides extra tools for administrators and testers that help before and after the outage window.
 
-The main idea is that instead of an outage being a very booleon on/off situation, this plugin creates the concept of graduated outages where at predefined times before an outage and after, different levels of warning can be provided to students letting them know what is about to happen and why.
+The main idea is that instead of an outage being a very booleon on/off situation, this plugin creates the concept of graduated outages where at predefined times before an outage and after, different levels of warning and access can be provided to students and testers letting them know what is about to happen and why.
 
 
 Why it is an auth plugin?
 -------------------------
 
-One of the graduated stages this plugin introduces is a 'tester only' mode. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges. 
+One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges. 
 
 
 Installation
@@ -29,7 +29,7 @@ Installation
 1. Install the plugin the same as any standard moodle plugin either via the
 Moodle plugin directory, or you can use git to clone it into your source:
 
-     git clone git@github.com:catalyst/moodle-auth_outage.git auth/basic
+     ```git clone git@github.com:catalyst/moodle-auth_outage.git auth/basic```
 
     Or install via the Moodle plugin directory:
     

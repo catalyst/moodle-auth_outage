@@ -1,7 +1,35 @@
 .auth_outage_warningbar {
-    background-color: red;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 90px;
+    z-index: 9999;
+    width: 100%;
+    text-align: center;
+    background-color: white;
 }
 
-.auth_outage_warningbar_title {
-    font-size: 120%;
+.auth_outage_warningbar_box {
+    border-top: 2px dashed #a00000;
+    border-bottom: 2px dashed #a00000;
+    background-color: #ffcccc;
+    color: #a00000;
+}
+
+.auth_outage_warningbar_box_title {
+    font-size: 200%;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.auth_outage_warningbar_box_message {
+    margin-bottom: 5px;
+}
+
+.navbar.navbar-fixed-top {
+    top: 90px;
+}
+
+.auth_outage_warningbar_spacer {
+    height: 80px;
 }

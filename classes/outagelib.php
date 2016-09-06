@@ -69,8 +69,10 @@ class outagelib {
             return;
         }
 
-        $PAGE->add_body_class('auth_outage_active');
-        $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($active);
+        // FIXME Code below is raising error at http://moodle.test/my/ for example.
+        // $PAGE->add_body_class('auth_outage_active');
+        $CFG->additionalhtmltopofbody = self::get_renderer()->renderbar($active)
+            . $CFG->additionalhtmltopofbody;
     }
 
     /**

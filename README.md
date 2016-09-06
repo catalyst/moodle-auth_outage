@@ -22,6 +22,7 @@ Why it is an auth plugin?
 
 One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges. 
 
+![Screenshot as of 2016-09-06](docs/2016-09-06_screenshot.png?raw=true)
 
 Installation
 ------------

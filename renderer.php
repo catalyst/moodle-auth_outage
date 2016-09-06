@@ -139,10 +139,16 @@ class auth_outage_renderer extends plugin_renderer_base {
             ['start' => $start, 'stop' => $stop]
         );
 
-        return html_writer::div(
-            html_writer::div($outage->title, 'auth_outage_warningbar_title')
-            . html_writer::div($message, 'auth_outage_warningbar_message'),
-            'auth_outage_warningbar'
-        );
+        return
+            html_writer::div(
+                html_writer::div(
+                    html_writer::div($outage->title, 'auth_outage_warningbar_box_title')
+                    . html_writer::div($message, 'auth_outage_warningbar_box_message'),
+                    'auth_outage_warningbar_box'
+                ),
+                'auth_outage_warningbar'
+            )
+            .
+            html_writer::div('&nbsp;', 'auth_outage_warningbar_spacer');
     }
 }

@@ -39,8 +39,8 @@ class auth_outage_renderer extends plugin_renderer_base
     }
 
     public function renderdeleteconfirmation(outage $outage) {
-        return $this->rendersubtitle('removeoutage')
-        . html_writer::tag('p', get_string('removeoutagewarning', 'auth_outage'))
+        return $this->rendersubtitle('outageremove')
+        . html_writer::tag('p', get_string('outageremovewarning', 'auth_outage'))
         . $this->renderoutage($outage, false);
     }
 
@@ -58,12 +58,13 @@ class auth_outage_renderer extends plugin_renderer_base
         $url = new moodle_url('/auth/outage/create.php');
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
-        $html .= html_writer::empty_tag('br')
-            . html_writer::link(
+        $html .= html_writer::tag('p',
+            html_writer::link(
                 $url,
-                $img . ' ' . get_string('createoutage', 'auth_outage'),
-                ['title' => get_string('remove')])
-            . html_writer::empty_tag('br');
+                $img . ' ' . get_string('outagecreate', 'auth_outage'),
+                ['title' => get_string('remove')]
+            )
+        );
 
         return $html;
     }

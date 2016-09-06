@@ -31,6 +31,8 @@ require_once($CFG->libdir . '/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit extends \moodleform {
+    const TITLE_MAX_CHARS = 100;
+
     /**
      * {@inheritDoc}
      * @see moodleform::definition()
@@ -47,7 +49,12 @@ class edit extends \moodleform {
 
         $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
 
-        $mform->addElement('text', 'title', get_string('title', 'auth_outage'));
+        $mform->addElement(
+            'text',
+            'title',
+            get_string('title', 'auth_outage'),
+            'maxlength="'.self::TITLE_MAX_CHARS.'"'
+        );
         $mform->setType('title', PARAM_TEXT);
 
         $mform->addElement('editor', 'description', get_string('description', 'auth_outage'));
@@ -64,6 +71,24 @@ class edit extends \moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+
+        if ($data['starttime'] <= time()) {
+            $errors['starttime'] = get_string('starttimeerrornotinfuture', 'auth_outage');
+        }
+        if ($data['stoptime'] <= $data['starttime']) {
+            $errors['stoptime'] = get_string('stoptimeerrornotafterstart', 'auth_outage');
+        }
+        if ($data['warningduration'] <= 0) {
+            $errors['warningduration'] = get_string('warningdurationerrorinvalid', 'auth_outage');
+        }
+
+        $titlelen = strlen(trim($data['title']));
+        if ($titlelen == 0) {
+            $errors['title'] = get_string('titleerrorinvalid', 'auth_outage');
+        }
+        if ($titlelen > self::TITLE_MAX_CHARS) {
+            $errors['title'] = get_string('titleerrortoolong', 'auth_outage', self::TITLE_MAX_CHARS);
+        }
 
         return $errors;
     }

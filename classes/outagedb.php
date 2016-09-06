@@ -27,8 +27,7 @@ namespace auth_outage;
 
 use auth_outage\models\outage;
 
-final class outagedb
-{
+final class outagedb {
     /**
      * Private constructor, use static methods instead.
      */
@@ -86,23 +85,29 @@ final class outagedb
         // Do not change the original object.
         $outage = clone $outage;
 
-        // If new outage, set its creator.
-        if ($outage->id === null) {
-            $outage->createdby = $USER->id;
-        }
-
         // Update control fields.
         $outage->modifiedby = $USER->id;
         $outage->lastmodified = time();
 
-        // If new, create it and return the id.
         if ($outage->id === null) {
-            return $DB->insert_record('auth_outage', $outage, true);
+            // If new outage, set its creator.
+            $outage->createdby = $USER->id;
+            // Then create it, log it and adjust its id.
+            $outage->id = $DB->insert_record('auth_outage', $outage, true);
+            \auth_outage\event\outage_created::create(
+                ['objectid' => $outage->id, 'other' => (array)$outage]
+            )->trigger();
+        } else {
+            // Remove the createdby field so it does not get updated.
+            unset($outage->createdby);
+            $DB->update_record('auth_outage', $outage);
+            // Log it.
+            \auth_outage\event\outage_updated::create(
+                ['objectid' => $outage->id, 'other' => (array)$outage]
+            )->trigger();
         }
 
-        // Clean up the class (remove creator field), then update it and return its id.
-        unset($outage->createdby);
-        $DB->update_record('auth_outage', $outage);
+        // All done, return the id.
         return $outage->id;
     }
 
@@ -121,6 +126,12 @@ final class outagedb
         if ($id <= 0) {
             throw new \InvalidArgumentException('$id must be positive.');
         }
+
+        // Log it.
+        $previous = $DB->get_record('auth_outage', ['id' => $id], '*', MUST_EXIST);
+        $event = \auth_outage\event\outage_deleted::create(['objectid' => $id, 'other' => (array)$previous]);
+        $event->add_record_snapshot('auth_outage', $previous);
+        $event->trigger();
 
         $DB->delete_records('auth_outage', ['id' => $id]);
     }

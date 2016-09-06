@@ -29,8 +29,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
-$plugin->version   = 2016090100;     // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2016090500;     // The current plugin version (Date: YYYYMMDDXX).
 $plugin->release   = $plugin->version;     // Same as version
-$plugin->requires  = 2013111811;     // Requires Moodle 2.6 or later.
+$plugin->requires  = 2014051200;     // Requires Moodle 2.7 or later.
 $plugin->component = "auth_outage";
 $plugin->maturity  = MATURITY_ALPHA; // Not suitable for PRODUCTION environments yet!

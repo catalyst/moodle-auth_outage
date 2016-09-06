@@ -24,8 +24,11 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-// FIXME If plugin not installed, it is still generating the category Outage under Auth Plugins.
-if ($hassiteconfig) {
+// Check if plugin is enabled, if not do not create menu entries.
+$enabled = core_plugin_manager::instance()->get_enabled_plugins('auth');
+$enabled = array_key_exists('outage', $enabled);
+
+if ($hassiteconfig && $enabled) {
     // Configure default settings page.
     $settings->visiblename = get_string('menudefaults', 'auth_outage');
     $settings->add(

@@ -162,9 +162,10 @@ final class outagedb {
         $data = $DB->get_record_sql('
                 SELECT *
                 FROM {auth_outage}
-                WHERE (starttime - warningduration <= :now1 AND stoptime >= :now2) 
+                WHERE (starttime - warningduration <= :now1 AND stoptime >= :now2)
                 ORDER BY starttime ASC, stoptime DESC, title ASC
-                LIMIT 1',
+                LIMIT 1
+            ',
             ['now1' => $now, 'now2' => $now]
         );
 

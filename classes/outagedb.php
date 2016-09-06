@@ -136,6 +136,14 @@ final class outagedb {
         $DB->delete_records('auth_outage', ['id' => $id]);
     }
 
+    /**
+     * Gets the most important active outage, considering importance as:
+     *  - Ongoing outages more important than outages in warning period.
+     *  - Outages that start earlier are more important.
+     *  - Outages that stop later are more important.
+     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
+     * @return outage|null The outage or null if no active outages were found.
+     */
     public static function getactive($time = null) {
         global $DB;
 

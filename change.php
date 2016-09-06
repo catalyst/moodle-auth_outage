@@ -53,7 +53,7 @@ $data = get_object_vars($outage);
 $data['description'] = ['text' => $data['description'], 'format' => '1'];
 $mform->set_data($data);
 
-
+$PAGE->navbar->add($outage->title);
 echo $OUTPUT->header();
 echo $renderer->rendersubtitle('modifyoutage');
 $mform->display();

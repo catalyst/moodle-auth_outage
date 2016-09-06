@@ -96,4 +96,18 @@ class outage {
 
         throw new \InvalidArgumentException('$data must be null (default), an array or an object.');
     }
+
+    public function is_ongoing($time = null) {
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new \InvalidArgumentException('$time must be an positive int.');
+        }
+        if (is_null($this->starttime) || is_null($this->stoptime)) {
+            return false;
+        }
+
+        return (($this->starttime <= $time) && ($time < $this->stoptime));
+    }
 }

@@ -1,3 +1,7 @@
 .auth_outage_warningbar {
     background-color: red;
 }
+
+.auth_outage_warningbar_title {
+    font-size: 120%;
+}

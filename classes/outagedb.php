@@ -158,15 +158,14 @@ final class outagedb {
         // TODO Query not fully using indexes (starttime + 90)
         // Gets any active outage (already started or during warning period).
         // Gets only one record if available, the one that starts(ed) first and that stops last.
-        $now = time();
         $data = $DB->get_record_sql('
                 SELECT *
                 FROM {auth_outage}
-                WHERE (starttime - warningduration <= :now1 AND stoptime >= :now2)
+                WHERE (starttime - warningduration <= :datetime1 AND stoptime >= :datetime2)
                 ORDER BY starttime ASC, stoptime DESC, title ASC
                 LIMIT 1
             ',
-            ['now1' => $now, 'now2' => $now]
+            ['datetime1' => $time, 'datetime2' => $time]
         );
 
         return ($data === false) ? null : new \auth_outage\models\outage($data);

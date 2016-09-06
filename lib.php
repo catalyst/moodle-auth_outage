@@ -24,22 +24,12 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
+// FIXME hook not installing in courses/index.php page.
+
 function auth_outage_extend_navigation_user() {
-    \auth_outage\outagelib::initialize();
-}
-
-function auth_outage_extend_navigation($data) {
-    global $CFG;
-
-    // FIXME if function is not used, remove it completely.
-    if ($CFG->debugdisplay) {
-        var_dump($data);
-        throw new \Exception("Check outage/lib.php");
-    }
-
-    \auth_outage\outagelib::initialize();
+    \auth_outage\outagelib::inject();
 }
 
 function auth_outage_extend_navigation_frontpage() {
-    \auth_outage\outagelib::initialize();
+    \auth_outage\outagelib::inject();
 }

@@ -55,8 +55,9 @@ class outagelib {
     /**
      * Will check for ongoing or warning outages and will attach the message bar as required.
      */
-    public static function initialize() {
+    public static function inject() {
         global $CFG;
+        global $PAGE;
 
         // Many hooks can call it, execute only once.
         if (self::$initialized) {
@@ -68,6 +69,7 @@ class outagelib {
             return;
         }
 
+        $PAGE->add_body_class('auth_outage_active');
         $CFG->additionalhtmltopofbody .= self::get_renderer()->renderbar($active);
     }
 

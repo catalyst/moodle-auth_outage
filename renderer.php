@@ -129,8 +129,18 @@ class auth_outage_renderer extends plugin_renderer_base {
 
         $PAGE->requires->css(new moodle_url('/auth/outage/res/outage.css'));
 
+        $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
+        $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
+
+        $message = get_string(
+            $outage->is_ongoing() ? 'messageoutageongoing' : 'messageoutagewarning',
+            'auth_outage',
+            ['start' => $start, 'stop' => $stop]
+        );
+
         return html_writer::div(
-            html_writer::tag('b', $outage->title),
+            html_writer::div($outage->title, 'auth_outage_warningbar_title')
+            . html_writer::div($message, 'auth_outage_warningbar_message'),
             'auth_outage_warningbar'
         );
     }

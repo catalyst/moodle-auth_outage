@@ -29,8 +29,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends plugin_renderer_base
-{
+class auth_outage_renderer extends plugin_renderer_base {
     public function rendersubtitle($subtitlekey) {
         if (!is_string($subtitlekey)) {
             throw new \InvalidArgumentException('$subtitle is not a string.');
@@ -124,5 +123,32 @@ class auth_outage_renderer extends plugin_renderer_base
                 . html_writer::empty_tag('br')
             )
         );
+    }
+
+    public function renderbar($outage) {
+        global $PAGE;
+
+        $PAGE->requires->css(new moodle_url('/auth/outage/res/outage.css'));
+
+        $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
+        $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
+
+        $message = get_string(
+            $outage->is_ongoing() ? 'messageoutageongoing' : 'messageoutagewarning',
+            'auth_outage',
+            ['start' => $start, 'stop' => $stop]
+        );
+
+        return
+            html_writer::div(
+                html_writer::div(
+                    html_writer::div($outage->title, 'auth_outage_warningbar_box_title')
+                    . html_writer::div($message, 'auth_outage_warningbar_box_message'),
+                    'auth_outage_warningbar_box'
+                ),
+                'auth_outage_warningbar'
+            )
+            .
+            html_writer::div('&nbsp;', 'auth_outage_warningbar_spacer');
     }
 }

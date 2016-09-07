@@ -29,8 +29,7 @@ use auth_outage\outagedb;
 defined('MOODLE_INTERNAL') || die();
 
 
-class outagedb_test extends advanced_testcase
-{
+class outagedb_test extends advanced_testcase {
     /**
      * Make sure we can save and update.
      */
@@ -95,7 +94,6 @@ class outagedb_test extends advanced_testcase
      * Perform some tests on the data itself, checking values after inserted and updated.
      */
     public function test_basiccrud() {
-        return;
         $this->resetAfterTest(true);
 
         // Create some outages.
@@ -132,6 +130,64 @@ class outagedb_test extends advanced_testcase
             $deleted = outagedb::getbyid($id);
             self::assertNull($deleted);
         }
+    }
+
+    public function test_getactive() {
+        $this->resetAfterTest(true);
+
+        // Have a consistent time for now (no seconds variation), helps debugging.
+        $now = time();
+
+        // Should never fail.
+        self::assertEquals([], outagedb::getall(), 'Ensure there are no other outages that can affect the test.');
+        self::assertNull(outagedb::getactive($now), 'There should be no active outage at this point.');
+
+        // An outage that starts in the future and is not in warning period.
+        self::saveoutage($now, 2, 3, 1);
+        self::assertNull(outagedb::getactive($now), 'No active outages yet.');
+
+        // An outage that is already in the past.
+        self::saveoutage($now, -3, -2, 1);
+        self::assertNull(outagedb::getactive($now), 'No active outages yet.');
+
+        // An outage in warning period.
+        $activeid = self::saveoutage($now, 1, 2, 2);
+        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+
+        // Another outage in warning period, but ignored as it starts after the previous one.
+        self::saveoutage($now, 2, 3, 3);
+        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+
+        // An ongoing outage.
+        $activeid = self::saveoutage($now, -2, 2, 1);
+        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+
+        // Another ongoing outage but ignored because it started after the previous one.
+        self::saveoutage($now, -1, 2, 1);
+        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+
+        // Another ongoing outage starting at the same time, but ignored as it stops before the previous one.
+        self::saveoutage($now, -2, 1, 1);
+        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+    }
+
+    /**
+     * Helper function to create an outage then save it to the database.
+     *
+     * @param $now int Timestamp for now, such as time().
+     * @param $start int In how many hours this outage starts. Can be negative.
+     * @param $stop int In how many hours this outage finishes. Can be negative.
+     * @param $warning int Warning duration in hours.
+     * @return int Id the of created outage.
+     */
+    private static function saveoutage($now, $start, $stop, $warning) {
+        return outagedb::save(new outage([
+            'starttime' => $now + ($start * 60 * 60),
+            'stoptime' => $now + ($stop * 60 * 60),
+            'warningduration' => ($warning * 60 * 60),
+            'title' => 'Test Outage',
+            'description' => 'Test Outage Description.'
+        ]));
     }
 
     /**

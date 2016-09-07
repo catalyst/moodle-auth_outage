@@ -28,8 +28,7 @@ use auth_outage\models\outage;
 defined('MOODLE_INTERNAL') || die();
 
 
-class outage_test extends basic_testcase
-{
+class outage_test extends basic_testcase {
     public function test_constructor() {
         $outage = new outage();
         // Very important, this should never change.
@@ -38,5 +37,39 @@ class outage_test extends basic_testcase
         foreach ($outage as $v) {
             self::assertNull($v);
         }
+    }
+
+    public function test_isongoing() {
+        $now = time();
+
+        // In the past.
+        $outage = new outage([
+            'starttime' => $now + (-3 * 60 * 60),
+            'stoptime' => $now + (-2 * 60 * 60),
+            'warningduration' => 2 * 60 * 60,
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertFalse($outage->is_ongoing($now));
+
+        // In the present (ongoing).
+        $outage = new outage([
+            'starttime' => $now + (-1 * 60 * 60),
+            'stoptime' => $now + (1 * 60 * 60),
+            'warningduration' => 2 * 60 * 60,
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertTrue($outage->is_ongoing($now));
+
+        // In the future.
+        $outage = new outage([
+            'starttime' => $now + (1 * 60 * 60),
+            'stoptime' => $now + (2 * 60 * 60),
+            'warningduration' => 2 * 60 * 60,
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertFalse($outage->is_ongoing($now));
     }
 }

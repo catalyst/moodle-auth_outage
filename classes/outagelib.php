@@ -28,8 +28,9 @@ if (!defined('MOODLE_INTERNAL')) {
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outagelib
-{
+class outagelib {
+    private static $initialized = false;
+
     /**
      * Initializes admin pages for outage.
      *
@@ -39,7 +40,39 @@ class outagelib
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
         $PAGE->set_url(new \moodle_url('/auth/outage/list.php'));
+        return self::get_renderer();
+    }
+
+    /**
+     * Returns the outage renderer.
+     * @return \renderer_base
+     */
+    public static function get_renderer() {
+        global $PAGE;
         return $PAGE->get_renderer('auth_outage');
+    }
+
+    /**
+     * Will check for ongoing or warning outages and will attach the message bar as required.
+     */
+    public static function inject() {
+        global $CFG;
+        global $PAGE;
+
+        // Many hooks can call it, execute only once.
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+
+        if (($active = outagedb::getactive()) == null) {
+            return;
+        }
+
+        // FIXME Code below is raising error at http://moodle.test/my/ for example.
+        // $PAGE->add_body_class('auth_outage_active');
+        $CFG->additionalhtmltopofbody = self::get_renderer()->renderbar($active)
+            . $CFG->additionalhtmltopofbody;
     }
 
     /**

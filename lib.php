@@ -23,3 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
+
+// FIXME hook not installing in courses/index.php page.
+
+function auth_outage_extend_navigation_user() {
+    \auth_outage\outagelib::inject();
+}
+
+function auth_outage_extend_navigation_frontpage() {
+    \auth_outage\outagelib::inject();
+}

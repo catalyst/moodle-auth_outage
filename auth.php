@@ -43,8 +43,10 @@ class auth_plugin_outage extends auth_plugin_base
     }
 
     /**
-     * Do not authenticate users.
+     * @param string $username Not unsed in this plugin.
+     * @param string $password Not unsed in this plugin.
      * @return bool False
+     * @SuppressWarnings("unused")
      */
     public function user_login($username, $password) {
         return false;

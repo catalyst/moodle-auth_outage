@@ -41,7 +41,7 @@ class delete extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $this->add_action_buttons(true, get_string('remove'));
+        $this->add_action_buttons(true, get_string('delete'));
     }
 
     /**

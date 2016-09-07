@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Delete an outage.
+ * Create new outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -31,29 +31,20 @@ require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
 
-$renderer = outagelib::pagesetup();
+outagelib::pagesetup();
 
-$mform = new \auth_outage\forms\outage\delete();
+$mform = new \auth_outage\forms\outage\edit();
 if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
+    redirect('/auth/outage/manage.php');
 } else if ($fromform = $mform->get_data()) {
-    outagedb::delete($fromform->id);
-    redirect('/auth/outage/list.php');
+    $fromform = outagelib::parseformdata($fromform);
+    $outage = new outage($fromform);
+    $id = outagedb::save($outage);
+    redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
 }
 
-$id = required_param('id', PARAM_INT);
-$outage = outagedb::getbyid($id);
-if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
-}
-
-$dataid = new stdClass();
-$dataid->id = $outage->id;
-$mform->set_data($dataid);
-
+$PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));
 echo $OUTPUT->header();
-
-echo $renderer->renderdeleteconfirmation($outage);
 
 $mform->display();
 

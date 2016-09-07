@@ -38,8 +38,8 @@ class auth_outage_renderer extends plugin_renderer_base {
     }
 
     public function renderdeleteconfirmation(outage $outage) {
-        return $this->rendersubtitle('outageremove')
-        . html_writer::tag('p', get_string('outageremovewarning', 'auth_outage'))
+        return $this->rendersubtitle('outagedelete')
+        . html_writer::tag('p', get_string('outagedeletewarning', 'auth_outage'))
         . $this->renderoutage($outage, false);
     }
 
@@ -54,14 +54,14 @@ class auth_outage_renderer extends plugin_renderer_base {
         }
 
         // Add 'add' button.
-        $url = new moodle_url('/auth/outage/create.php');
+        $url = new moodle_url('/auth/outage/new.php');
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
         $html .= html_writer::tag('p',
             html_writer::link(
                 $url,
                 $img . ' ' . get_string('outagecreate', 'auth_outage'),
-                ['title' => get_string('remove')]
+                ['title' => get_string('delete')]
             )
         );
 
@@ -83,19 +83,19 @@ class auth_outage_renderer extends plugin_renderer_base {
             trim($modified->firstname . ' ' . $modified->lastname)
         );
 
-        $url = new moodle_url('/auth/outage/change.php', ['id' => $outage->id]);
+        $url = new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('modify', 'auth_outage'), 'class' => 'iconsmall']
+            ['src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']
         );
-        $linkedit = html_writer::link($url, $img, ['title' => get_string('modify', 'auth_outage')]);
+        $linkedit = html_writer::link($url, $img, ['title' => get_string('edit')]);
 
-        $url = new moodle_url('/auth/outage/remove.php', ['id' => $outage->id]);
+        $url = new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('remove'), 'class' => 'iconsmall']
+            ['src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']
         );
-        $linkdelete = html_writer::link($url, $img, ['title' => get_string('remove')]);
+        $linkdelete = html_writer::link($url, $img, ['title' => get_string('delete')]);
 
         // TODO use language pack below, solve together with Issue #12.
         return html_writer::div(

@@ -14,20 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace auth_outage;
+
+use auth_outage\models\outage;
+
 /**
- * The DB Context to manipulate Outages. Singleton class.
+ * The DB Context to manipulate Outages.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace auth_outage;
-
-use auth_outage\models\outage;
-
-final class outagedb {
+class outagedb {
     /**
      * Private constructor, use static methods instead.
      */
@@ -37,7 +36,7 @@ final class outagedb {
     /**
      * Gets all outage entries.
      */
-    public static function getall() {
+    public static function get_all() {
         global $DB;
 
         $outages = [];
@@ -55,7 +54,7 @@ final class outagedb {
      * @param $id int Outage id to get.
      * @return outage|null Returns the outage or null if not found.
      */
-    public static function getbyid($id) {
+    public static function get_by_id($id) {
         global $DB;
 
         if (!is_int($id)) {
@@ -144,7 +143,7 @@ final class outagedb {
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
      * @return outage|null The outage or null if no active outages were found.
      */
-    public static function getactive($time = null) {
+    public static function get_active($time = null) {
         global $DB;
 
         if ($time === null) {

@@ -50,7 +50,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         new admin_externalpage(
             'auth_outage_manage',
             get_string('menumanage', 'auth_outage'),
-            new moodle_url($CFG->wwwroot . '/auth/outage/list.php')
+            new moodle_url($CFG->wwwroot . '/auth/outage/manage.php')
         )
     );
 }

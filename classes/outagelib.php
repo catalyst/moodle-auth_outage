@@ -65,7 +65,7 @@ class outagelib {
         }
         self::$initialized = true;
 
-        if (($active = outagedb::getactive()) == null) {
+        if (($active = outagedb::get_active()) == null) {
             return;
         }
 

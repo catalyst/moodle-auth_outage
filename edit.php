@@ -31,21 +31,30 @@ require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
 
-outagelib::pagesetup();
+$renderer = outagelib::pagesetup();
 
 $mform = new \auth_outage\forms\outage\edit();
+
 if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
+    redirect('/auth/outage/manage.php');
 } else if ($fromform = $mform->get_data()) {
     $fromform = outagelib::parseformdata($fromform);
     $outage = new outage($fromform);
     $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
+    redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
 }
 
-$PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));
+$id = required_param('id', PARAM_INT);
+$outage = outagedb::get_by_id($id);
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
+}
+$data = get_object_vars($outage);
+$data['description'] = ['text' => $data['description'], 'format' => '1'];
+$mform->set_data($data);
+
+$PAGE->navbar->add($outage->title);
 echo $OUTPUT->header();
-
+echo $renderer->rendersubtitle('outageedit');
 $mform->display();
-
 echo $OUTPUT->footer();

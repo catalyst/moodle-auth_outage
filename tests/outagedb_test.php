@@ -51,12 +51,12 @@ class outagedb_test extends advanced_testcase {
         // Create something.
         $id = outagedb::save($this->createoutage(1));
         // Get should work.
-        $outage = outagedb::getbyid($id);
+        $outage = outagedb::get_by_id($id);
         self::assertNotNull($outage);
         // Delete it.
         outagedb::delete($id);
         // Get should be null.
-        $outage = outagedb::getbyid($id);
+        $outage = outagedb::get_by_id($id);
         self::assertNull($outage);
     }
 
@@ -70,7 +70,7 @@ class outagedb_test extends advanced_testcase {
         // Delete it.
         outagedb::delete($id);
         // Should not exist anymore.
-        self::assertNull(outagedb::getbyid($id));
+        self::assertNull(outagedb::get_by_id($id));
     }
 
     /**
@@ -80,14 +80,14 @@ class outagedb_test extends advanced_testcase {
         $this->resetAfterTest(true);
         $amount = 10;
         // Should start empty.
-        $outages = outagedb::getall();
+        $outages = outagedb::get_all();
         self::assertSame([], $outages);
         // Create some stuff outages.
         for ($i = 0; $i < $amount; $i++) {
             outagedb::save($this->createoutage($i));
         }
         // Count entries created.
-        self::assertSame($amount, count(outagedb::getall()));
+        self::assertSame($amount, count(outagedb::get_all()));
     }
 
     /**
@@ -107,7 +107,7 @@ class outagedb_test extends advanced_testcase {
         // With all created outages.
         foreach ($outages as $id => $outage) {
             // Get it.
-            $inserted = outagedb::getbyid($id);
+            $inserted = outagedb::get_by_id($id);
             self::assertNotNull($inserted);
             // Check its data.
             foreach (['starttime', 'stoptime', 'warningduration', 'title', 'description'] as $field) {
@@ -122,12 +122,12 @@ class outagedb_test extends advanced_testcase {
             $inserted->title = 'Title ID' . $id;
             outagedb::save($inserted);
             // Get it again and check data.
-            $updated = outagedb::getbyid($id);
+            $updated = outagedb::get_by_id($id);
             self::assertSame('Title ID' . $id, $updated->title);
             self::assertSame($inserted->description, $updated->description);
             // Delete it.
             outagedb::delete($id);
-            $deleted = outagedb::getbyid($id);
+            $deleted = outagedb::get_by_id($id);
             self::assertNull($deleted);
         }
     }
@@ -139,36 +139,36 @@ class outagedb_test extends advanced_testcase {
         $now = time();
 
         // Should never fail.
-        self::assertEquals([], outagedb::getall(), 'Ensure there are no other outages that can affect the test.');
-        self::assertNull(outagedb::getactive($now), 'There should be no active outage at this point.');
+        self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
+        self::assertNull(outagedb::get_active($now), 'There should be no active outage at this point.');
 
         // An outage that starts in the future and is not in warning period.
         self::saveoutage($now, 2, 3, 1);
-        self::assertNull(outagedb::getactive($now), 'No active outages yet.');
+        self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
         // An outage that is already in the past.
         self::saveoutage($now, -3, -2, 1);
-        self::assertNull(outagedb::getactive($now), 'No active outages yet.');
+        self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
         // An outage in warning period.
         $activeid = self::saveoutage($now, 1, 2, 2);
-        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
         // Another outage in warning period, but ignored as it starts after the previous one.
         self::saveoutage($now, 2, 3, 3);
-        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
         // An ongoing outage.
         $activeid = self::saveoutage($now, -2, 2, 1);
-        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
         // Another ongoing outage but ignored because it started after the previous one.
         self::saveoutage($now, -1, 2, 1);
-        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
         // Another ongoing outage starting at the same time, but ignored as it stops before the previous one.
         self::saveoutage($now, -2, 1, 1);
-        self::assertSame($activeid, outagedb::getactive($now)->id, 'Wrong active outage picked.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
     }
 
     /**

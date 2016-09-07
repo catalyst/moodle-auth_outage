@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Create new outage.
+ * List outages
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -23,38 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\models\outage;
 use auth_outage\outagedb;
 use auth_outage\outagelib;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
 
 $renderer = outagelib::pagesetup();
 
-$mform = new \auth_outage\forms\outage\edit();
-
-if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
-    $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
-}
-
-$id = required_param('id', PARAM_INT);
-$outage = outagedb::getbyid($id);
-if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
-}
-$data = get_object_vars($outage);
-$data['description'] = ['text' => $data['description'], 'format' => '1'];
-$mform->set_data($data);
-
-$PAGE->navbar->add($outage->title);
 echo $OUTPUT->header();
-echo $renderer->rendersubtitle('modifyoutage');
-$mform->display();
+
+echo $renderer->renderoutagelist(outagedb::get_all());
+
 echo $OUTPUT->footer();

@@ -24,7 +24,7 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-// FIXME hook not installing in courses/index.php page.
+// FIXME hook not installing in courses/index.php page as guest.
 
 function auth_outage_extend_navigation_user() {
     \auth_outage\outagelib::inject();

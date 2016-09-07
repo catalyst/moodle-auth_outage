@@ -1,4 +1,5 @@
 .auth_outage_warningbar {
+    box-sizing: content-box;
     position: fixed;
     top: 0px;
     left: 0px;

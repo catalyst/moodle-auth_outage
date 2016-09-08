@@ -184,7 +184,7 @@ class outagedb_test extends advanced_testcase {
         return outagedb::save(new outage([
             'starttime' => $now + ($start * 60 * 60),
             'stoptime' => $now + ($stop * 60 * 60),
-            'warningduration' => ($warning * 60 * 60),
+            'warntime' => $now - ($warning * 60 * 60),
             'title' => 'Test Outage',
             'description' => 'Test Outage Description.'
         ]));

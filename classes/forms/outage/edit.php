@@ -45,7 +45,7 @@ class edit extends \moodleform {
 
         $mform->addElement('date_time_selector', 'starttime', get_string('starttime', 'auth_outage'));
 
-        $mform->addElement('date_time_selector', 'stoptime', get_string('stoptime', 'auth_outage'));
+        $mform->addElement('duration', 'outageduration', get_string('outageduration', 'auth_outage'));
 
         $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
 
@@ -58,6 +58,8 @@ class edit extends \moodleform {
         $mform->setType('title', PARAM_TEXT);
 
         $mform->addElement('editor', 'description', get_string('description', 'auth_outage'));
+
+        $mform->addElement('static', 'usagehints', '', get_string('textplaceholdershint', 'auth_outage'));
 
         $this->add_action_buttons();
     }

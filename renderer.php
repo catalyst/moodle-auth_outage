@@ -105,7 +105,7 @@ class auth_outage_renderer extends plugin_renderer_base {
                 . html_writer::tag('i', $outage->description)
                 . html_writer::empty_tag('br')
                 . html_writer::tag('b', 'Warning: ')
-                . userdate($outage->starttime - ($outage->warningduration * 60))
+                . userdate($outage->warntime, '%d %h %Y %l:%M%P')
                 . html_writer::empty_tag('br')
                 . html_writer::tag('b', 'Starts: ')
                 . userdate($outage->starttime, '%d %h %Y %l:%M%P')

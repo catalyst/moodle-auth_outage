@@ -28,19 +28,31 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     // Configure default settings page.
     $settings->visiblename = get_string('menudefaults', 'auth_outage');
     $settings->add(
-        new admin_setting_configtext('auth_outage_warning_period',
-            get_string('defaultwarningtime', 'auth_outage'),
-            get_string('defaultwarningtimedescription', 'auth_outage'),
-            120, PARAM_INT));
+        new admin_setting_configtext('auth_outage/default_duration',
+            get_string('defaultoutageduration', 'auth_outage'),
+            get_string('defaultoutagedurationdescription', 'auth_outage'),
+            60, PARAM_INT));
     $settings->add(
-        new admin_setting_configtextarea('auth_outage_warning_text',
-            get_string('defaultwarningmessage', 'auth_outage'),
-            get_string('defaultwarningmessagedescription', 'auth_outage'),
-            get_string('defaultwarningmessagevalue', 'auth_outage'),
+        new admin_setting_configtext('auth_outage/warning_duration',
+            get_string('defaultwarningduration', 'auth_outage'),
+            get_string('defaultwarningdurationdescription', 'auth_outage'),
+            60, PARAM_INT));
+    $settings->add(
+        new admin_setting_configtext('auth_outage/warning_title',
+            get_string('defaultwarningtitle', 'auth_outage'),
+            get_string('defaultwarningtitledescription', 'auth_outage'),
+            get_string('defaultwarningtitlevalue', 'auth_outage'),
             PARAM_TEXT)
     );
     $settings->add(
-        new admin_setting_configtextarea('auth_outage_css',
+        new admin_setting_configtextarea('auth_outage/warning_description',
+            get_string('defaultwarningdescription', 'auth_outage'),
+            get_string('defaultwarningdescriptiondescription', 'auth_outage'),
+            get_string('defaultwarningdescriptionvalue', 'auth_outage'),
+            PARAM_TEXT)
+    );
+    $settings->add(
+        new admin_setting_configtextarea('auth_outage/css',
             get_string('defaultlayoutcss', 'auth_outage'),
             get_string('defaultlayoutcssdescription', 'auth_outage'),
             file_get_contents($CFG->dirroot.'/auth/outage/res/default.css'),

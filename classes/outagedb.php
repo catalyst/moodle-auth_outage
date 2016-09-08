@@ -158,7 +158,7 @@ class outagedb {
         // Gets only one record if available, the one that starts(ed) first and that stops last.
         $data = $DB->get_records_select(
             'auth_outage',
-            '(starttime - warningduration <= :datetime1 AND stoptime >= :datetime2)',
+            '(warntime <= :datetime1 AND stoptime >= :datetime2)',
             ['datetime1' => $time, 'datetime2' => $time],
             'starttime ASC, stoptime DESC, title ASC',
             '*',

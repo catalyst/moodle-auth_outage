@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="auth/outage/db" VERSION="20160825" COMMENT="XMLDB file for Moodle auth/outage"
+<XMLDB PATH="auth/outage/db" VERSION="20160908" COMMENT="XMLDB file for Moodle auth/outage"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -9,7 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
         <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
-        <FIELD NAME="warningduration" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="How many seconds before the outage to display a warning to all users."/>
+        <FIELD NAME="warntime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When the outage will start showing a warning for that outage."/>
         <FIELD NAME="title" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the outage (short description)."/>
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="More information about the outage."/>
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>

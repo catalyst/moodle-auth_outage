@@ -44,9 +44,9 @@ class outage {
     public $stoptime = null;
 
     /**
-     * @var int Amount of minutes before outage starts to show the warning message.
+     * @var int Warning start timestamp.
      */
-    public $warningduration = null;
+    public $warntime = null;
 
     /**
      * @var string Short description of the outage (no HTML).
@@ -85,8 +85,8 @@ class outage {
         if (is_object($data) || is_array($data)) {
             outagelib::data2object($data, $this);
 
-            // FIXME types are wrong. Is this behaving as expected?
-            $fields = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warningduration'];
+            // Adjust field types as needed.
+            $fields = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warntime'];
             foreach ($fields as $f) {
                 $this->$f = ($this->$f === null) ? null : (int)$this->$f;
             }

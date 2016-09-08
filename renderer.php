@@ -125,10 +125,23 @@ class auth_outage_renderer extends plugin_renderer_base {
         );
     }
 
-    public function renderbar($outage) {
-        global $PAGE;
+    public function renderoutagepage(outage $outage) {
+        $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
+        $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
 
-        $PAGE->requires->css(new moodle_url('/auth/outage/res/outage.css'));
+        return html_writer::div(
+            html_writer::tag('p',
+                html_writer::tag('b', 'From: ')
+                . $start
+                . html_writer::tag('b', ' Until: ')
+                . $stop
+            )
+            . html_writer::div($outage->description)
+        );
+    }
+
+    public function renderoutagebar(outage $outage) {
+        global $CFG;
 
         $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
         $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
@@ -140,15 +153,21 @@ class auth_outage_renderer extends plugin_renderer_base {
         );
 
         return
-            html_writer::div(
+            html_writer::tag('style', $CFG->auth_outage_css)
+            . html_writer::div(
                 html_writer::div(
                     html_writer::div($outage->title, 'auth_outage_warningbar_box_title')
-                    . html_writer::div($message, 'auth_outage_warningbar_box_message'),
+                    . html_writer::div(
+                        $message . ' '
+                        . html_writer::tag('small',
+                            '[' . html_writer::link(new moodle_url('/auth/outage/info.php'), 'more') . ']'
+                        ),
+                        'auth_outage_warningbar_box_message'
+                    ),
                     'auth_outage_warningbar_box'
                 ),
                 'auth_outage_warningbar'
             )
-            .
-            html_writer::div('&nbsp;', 'auth_outage_warningbar_spacer');
+            . html_writer::div('&nbsp;', 'auth_outage_warningbar_spacer');
     }
 }

@@ -39,7 +39,7 @@ class outagelib {
     public static function pagesetup() {
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
-        $PAGE->set_url(new \moodle_url('/auth/outage/list.php'));
+        $PAGE->set_url(new \moodle_url('/auth/outage/manage.php'));
         return self::get_renderer();
     }
 
@@ -68,7 +68,7 @@ class outagelib {
             return;
         }
 
-        $CFG->additionalhtmltopofbody = self::get_renderer()->renderbar($active)
+        $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active)
             . $CFG->additionalhtmltopofbody;
     }
 

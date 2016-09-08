@@ -24,6 +24,8 @@
  */
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
+$string['defaultlayoutcss'] = 'Layout CSS';
+$string['defaultlayoutcssdescription'] = 'This CSS code will be used to display the Outage Warning Bar.';
 $string['defaultwarningmessage'] = 'Default Warning Message';
 $string['defaultwarningmessagedescription'] = 'Default warning message for outages. Use [from] and [until] placeholders as required.';
 $string['defaultwarningmessagevalue'] = 'There is an scheduled maintenance from [from] to [until] and our system will not be available during that time.';

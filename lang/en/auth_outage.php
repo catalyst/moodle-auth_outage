@@ -42,7 +42,6 @@ $string['outagedelete'] = 'Delete Outage';
 $string['outagedeletewarning'] = 'You are about to permanently delete the outage below. This cannot be undone.';
 $string['outageslist'] = 'Outages List';
 $string['pluginname'] = 'Outage manager';
-$string['starttimeerrornotinfuture'] = 'Start time must be in the future.';
 $string['starttime'] = 'Start date and time';
 $string['stoptimeerrornotafterstart'] = 'Stop time must be after start time.';
 $string['stoptime'] = 'Stop date and time';

@@ -72,9 +72,6 @@ class edit extends \moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['starttime'] <= time()) {
-            $errors['starttime'] = get_string('starttimeerrornotinfuture', 'auth_outage');
-        }
         if ($data['stoptime'] <= $data['starttime']) {
             $errors['stoptime'] = get_string('stoptimeerrornotafterstart', 'auth_outage');
         }

@@ -57,7 +57,6 @@ class outagelib {
      */
     public static function inject() {
         global $CFG;
-        global $PAGE;
 
         // Many hooks can call it, execute only once.
         if (self::$initialized) {
@@ -69,8 +68,6 @@ class outagelib {
             return;
         }
 
-        // FIXME Code below is raising error at http://moodle.test/my/ for example.
-        // $PAGE->add_body_class('auth_outage_active');
         $CFG->additionalhtmltopofbody = self::get_renderer()->renderbar($active)
             . $CFG->additionalhtmltopofbody;
     }

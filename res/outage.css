@@ -1,19 +1,19 @@
 .auth_outage_warningbar {
-    box-sizing: content-box;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    height: 90px;
-    z-index: 9999;
-    width: 100%;
-    text-align: center;
     background-color: white;
+    box-sizing: content-box;
+    height: 90px;
+    left: 0;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
 }
 
 .auth_outage_warningbar_box {
-    border-top: 2px dashed #a00000;
-    border-bottom: 2px dashed #a00000;
     background-color: #ffcccc;
+    border-bottom: 2px dashed #a00000;
+    border-top: 2px dashed #a00000;
     color: #a00000;
 }
 

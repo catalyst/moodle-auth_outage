@@ -129,6 +129,16 @@ class auth_outage_renderer extends plugin_renderer_base {
         $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
         $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
 
+        $admin = '';
+        if (is_siteadmin()) {
+            $admin = html_writer::tag('div',
+                '[' . html_writer::link(
+                    new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                    get_string('outageedit', 'auth_outage')
+                ) . ']'
+            );
+        }
+
         return html_writer::div(
             html_writer::tag('p',
                 html_writer::tag('b', 'From: ')
@@ -137,6 +147,7 @@ class auth_outage_renderer extends plugin_renderer_base {
                 . $stop
             )
             . html_writer::div($outage->description)
+            . $admin
         );
     }
 

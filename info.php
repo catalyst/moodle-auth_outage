@@ -38,15 +38,8 @@ $PAGE->set_title("Outage Warning");
 $PAGE->set_heading("Outage Warning");
 $PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
 
-$mform = new \auth_outage\forms\gohome();
-if ($mform->get_data()) {
-    redirect(new moodle_url('/'));
-}
-
-
 echo $OUTPUT->header();
 
 echo outagelib::get_renderer()->renderoutagepage($outage);
-$mform->display();
 
 echo $OUTPUT->footer();

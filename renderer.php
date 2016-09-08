@@ -160,7 +160,9 @@ class auth_outage_renderer extends plugin_renderer_base {
                     . html_writer::div(
                         $message . ' '
                         . html_writer::tag('small',
-                            '[' . html_writer::link(new moodle_url('/auth/outage/info.php'), 'more') . ']'
+                            '[' . html_writer::link(
+                                new moodle_url('/auth/outage/info.php'), 'more', ['target' => 'outage']
+                            ) . ']'
                         ),
                         'auth_outage_warningbar_box_message'
                     ),

@@ -77,7 +77,12 @@ echo html_writer::tag('style',
             var missing = this.countdown - elapsed;
             if (missing <= 0) {
                 clearInterval(this.timer);
-                location.href = '<?php echo new \moodle_url('/auth/outage/info.php'); ?>';
+                missing = 0;
+                <?php
+                if (is_siteadmin()) {
+                    echo 'location.href = "' . (new \moodle_url('/auth/outage/info.php')) . '";';
+                }
+                ?>
             }
             else {
                 this.span.innerHTML = this.text.replace('{{countdown}}', this.seconds2hms(missing));

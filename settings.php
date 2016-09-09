@@ -55,7 +55,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         new admin_setting_configtextarea('auth_outage/css',
             get_string('defaultlayoutcss', 'auth_outage'),
             get_string('defaultlayoutcssdescription', 'auth_outage'),
-            file_get_contents($CFG->dirroot.'/auth/outage/res/default.css'),
+            file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css'),
             PARAM_TEXT)
     );
     // Create category for Outage.

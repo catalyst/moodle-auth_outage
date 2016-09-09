@@ -152,6 +152,8 @@ class auth_outage_renderer extends plugin_renderer_base {
     }
 
     public function renderoutagebar(outage $outage) {
+        global $CFG;
+
         $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
         $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
 
@@ -161,24 +163,10 @@ class auth_outage_renderer extends plugin_renderer_base {
             ['start' => $start, 'stop' => $stop]
         );
 
-        return
-            html_writer::tag('style', get_config('auth_outage', 'css'))
-            . html_writer::div(
-                html_writer::div(
-                    html_writer::div($outage->get_title(), 'auth_outage_warningbar_box_title')
-                    . html_writer::div(
-                        $message . ' '
-                        . html_writer::tag('small',
-                            '[' . html_writer::link(
-                                new moodle_url('/auth/outage/info.php'), 'more', ['target' => 'outage']
-                            ) . ']'
-                        ),
-                        'auth_outage_warningbar_box_message'
-                    ),
-                    'auth_outage_warningbar_box'
-                ),
-                'auth_outage_warningbar'
-            )
-            . html_writer::div('&nbsp;', 'auth_outage_warningbar_spacer');
+        ob_start();
+        require($CFG->dirroot . '/auth/outage/views/warningbar.php');
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
     }
 }

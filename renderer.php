@@ -146,14 +146,12 @@ class auth_outage_renderer extends plugin_renderer_base {
                 . html_writer::tag('b', ' Until: ')
                 . $stop
             )
-            . html_writer::div($outage->description)
+            . html_writer::div($outage->get_description())
             . $admin
         );
     }
 
     public function renderoutagebar(outage $outage) {
-        global $CFG;
-
         $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
         $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
 
@@ -164,10 +162,10 @@ class auth_outage_renderer extends plugin_renderer_base {
         );
 
         return
-            html_writer::tag('style', $CFG->auth_outage_css)
+            html_writer::tag('style', get_config('auth_outage', 'css'))
             . html_writer::div(
                 html_writer::div(
-                    html_writer::div($outage->title, 'auth_outage_warningbar_box_title')
+                    html_writer::div($outage->get_title(), 'auth_outage_warningbar_box_title')
                     . html_writer::div(
                         $message . ' '
                         . html_writer::tag('small',

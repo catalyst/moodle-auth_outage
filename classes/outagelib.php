@@ -98,21 +98,4 @@ class outagelib {
             }
         }
     }
-
-    /**
-     * Parses data from the form ensuring it is valid for an outage object.
-     *
-     * @param $data stdClass The input data.
-     * @return stdClass The parsed data.
-     */
-    public static function parseformdata(\stdClass $data) {
-        if ($data->description['format'] != '1') {
-            throw new \InvalidArgumentException('Not implemented for format ' . $data->description['format']);
-        }
-        if ($data->id === 0) {
-            $data->id = null;
-        }
-        $data->description = $data->description['text'];
-        return $data;
-    }
 }

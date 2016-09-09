@@ -36,9 +36,7 @@ outagelib::pagesetup();
 $mform = new \auth_outage\forms\outage\edit();
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
+} else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
     redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
 }

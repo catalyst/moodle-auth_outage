@@ -16,6 +16,8 @@
 
 namespace auth_outage\forms\outage;
 
+use \auth_outage\models\outage;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
@@ -53,7 +55,7 @@ class edit extends \moodleform {
             'text',
             'title',
             get_string('title', 'auth_outage'),
-            'maxlength="'.self::TITLE_MAX_CHARS.'"'
+            'maxlength="' . self::TITLE_MAX_CHARS . '"'
         );
         $mform->setType('title', PARAM_TEXT);
 
@@ -74,8 +76,8 @@ class edit extends \moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['stoptime'] <= $data['starttime']) {
-            $errors['stoptime'] = get_string('stoptimeerrornotafterstart', 'auth_outage');
+        if ($data['outageduration'] <= 0) {
+            $errors['outageduration'] = get_string('outagedurationerrorinvalid', 'auth_outage');
         }
         if ($data['warningduration'] <= 0) {
             $errors['warningduration'] = get_string('warningdurationerrorinvalid', 'auth_outage');
@@ -92,4 +94,44 @@ class edit extends \moodleform {
         return $errors;
     }
 
+    /**
+     * Return submitted data if properly submitted or returns NULL if validation fails.
+     * @return outage submitted data; NULL if not valid or not submitted or cancelled
+     */
+    public function get_data() {
+        // Fetch data and check if description is the correct format.
+        $data = parent::get_data();
+        if (is_null($data)) {
+            return null;
+        }
+        if ($data->description['format'] != '1') {
+            debugging('Not implemented for format ' . $data->description['format'], DEBUG_DEVELOPER);
+            return null;
+        }
+        // Return an outage.
+        return new outage([
+            'id' => ($data->id === 0) ? null : $data->id,
+            'starttime' => $data->starttime,
+            'stoptime' => $data->starttime + $data->outageduration,
+            'warntime' => $data->starttime - $data->warningduration,
+            'title' => $data->title,
+            'description' => $data->description['text']
+        ]);
+    }
+
+    /**
+     * Load in existing outage as form defaults.
+     *
+     * @param outage $outage outage object with default values
+     */
+    public function set_data(outage $outage) {
+        $this->_form->setDefaults([
+            'id' => $outage->id,
+            'starttime' => $outage->starttime,
+            'outageduration' => $outage->stoptime - $outage->starttime,
+            'warningduration' => $outage->starttime - $outage->warntime,
+            'title' => $outage->title,
+            'description' => ['text' => $outage->description, 'format' => '1']
+        ]);
+    }
 }

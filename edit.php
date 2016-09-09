@@ -37,9 +37,7 @@ $mform = new \auth_outage\forms\outage\edit();
 
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
+} else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
     redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
 }
@@ -49,9 +47,7 @@ $outage = outagedb::get_by_id($id);
 if ($outage == null) {
     throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
 }
-$data = get_object_vars($outage);
-$data['description'] = ['text' => $data['description'], 'format' => '1'];
-$mform->set_data($data);
+$mform->set_data($outage);
 
 $PAGE->navbar->add($outage->title);
 echo $OUTPUT->header();

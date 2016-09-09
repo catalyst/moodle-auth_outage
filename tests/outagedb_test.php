@@ -110,7 +110,7 @@ class outagedb_test extends advanced_testcase {
             $inserted = outagedb::get_by_id($id);
             self::assertNotNull($inserted);
             // Check its data.
-            foreach (['starttime', 'stoptime', 'warningduration', 'title', 'description'] as $field) {
+            foreach (['starttime', 'stoptime', 'warntime', 'title', 'description'] as $field) {
                 self::assertSame($outage->$field, $inserted->$field, 'Field ' . $field . ' does not match.');
             }
             // Check generated data.
@@ -138,36 +138,35 @@ class outagedb_test extends advanced_testcase {
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
 
-        // Should never fail.
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
         self::assertNull(outagedb::get_active($now), 'There should be no active outage at this point.');
 
-        // An outage that starts in the future and is not in warning period.
-        self::saveoutage($now, 2, 3, 1);
+        self::saveoutage($now, 1, 2, 3,
+            'An outage that starts in the future and is not in warning period.');
         self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
-        // An outage that is already in the past.
-        self::saveoutage($now, -3, -2, 1);
+        self::saveoutage($now, -3, -2, -1,
+            'An outage that is already in the past.');
         self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
-        // An outage in warning period.
-        $activeid = self::saveoutage($now, 1, 2, 2);
+        $activeid = self::saveoutage($now, -2, 1, 2,
+            'An outage in warning period.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        // Another outage in warning period, but ignored as it starts after the previous one.
-        self::saveoutage($now, 2, 3, 3);
+        self::saveoutage($now, -1, 2, 3,
+            'Another outage in warning period, but ignored as it starts after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        // An ongoing outage.
-        $activeid = self::saveoutage($now, -2, 2, 1);
+        $activeid = self::saveoutage($now, -3, -2, 2,
+            'An ongoing outage.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        // Another ongoing outage but ignored because it started after the previous one.
-        self::saveoutage($now, -1, 2, 1);
+        self::saveoutage($now, -3, -1, 1,
+            'Another ongoing outage but ignored because it started after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        // Another ongoing outage starting at the same time, but ignored as it stops before the previous one.
-        self::saveoutage($now, -2, 1, 1);
+        self::saveoutage($now, -3, -2, 1,
+            'Another ongoing outage starting at the same time, but ignored as it stops before the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
     }
 
@@ -175,17 +174,18 @@ class outagedb_test extends advanced_testcase {
      * Helper function to create an outage then save it to the database.
      *
      * @param $now int Timestamp for now, such as time().
+     * @param $warning int In how many hours the warning starts. Can be negative.
      * @param $start int In how many hours this outage starts. Can be negative.
      * @param $stop int In how many hours this outage finishes. Can be negative.
-     * @param $warning int Warning duration in hours.
+     * @param $title string Title for the outage.
      * @return int Id the of created outage.
      */
-    private static function saveoutage($now, $start, $stop, $warning) {
+    private static function saveoutage($now, $warning, $start, $stop, $title) {
         return outagedb::save(new outage([
             'starttime' => $now + ($start * 60 * 60),
             'stoptime' => $now + ($stop * 60 * 60),
-            'warntime' => $now - ($warning * 60 * 60),
-            'title' => 'Test Outage',
+            'warntime' => $now + ($warning * 60 * 60),
+            'title' => $title,
             'description' => 'Test Outage Description.'
         ]));
     }
@@ -200,7 +200,7 @@ class outagedb_test extends advanced_testcase {
         return new outage([
             'starttime' => $i * 100,
             'stoptime' => $i * 100 + 50,
-            'warningduration' => $i * 60,
+            'warntime' => $i * 60,
             'title' => 'The Title ' . $i,
             'description' => 'A <b>description</b> in HTML.'
         ]);

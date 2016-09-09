@@ -97,6 +97,11 @@ class outage {
         throw new \InvalidArgumentException('$data must be null (default), an array or an object.');
     }
 
+    /**
+     * Checks if the outage is happening.
+     * @param int|null $time Null to check if the outage is happening now or another time to use as reference.
+     * @return bool True if outage has started but not yet stopped. False otherwise including if in warning period.
+     */
     public function is_ongoing($time = null) {
         if ($time === null) {
             $time = time();
@@ -109,5 +114,40 @@ class outage {
         }
 
         return (($this->starttime <= $time) && ($time < $this->stoptime));
+    }
+
+    /**
+     * Get the title with properly replaced placeholders such as {{start}} and {{stop}}.
+     * @return string Title.
+     */
+    public function get_title() {
+        return $this->replace_placeholders($this->title);
+    }
+
+    /**
+     * Get the description with properly replaced placeholders such as {{start}} and {{stop}}.
+     * @return string Description.
+     */
+    public function get_description() {
+        return $this->replace_placeholders($this->description);
+    }
+
+    /**
+     * Returns the input string with all placeholders replaced.
+     * @param $str string Input string.
+     * @return string Output string.
+     */
+    private function replace_placeholders($str) {
+        return str_replace(
+            [
+                '{{start}}',
+                '{{stop}}'
+            ],
+            [
+                userdate($this->starttime, get_string('strftimedatetimeshort')),
+                userdate($this->stoptime, get_string('strftimedatetimeshort')),
+            ],
+            $str
+        );
     }
 }

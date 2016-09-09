@@ -124,14 +124,18 @@ class edit extends \moodleform {
      *
      * @param outage $outage outage object with default values
      */
-    public function set_data(outage $outage) {
-        $this->_form->setDefaults([
-            'id' => $outage->id,
-            'starttime' => $outage->starttime,
-            'outageduration' => $outage->stoptime - $outage->starttime,
-            'warningduration' => $outage->starttime - $outage->warntime,
-            'title' => $outage->title,
-            'description' => ['text' => $outage->description, 'format' => '1']
-        ]);
+    public function set_data($outage) {
+        if ($outage instanceof outage) {
+            $this->_form->setDefaults([
+                'id' => $outage->id,
+                'starttime' => $outage->starttime,
+                'outageduration' => $outage->stoptime - $outage->starttime,
+                'warningduration' => $outage->starttime - $outage->warntime,
+                'title' => $outage->title,
+                'description' => ['text' => $outage->description, 'format' => '1']
+            ]);
+        } else {
+            throw new \InvalidArgumentException('$default_values must be an outage object.');
+        }
     }
 }

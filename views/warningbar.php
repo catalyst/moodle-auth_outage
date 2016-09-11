@@ -79,7 +79,7 @@ echo html_writer::tag('style',
                 clearInterval(this.timer);
                 missing = 0;
                 <?php
-                if (is_siteadmin()) {
+                if (!is_siteadmin()) {
                     echo 'location.href = "' . (new \moodle_url('/auth/outage/info.php')) . '";';
                 }
                 ?>

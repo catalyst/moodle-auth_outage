@@ -135,7 +135,7 @@ class edit extends \moodleform {
                 'description' => ['text' => $outage->description, 'format' => '1']
             ]);
         } else {
-            throw new \InvalidArgumentException('$default_values must be an outage object.');
+            throw new \InvalidArgumentException('$outage must be an outage object.');
         }
     }
 }

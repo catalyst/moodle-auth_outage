@@ -42,13 +42,13 @@ if ($mform->is_cancelled()) {
 }
 
 $config = get_config('auth_outage');
-$defaults = [
+$defaults = new outage([
     'starttime' => time(),
-    'outageduration' => ($config->default_duration * 60),
-    'warningduration' => ($config->warning_duration * 60),
+    'stoptime' => time() + ($config->default_duration * 60),
+    'warntime' => time() - ($config->warning_duration * 60),
     'title' => $config->warning_title,
-    'description' => ['text' => $config->warning_description, 'format' => '1']
-];
+    'description' => $config->warning_description
+]);
 $mform->set_data($defaults);
 
 $PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));

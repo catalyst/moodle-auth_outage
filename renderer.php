@@ -43,6 +43,33 @@ class auth_outage_renderer extends plugin_renderer_base {
         . $this->renderoutage($outage, false);
     }
 
+    /**
+     * Outputs the HTML data listing all given outages.
+     * @param array $outages Outages to list.
+     */
+    public function renderoutagelist(array $outages) {
+        global $OUTPUT;
+
+        echo $this->rendersubtitle('outageslist');
+
+        // Generate list of outages.
+        $table = new \auth_outage\tables\manage();
+        $table->set_data($outages);
+        $table->finish_output(); // It will output HTML.
+
+        // Add 'add' button.
+        $url = new moodle_url('/auth/outage/new.php');
+        $img = html_writer::empty_tag('img',
+            ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
+        echo html_writer::tag('p',
+            html_writer::link(
+                $url,
+                $img . ' ' . get_string('outagecreate', 'auth_outage'),
+                ['title' => get_string('delete')]
+            )
+        );
+    }
+
     private function renderoutage(outage $outage, $buttons) {
         global $OUTPUT;
 
@@ -126,6 +153,12 @@ class auth_outage_renderer extends plugin_renderer_base {
         );
     }
 
+    /**
+     * Renders the warning bar.
+     * @param outage $outage The outage to show in the warning bar.
+     * @return string HTML of the warning bar.
+     * @SuppressWarnings("unused") because $message is used inside require(...)
+     */
     public function renderoutagebar(outage $outage) {
         global $CFG;
 

@@ -33,8 +33,6 @@ $renderer = outagelib::pagesetup();
 
 echo $OUTPUT->header();
 
-$table = new \auth_outage\tables\manage();
-$table->set_data(outagedb::get_all());
-echo $table->finish_output();
+$renderer->renderoutagelist(outagedb::get_all());
 
 echo $OUTPUT->footer();

@@ -54,26 +54,32 @@ class manage extends \flexible_table {
     public function set_data(array $outages) {
         global $OUTPUT;
         foreach ($outages as $outage) {
-            $buttons = '';
+            $buttons = \html_writer::link(
+                    new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                    \html_writer::empty_tag('img', [
+                        'src' => $OUTPUT->pix_url('t/edit'),
+                        'alt' => get_string('edit'),
+                        'class' => 'iconsmall'
+                    ]),
+                    ['title' => get_string('edit')]
+                )
+                . \html_writer::link(
+                    new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
+                    \html_writer::empty_tag('img', [
+                        'src' => $OUTPUT->pix_url('t/delete'),
+                        'alt' => get_string('delete'),
+                        'class' => 'iconsmall'
+                    ]),
+                    ['title' => get_string('delete')]
+                );
 
-            $url = new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]);
-            $html = \html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall'));
-            $buttons .= \html_writer::link($url, $html, array('title' => get_string('edit')));
-
-            $url = new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]);
-            $html = \html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall'));
-            $buttons .= \html_writer::link($url, $html, array('title' => get_string('delete')));
-
-            // Table columns 'name', 'action', 'role', 'parent', 'continue', 'priority', 'data'.
-            $values = [
+            $this->add_data([
                 userdate($outage->starttime, get_string('tablerowstarts', 'auth_outage')),
                 $outage->get_duration_string(),
                 $outage->get_warning_duration_string(),
                 $outage->get_title(),
                 $buttons,
-            ];
-
-            $this->add_data($values);
+            ]);
         }
     }
 }

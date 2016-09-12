@@ -20,6 +20,7 @@ use auth_outage\models\outage;
 
 /**
  * The DB Context to manipulate Outages.
+ * It will also commit changes to the calendar as you change outages.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -96,6 +97,8 @@ class outagedb {
             \auth_outage\event\outage_created::create(
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
+            // Create calendar entry.
+            self::calendar_create($outage);
         } else {
             // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
@@ -104,6 +107,8 @@ class outagedb {
             \auth_outage\event\outage_updated::create(
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
+            // Update calendar entry.
+            self::calendar_update($outage);
         }
 
         // All done, return the id.
@@ -132,7 +137,9 @@ class outagedb {
         $event->add_record_snapshot('auth_outage', $previous);
         $event->trigger();
 
+        // Delete it and remove from calendar.
         $DB->delete_records('auth_outage', ['id' => $id]);
+        self::calendar_delete($id);
     }
 
     /**
@@ -228,5 +235,61 @@ class outagedb {
         $rs->close();
 
         return $outages;
+    }
+
+    private static function calendar_create(outage $outage) {
+        \calendar_event::create(self::calendar_data($outage));
+    }
+
+    private static function calendar_update(outage $outage) {
+        $event = self::calendar_load($outage->id);
+
+        if (is_null($event)) {
+            debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
+            self::calendar_create($outage);
+        } else {
+            $event->update(self::calendar_data($outage));
+        }
+    }
+
+    private static function calendar_delete($outageid) {
+        $event = self::calendar_load($outageid);
+
+        // If not found (was not created before) ignore it.
+        if (is_null($event)) {
+            debugging('Cannot delete calendar entry for outage #'.$outageid.', event not found. Ignoring it...');
+        }else{
+            $event->delete();
+        }
+    }
+
+    private static function calendar_data(outage $outage) {
+        return [
+            'name' => $outage->get_title(),
+            'description' => $outage->get_description(),
+            'courseid' => 1,
+            'groupid' => 0,
+            'userid' => 0,
+            'modulename' => '',
+            'instance' => $outage->id,
+            'eventtype' => 'auth_outage',
+            'timestart' => $outage->starttime,
+            'visible' => true,
+            'timeduration' => $outage->get_duration(),
+        ];
+    }
+
+    private static function calendar_load($outageid) {
+        global $DB;
+
+        $event = $DB->get_record_select(
+            'event',
+            "(eventtype = 'auth_outage' AND instance = :outageid)",
+            ['outageid' => $outageid],
+            'id',
+            IGNORE_MISSING
+        );
+
+        return ($event === false) ? null : \calendar_event::load($event->id);
     }
 }

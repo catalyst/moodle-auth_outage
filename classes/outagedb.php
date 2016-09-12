@@ -16,6 +16,12 @@
 
 namespace auth_outage;
 
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
+}
+
+require_once($CFG->dirroot . '/calendar/lib.php');
+
 use auth_outage\models\outage;
 
 /**
@@ -245,7 +251,7 @@ class outagedb {
         $event = self::calendar_load($outage->id);
 
         if (is_null($event)) {
-            debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
+            debugging('Cannot update calendar entry for outage #' . $outage->id . ', event not found. Creating it...');
             self::calendar_create($outage);
         } else {
             $event->update(self::calendar_data($outage));
@@ -257,8 +263,8 @@ class outagedb {
 
         // If not found (was not created before) ignore it.
         if (is_null($event)) {
-            debugging('Cannot delete calendar entry for outage #'.$outageid.', event not found. Ignoring it...');
-        }else{
+            debugging('Cannot delete calendar entry for outage #' . $outageid . ', event not found. Ignoring it...');
+        } else {
             $event->delete();
         }
     }

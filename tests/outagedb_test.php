@@ -31,6 +31,14 @@ defined('MOODLE_INTERNAL') || die();
 
 class outagedb_test extends advanced_testcase {
     /**
+     * Ensure DB tests run as admin.
+     */
+    public function setUp() {
+        parent::setUp();
+        $this->setAdminUser();
+    }
+
+    /**
      * Creates an array of ids in from the given outages array.
      * @param $outages
      */

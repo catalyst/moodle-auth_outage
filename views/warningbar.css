@@ -22,7 +22,7 @@ If you need to make chances here, remember to update your settings inside Moodle
     color: #a00000;
 }
 
-.auth_outage_warningbar_box_title {
+.auth_outage_warningbar_box_countdown {
     font-size: 200%;
     font-weight: bold;
     margin: 10px 0;

@@ -144,8 +144,8 @@ class outage {
                 '{{stop}}'
             ],
             [
-                userdate($this->starttime, get_string('strftimedatetimeshort')),
-                userdate($this->stoptime, get_string('strftimedatetimeshort')),
+                userdate($this->starttime, get_string('datetimeformat', 'auth_outage')),
+                userdate($this->stoptime, get_string('datetimeformat', 'auth_outage')),
             ],
             $str
         );

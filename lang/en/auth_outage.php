@@ -24,6 +24,7 @@
  */
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
+$string['datetimeformat'] = '%d %h %Y at %I:%M%P';
 $string['defaultlayoutcss'] = 'Layout CSS';
 $string['defaultlayoutcssdescription'] = 'This CSS code will be used to display the Outage Warning Bar.';
 $string['defaultoutageduration'] = 'Outage Duration';
@@ -37,10 +38,6 @@ $string['defaultwarningdescription'] = 'Description';
 $string['defaultwarningdescriptiondescription'] = 'Default warning message for outages. Use {{start}} and {{stop}} placeholders as required.';
 $string['defaultwarningdescriptionvalue'] = 'There is an scheduled maintenance from {{start}} to {{stop}} and our system will not be available during that time.';
 $string['description'] = 'Public Description';
-$string['durationseconds'] = 'second(s)';
-$string['durationminutes'] = 'minutes(s)';
-$string['durationhours'] = 'hour(s)';
-$string['durationdays'] = 'day(s)';
 $string['menudefaults'] = 'Default Settings';
 $string['menumanage'] = 'Manage';
 $string['messageoutageongoing'] = 'Our system will be under maintenance until {$a->stop}.';
@@ -61,7 +58,6 @@ $string['tableheaderstarttime'] = 'Starts on';
 $string['tableheaderstopsafter'] = 'Stops after';
 $string['tableheaderwarnbefore'] = 'Warns before';
 $string['tableheadertitle'] = 'Title';
-$string['tablerowstarts'] = '%d %h %Y at %H:%M';
 $string['textplaceholdershint'] = 'You can use {{start}} and {{stop}} as placeholders on the title/description for the actual start/stop time.';
 $string['titleerrorinvalid'] = 'Title cannot be left blank.';
 $string['titleerrortoolong'] = 'Title cannot have more than {$a} characters.';

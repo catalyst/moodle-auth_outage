@@ -101,7 +101,7 @@ class manage extends \flexible_table {
 
             $this->add_data([
                 format_time($outage->get_warning_duration()),
-                userdate($outage->starttime, get_string('tablerowstarts', 'auth_outage')),
+                userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
                 format_time($outage->get_duration()),
                 $title,
                 $buttons,

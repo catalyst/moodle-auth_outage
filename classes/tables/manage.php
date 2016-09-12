@@ -38,11 +38,11 @@ class manage extends \flexible_table {
         $this->define_columns(['starttime', 'stopsafter', 'warnbefore', 'title', '']);
 
         $this->define_headers([
+                get_string('tableheaderwarnbefore', 'auth_outage'),
                 get_string('tableheaderstarttime', 'auth_outage'),
                 get_string('tableheaderstopsafter', 'auth_outage'),
-                get_string('tableheaderwarnbefore', 'auth_outage'),
                 get_string('tableheadertitle', 'auth_outage'),
-                '',
+                get_string('actions'),
             ]
         );
 
@@ -71,6 +71,7 @@ class manage extends \flexible_table {
                     'target' => '_blank',
                 ]
             );
+            $title = $outage->get_title();
             if ($editdelete) {
                 $buttons .= \html_writer::link(
                         new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
@@ -90,13 +91,19 @@ class manage extends \flexible_table {
                         ]),
                         ['title' => get_string('delete')]
                     );
+
+                $title = \html_writer::link(
+                    new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                    $title,
+                    ['title' => get_string('edit')]
+                );
             }
 
             $this->add_data([
+                format_time($outage->get_warning_duration()),
                 userdate($outage->starttime, get_string('tablerowstarts', 'auth_outage')),
-                $outage->get_duration_string(),
-                $outage->get_warning_duration_string(),
-                $outage->get_title(),
+                format_time($outage->get_duration()),
+                $title,
                 $buttons,
             ]);
         }

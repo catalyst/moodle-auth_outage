@@ -49,7 +49,7 @@ if ($outage == null) {
 }
 $mform->set_data($outage);
 
-$PAGE->navbar->add($outage->title);
+$PAGE->navbar->add($outage->get_title());
 echo $OUTPUT->header();
 echo $renderer->rendersubtitle('outageedit');
 $mform->display();

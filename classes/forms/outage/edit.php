@@ -45,17 +45,17 @@ class edit extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
+
         $mform->addElement('date_time_selector', 'starttime', get_string('starttime', 'auth_outage'));
 
         $mform->addElement('duration', 'outageduration', get_string('outageduration', 'auth_outage'));
-
-        $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
 
         $mform->addElement(
             'text',
             'title',
             get_string('title', 'auth_outage'),
-            'maxlength="' . self::TITLE_MAX_CHARS . '"'
+            'maxlength="' . self::TITLE_MAX_CHARS . '" size="60"'
         );
         $mform->setType('title', PARAM_TEXT);
 

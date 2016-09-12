@@ -33,6 +33,6 @@ $renderer = outagelib::pagesetup();
 
 echo $OUTPUT->header();
 
-$renderer->renderoutagelist(outagedb::get_all_active(), outagedb::get_all_future(), outagedb::get_all_past());
+$renderer->renderoutagelist(outagedb::get_all_future(), outagedb::get_all_past());
 
 echo $OUTPUT->footer();

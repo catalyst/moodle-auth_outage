@@ -169,37 +169,6 @@ class outagedb {
     }
 
     /**
-     * Gets all active outages (including in warning period).
-     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
-     * @return array An array of outages or an empty array if no active outage found.
-     */
-    public static function get_all_active($time = null) {
-        global $DB;
-
-        if ($time === null) {
-            $time = time();
-        }
-        if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time must be null or an int.');
-        }
-
-        $outages = [];
-
-        $rs = $DB->get_recordset_select(
-            'auth_outage',
-            '(warntime <= :datetime1 AND stoptime >= :datetime2)',
-            ['datetime1' => $time, 'datetime2' => $time],
-            'starttime ASC, stoptime DESC, title ASC',
-            '*');
-        foreach ($rs as $r) {
-            $outages[] = new outage($r);
-        }
-        $rs->close();
-
-        return $outages;
-    }
-
-    /**
      * Gets all future outages not in warning period.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
      * @return array An array of outages or an empty array if no future outage found.
@@ -218,7 +187,7 @@ class outagedb {
 
         $rs = $DB->get_recordset_select(
             'auth_outage',
-            'warntime > :datetime',
+            'stoptime >= :datetime',
             ['datetime' => $time],
             'starttime ASC, stoptime DESC, title ASC',
             '*');
@@ -229,7 +198,6 @@ class outagedb {
 
         return $outages;
     }
-
 
     /**
      * Gets all past outages.

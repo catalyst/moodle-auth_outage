@@ -47,15 +47,20 @@ class auth_outage_renderer extends plugin_renderer_base {
      * Outputs the HTML data listing all given outages.
      * @param array $outages Outages to list.
      */
-    public function renderoutagelist(array $active, array $future, array $past) {
+    public function renderoutagelist(array $future, array $past) {
         global $OUTPUT;
 
-        if (!empty($active)) {
-            echo $this->rendersubtitle('outageslistactive');
-            $table = new \auth_outage\tables\manage();
-            $table->set_data($active, true);
-            $table->finish_output();
-        }
+        // Add 'add' button.
+        $url = new moodle_url('/auth/outage/new.php');
+        $img = html_writer::empty_tag('img',
+            ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
+        echo html_writer::tag('p',
+            html_writer::link(
+                $url,
+                $img . ' ' . get_string('outagecreate', 'auth_outage'),
+                ['title' => get_string('delete')]
+            )
+        );
 
         echo $this->rendersubtitle('outageslistfuture');
         if (empty($future)) {
@@ -74,20 +79,6 @@ class auth_outage_renderer extends plugin_renderer_base {
             $table->set_data($past, false);
             $table->finish_output();
         }
-
-        // Add 'add' button.
-        $url = new moodle_url('/auth/outage/new.php');
-        $img = html_writer::empty_tag('img',
-            ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
-        echo
-            html_writer::empty_tag('hr')
-            . html_writer::tag('p',
-                html_writer::link(
-                    $url,
-                    $img . ' ' . get_string('outagecreate', 'auth_outage'),
-                    ['title' => get_string('delete')]
-                )
-            );
     }
 
     private function renderoutage(outage $outage, $buttons) {

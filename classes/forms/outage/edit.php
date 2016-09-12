@@ -129,8 +129,8 @@ class edit extends \moodleform {
             $this->_form->setDefaults([
                 'id' => $outage->id,
                 'starttime' => $outage->starttime,
-                'outageduration' => $outage->stoptime - $outage->starttime,
-                'warningduration' => $outage->starttime - $outage->warntime,
+                'outageduration' => $outage->get_duration(),
+                'warningduration' => $outage->get_warning_duration(),
                 'title' => $outage->title,
                 'description' => ['text' => $outage->description, 'format' => '1']
             ]);

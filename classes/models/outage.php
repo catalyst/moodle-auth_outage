@@ -141,11 +141,13 @@ class outage {
         return str_replace(
             [
                 '{{start}}',
-                '{{stop}}'
+                '{{stop}}',
+                '{{duration}}',
             ],
             [
                 userdate($this->starttime, get_string('datetimeformat', 'auth_outage')),
                 userdate($this->stoptime, get_string('datetimeformat', 'auth_outage')),
+                format_time($this->get_duration()),
             ],
             $str
         );

@@ -46,10 +46,13 @@ class edit extends \moodleform {
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
+        $mform->addHelpButton('warningduration', 'warningduration', 'auth_outage');
 
         $mform->addElement('date_time_selector', 'starttime', get_string('starttime', 'auth_outage'));
+        $mform->addHelpButton('starttime', 'starttime', 'auth_outage');
 
         $mform->addElement('duration', 'outageduration', get_string('outageduration', 'auth_outage'));
+        $mform->addHelpButton('outageduration', 'outageduration', 'auth_outage');
 
         $mform->addElement(
             'text',
@@ -58,8 +61,10 @@ class edit extends \moodleform {
             'maxlength="' . self::TITLE_MAX_CHARS . '" size="60"'
         );
         $mform->setType('title', PARAM_TEXT);
+        $mform->addHelpButton('title', 'title', 'auth_outage');
 
         $mform->addElement('editor', 'description', get_string('description', 'auth_outage'));
+        $mform->addHelpButton('description', 'description', 'auth_outage');
 
         $mform->addElement('static', 'usagehints', '', get_string('textplaceholdershint', 'auth_outage'));
 

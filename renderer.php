@@ -47,27 +47,47 @@ class auth_outage_renderer extends plugin_renderer_base {
      * Outputs the HTML data listing all given outages.
      * @param array $outages Outages to list.
      */
-    public function renderoutagelist(array $outages) {
+    public function renderoutagelist(array $active, array $future, array $past) {
         global $OUTPUT;
 
-        echo $this->rendersubtitle('outageslist');
+        if (!empty($active)) {
+            echo $this->rendersubtitle('outageslistactive');
+            $table = new \auth_outage\tables\manage();
+            $table->set_data($active, true);
+            $table->finish_output();
+        }
 
-        // Generate list of outages.
-        $table = new \auth_outage\tables\manage();
-        $table->set_data($outages);
-        $table->finish_output(); // It will output HTML.
+        echo $this->rendersubtitle('outageslistfuture');
+        if (empty($future)) {
+            echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
+        } else {
+            $table = new \auth_outage\tables\manage();
+            $table->set_data($future, true);
+            $table->finish_output();
+        }
+
+        echo $this->rendersubtitle('outageslistpast');
+        if (empty($past)) {
+            echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
+        } else {
+            $table = new \auth_outage\tables\manage();
+            $table->set_data($past, false);
+            $table->finish_output();
+        }
 
         // Add 'add' button.
         $url = new moodle_url('/auth/outage/new.php');
         $img = html_writer::empty_tag('img',
             ['src' => $OUTPUT->pix_url('t/add'), 'alt' => get_string('create'), 'class' => 'iconsmall']);
-        echo html_writer::tag('p',
-            html_writer::link(
-                $url,
-                $img . ' ' . get_string('outagecreate', 'auth_outage'),
-                ['title' => get_string('delete')]
-            )
-        );
+        echo
+            html_writer::empty_tag('hr')
+            . html_writer::tag('p',
+                html_writer::link(
+                    $url,
+                    $img . ' ' . get_string('outagecreate', 'auth_outage'),
+                    ['title' => get_string('delete')]
+                )
+            );
     }
 
     private function renderoutage(outage $outage, $buttons) {

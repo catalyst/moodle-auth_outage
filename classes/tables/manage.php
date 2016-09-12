@@ -51,27 +51,46 @@ class manage extends \flexible_table {
         $this->setup();
     }
 
-    public function set_data(array $outages) {
+    public function set_data(array $outages, $editdelete) {
         global $OUTPUT;
+        if (!is_bool($editdelete)) {
+            throw new \InvalidArgumentException('$editdelete must be a bool.');
+        }
+
         foreach ($outages as $outage) {
             $buttons = \html_writer::link(
-                    new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
-                    \html_writer::empty_tag('img', [
-                        'src' => $OUTPUT->pix_url('t/edit'),
-                        'alt' => get_string('edit'),
-                        'class' => 'iconsmall'
-                    ]),
-                    ['title' => get_string('edit')]
-                )
-                . \html_writer::link(
-                    new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
-                    \html_writer::empty_tag('img', [
-                        'src' => $OUTPUT->pix_url('t/delete'),
-                        'alt' => get_string('delete'),
-                        'class' => 'iconsmall'
-                    ]),
-                    ['title' => get_string('delete')]
-                );
+                new \moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
+                \html_writer::empty_tag('img', [
+                    'src' => $OUTPUT->pix_url('t/preview'),
+                    'alt' => get_string('view'),
+                    'class' => 'iconsmall',
+
+                ]),
+                [
+                    'title' => get_string('view'),
+                    'target' => '_blank',
+                ]
+            );
+            if ($editdelete) {
+                $buttons .= \html_writer::link(
+                        new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                        \html_writer::empty_tag('img', [
+                            'src' => $OUTPUT->pix_url('t/edit'),
+                            'alt' => get_string('edit'),
+                            'class' => 'iconsmall'
+                        ]),
+                        ['title' => get_string('edit')]
+                    )
+                    . \html_writer::link(
+                        new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
+                        \html_writer::empty_tag('img', [
+                            'src' => $OUTPUT->pix_url('t/delete'),
+                            'alt' => get_string('delete'),
+                            'class' => 'iconsmall'
+                        ]),
+                        ['title' => get_string('delete')]
+                    );
+            }
 
             $this->add_data([
                 userdate($outage->starttime, get_string('tablerowstarts', 'auth_outage')),

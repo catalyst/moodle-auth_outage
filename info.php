@@ -28,14 +28,15 @@ use auth_outage\outagelib;
 
 require_once('../../config.php');
 
-$outage = outagedb::get_active();
+$id = optional_param('id', null, PARAM_INT);
+$outage = is_null($id) ? outagedb::get_active() : outagedb::get_by_id($id);
 if (is_null($outage)) {
     redirect(new moodle_url('/'));
 }
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("Outage Warning");
-$PAGE->set_heading("Outage Warning");
+$PAGE->set_title($outage->get_title());
+$PAGE->set_heading($outage->get_title());
 $PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
 
 echo $OUTPUT->header();

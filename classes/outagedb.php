@@ -153,9 +153,6 @@ class outagedb {
             throw new \InvalidArgumentException('$time must be null or an int.');
         }
 
-        // TODO Query not fully using indexes (starttime + 90)
-        // Gets any active outage (already started or during warning period).
-        // Gets only one record if available, the one that starts(ed) first and that stops last.
         $data = $DB->get_records_select(
             'auth_outage',
             '(warntime <= :datetime1 AND stoptime >= :datetime2)',
@@ -169,5 +166,39 @@ class outagedb {
         // Not using $DB->get_record_select instead because there is no 'limit' parameter.
         // Allowing multiple records still raises an internal error.
         return (count($data) == 0) ? null : new \auth_outage\models\outage(array_shift($data));
+    }
+
+    /**
+     * Gets all active outages, sorted by importance as:
+     *  - Ongoing outages more important than outages in warning period.
+     *  - Outages that start earlier are more important.
+     *  - Outages that stop later are more important.
+     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
+     * @return array An array of outages or an empty array if no active outage found.
+     */
+    public static function get_all_active($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time must be null or an int.');
+        }
+
+        $outages = [];
+
+        $rs = $DB->get_recordset_select(
+            'auth_outage',
+            '(warntime <= :datetime1 AND stoptime >= :datetime2)',
+            ['datetime1' => $time, 'datetime2' => $time],
+            'starttime ASC, stoptime DESC, title ASC',
+            '*');
+        foreach ($rs as $r) {
+            $outages[] = new outage($r);
+        }
+        $rs->close();
+
+        return $outages;
     }
 }

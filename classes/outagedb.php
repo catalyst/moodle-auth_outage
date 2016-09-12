@@ -169,10 +169,7 @@ class outagedb {
     }
 
     /**
-     * Gets all active outages, sorted by importance as:
-     *  - Ongoing outages more important than outages in warning period.
-     *  - Outages that start earlier are more important.
-     *  - Outages that stop later are more important.
+     * Gets all active outages (including in warning period).
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
      * @return array An array of outages or an empty array if no active outage found.
      */
@@ -193,6 +190,69 @@ class outagedb {
             '(warntime <= :datetime1 AND stoptime >= :datetime2)',
             ['datetime1' => $time, 'datetime2' => $time],
             'starttime ASC, stoptime DESC, title ASC',
+            '*');
+        foreach ($rs as $r) {
+            $outages[] = new outage($r);
+        }
+        $rs->close();
+
+        return $outages;
+    }
+
+    /**
+     * Gets all future outages not in warning period.
+     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
+     * @return array An array of outages or an empty array if no future outage found.
+     */
+    public static function get_all_future($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time must be null or an int.');
+        }
+
+        $outages = [];
+
+        $rs = $DB->get_recordset_select(
+            'auth_outage',
+            'warntime > :datetime',
+            ['datetime' => $time],
+            'starttime ASC, stoptime DESC, title ASC',
+            '*');
+        foreach ($rs as $r) {
+            $outages[] = new outage($r);
+        }
+        $rs->close();
+
+        return $outages;
+    }
+
+
+    /**
+     * Gets all past outages.
+     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
+     * @return array An array of outages or an empty array if no past outage found.
+     */
+    public static function get_all_past($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time must be null or an int.');
+        }
+
+        $outages = [];
+
+        $rs = $DB->get_recordset_select(
+            'auth_outage',
+            'stoptime < :datetime',
+            ['datetime' => $time],
+            'stoptime DESC, starttime DESC, title ASC',
             '*');
         foreach ($rs as $r) {
             $outages[] = new outage($r);

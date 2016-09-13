@@ -167,17 +167,25 @@ class auth_outage_renderer extends plugin_renderer_base {
     /**
      * Renders the warning bar.
      * @param outage $outage The outage to show in the warning bar.
+     * @param int|null $time Timestamp to send to the outage bar in order to render the outage. Null for current time.
      * @return string HTML of the warning bar.
      * @SuppressWarnings("unused") because $countdown is used inside require(...)
      */
-    public function renderoutagebar(outage $outage) {
+    public function renderoutagebar(outage $outage, $time = null) {
         global $CFG;
+
+        if (is_null($time)) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time is not an int or null.');
+        }
 
         $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
         $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
 
         $countdown = get_string(
-            $outage->is_ongoing() ? 'messageoutageongoing' : 'messageoutagewarning',
+            $outage->is_ongoing($time) ? 'messageoutageongoing' : 'messageoutagewarning',
             'auth_outage',
             ['start' => $start, 'stop' => $stop]
         );

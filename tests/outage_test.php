@@ -46,7 +46,7 @@ class outage_test extends basic_testcase {
         $outage = new outage([
             'starttime' => $now + (-3 * 60 * 60),
             'stoptime' => $now + (-2 * 60 * 60),
-            'warningduration' => 2 * 60 * 60,
+            'warntime' => $now - (2 * 60 * 60),
             'title' => '',
             'description' => ''
         ]);
@@ -56,7 +56,7 @@ class outage_test extends basic_testcase {
         $outage = new outage([
             'starttime' => $now + (-1 * 60 * 60),
             'stoptime' => $now + (1 * 60 * 60),
-            'warningduration' => 2 * 60 * 60,
+            'warntime' => $now - (2 * 60 * 60),
             'title' => '',
             'description' => ''
         ]);
@@ -66,7 +66,7 @@ class outage_test extends basic_testcase {
         $outage = new outage([
             'starttime' => $now + (1 * 60 * 60),
             'stoptime' => $now + (2 * 60 * 60),
-            'warningduration' => 2 * 60 * 60,
+            'warntime' => $now - (2 * 60 * 60),
             'title' => '',
             'description' => ''
         ]);

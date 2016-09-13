@@ -64,11 +64,26 @@ class outagelib {
         }
         self::$initialized = true;
 
-        if (($active = outagedb::get_active()) == null) {
-            return;
+        // Check for a previewing outage, then for an active outage.
+        $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
+        $time = time();
+        if (is_null($previewid)) {
+            if (($active = outagedb::get_active()) == null) {
+                return;
+            }
+        } else {
+            if (($active = outagedb::get_by_id($previewid)) == null) {
+                return;
+            }
+            $delta = optional_param('auth_outage_delta', null, PARAM_FLOAT);
+            if ($delta) {
+                // Delta is float in minutes, allowing to check the redirect in a few seconds.
+                $time = $active->starttime + (int)($delta * 60);
+            }
         }
 
-        $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active)
+        // There is a previewing or active outage.
+        $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
             . $CFG->additionalhtmltopofbody;
     }
 

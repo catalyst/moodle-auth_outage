@@ -36,12 +36,13 @@ echo html_writer::tag('style',
 
 <div class="auth_outage_warningbar">
     <div class="auth_outage_warningbar_box">
-        <div class="auth_outage_warningbar_box_countdown" id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
+        <div class="auth_outage_warningbar_box_countdown"
+             id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
         <div class="auth_outage_warningbar_box_message">
             <?php echo $outage->get_title(); ?>
             <small>
                 [<?php echo html_writer::link(
-                    new moodle_url('/auth/outage/info.php'),
+                    new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
                     get_string('readmore', 'auth_outage'),
                     ['target' => 'outage']
                 ); ?>]

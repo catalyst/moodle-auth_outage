@@ -52,46 +52,13 @@ class manage extends \flexible_table {
     }
 
     public function set_data(array $outages, $editdelete) {
-        global $OUTPUT;
         if (!is_bool($editdelete)) {
             throw new \InvalidArgumentException('$editdelete must be a bool.');
         }
 
         foreach ($outages as $outage) {
-            $buttons = \html_writer::link(
-                new \moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
-                \html_writer::empty_tag('img', [
-                    'src' => $OUTPUT->pix_url('t/preview'),
-                    'alt' => get_string('view'),
-                    'class' => 'iconsmall',
-
-                ]),
-                [
-                    'title' => get_string('view'),
-                    'target' => '_blank',
-                ]
-            );
             $title = $outage->get_title();
             if ($editdelete) {
-                $buttons .= \html_writer::link(
-                        new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
-                        \html_writer::empty_tag('img', [
-                            'src' => $OUTPUT->pix_url('t/edit'),
-                            'alt' => get_string('edit'),
-                            'class' => 'iconsmall'
-                        ]),
-                        ['title' => get_string('edit')]
-                    )
-                    . \html_writer::link(
-                        new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
-                        \html_writer::empty_tag('img', [
-                            'src' => $OUTPUT->pix_url('t/delete'),
-                            'alt' => get_string('delete'),
-                            'class' => 'iconsmall'
-                        ]),
-                        ['title' => get_string('delete')]
-                    );
-
                 $title = \html_writer::link(
                     new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
                     $title,
@@ -104,8 +71,68 @@ class manage extends \flexible_table {
                 userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
                 format_time($outage->get_duration()),
                 $title,
-                $buttons,
+                $this->set_data_buttons($outage, $editdelete),
             ]);
         }
+    }
+
+    private function set_data_buttons($outage, $editdelete) {
+        global $OUTPUT;
+        $buttons = '';
+
+        // View button.
+        $buttons .= \html_writer::link(
+            new \moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
+            \html_writer::empty_tag('img', [
+                'src' => $OUTPUT->pix_url('t/preview'),
+                'alt' => get_string('view'),
+                'class' => 'iconsmall',
+
+            ]),
+            [
+                'title' => get_string('view'),
+                'target' => '_blank',
+            ]
+        );
+
+        // Edit button.
+        if ($editdelete) {
+            $buttons .= \html_writer::link(
+                new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                \html_writer::empty_tag('img', [
+                    'src' => $OUTPUT->pix_url('t/edit'),
+                    'alt' => get_string('edit'),
+                    'class' => 'iconsmall'
+                ]),
+                ['title' => get_string('edit')]
+            );
+        }
+
+        // Clone button.
+        $buttons .= \html_writer::link(
+            new \moodle_url('/auth/outage/clone.php', ['id' => $outage->id]),
+            \html_writer::empty_tag('img', [
+                'src' => $OUTPUT->pix_url('t/copy'),
+                'alt' => get_string('clone', 'auth_outage'),
+                'class' => 'iconsmall',
+
+            ]),
+            ['title' => get_string('clone', 'auth_outage')]
+        );
+
+        // Delete button.
+        if ($editdelete) {
+            $buttons .= \html_writer::link(
+                new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
+                \html_writer::empty_tag('img', [
+                    'src' => $OUTPUT->pix_url('t/delete'),
+                    'alt' => get_string('delete'),
+                    'class' => 'iconsmall'
+                ]),
+                ['title' => get_string('delete')]
+            );
+        }
+
+        return $buttons;
     }
 }

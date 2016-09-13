@@ -24,6 +24,7 @@
  */
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
+$string['clone'] = 'Clone';
 $string['datetimeformat'] = '%d %h %Y at %I:%M%P';
 $string['defaultlayoutcss'] = 'Layout CSS';
 $string['defaultlayoutcssdescription'] = 'This CSS code will be used to display the Outage Warning Bar.';
@@ -51,6 +52,7 @@ $string['messageoutageongoing'] = 'Our system will be under maintenance until {$
 $string['messageoutagewarning'] = 'Shutting down in {{countdown}} ...';
 $string['notfound'] = 'No outages found.';
 $string['outageedit'] = 'Edit Outage';
+$string['outageclone'] = 'Clone Outage';
 $string['outagecreate'] = 'Create Outage';
 $string['outagedelete'] = 'Delete Outage';
 $string['outagedeletewarning'] = 'You are about to permanently delete the outage below. This cannot be undone.';

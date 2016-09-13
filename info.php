@@ -39,6 +39,9 @@ $PAGE->set_title($outage->get_title());
 $PAGE->set_heading($outage->get_title());
 $PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
 
+// No hooks injecting into this page, do it manually.
+outagelib::inject();
+
 echo $OUTPUT->header();
 
 echo outagelib::get_renderer()->renderoutagepage($outage);

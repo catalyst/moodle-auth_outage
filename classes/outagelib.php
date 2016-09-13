@@ -68,17 +68,17 @@ class outagelib {
         $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
         $time = time();
         if (is_null($previewid)) {
-            if (($active = outagedb::get_active()) == null) {
+            if (!$active = outagedb::get_active()) {
                 return;
             }
         } else {
-            if (($active = outagedb::get_by_id($previewid)) == null) {
+            if (!$active = outagedb::get_by_id($previewid)) {
                 return;
             }
-            $delta = optional_param('auth_outage_delta', null, PARAM_FLOAT);
-            if ($delta) {
-                // Delta is float in minutes, allowing to check the redirect in a few seconds.
-                $time = $active->starttime + (int)($delta * 60);
+            // Delta is in seconds, setting the time our warning bar will consider relative to the outage start time.
+            $time = $active->starttime + optional_param('auth_outage_delta', 0, PARAM_INT);
+            if (!$active->is_active($time)) {
+                return;
             }
         }
 

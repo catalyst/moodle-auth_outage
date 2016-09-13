@@ -44,8 +44,8 @@ class outage_test extends basic_testcase {
 
         // In the past.
         $outage = new outage([
-            'starttime' => $now + (-3 * 60 * 60),
-            'stoptime' => $now + (-2 * 60 * 60),
+            'starttime' => $now - (3 * 60 * 60),
+            'stoptime' => $now - (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
             'description' => ''
@@ -54,7 +54,7 @@ class outage_test extends basic_testcase {
 
         // In the present (ongoing).
         $outage = new outage([
-            'starttime' => $now + (-1 * 60 * 60),
+            'starttime' => $now - (1 * 60 * 60),
             'stoptime' => $now + (1 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
@@ -71,5 +71,49 @@ class outage_test extends basic_testcase {
             'description' => ''
         ]);
         self::assertFalse($outage->is_ongoing($now));
+    }
+
+    public function test_isactive() {
+        $now = time();
+
+        // In the past.
+        $outage = new outage([
+            'starttime' => $now - (3 * 60 * 60),
+            'stoptime' => $now - (2 * 60 * 60),
+            'warntime' => $now - (2 * 60 * 60),
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertFalse($outage->is_active($now));
+
+        // In the present (ongoing).
+        $outage = new outage([
+            'starttime' => $now - (1 * 60 * 60),
+            'stoptime' => $now + (1 * 60 * 60),
+            'warntime' => $now - (2 * 60 * 60),
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertTrue($outage->is_active($now));
+
+        // In the future (warning).
+        $outage = new outage([
+            'starttime' => $now + (1 * 60 * 60),
+            'stoptime' => $now + (2 * 60 * 60),
+            'warntime' => $now - (2 * 60 * 60),
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertTrue($outage->is_active($now));
+
+        // In the future (not warning).
+        $outage = new outage([
+            'starttime' => $now + (2 * 60 * 60),
+            'stoptime' => $now + (3 * 60 * 60),
+            'warntime' => $now + (1 * 60 * 60),
+            'title' => '',
+            'description' => ''
+        ]);
+        self::assertFalse($outage->is_active($now));
     }
 }

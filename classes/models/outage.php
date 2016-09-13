@@ -98,6 +98,25 @@ class outage {
     }
 
     /**
+     * Checks if the outage is active (in warning period or ongoing).
+     * @param int|null $time Null to check if the outage is active now or another time to use as reference.
+     * @return bool True if outage is ongoing or during the warning period.
+     */
+    public function is_active($time = null) {
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new \InvalidArgumentException('$time must be an positive int.');
+        }
+        if (is_null($this->warntime) || is_null($this->stoptime)) {
+            return false;
+        }
+
+        return (($this->warntime <= $time) && ($time < $this->stoptime));
+    }
+
+    /**
      * Checks if the outage is happening.
      * @param int|null $time Null to check if the outage is happening now or another time to use as reference.
      * @return bool True if outage has started but not yet stopped. False otherwise including if in warning period.

@@ -67,11 +67,11 @@ echo html_writer::tag('style',
         , init: function () {
             this.span = document.getElementById('auth_outage_warningbar_countdown');
             this.text = this.span.innerHTML;
-            this.tick();
             var $this = this;
             this.timer = setInterval(function () {
                 $this.tick();
             }, 1000);
+            this.tick();
         }
         , tick: function () {
             var elapsed = Math.round((Date.now() - this.clienttime) / 1000);

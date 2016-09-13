@@ -138,30 +138,52 @@ class auth_outage_renderer extends plugin_renderer_base {
         );
     }
 
-    public function renderoutagepage(outage $outage) {
-        $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
-        $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
+    /**
+     * @param outage $outage
+     * @param null $time
+     * @return string
+     * @SuppressWarnings("unused") because $admineditlink is used inside require(...)
+     */
+    public function renderoutagepage(outage $outage, $time = null) {
+        global $CFG;
 
-        $admin = '';
-        if (is_siteadmin()) {
-            $admin = html_writer::tag('div',
-                '[' . html_writer::link(
-                    new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
-                    get_string('outageedit', 'auth_outage')
-                ) . ']'
+        if (is_null($time)) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new \InvalidArgumentException('$time is not an int or null.');
+        }
+
+        $adminlinks = [];
+        foreach ([
+                     'startofwarning' => -$outage->get_warning_duration(),
+                     '1minutebefore' => -60,
+                     'start' => 0,
+                     'endofoutage' => $outage->get_duration(),
+                 ] as $title => $delta) {
+            $adminlinks[] = html_writer::link(
+                new moodle_url(
+                    '/auth/outage/info.php',
+                    [
+                        'id' => $outage->id,
+                        'auth_outage_preview' => $outage->id,
+                        'auth_outage_delta' => $delta,
+                    ]
+                ),
+                get_string('info' . $title, 'auth_outage')
             );
         }
 
-        return html_writer::div(
-            html_writer::tag('p',
-                html_writer::tag('b', 'From: ')
-                . $start
-                . html_writer::tag('b', ' Until: ')
-                . $stop
-            )
-            . html_writer::div($outage->get_description())
-            . $admin
+        $admineditlink = html_writer::link(
+            new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+            get_string('outageedit', 'auth_outage')
         );
+
+        ob_start();
+        require($CFG->dirroot . '/auth/outage/views/infopage.php');
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
     }
 
     /**
@@ -169,7 +191,6 @@ class auth_outage_renderer extends plugin_renderer_base {
      * @param outage $outage The outage to show in the warning bar.
      * @param int|null $time Timestamp to send to the outage bar in order to render the outage. Null for current time.
      * @return string HTML of the warning bar.
-     * @SuppressWarnings("unused") because $countdown is used inside require(...)
      */
     public function renderoutagebar(outage $outage, $time = null) {
         global $CFG;
@@ -181,14 +202,15 @@ class auth_outage_renderer extends plugin_renderer_base {
             throw new \InvalidArgumentException('$time is not an int or null.');
         }
 
-        $start = userdate($outage->starttime, get_string('strftimedatetimeshort'));
-        $stop = userdate($outage->stoptime, get_string('strftimedatetimeshort'));
+        $start = userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'));
+        $stop = userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage'));
 
         $countdown = get_string(
             $outage->is_ongoing($time) ? 'messageoutageongoing' : 'messageoutagewarning',
             'auth_outage',
             ['start' => $start, 'stop' => $stop]
         );
+
 
         ob_start();
         require($CFG->dirroot . '/auth/outage/views/warningbar.php');

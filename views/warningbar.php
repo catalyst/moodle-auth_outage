@@ -27,84 +27,30 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
-// If debugging include directly from file, otherwise use plugin settings.
-echo html_writer::tag('style',
-    debugging() ? file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css') : get_config('auth_outage', 'css')
-);
-
+echo html_writer::tag('style', get_config('auth_outage', 'css'));
 ?>
 
-<div class="auth_outage_warningbar">
-    <div class="auth_outage_warningbar_box">
-        <div class="auth_outage_warningbar_box_countdown"
-             id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
+<div id="auth_outage_warningbar_box">
+    <div class="auth_outage_warningbar_center">
+        <div id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
         <div class="auth_outage_warningbar_box_message">
-            <?php echo $outage->get_title(); ?>
-            <small>
-                [<?php echo html_writer::link(
-                    new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
-                    get_string('readmore', 'auth_outage'),
-                    ['target' => 'outage']
-                ); ?>]
-            </small>
+            <?php echo html_writer::link(
+                new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
+                $outage->get_title(),
+                ['target' => 'outage']
+            ); ?>
         </div>
     </div>
 </div>
 
-<script>
-    // Internet Explorer 8 fix.
-    if (!Date.now) {
-        Date.now = function () {
-            return new Date().getTime();
-        }
-    }
-
-    // Define outage object.
-    var auth_outage_countdown = {
-        timer: null
-        , countdown: <?php echo($outage->starttime - $time); ?>
-        , clienttime: Date.now()
-        , init: function () {
-            this.span = document.getElementById('auth_outage_warningbar_countdown');
-            this.text = this.span.innerHTML;
-            var $this = this;
-            this.timer = setInterval(function () {
-                $this.tick();
-            }, 1000);
-            this.tick();
-        }
-        , tick: function () {
-            var elapsed = Math.round((Date.now() - this.clienttime) / 1000);
-            var missing = this.countdown - elapsed;
-            if (missing <= 0) {
-                clearInterval(this.timer);
-                missing = 0;
-                <?php
-                if (!is_siteadmin()) {
-                    echo 'location.href = "' . (new \moodle_url('/auth/outage/info.php')) . '";';
-                }
-                ?>
-            }
-            else {
-                this.span.innerHTML = this.text.replace('{{countdown}}', this.seconds2hms(missing));
-            }
-        }
-        , seconds2hms: function (seconds) {
-            var minutes = Math.floor(seconds / 60);
-            var hours = Math.floor(minutes / 60);
-            seconds %= 60;
-            minutes %= 60;
-            // Cross-browser simple solution for padding zeroes.
-            if (minutes < 10) {
-                minutes = "0" + minutes;
-            }
-            if (seconds < 10) {
-                seconds = "0" + seconds;
-            }
-            return hours + ':' + minutes + ':' + seconds;
-        }
-    };
-    auth_outage_countdown.init();
-</script>
+<?php if (!$outage->is_ongoing($time)): ?>
+    <script>
+        <?php require($CFG->dirroot . '/auth/outage/views/warningbar.js'); ?>
+        auth_outage_countdown.init(
+            <?php echo ($outage->starttime - $time); ?>,
+            <?php echo (is_siteadmin() ? 'true' : 'false'); ?>
+        );
+    </script>
+<?php endif; ?>
 
 <div class="auth_outage_warningbar_spacer">&nbsp;</div>

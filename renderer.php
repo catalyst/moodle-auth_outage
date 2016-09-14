@@ -157,7 +157,7 @@ class auth_outage_renderer extends plugin_renderer_base {
         $adminlinks = [];
         foreach ([
                      'startofwarning' => -$outage->get_warning_duration(),
-                     '1minutebefore' => -60,
+                     '15secondsbefore' => -15,
                      'start' => 0,
                      'endofoutage' => $outage->get_duration(),
                  ] as $title => $delta) {
@@ -191,6 +191,7 @@ class auth_outage_renderer extends plugin_renderer_base {
      * @param outage $outage The outage to show in the warning bar.
      * @param int|null $time Timestamp to send to the outage bar in order to render the outage. Null for current time.
      * @return string HTML of the warning bar.
+     * @SuppressWarnings("unused") because $countdown is used inside require(...)
      */
     public function renderoutagebar(outage $outage, $time = null) {
         global $CFG;
@@ -210,7 +211,6 @@ class auth_outage_renderer extends plugin_renderer_base {
             'auth_outage',
             ['start' => $start, 'stop' => $stop]
         );
-
 
         ob_start();
         require($CFG->dirroot . '/auth/outage/views/warningbar.php');

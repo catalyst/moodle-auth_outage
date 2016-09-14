@@ -1,35 +1,39 @@
 /*
 This file is used as default value for the 'auth_outage_css' settings.
-If you need to make chances here, remember to update your settings inside Moodle.
+If you need to make changes here, remember to update your settings inside Moodle.
 */
 
-.auth_outage_warningbar {
-    background-color: white;
+#auth_outage_warningbar_box {
+    background-color: red;
     box-sizing: content-box;
+    color: white;
     height: 90px;
     left: 0;
+    padding: 0;
     position: fixed;
     text-align: center;
     top: 0;
+    transition: height 10s linear;
     width: 100%;
     z-index: 9999;
 }
-
-.auth_outage_warningbar_box {
-    background-color: #ffcccc;
-    border-bottom: 2px dashed #a00000;
-    border-top: 2px dashed #a00000;
-    color: #a00000;
+#auth_outage_warningbar_box.imminent {
+    background: purple;
+}
+.auth_outage_warningbar_center {
+    position: relative;
+    top: 50%;
+    margin-top: -45px;
 }
 
-.auth_outage_warningbar_box_countdown {
+#auth_outage_warningbar_countdown {
     font-size: 200%;
     font-weight: bold;
     margin: 10px 0;
 }
 
-.auth_outage_warningbar_box_message {
-    margin-bottom: 5px;
+.auth_outage_warningbar_box_message A {
+    color: white;
 }
 
 .navbar.navbar-fixed-top {

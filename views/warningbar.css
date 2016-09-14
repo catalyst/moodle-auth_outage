@@ -17,13 +17,15 @@ If you need to make changes here, remember to update your settings inside Moodle
     width: 100%;
     z-index: 9999;
 }
+
 #auth_outage_warningbar_box.imminent {
     background: purple;
 }
+
 .auth_outage_warningbar_center {
+    margin-top: -45px;
     position: relative;
     top: 50%;
-    margin-top: -45px;
 }
 
 #auth_outage_warningbar_countdown {

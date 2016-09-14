@@ -2,9 +2,10 @@ var auth_outage_countdown = {
     timer: null,
     clienttime: Date.now(),
     siteadmin: false,
-    init: function (countdown, siteadmin) {
+    init: function (countdown, siteadmin, redirectto) {
         this.countdown = countdown;
         this.siteadmin = siteadmin;
+        this.redirectto = redirectto;
         this.divtext = document.getElementById('auth_outage_warningbar_countdown');
         this.divblock = document.getElementById('auth_outage_warningbar_box');
         this.text = this.divtext.innerHTML;
@@ -25,7 +26,7 @@ var auth_outage_countdown = {
             missing = 0;
             clearInterval(this.timer);
             if (!this.siteadmin) {
-                location = '/auth/outage/info.php';
+                window.location = this.redirectto;
             }
         }
         this.divtext.innerHTML = this.text.replace('{{countdown}}', this.seconds2hms(missing));

@@ -27,6 +27,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
+$infolink = new moodle_url('/auth/outage/info.php', ['id' => $outage->id]);
+
 echo html_writer::tag('style', get_config('auth_outage', 'css'));
 ?>
 
@@ -34,11 +36,7 @@ echo html_writer::tag('style', get_config('auth_outage', 'css'));
     <div class="auth_outage_warningbar_center">
         <div id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
         <div class="auth_outage_warningbar_box_message">
-            <?php echo html_writer::link(
-                new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
-                $outage->get_title(),
-                ['target' => 'outage']
-            ); ?>
+            <?php echo html_writer::link($infolink, $outage->get_title(), ['target' => '_blank']); ?>
         </div>
     </div>
 </div>
@@ -47,8 +45,9 @@ echo html_writer::tag('style', get_config('auth_outage', 'css'));
     <script>
         <?php require($CFG->dirroot . '/auth/outage/views/warningbar.js'); ?>
         auth_outage_countdown.init(
-            <?php echo ($outage->starttime - $time); ?>,
-            <?php echo (is_siteadmin() ? 'true' : 'false'); ?>
+            <?php echo($outage->starttime - $time); ?>,
+            <?php echo(is_siteadmin() ? 'true' : 'false'); ?>,
+            '<?php echo $infolink; ?>'
         );
     </script>
 <?php endif; ?>

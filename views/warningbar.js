@@ -18,7 +18,7 @@ var auth_outage_countdown = {
     tick: function () {
         var elapsed = Math.round((Date.now() - this.clienttime) / 1000);
         var missing = this.countdown - elapsed;
-        if (!this.siteadmin && (missing == 10)) {
+        if (!this.siteadmin && (missing === 10)) {
             this.divblock.className += ' imminent';
             this.divblock.style.height = window.innerHeight + 'px';
         }

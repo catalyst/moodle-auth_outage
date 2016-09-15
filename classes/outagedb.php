@@ -22,7 +22,12 @@ if (!defined('MOODLE_INTERNAL')) {
 
 require_once($CFG->dirroot . '/calendar/lib.php');
 
+use auth_outage\event\outage_created;
+use auth_outage\event\outage_deleted;
+use auth_outage\event\outage_updated;
 use auth_outage\models\outage;
+use calendar_event;
+use InvalidArgumentException;
 
 /**
  * The DB Context to manipulate Outages.
@@ -65,10 +70,10 @@ class outagedb {
         global $DB;
 
         if (!is_int($id)) {
-            throw new \InvalidArgumentException('$id must be an int.');
+            throw new InvalidArgumentException('$id must be an int.');
         }
         if ($id <= 0) {
-            throw new \InvalidArgumentException('$id must be positive.');
+            throw new InvalidArgumentException('$id must be positive.');
         }
 
         $outage = $DB->get_record('auth_outage', ['id' => $id]);
@@ -100,7 +105,7 @@ class outagedb {
             $outage->createdby = $USER->id;
             // Then create it, log it and adjust its id.
             $outage->id = $DB->insert_record('auth_outage', $outage, true);
-            \auth_outage\event\outage_created::create(
+            outage_created::create(
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Create calendar entry.
@@ -110,7 +115,7 @@ class outagedb {
             unset($outage->createdby);
             $DB->update_record('auth_outage', $outage);
             // Log it.
-            \auth_outage\event\outage_updated::create(
+            outage_updated::create(
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Update calendar entry.
@@ -124,22 +129,22 @@ class outagedb {
     /**
      * Deletes an outage from the database.
      *
-     * @param $id outage Outage ID to delete
+     * @param int $id Outage ID to delete
      * @throws InvalidArgumentException If ID is not valid.
      */
     public static function delete($id) {
         global $DB;
 
         if (!is_int($id)) {
-            throw new \InvalidArgumentException('$id must be an int.');
+            throw new InvalidArgumentException('$id must be an int.');
         }
         if ($id <= 0) {
-            throw new \InvalidArgumentException('$id must be positive.');
+            throw new InvalidArgumentException('$id must be positive.');
         }
 
         // Log it.
         $previous = $DB->get_record('auth_outage', ['id' => $id], '*', MUST_EXIST);
-        $event = \auth_outage\event\outage_deleted::create(['objectid' => $id, 'other' => (array)$previous]);
+        $event = outage_deleted::create(['objectid' => $id, 'other' => (array)$previous]);
         $event->add_record_snapshot('auth_outage', $previous);
         $event->trigger();
 
@@ -163,7 +168,7 @@ class outagedb {
             $time = time();
         }
         if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time must be null or an int.');
+            throw new InvalidArgumentException('$time must be null or an int.');
         }
 
         $data = $DB->get_records_select(
@@ -178,7 +183,7 @@ class outagedb {
 
         // Not using $DB->get_record_select instead because there is no 'limit' parameter.
         // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new \auth_outage\models\outage(array_shift($data));
+        return (count($data) == 0) ? null : new outage(array_shift($data));
     }
 
     /**
@@ -193,7 +198,7 @@ class outagedb {
             $time = time();
         }
         if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time must be null or an int.');
+            throw new InvalidArgumentException('$time must be null or an int.');
         }
 
         $outages = [];
@@ -224,7 +229,7 @@ class outagedb {
             $time = time();
         }
         if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time must be null or an int.');
+            throw new InvalidArgumentException('$time must be null or an int.');
         }
 
         $outages = [];
@@ -243,10 +248,18 @@ class outagedb {
         return $outages;
     }
 
+    /**
+     * Create an event on the calendar for this outage.
+     * @param outage $outage Outage to be added to the calendar.
+     */
     private static function calendar_create(outage $outage) {
-        \calendar_event::create(self::calendar_data($outage));
+        calendar_event::create(self::calendar_data($outage));
     }
 
+    /**
+     * Updates an event on the calendar based on this outage.
+     * @param outage $outage Outage to be updated in the calendar.
+     */
     private static function calendar_update(outage $outage) {
         $event = self::calendar_load($outage->id);
 
@@ -258,6 +271,10 @@ class outagedb {
         }
     }
 
+    /**
+     * Removes an event from the calendar related to this outage.
+     * @param int $outageid Id of outage to be deleted from the calendar.
+     */
     private static function calendar_delete($outageid) {
         $event = self::calendar_load($outageid);
 
@@ -269,6 +286,11 @@ class outagedb {
         }
     }
 
+    /**
+     * Generates an array with the calendar event data based on an outage object.
+     * @param outage $outage Outage to use as reference for the calendar event.
+     * @return array Calendar event data.
+     */
     private static function calendar_data(outage $outage) {
         return [
             'name' => $outage->get_title(),
@@ -285,6 +307,11 @@ class outagedb {
         ];
     }
 
+    /**
+     * Finds the calendar event for an specific outage.
+     * @param int $outageid The outage id to find in the calendar.
+     * @return calendar_event|null The calendar event or null if not found.
+     */
     private static function calendar_load($outageid) {
         global $DB;
 
@@ -296,6 +323,6 @@ class outagedb {
             IGNORE_MISSING
         );
 
-        return ($event === false) ? null : \calendar_event::load($event->id);
+        return ($event === false) ? null : calendar_event::load($event->id);
     }
 }

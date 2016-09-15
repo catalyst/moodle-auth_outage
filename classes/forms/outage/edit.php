@@ -16,7 +16,7 @@
 
 namespace auth_outage\forms\outage;
 
-use \auth_outage\models\outage;
+use auth_outage\models\outage;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.

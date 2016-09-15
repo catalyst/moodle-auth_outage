@@ -30,6 +30,11 @@ if (!defined('MOODLE_INTERNAL')) {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class auth_outage_renderer extends plugin_renderer_base {
+    /**
+     * Renders the subtitle of the page.
+     * @param string $subtitlekey Key to be used and localized.
+     * @return string HTML for the subtitle.
+     */
     public function rendersubtitle($subtitlekey) {
         if (!is_string($subtitlekey)) {
             throw new \InvalidArgumentException('$subtitle is not a string.');
@@ -37,6 +42,11 @@ class auth_outage_renderer extends plugin_renderer_base {
         return html_writer::tag('h2', get_string($subtitlekey, 'auth_outage'));
     }
 
+    /**
+     * Renders a confirmation to delete an outage.
+     * @param outage $outage Outage to be deleted.
+     * @return string HTML for the page.
+     */
     public function renderdeleteconfirmation(outage $outage) {
         return $this->rendersubtitle('outagedelete')
         . html_writer::tag('p', get_string('outagedeletewarning', 'auth_outage'))

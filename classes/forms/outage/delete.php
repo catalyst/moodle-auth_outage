@@ -56,5 +56,4 @@ class delete extends \moodleform {
 
         return $errors;
     }
-
 }

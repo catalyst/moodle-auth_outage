@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use auth_outage\models\outage;
+use auth_outage\outagedb;
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Tests performed on outage class.
  *
@@ -22,13 +27,6 @@
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-use auth_outage\models\outage;
-use auth_outage\outagedb;
-
-defined('MOODLE_INTERNAL') || die();
-
-
 class outagedb_test extends advanced_testcase {
     /**
      * Ensure DB tests run as admin.
@@ -40,7 +38,8 @@ class outagedb_test extends advanced_testcase {
 
     /**
      * Creates an array of ids in from the given outages array.
-     * @param $outages
+     * @param array $outages An array of outages.
+     * @return array An array with the keys of the outages as values.
      */
     private static function createidarray(array $outages) {
         $ids = [];

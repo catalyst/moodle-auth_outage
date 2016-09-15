@@ -23,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\models\outage;
 use auth_outage\outagedb;
 use auth_outage\outagelib;
 

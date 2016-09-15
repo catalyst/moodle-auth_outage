@@ -16,6 +16,8 @@
 
 namespace auth_outage\event;
 
+use core\event\base;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -26,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outage_updated extends \core\event\base {
+class outage_updated extends base {
     /**
      * Init method.
      */
@@ -37,12 +39,20 @@ class outage_updated extends \core\event\base {
         $this->context = \context_system::instance();
     }
 
-
+    /**
+     * Returns non-localised event description with id's for admin use only.
+     *
+     * @return string
+     */
     public function get_description() {
         return "The user with the id '{$this->userid}' updated the outage title '{$this->other['title']}' "
         . "with id '{$this->other['id']}'.";
     }
 
+    /**
+     * Returns relevant URL, override in subclasses.
+     * @return \moodle_url
+     */
     public function get_url() {
         return new \moodle_url('/auth/outage/list.php');
     }

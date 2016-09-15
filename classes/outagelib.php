@@ -16,6 +16,8 @@
 
 namespace auth_outage;
 
+use auth_outage_renderer;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
@@ -33,8 +35,7 @@ class outagelib {
 
     /**
      * Initializes admin pages for outage.
-     *
-     * @return \renderer_base
+     * @return auth_outage_renderer The outage renderer for the page.
      */
     public static function pagesetup() {
         global $PAGE;
@@ -45,7 +46,7 @@ class outagelib {
 
     /**
      * Returns the outage renderer.
-     * @return \renderer_base
+     * @return auth_outage_renderer The outage renderer.
      */
     public static function get_renderer() {
         global $PAGE;

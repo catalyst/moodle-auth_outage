@@ -1,5 +1,5 @@
 var auth_outage_countdown = {
-    timer: null,
+    timer: 0,
     clienttime: Date.now(),
     siteadmin: false,
     init: function (countdown, siteadmin, redirectto) {

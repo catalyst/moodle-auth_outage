@@ -43,17 +43,4 @@ class delete extends \moodleform {
 
         $this->add_action_buttons(true, get_string('delete'));
     }
-
-    /**
-     * Validate the parts of the request form for this module
-     *
-     * @param array $data An array of form data
-     * @param array $files An array of form files
-     * @return array of error messages
-     */
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-
-        return $errors;
-    }
 }

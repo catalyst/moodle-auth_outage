@@ -27,6 +27,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
+global $OUTPUT;
+
 $infolink = new moodle_url('/auth/outage/info.php', ['id' => $outage->id]);
 
 echo html_writer::tag('style', get_config('auth_outage', 'css'));
@@ -35,8 +37,28 @@ echo html_writer::tag('style', get_config('auth_outage', 'css'));
 <div id="auth_outage_warningbar_box">
     <div class="auth_outage_warningbar_center">
         <div id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
-        <div class="auth_outage_warningbar_box_message">
-            <?php echo html_writer::link($infolink, $outage->get_title(), ['target' => '_blank']); ?>
+        <div>
+            <?php
+            echo html_writer::link(
+                $infolink,
+                $outage->get_title(),
+                ['target' => '_blank', 'class' => 'auth_outage_warningbar_box_title']
+            );
+
+            if (is_siteadmin() && $outage->is_ongoing()) {
+                $url = new moodle_url('/auth/outage/finish.php', ['id' => $outage->id]);
+                $text = html_writer::empty_tag('img', [
+                        'src' => $OUTPUT->pix_url('t/check'),
+                        'alt' => get_string('finish', 'auth_outage'),
+                        'class' => 'iconsmall'
+                    ]) . ' ' . get_string('finish', 'auth_outage');
+                $attr = [
+                    'title' => get_string('finish', 'auth_outage'),
+                    'class' => 'auth_outage_warningbar_box_finish'
+                ];
+                echo html_writer::link($url, $text, $attr);
+            }
+            ?>
         </div>
     </div>
 </div>

@@ -93,6 +93,26 @@ class outagedb_test extends advanced_testcase {
     }
 
     /**
+     * Make sure we can finish outages.
+     */
+    public function test_finish() {
+        $now = time();
+        $this->resetAfterTest(true);
+        // Create it.
+        $id = self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
+        $outage = outagedb::get_by_id($id);
+        self::assertTrue($outage->is_active($now));
+        self::assertTrue($outage->is_ongoing($now));
+        self::assertSame(null, $outage->finished);
+        // Finish it.
+        outagedb::finish($id, $now);
+        $outage = outagedb::get_by_id($id);
+        self::assertSame($now, $outage->finished);
+        self::assertFalse($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+    }
+
+    /**
      * Make sure getall brings all entries.
      */
     public function test_getall() {
@@ -176,6 +196,9 @@ class outagedb_test extends advanced_testcase {
             'Another outage in warning period, but ignored as it starts after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
+        self::saveoutage($now, -3, -2, 2, 'An finished outage.', -1);
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
+
         $activeid = self::saveoutage($now, -3, -2, 2,
             'An ongoing outage.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
@@ -189,97 +212,106 @@ class outagedb_test extends advanced_testcase {
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
     }
 
-    public function test_getallfuture() {
+    public function test_getallunended() {
         $this->resetAfterTest(true);
 
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
 
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
-        self::assertEquals([], outagedb::get_all_future($now), 'There should be no future outages at this point.');
+        self::assertEquals([], outagedb::get_all_unended($now), 'There should be no future outages at this point.');
 
         self::saveoutage($now, -3, -2, -1, 'A past outage.');
-        self::assertEquals([], outagedb::get_all_future($now), 'No future outages yet.');
+        self::assertEquals([], outagedb::get_all_unended($now), 'No future outages yet.');
+
+        self::saveoutage($now, -3, -2, 2, 'A finished outage.', -1);
+        self::assertEquals([], outagedb::get_all_unended($now), 'No future outages yet.');
 
         $id1 = self::saveoutage($now, 2, 3, 4, 'A future outage.');
         self::assertEquals([$id1],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id2 = self::saveoutage($now, 1, 4, 5, 'Another future outage.');
         self::assertEquals([$id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id3 = self::saveoutage($now, 1, 3, 5, 'Yet another future outage.');
         self::assertEquals([$id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id4 = self::saveoutage($now, -2, 1, 2, 'An outage in warning period.');
         self::assertEquals([$id4, $id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id5 = self::saveoutage($now, -1, 2, 3, 'Another outage in warning period.');
         self::assertEquals([$id4, $id5, $id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id6 = self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
         self::assertEquals([$id6, $id4, $id5, $id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id7 = self::saveoutage($now, -3, -1, 1, 'Another ongoing outage.');
         self::assertEquals([$id6, $id7, $id4, $id5, $id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
         $id8 = self::saveoutage($now, -3, -2, 1, 'Yet another ongoing outage.');
         self::assertEquals([$id6, $id8, $id7, $id4, $id5, $id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_future($now)), 'Wrong future data.');
+            self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
     }
 
-    public function test_getallpast() {
+    public function test_getallended() {
         $this->resetAfterTest(true);
 
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
 
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
-        self::assertEquals([], outagedb::get_all_past($now), 'There should be no future outages at this point.');
+        self::assertEquals([], outagedb::get_all_ended($now), 'There should be no future outages at this point.');
 
         self::saveoutage($now, -2, 1, 2, 'An outage in warning period.');
-        self::assertEquals([], outagedb::get_all_past($now), 'No past outages yet.');
+        self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
         self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
-        self::assertEquals([], outagedb::get_all_past($now), 'No past outages yet.');
+        self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
         self::saveoutage($now, 2, 3, 4, 'A future outage.');
-        self::assertEquals([], outagedb::get_all_past($now), 'No past outages yet.');
+        self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
         $id1 = self::saveoutage($now, -8, -6, -4, 'A past outage.');
         self::assertEquals([$id1],
-            self::createidarray(outagedb::get_all_past($now)), 'Wrong past data.');
+            self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
 
         $id2 = self::saveoutage($now, -8, -7, -5, 'Another past outage.');
         self::assertEquals([$id1, $id2],
-            self::createidarray(outagedb::get_all_past($now)), 'Wrong past data.');
+            self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
 
         $id3 = self::saveoutage($now, -8, -5, -3, 'Yet another past outage.');
         self::assertEquals([$id3, $id1, $id2],
-            self::createidarray(outagedb::get_all_past($now)), 'Wrong past data.');
+            self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
+
+        $id4 = self::saveoutage($now, -3, -2, 2, 'A finished outage.', -1);
+        self::assertEquals([$id4, $id3, $id1, $id2],
+            self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
     }
 
     /**
      * Helper function to create an outage then save it to the database.
      *
-     * @param $now int Timestamp for now, such as time().
-     * @param $warning int In how many hours the warning starts. Can be negative.
-     * @param $start int In how many hours this outage starts. Can be negative.
-     * @param $stop int In how many hours this outage finishes. Can be negative.
-     * @param $title string Title for the outage.
+     * @param int $now Timestamp for now, such as time().
+     * @param int $warning In how many hours the warning starts. Can be negative.
+     * @param int $start In how many hours this outage starts. Can be negative.
+     * @param int $stop In how many hours this outage finishes. Can be negative.
+     * @param string $title Title for the outage.
+     * @param int|null $finished In how many hours this outage is marked as finished. Can be negative or null.
      * @return int Id the of created outage.
      */
-    private static function saveoutage($now, $warning, $start, $stop, $title) {
+    private static function saveoutage($now, $warning, $start, $stop, $title, $finished = null) {
         return outagedb::save(new outage([
+            'warntime' => $now + ($warning * 60 * 60),
             'starttime' => $now + ($start * 60 * 60),
             'stoptime' => $now + ($stop * 60 * 60),
-            'warntime' => $now + ($warning * 60 * 60),
+            'finished' => is_null($finished) ? null : ($now + ($finished * 60 * 60)),
             'title' => $title,
             'description' => 'Test Outage Description.'
         ]));

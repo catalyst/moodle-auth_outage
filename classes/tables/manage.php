@@ -18,6 +18,8 @@ namespace auth_outage\tables;
 
 use auth_outage\models\outage;
 use flexible_table;
+use html_writer;
+use moodle_url;
 
 require_once($CFG->libdir . '/tablelib.php');
 
@@ -42,12 +44,13 @@ class manage extends flexible_table {
         $id = (is_null($id) ? self::$autoid++ : $id);
         parent::__construct('auth_outage_manage_' . $id);
 
-        $this->define_columns(['starttime', 'stopsafter', 'warnbefore', 'title', '']);
+        $this->define_columns(['starttime', 'stopsafter', 'warnbefore', 'finished', 'title', '']);
 
         $this->define_headers([
                 get_string('tableheaderwarnbefore', 'auth_outage'),
                 get_string('tableheaderstarttime', 'auth_outage'),
                 get_string('tableheaderstopsafter', 'auth_outage'),
+                get_string('tableheaderfinishedat', 'auth_outage'),
                 get_string('tableheadertitle', 'auth_outage'),
                 get_string('actions'),
             ]
@@ -60,7 +63,7 @@ class manage extends flexible_table {
 
     /**
      * Sets the data of the table.
-     * @param array $outages An array with outage objects.
+     * @param outage[] $outages An array with outage objects.
      * @param bool $editdelete If it should display the edit and delete button.
      */
     public function set_data(array $outages, $editdelete) {
@@ -71,17 +74,21 @@ class manage extends flexible_table {
         foreach ($outages as $outage) {
             $title = $outage->get_title();
             if ($editdelete) {
-                $title = \html_writer::link(
-                    new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                $title = html_writer::link(
+                    new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
                     $title,
                     ['title' => get_string('edit')]
                 );
             }
 
+            $finished = $outage->finished;
+            $finished = is_null($finished) ? '-' : userdate($finished, get_string('datetimeformat', 'auth_outage'));
+
             $this->add_data([
                 format_time($outage->get_warning_duration()),
                 userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
                 format_time($outage->get_duration()),
+                $finished,
                 $title,
                 $this->set_data_buttons($outage, $editdelete),
             ]);
@@ -99,9 +106,9 @@ class manage extends flexible_table {
         $buttons = '';
 
         // View button.
-        $buttons .= \html_writer::link(
-            new \moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
-            \html_writer::empty_tag('img', [
+        $buttons .= html_writer::link(
+            new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
+            html_writer::empty_tag('img', [
                 'src' => $OUTPUT->pix_url('t/preview'),
                 'alt' => get_string('view'),
                 'class' => 'iconsmall',
@@ -113,11 +120,11 @@ class manage extends flexible_table {
             ]
         );
 
-        // Edit button.
+        // Edit button if required.
         if ($editdelete) {
-            $buttons .= \html_writer::link(
-                new \moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
-                \html_writer::empty_tag('img', [
+            $buttons .= html_writer::link(
+                new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/edit'),
                     'alt' => get_string('edit'),
                     'class' => 'iconsmall'
@@ -127,9 +134,9 @@ class manage extends flexible_table {
         }
 
         // Clone button.
-        $buttons .= \html_writer::link(
-            new \moodle_url('/auth/outage/clone.php', ['id' => $outage->id]),
-            \html_writer::empty_tag('img', [
+        $buttons .= html_writer::link(
+            new moodle_url('/auth/outage/clone.php', ['id' => $outage->id]),
+            html_writer::empty_tag('img', [
                 'src' => $OUTPUT->pix_url('t/copy'),
                 'alt' => get_string('clone', 'auth_outage'),
                 'class' => 'iconsmall',
@@ -138,11 +145,24 @@ class manage extends flexible_table {
             ['title' => get_string('clone', 'auth_outage')]
         );
 
-        // Delete button.
+        // Finish button if ongoing.
+        if ($outage->is_ongoing()) {
+            $buttons .= html_writer::link(
+                new moodle_url('/auth/outage/finish.php', ['id' => $outage->id]),
+                html_writer::empty_tag('img', [
+                    'src' => $OUTPUT->pix_url('t/check'),
+                    'alt' => get_string('finish', 'auth_outage'),
+                    'class' => 'iconsmall'
+                ]),
+                ['title' => get_string('finish', 'auth_outage')]
+            );
+        }
+
+        // Delete button if required.
         if ($editdelete) {
-            $buttons .= \html_writer::link(
-                new \moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
-                \html_writer::empty_tag('img', [
+            $buttons .= html_writer::link(
+                new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
+                html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/delete'),
                     'alt' => get_string('delete'),
                     'class' => 'iconsmall'

@@ -114,4 +114,70 @@ class outage_test extends basic_testcase {
         ]);
         self::assertFalse($outage->is_active($now));
     }
+
+    public function test_stages() {
+        $now = time();
+
+        $outage = new outage([
+            'warntime' => $now + 10,
+            'starttime' => $now + 20,
+            'stoptime' => $now + 30,
+            'title' => 'Outage Waiting',
+        ]);
+        self::assertSame(outage::STAGE_WAITING, $outage->get_stage($now));
+        self::assertFalse($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+
+        $outage = new outage([
+            'warntime' => $now - 10,
+            'starttime' => $now + 20,
+            'stoptime' => $now + 30,
+            'title' => 'Outage Warning',
+        ]);
+        self::assertSame(outage::STAGE_WARNING, $outage->get_stage($now));
+        self::assertTrue($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+
+        $outage = new outage([
+            'warntime' => $now - 20,
+            'starttime' => $now - 10,
+            'stoptime' => $now + 30,
+            'title' => 'Outage Ongoing',
+        ]);
+        self::assertSame(outage::STAGE_ONGOING, $outage->get_stage($now));
+        self::assertTrue($outage->is_active($now));
+        self::assertTrue($outage->is_ongoing($now));
+
+        $outage = new outage([
+            'warntime' => $now - 50,
+            'starttime' => $now - 40,
+            'stoptime' => $now - 30,
+            'title' => 'Outage Stopped',
+        ]);
+        self::assertSame(outage::STAGE_STOPPED, $outage->get_stage($now));
+        self::assertFalse($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+
+        $outage = new outage([
+            'warntime' => $now - 50,
+            'starttime' => $now - 40,
+            'finishtime' => $now - 30,
+            'stoptime' => $now - 20,
+            'title' => 'Outage Finished before Stop',
+        ]);
+        self::assertSame(outage::STAGE_FINISHED, $outage->get_stage($now));
+        self::assertFalse($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+
+        $outage = new outage([
+            'warntime' => $now - 50,
+            'starttime' => $now - 40,
+            'stoptime' => $now - 30,
+            'finishtime' => $now - 20,
+            'title' => 'Outage Finished after Stop',
+        ]);
+        self::assertSame(outage::STAGE_FINISHED, $outage->get_stage($now));
+        self::assertFalse($outage->is_active($now));
+        self::assertFalse($outage->is_ongoing($now));
+    }
 }

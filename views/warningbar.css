@@ -34,8 +34,25 @@ If you need to make changes here, remember to update your settings inside Moodle
     margin: 10px 0;
 }
 
-.auth_outage_warningbar_box_message A {
+A.auth_outage_warningbar_box_title {
     color: white;
+}
+
+A.auth_outage_warningbar_box_finish {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: darkgray;
+    font-weight: bold;
+    margin-left: 10px;
+    padding-left: 5px;
+    padding-right: 10px;
+    text-decoration: none;
+    transition: background-color 200ms linear;
+}
+
+A.auth_outage_warningbar_box_finish:hover {
+    background-color: black;
 }
 
 .navbar.navbar-fixed-top {

@@ -14,25 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace auth_outage\forms\outage;
+
+use moodleform;
+
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
+}
+
+require_once($CFG->libdir . '/formslib.php');
+
 /**
- * List outages
+ * Outage finish confirmation form.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class finish extends moodleform {
+    /**
+     * Defines the form elements.
+     */
+    public function definition() {
+        $mform = $this->_form;
 
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-
-$renderer = outagelib::pagesetup();
-
-echo $OUTPUT->header();
-
-$renderer->renderoutagelist(outagedb::get_all_unended(), outagedb::get_all_ended());
-
-echo $OUTPUT->footer();
+        $this->add_action_buttons(true, get_string('finish', 'auth_outage'));
+    }
+}

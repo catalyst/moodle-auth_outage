@@ -171,10 +171,12 @@ class outagedb {
             throw new InvalidArgumentException('$time must be null or an int.');
         }
 
+        $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
+        $select = "(warntime <= :datetime1 AND (${select}))"; // Full select part.
         $data = $DB->get_records_select(
             'auth_outage',
-            '(warntime <= :datetime1 AND stoptime >= :datetime2)',
-            ['datetime1' => $time, 'datetime2' => $time],
+            $select,
+            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
             'starttime ASC, stoptime DESC, title ASC',
             '*',
             0,
@@ -187,11 +189,11 @@ class outagedb {
     }
 
     /**
-     * Gets all future outages not in warning period.
+     * Gets all outages that have not ended yet.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
-     * @return array An array of outages or an empty array if no future outage found.
+     * @return array An array of outages or an empty array if no unded outages were found.
      */
-    public static function get_all_future($time = null) {
+    public static function get_all_unended($time = null) {
         global $DB;
 
         if ($time === null) {
@@ -205,8 +207,8 @@ class outagedb {
 
         $rs = $DB->get_recordset_select(
             'auth_outage',
-            'stoptime >= :datetime',
-            ['datetime' => $time],
+            ':datetime1 < stoptime AND (finished IS NULL OR :datetime2 < finished)',
+            ['datetime1' => $time, 'datetime2' => $time],
             'starttime ASC, stoptime DESC, title ASC',
             '*');
         foreach ($rs as $r) {
@@ -218,11 +220,11 @@ class outagedb {
     }
 
     /**
-     * Gets all past outages.
+     * Gets all ended outages.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
-     * @return array An array of outages or an empty array if no past outage found.
+     * @return array An array of outages or an empty array if no ended outages found.
      */
-    public static function get_all_past($time = null) {
+    public static function get_all_ended($time = null) {
         global $DB;
 
         if ($time === null) {
@@ -236,8 +238,8 @@ class outagedb {
 
         $rs = $DB->get_recordset_select(
             'auth_outage',
-            'stoptime < :datetime',
-            ['datetime' => $time],
+            ':datetime1 >= stoptime OR (finished IS NOT NULL AND :datetime2 >= finished)',
+            ['datetime1' => $time, 'datetime2' => $time],
             'stoptime DESC, starttime DESC, title ASC',
             '*');
         foreach ($rs as $r) {
@@ -246,6 +248,34 @@ class outagedb {
         $rs->close();
 
         return $outages;
+    }
+
+    /**
+     * Marks an outage as finished.
+     * @param int $id Outage id.
+     * @param int|null $time Timestamp to consider as finished date or null for current time.
+     */
+    public static function finish($id, $time = null) {
+        if (is_null($time)) {
+            $time = time();
+        }
+        if (!is_int($time)) {
+            throw new InvalidArgumentException('$time must be an int or null.');
+        }
+
+        $outage = self::get_by_id($id);
+        if (is_null($outage)) {
+            debugging('Cannot finish outage #' . $id . ': outage not found.');
+            return;
+        }
+
+        if (!$outage->is_ongoing($time)) {
+            debugging('Cannot finish outage #' . $id . ': outage not ongoing.');
+            return;
+        }
+
+        $outage->finished = $time;
+        self::save($outage);
     }
 
     /**

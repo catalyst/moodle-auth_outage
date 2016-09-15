@@ -17,6 +17,7 @@
 namespace auth_outage;
 
 use auth_outage_renderer;
+use moodle_url;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
@@ -40,7 +41,7 @@ class outagelib {
     public static function pagesetup() {
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
-        $PAGE->set_url(new \moodle_url('/auth/outage/manage.php'));
+        $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
         return self::get_renderer();
     }
 
@@ -86,32 +87,5 @@ class outagelib {
         // There is a previewing or active outage.
         $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
             . $CFG->additionalhtmltopofbody;
-    }
-
-    /**
-     * Loads data from an object or array into another object. It ensures no new fields are created in the $obj.
-     *
-     * @param $data mixed An object or array.
-     * @param $obj object Destination object to write the properties.
-     */
-    public static function data2object($data, $obj) {
-        if (is_object($data)) {
-            $data = get_object_vars($data);
-        }
-        if (!is_array($data)) {
-            throw new \InvalidArgumentException('$data must be an array or an object.');
-        }
-        if (!is_object($obj)) {
-            throw new \InvalidArgumentException('$obj must be an object.');
-        }
-
-        foreach ($data as $k => $v) {
-            if (property_exists($obj, $k)) {
-                if (method_exists($obj, $k)) {
-                    throw new \InvalidArgumentException('$obj has a method called ' . $k);
-                }
-                $obj->$k = $v;
-            }
-        }
     }
 }

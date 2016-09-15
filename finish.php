@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List outages
+ * Mark an outage as finished.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -28,11 +28,32 @@ use auth_outage\outagelib;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 $renderer = outagelib::pagesetup();
 
+$mform = new \auth_outage\forms\outage\finish();
+if ($mform->is_cancelled()) {
+    redirect('/auth/outage/manage.php');
+} else if ($fromform = $mform->get_data()) {
+    outagedb::finish($fromform->id);
+    redirect('/auth/outage/manage.php');
+}
+
+$id = required_param('id', PARAM_INT);
+$outage = outagedb::get_by_id($id);
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
+}
+
+$dataid = new stdClass();
+$dataid->id = $outage->id;
+$mform->set_data($dataid);
+
 echo $OUTPUT->header();
 
-$renderer->renderoutagelist(outagedb::get_all_unended(), outagedb::get_all_ended());
+echo $renderer->renderfinishconfirmation($outage);
+
+$mform->display();
 
 echo $OUTPUT->footer();

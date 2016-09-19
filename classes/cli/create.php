@@ -139,11 +139,11 @@ class create extends clibase {
         $this->becomeadmin();
 
         // Create the outage.
-        $start = $this->time + ($options['start'] * 60);
+        $start = $this->time + $options['start'];
         $outage = new outage([
-            'warntime' => $start - ($options['warn'] * 60),
+            'warntime' => $start - $options['warn'],
             'starttime' => $start,
-            'stoptime' => $start + ($options['duration'] * 60),
+            'stoptime' => $start + $options['duration'],
             'title' => $options['title'],
             'description' => $options['description'],
         ]);
@@ -167,8 +167,8 @@ class create extends clibase {
 
         $outage = outagedb::get_by_id((int)$id);
         $this->set_defaults([
-            'warn' => (int)($outage->get_warning_duration() / 60),
-            'duration' => (int)($outage->get_duration() / 60),
+            'warn' => $outage->get_warning_duration(),
+            'duration' => $outage->get_duration(),
             'title' => $outage->title,
             'description' => $outage->description,
         ]);

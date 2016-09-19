@@ -147,8 +147,8 @@ class create_test extends cli_testcase {
         $id = (int)$id;
         $outage = outagedb::get_by_id($id);
         self::assertSame($now, $outage->starttime);
-        self::assertSame(10 * 60, $outage->get_warning_duration());
-        self::assertSame(30 * 60, $outage->get_duration());
+        self::assertSame(10, $outage->get_warning_duration());
+        self::assertSame(30, $outage->get_duration());
         self::assertNull($outage->finished);
         self::assertSame('A Title', $outage->title);
         self::assertSame('A Description', $outage->description);
@@ -174,8 +174,8 @@ class create_test extends cli_testcase {
         // Check creted outage.
         $outage = outagedb::get_by_id($id);
         self::assertSame($now, $outage->starttime);
-        self::assertSame($outage->starttime - (10 * 60), $outage->warntime);
-        self::assertSame($outage->starttime + (30 * 60), $outage->stoptime);
+        self::assertSame($outage->starttime - 10, $outage->warntime);
+        self::assertSame($outage->starttime + 30, $outage->stoptime);
         self::assertNull($outage->finished);
         self::assertSame('Title', $outage->title);
         self::assertSame('Description', $outage->description);
@@ -202,9 +202,9 @@ class create_test extends cli_testcase {
         list(, $id) = explode(':', $text);
         $id = (int)$id;
         $outage = outagedb::get_by_id($id);
-        self::assertSame($now + (50 * 60), $outage->starttime, 'Wrong starttime.');
-        self::assertSame($outage->starttime - (100 * 60), $outage->warntime, 'Wrong warntime.');
-        self::assertSame($outage->starttime + (300 * 60), $outage->stoptime, 'Wrong stoptime.');
+        self::assertSame($now + 50, $outage->starttime, 'Wrong starttime.');
+        self::assertSame($outage->starttime - 100, $outage->warntime, 'Wrong warntime.');
+        self::assertSame($outage->starttime + 300, $outage->stoptime, 'Wrong stoptime.');
         self::assertNull($outage->finished);
         self::assertSame('Default Title', $outage->title);
         self::assertSame('Default Description', $outage->description);
@@ -233,7 +233,7 @@ class create_test extends cli_testcase {
         $id = trim($this->execute($cli));
         // Check cloned data.
         $cloned = outagedb::get_by_id((int)$id);
-        self::assertSame($now + (60 * 60), $cloned->starttime);
+        self::assertSame($now + 60, $cloned->starttime);
         self::assertSame($original->get_warning_duration(), $cloned->get_warning_duration());
         self::assertSame($original->get_duration(), $cloned->get_duration());
         self::assertSame($original->title, $cloned->title);
@@ -254,9 +254,9 @@ class create_test extends cli_testcase {
         // Not an extensive test in the blocking API, cliwaitforit tests should cover them deeper.
         $this->set_parameters([
             '--block',
-            '--warn=10',
+            '--warn=60',
             '--start=0',
-            '--duration=30',
+            '--duration=600',
             '--title=Title',
             '--description=Description',
         ]);

@@ -111,17 +111,25 @@ class auth_outage_renderer extends plugin_renderer_base {
     private function renderoutage(outage $outage, $buttons) {
         global $OUTPUT;
 
-        $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
-        $created = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->createdby]),
-            trim($created->firstname . ' ' . $created->lastname)
-        );
+        if ($outage->createdby == 0) {
+            $created = get_string('na', 'auth_outage');
+        } else {
+            $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
+            $created = html_writer::link(
+                new moodle_url('/user/profile.php', ['id' => $outage->createdby]),
+                trim($created->firstname . ' ' . $created->lastname)
+            );
+        }
 
-        $modified = core_user::get_user($outage->modifiedby, 'firstname,lastname', MUST_EXIST);
-        $modified = html_writer::link(
-            new moodle_url('/user/profile.php', ['id' => $outage->modifiedby]),
-            trim($modified->firstname . ' ' . $modified->lastname)
-        );
+        if ($outage->modifiedby == 0) {
+            $modified = get_string('na', 'auth_outage');
+        } else {
+            $modified = core_user::get_user($outage->modifiedby, 'firstname,lastname', MUST_EXIST);
+            $modified = html_writer::link(
+                new moodle_url('/user/profile.php', ['id' => $outage->modifiedby]),
+                trim($modified->firstname . ' ' . $modified->lastname)
+            );
+        }
 
         $url = new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag(

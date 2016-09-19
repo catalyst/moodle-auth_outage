@@ -29,24 +29,13 @@ require_once('cli_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public")
+ * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class create_test extends cli_testcase {
     public function test_noarguments() {
         $cli = new create();
         $this->setExpectedException(cliexception::class);
         $this->execute($cli);
-    }
-
-    public function test_invalidargumentparam() {
-        $this->set_parameters(['--aninvalidparameter']);
-        $this->setExpectedException(cliexception::class);
-        new create();
-    }
-
-    public function test_invalidargumentgiven() {
-        $this->setExpectedException(cliexception::class);
-        new create(['anotherinvalidparameter']);
     }
 
     public function test_invalidparam_notanumber() {
@@ -99,12 +88,6 @@ class create_test extends cli_testcase {
         ]);
         $this->setExpectedException(cliexception::class);
         $this->execute($cli);
-    }
-
-    public function test_setreferencetime_invalid() {
-        $cli = new create(['start' => 0]);
-        $this->setExpectedException(InvalidArgumentException::class);
-        $cli->set_referencetime(-1);
     }
 
     public function test_help() {

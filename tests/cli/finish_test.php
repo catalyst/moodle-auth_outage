@@ -16,6 +16,8 @@
 
 use auth_outage\cli\cliexception;
 use auth_outage\cli\finish;
+use auth_outage\models\outage;
+use auth_outage\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 require_once('cli_testcase.php');
@@ -27,6 +29,7 @@ require_once('cli_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\cli\finish
  */
 class finish_test extends cli_testcase {
     public function test_constructor() {
@@ -57,6 +60,63 @@ class finish_test extends cli_testcase {
     }
 
     public function test_noarguments() {
+        $cli = new finish();
+        $this->setExpectedException(cliexception::class);
+        $this->execute($cli);
+    }
+
+    public function test_endedoutage() {
+        $this->setAdminUser();
+        $now = time();
+        $id = outagedb::save(new outage([
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now - 50,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]));
+        $this->set_parameters(['-id=' . $id]);
+        $cli = new finish();
+        $cli->set_referencetime($now);
+        $this->setExpectedException(cliexception::class);
+        $this->execute($cli);
+    }
+
+    public function test_finish() {
+        $this->setAdminUser();
+        $now = time();
+        $id = outagedb::save(new outage([
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now + 100,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]));
+        $this->set_parameters(['-id=' . $id]);
+        $cli = new finish();
+        $cli->set_referencetime($now);
+        $this->execute($cli);
+    }
+
+    public function test_activenotfound() {
+        $this->setAdminUser();
+        $this->set_parameters(['-a']);
+        $cli = new finish();
+        $this->setExpectedException(cliexception::class);
+        $this->execute($cli);
+    }
+
+    public function test_invalidid() {
+        $this->setAdminUser();
+        $this->set_parameters(['-id=theid']);
+        $cli = new finish();
+        $this->setExpectedException(cliexception::class);
+        $this->execute($cli);
+    }
+
+    public function test_idnotfound() {
+        $this->setAdminUser();
+        $this->set_parameters(['-id=99999']);
         $cli = new finish();
         $this->setExpectedException(cliexception::class);
         $this->execute($cli);

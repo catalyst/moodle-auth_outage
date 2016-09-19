@@ -17,8 +17,7 @@
 namespace auth_outage\event;
 
 use core\event\base;
-
-defined('MOODLE_INTERNAL') || die();
+use moodle_url;
 
 /**
  * The auth_outage outage created class.
@@ -51,9 +50,9 @@ class outage_created extends base {
 
     /**
      * Returns relevant URL, override in subclasses.
-     * @return \moodle_url
+     * @return moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/auth/outage/list.php#auth_outage_id_' . $this->other['id']);
+        return new moodle_url('/auth/outage/list.php#auth_outage_id_' . $this->other['id']);
     }
 }

@@ -25,6 +25,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\models\outage
  */
 class outage_test extends basic_testcase {
     public function test_constructor() {

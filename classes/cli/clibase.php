@@ -19,10 +19,6 @@ namespace auth_outage\cli;
 use core\session\manager;
 use InvalidArgumentException;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->libdir . '/clilib.php');
-
 /**
  * Outage CLI base class.
  *
@@ -48,6 +44,9 @@ abstract class clibase {
      * @throws cliexception
      */
     public function __construct(array $options = null) {
+        global $CFG;
+        require_once($CFG->libdir . '/clilib.php');
+
         $this->becomeadmin();
 
         if (is_null($options)) {

@@ -16,9 +16,7 @@
 
 namespace auth_outage;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/calendar/lib.php');
 
@@ -259,7 +257,7 @@ class outagedb {
         if (is_null($time)) {
             $time = time();
         }
-        if (!is_int($time)) {
+        if (!is_int($time) && ($time <= 0)) {
             throw new InvalidArgumentException('$time must be an int or null.');
         }
 

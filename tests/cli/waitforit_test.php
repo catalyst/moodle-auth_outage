@@ -29,6 +29,7 @@ require_once('cli_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\cli\waitforit
  * @SuppressWarnings("public")
  */
 class waitforit_test extends cli_testcase {

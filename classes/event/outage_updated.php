@@ -18,8 +18,6 @@ namespace auth_outage\event;
 
 use core\event\base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The auth_outage outage updated class.
  *

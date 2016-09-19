@@ -27,4 +27,13 @@ use Exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cliexception extends Exception {
+    /**
+     * cliexception constructor.
+     * @param string $message An explanation of the exception.
+     * @param int $code Exit code to be used.
+     * @param Exception|null $previous Another exception as reference.
+     */
+    public function __construct($message, $code = 1, Exception $previous = null) {
+        parent::__construct('*ERROR* ' . $message, $code, $previous = null);
+    }
 }

@@ -19,8 +19,6 @@ namespace auth_outage\cli;
 use auth_outage\models\outage;
 use auth_outage\outagedb;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Outage CLI to create outage.
  *

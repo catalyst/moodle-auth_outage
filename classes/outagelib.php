@@ -20,9 +20,7 @@ use auth_outage_renderer;
 use Exception;
 use moodle_url;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Outage related functions.
@@ -96,10 +94,19 @@ class outagelib {
         }
     }
 
+    /**
+     * Creates a configuration object ensuring all parameters are set,
+     * loading defaults even if the plugin is not configured.
+     * @return object Configuration object with all parameters set.
+     */
     public static function get_config() {
         return (object)array_merge(self::get_config_defaults(), (array)get_config('auth_outage'));
     }
 
+    /**
+     * Creates the default configurations. If the plugin is not configured we should use those defaults.
+     * @return array Default configuration.
+     */
     public static function get_config_defaults() {
         global $CFG;
 

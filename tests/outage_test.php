@@ -161,7 +161,7 @@ class outage_test extends basic_testcase {
         $outage = new outage([
             'warntime' => $now - 50,
             'starttime' => $now - 40,
-            'finishtime' => $now - 30,
+            'finished' => $now - 30,
             'stoptime' => $now - 20,
             'title' => 'Outage Finished before Stop',
         ]);
@@ -173,7 +173,7 @@ class outage_test extends basic_testcase {
             'warntime' => $now - 50,
             'starttime' => $now - 40,
             'stoptime' => $now - 30,
-            'finishtime' => $now - 20,
+            'finished' => $now - 20,
             'title' => 'Outage Finished after Stop',
         ]);
         self::assertSame(outage::STAGE_FINISHED, $outage->get_stage($now));

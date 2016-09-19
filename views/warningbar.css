@@ -34,11 +34,11 @@ If you need to make changes here, remember to update your settings inside Moodle
     margin: 10px 0;
 }
 
-A.auth_outage_warningbar_box_title {
+a.auth_outage_warningbar_box_title {
     color: white;
 }
 
-A.auth_outage_warningbar_box_finish {
+a.auth_outage_warningbar_box_finish {
     background-color: white;
     border: 1px solid black;
     border-radius: 5px;
@@ -51,7 +51,7 @@ A.auth_outage_warningbar_box_finish {
     transition: background-color 200ms linear;
 }
 
-A.auth_outage_warningbar_box_finish:hover {
+a.auth_outage_warningbar_box_finish:hover {
     background-color: black;
 }
 

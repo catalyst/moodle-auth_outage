@@ -17,6 +17,7 @@
 namespace auth_outage;
 
 use auth_outage_renderer;
+use Exception;
 use moodle_url;
 
 if (!defined('MOODLE_INTERNAL')) {
@@ -66,27 +67,33 @@ class outagelib {
         }
         self::$initialized = true;
 
-        // Check for a previewing outage, then for an active outage.
-        $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
-        $time = time();
-        if (is_null($previewid)) {
-            if (!$active = outagedb::get_active()) {
-                return;
+        // Ensure we do not kill the whole website in case of an error.
+        try {
+            // Check for a previewing outage, then for an active outage.
+            $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
+            $time = time();
+            if (is_null($previewid)) {
+                if (!$active = outagedb::get_active()) {
+                    return;
+                }
+            } else {
+                if (!$active = outagedb::get_by_id($previewid)) {
+                    return;
+                }
+                // Delta is in seconds, setting the time our warning bar will consider relative to the outage start time.
+                $time = $active->starttime + optional_param('auth_outage_delta', 0, PARAM_INT);
+                if (!$active->is_active($time)) {
+                    return;
+                }
             }
-        } else {
-            if (!$active = outagedb::get_by_id($previewid)) {
-                return;
-            }
-            // Delta is in seconds, setting the time our warning bar will consider relative to the outage start time.
-            $time = $active->starttime + optional_param('auth_outage_delta', 0, PARAM_INT);
-            if (!$active->is_active($time)) {
-                return;
-            }
-        }
 
-        // There is a previewing or active outage.
-        $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
-            . $CFG->additionalhtmltopofbody;
+            // There is a previewing or active outage.
+            $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
+                . $CFG->additionalhtmltopofbody;
+        } catch (Exception $e) {
+            debugging('Exception occured while injecting our code: ' . $e->getMessage());
+            debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
+        }
     }
 
     public static function get_config() {

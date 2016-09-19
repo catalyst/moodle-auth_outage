@@ -25,13 +25,14 @@
 
 use auth_outage\cli\cliexception;
 use auth_outage\cli\create;
+use auth_outage\outagelib;
 
 define('CLI_SCRIPT', true);
 require('../../config.php');
 
 $cli = new create();
 
-$config = get_config('auth_outage');
+$config = outagelib::get_config();
 $cli->set_defaults([
     'help' => false,
     'warn' => (int)($config->warning_duration),

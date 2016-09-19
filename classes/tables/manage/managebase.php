@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\tables;
+namespace auth_outage\tables\manage;
 
 use auth_outage\models\outage;
 use flexible_table;
@@ -24,14 +24,14 @@ use moodle_url;
 require_once($CFG->libdir . '/tablelib.php');
 
 /**
- * Manage outages table.
+ * Manage outages table base.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <danielroperto@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class manage extends flexible_table {
+class managebase extends flexible_table {
     private static $autoid = 0;
 
     /**
@@ -44,55 +44,8 @@ class manage extends flexible_table {
         $id = (is_null($id) ? self::$autoid++ : $id);
         parent::__construct('auth_outage_manage_' . $id);
 
-        $this->define_columns(['starttime', 'stopsafter', 'warnbefore', 'finished', 'title', '']);
-
-        $this->define_headers([
-                get_string('tableheaderwarnbefore', 'auth_outage'),
-                get_string('tableheaderstarttime', 'auth_outage'),
-                get_string('tableheaderstopsafter', 'auth_outage'),
-                get_string('tableheaderfinishedat', 'auth_outage'),
-                get_string('tableheadertitle', 'auth_outage'),
-                get_string('actions'),
-            ]
-        );
-
         $this->define_baseurl($PAGE->url);
         $this->set_attribute('class', 'generaltable admintable');
-        $this->setup();
-    }
-
-    /**
-     * Sets the data of the table.
-     * @param outage[] $outages An array with outage objects.
-     * @param bool $editdelete If it should display the edit and delete button.
-     */
-    public function set_data(array $outages, $editdelete) {
-        if (!is_bool($editdelete)) {
-            throw new \InvalidArgumentException('$editdelete must be a bool.');
-        }
-
-        foreach ($outages as $outage) {
-            $title = $outage->get_title();
-            if ($editdelete) {
-                $title = html_writer::link(
-                    new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
-                    $title,
-                    ['title' => get_string('edit')]
-                );
-            }
-
-            $finished = $outage->finished;
-            $finished = is_null($finished) ? '-' : userdate($finished, get_string('datetimeformat', 'auth_outage'));
-
-            $this->add_data([
-                format_time($outage->get_warning_duration()),
-                userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
-                format_time($outage->get_duration()),
-                $finished,
-                $title,
-                $this->set_data_buttons($outage, $editdelete),
-            ]);
-        }
     }
 
     /**
@@ -101,7 +54,7 @@ class manage extends flexible_table {
      * @param bool $editdelete If it should display the edit and delete button.
      * @return string The HTML code of the action buttons.
      */
-    private function set_data_buttons(outage $outage, $editdelete) {
+    protected function set_data_buttons(outage $outage, $editdelete) {
         global $OUTPUT;
         $buttons = '';
 
@@ -171,6 +124,6 @@ class manage extends flexible_table {
             );
         }
 
-        return $buttons;
+        return '<nobr>' . $buttons . '</nobr>';
     }
 }

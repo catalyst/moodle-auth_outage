@@ -208,6 +208,17 @@ class outage {
     }
 
     /**
+     * Gets the duration of the outage (start to actual finish, warning not included).
+     * @return int|null Duration in seconds or null if not finished.
+     */
+    public function get_duration_actual() {
+        if (is_null($this->finished)) {
+            return null;
+        }
+        return $this->finished - $this->starttime;
+    }
+
+    /**
      * Returns the input string with all placeholders replaced.
      * @param $str string Input string.
      * @return string Output string.
@@ -222,17 +233,17 @@ class outage {
             [
                 userdate($this->starttime, get_string('datetimeformat', 'auth_outage')),
                 userdate($this->stoptime, get_string('datetimeformat', 'auth_outage')),
-                format_time($this->get_duration()),
+                format_time($this->get_duration_planned()),
             ],
             $str
         );
     }
 
     /**
-     * Gets the duration of the outage (start to stop, warning not included).
+     * Gets the planned duration of the outage (start to planned stop, warning not included).
      * @return int Duration in seconds.
      */
-    public function get_duration() {
+    public function get_duration_planned() {
         return $this->stoptime - $this->starttime;
     }
 

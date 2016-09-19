@@ -333,7 +333,7 @@ class outagedb {
             'eventtype' => 'auth_outage',
             'timestart' => $outage->starttime,
             'visible' => true,
-            'timeduration' => $outage->get_duration(),
+            'timeduration' => $outage->get_duration_planned(),
         ];
     }
 

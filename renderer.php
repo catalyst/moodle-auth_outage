@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use auth_outage\models\outage;
+use auth_outage\tables\manage\planned;
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
@@ -87,8 +88,8 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (empty($future)) {
             echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
         } else {
-            $table = new \auth_outage\tables\manage();
-            $table->set_data($future, true);
+            $table = new planned();
+            $table->set_data($future);
             $table->finish_output();
         }
 
@@ -96,8 +97,8 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (empty($past)) {
             echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
         } else {
-            $table = new \auth_outage\tables\manage();
-            $table->set_data($past, false);
+            $table = new \auth_outage\tables\manage\history();
+            $table->set_data($past);
             $table->finish_output();
         }
     }
@@ -146,7 +147,11 @@ class auth_outage_renderer extends plugin_renderer_base {
         $linkdelete = html_writer::link($url, $img, ['title' => get_string('delete')]);
 
         $finished = $outage->finished;
-        $finished = is_null($finished) ? '-' : userdate($finished, get_string('datetimeformat', 'auth_outage'));
+        if (is_null($finished)) {
+            $finished = get_string('na', 'auth_outage');
+        } else {
+            $finished = userdate($finished, get_string('datetimeformat', 'auth_outage'));
+        }
 
         return html_writer::div(
             html_writer::tag('blockquote',
@@ -161,11 +166,11 @@ class auth_outage_renderer extends plugin_renderer_base {
                     . userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'))
                 )
                 . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderstopsafter', 'auth_outage') . ': ')
-                    . format_time($outage->get_duration())
+                    html_writer::tag('b', get_string('tableheaderdurationplanned', 'auth_outage') . ': ')
+                    . format_time($outage->get_duration_planned())
                 )
                 . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderfinishedat', 'auth_outage') . ': ')
+                    html_writer::tag('b', get_string('tableheaderdurationactual', 'auth_outage') . ': ')
                     . $finished
                 )
                 . html_writer::div(
@@ -201,7 +206,7 @@ class auth_outage_renderer extends plugin_renderer_base {
                      'startofwarning' => -$outage->get_warning_duration(),
                      '15secondsbefore' => -15,
                      'start' => 0,
-                     'endofoutage' => $outage->get_duration(),
+                     'endofoutage' => $outage->get_duration_planned(),
                  ] as $title => $delta) {
             $adminlinks[] = html_writer::link(
                 new moodle_url(

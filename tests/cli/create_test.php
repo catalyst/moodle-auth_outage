@@ -148,7 +148,7 @@ class create_test extends cli_testcase {
         $outage = outagedb::get_by_id($id);
         self::assertSame($now, $outage->starttime);
         self::assertSame(10, $outage->get_warning_duration());
-        self::assertSame(30, $outage->get_duration());
+        self::assertSame(30, $outage->get_duration_planned());
         self::assertNull($outage->finished);
         self::assertSame('A Title', $outage->title);
         self::assertSame('A Description', $outage->description);
@@ -235,7 +235,7 @@ class create_test extends cli_testcase {
         $cloned = outagedb::get_by_id((int)$id);
         self::assertSame($now + 60, $cloned->starttime);
         self::assertSame($original->get_warning_duration(), $cloned->get_warning_duration());
-        self::assertSame($original->get_duration(), $cloned->get_duration());
+        self::assertSame($original->get_duration_planned(), $cloned->get_duration_planned());
         self::assertSame($original->title, $cloned->title);
         self::assertSame($original->description, $cloned->description);
     }

@@ -168,7 +168,7 @@ class create extends clibase {
         $outage = outagedb::get_by_id((int)$id);
         $this->set_defaults([
             'warn' => $outage->get_warning_duration(),
-            'duration' => $outage->get_duration(),
+            'duration' => $outage->get_duration_planned(),
             'title' => $outage->title,
             'description' => $outage->description,
         ]);

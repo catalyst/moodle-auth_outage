@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use auth_outage\outagelib;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
@@ -31,7 +33,7 @@ global $OUTPUT;
 
 $infolink = new moodle_url('/auth/outage/info.php', ['id' => $outage->id]);
 
-echo html_writer::tag('style', get_config('auth_outage', 'css'));
+echo html_writer::tag('style', outagelib::get_config()->css);
 ?>
 
 <div id="auth_outage_warningbar_box">

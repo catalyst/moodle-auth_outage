@@ -88,4 +88,20 @@ class outagelib {
         $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
             . $CFG->additionalhtmltopofbody;
     }
+
+    public static function get_config() {
+        return (object)array_merge(self::get_config_defaults(), (array)get_config('auth_outage'));
+    }
+
+    public static function get_config_defaults() {
+        global $CFG;
+
+        return [
+            'default_duration' => 60,
+            'warning_duration' => 60,
+            'warning_title' => get_string('defaultwarningtitlevalue', 'auth_outage'),
+            'warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
+            'css' => file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css'),
+        ];
+    }
 }

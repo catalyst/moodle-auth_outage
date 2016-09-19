@@ -41,7 +41,7 @@ if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
 }
 
-$config = get_config('auth_outage');
+$config = outagelib::get_config();
 $defaults = new outage([
     'starttime' => time(),
     'stoptime' => time() + ($config->default_duration * 60),

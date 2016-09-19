@@ -22,42 +22,49 @@
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use auth_outage\outagelib;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig && is_enabled_auth('outage')) {
+    $defaults = outagelib::get_config_defaults();
     // Configure default settings page.
     $settings->visiblename = get_string('menudefaults', 'auth_outage');
-    $settings->add(
-        new admin_setting_configtext('auth_outage/default_duration',
-            get_string('defaultoutageduration', 'auth_outage'),
-            get_string('defaultoutagedurationdescription', 'auth_outage'),
-            60, PARAM_INT));
-    $settings->add(
-        new admin_setting_configtext('auth_outage/warning_duration',
-            get_string('defaultwarningduration', 'auth_outage'),
-            get_string('defaultwarningdurationdescription', 'auth_outage'),
-            60, PARAM_INT));
-    $settings->add(
-        new admin_setting_configtext('auth_outage/warning_title',
-            get_string('defaultwarningtitle', 'auth_outage'),
-            get_string('defaultwarningtitledescription', 'auth_outage'),
-            get_string('defaultwarningtitlevalue', 'auth_outage'),
-            PARAM_TEXT)
-    );
-    $settings->add(
-        new admin_setting_configtextarea('auth_outage/warning_description',
-            get_string('defaultwarningdescription', 'auth_outage'),
-            get_string('defaultwarningdescriptiondescription', 'auth_outage'),
-            get_string('defaultwarningdescriptionvalue', 'auth_outage'),
-            PARAM_TEXT)
-    );
-    $settings->add(
-        new admin_setting_configtextarea('auth_outage/css',
-            get_string('defaultlayoutcss', 'auth_outage'),
-            get_string('defaultlayoutcssdescription', 'auth_outage'),
-            file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css'),
-            PARAM_TEXT)
-    );
+    $settings->add(new admin_setting_configtext(
+        'auth_outage/default_duration',
+        get_string('defaultoutageduration', 'auth_outage'),
+        get_string('defaultoutagedurationdescription', 'auth_outage'),
+        $defaults['default_duration'],
+        PARAM_INT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'auth_outage/warning_duration',
+        get_string('defaultwarningduration', 'auth_outage'),
+        get_string('defaultwarningdurationdescription', 'auth_outage'),
+        $defaults['warning_duration'],
+        PARAM_INT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'auth_outage/warning_title',
+        get_string('defaultwarningtitle', 'auth_outage'),
+        get_string('defaultwarningtitledescription', 'auth_outage'),
+        $defaults['warning_title'],
+        PARAM_TEXT
+    ));
+    $settings->add(new admin_setting_configtextarea(
+        'auth_outage/warning_description',
+        get_string('defaultwarningdescription', 'auth_outage'),
+        get_string('defaultwarningdescriptiondescription', 'auth_outage'),
+        $defaults['warning_description'],
+        PARAM_TEXT
+    ));
+    $settings->add(new admin_setting_configtextarea(
+        'auth_outage/css',
+        get_string('defaultlayoutcss', 'auth_outage'),
+        get_string('defaultlayoutcssdescription', 'auth_outage'),
+        $defaults['css'],
+        PARAM_TEXT
+    ));
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));
     // Add settings page toconfigure defaults.

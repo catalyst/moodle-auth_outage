@@ -16,10 +16,8 @@
 
 namespace auth_outage;
 
-use auth_outage\models\outage;
 use auth_outage_renderer;
 use Exception;
-use InvalidArgumentException;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
@@ -119,82 +117,5 @@ class outagelib {
             'warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
             'css' => file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css'),
         ];
-    }
-
-    /**
-     * Saves a static info page for the given outage.
-     * @param outage $outage Outage to generate the info page.
-     * @param string $file File to save the static info page.
-     * @throws Exception
-     */
-    public static function savestaticinfopage(outage $outage, $file) {
-        if (!is_string($file)) {
-            throw new InvalidArgumentException('$file is not a string.');
-        }
-
-        $html = self::get_renderer()->renderoutagepagestatic($outage);
-
-        // Sanity check before writing/overwriting old file.
-        if (!is_string($html) || ($html == '')) {
-            throw new Exception('Sanity check failed. Invalid contents on $html.');
-        }
-
-        $dir = dirname($file);
-        if (!file_exists($dir) || !is_dir($dir)) {
-            throw new Exception('Directory must exists: ' . $dir);
-        }
-        file_put_contents($file, $html);
-    }
-
-    /**
-     * Updates the static info page by (re)creating or deleting it as needed.
-     * @param null $file
-     * @throws Exception
-     */
-    public static function updatestaticinfopagefile($file = null) {
-        if (is_null($file)) {
-            $file = self::get_defaulttemplatefile();
-        }
-        if (!is_string($file)) {
-            throw new InvalidArgumentException('$file is not a string.');
-        }
-
-        $outage = outagedb::get_next_starting();
-        if (is_null($outage)) {
-            if (file_exists($file)) {
-                if (is_file($file)) {
-                    unlink($file);
-                } else {
-                    throw new Exception('Cannot remove non-file: ' . $file);
-                }
-            }
-        } else {
-            self::savestaticinfopage($outage, $file);
-        }
-    }
-
-    /**
-     * Given the HTML code for the static page, find the outage id for that page.
-     * @param $html Static info page HTML.
-     * @return int|null Outage id or null if not found.
-     */
-    public static function get_outageidfrominfopage($html) {
-        if (!is_string($html)) {
-            throw new InvalidArgumentException('$html must be a string.');
-        }
-
-        $output = [];
-        if (preg_match('/data-outage-id="(?P<id>\d+)"/', $html, $output)) {
-            return (int)$output['id'];
-        }
-        return null;
-    }
-
-    /**
-     * @return string The default template file to use for static info page.
-     */
-    public static function get_defaulttemplatefile() {
-        global $CFG;
-        return $CFG->dataroot . '/climaintenance.template.html';
     }
 }

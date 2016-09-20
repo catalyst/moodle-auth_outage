@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 global $SITE;
 ?>
 <!DOCTYPE html>
-<html data-outage-id="<?php echo $outage->id; ?>">
+<html data-outage-id="<?php echo $this->outage->id; ?>">
 <head>
     <title><?php echo strip_tags($SITE->fullname); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -41,15 +41,22 @@ global $SITE;
 </head>
 <body>
 
-<?php require('warningbar.php'); ?>
+<?php
+// TODO refactor warning bar to not require this.
+
+// The static page always shows as if outage has started.
+$outage = $this->outage;
+$static = true;
+require($CFG->dirroot.'/auth/outage/views/warningbar.php');
+?>
 
 <header>
     <h1><?php echo strip_tags($SITE->fullname); ?></h1>
 </header>
 
 <section>
-    <h2><?php echo $outage->get_title(); ?></h2>
-    <?php require('infopage.php'); ?>
+    <h2><?php echo $this->outage->get_title(); ?></h2>
+    <?php require('content.php'); ?>
 </section>
 
 <!-- <?php echo

@@ -121,7 +121,7 @@ class outagedb {
         }
 
         // Trigger static page update.
-        outagelib::updatestaticinfopagefile();
+        infopage_controller::update_static_page();
 
         // All done, return the id.
         return $outage->id;
@@ -154,7 +154,7 @@ class outagedb {
         self::calendar_delete($id);
 
         // Trigger static page update.
-        outagelib::updatestaticinfopagefile();
+        infopage_controller::update_static_page();
     }
 
     /**

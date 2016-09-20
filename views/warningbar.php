@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $OUTPUT;
 
 if (!isset($static)) {
-    $static = true;
+    $static = false;
 }
 
 if ($static) {

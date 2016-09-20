@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List outages
+ * Shows the information about an outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -23,30 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\infopage_controller;
 
 require_once('../../config.php');
 
-$id = optional_param('id', null, PARAM_INT);
-$outage = is_null($id) ? outagedb::get_active() : outagedb::get_by_id($id);
-if (is_null($outage)) {
-    redirect(new moodle_url('/'));
-}
-
-if (optional_param('static', false, PARAM_BOOL)) {
-    echo outagelib::get_renderer()->renderoutagepagestatic($outage);
-} else {
-    $PAGE->set_title($outage->get_title());
-    $PAGE->set_heading($outage->get_title());
-    $PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
-
-    // No hooks injecting into this page, do it manually.
-    outagelib::inject();
-
-    echo $OUTPUT->header();
-
-    echo outagelib::get_renderer()->renderoutagepage($outage);
-
-    echo $OUTPUT->footer();
-}
+$info = new infopage_controller();
+$info->output();

@@ -23,26 +23,52 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
+defined('MOODLE_INTERNAL') || die();
+
+if ($this->has_admin_options()) {
+    $adminlinks = [];
+    foreach ([
+                 'startofwarning' => -$this->outage->get_warning_duration(),
+                 '15secondsbefore' => -15,
+                 'start' => 0,
+                 'endofoutage' => $this->outage->get_duration_planned(),
+             ] as $title => $delta) {
+        $adminlinks[] = html_writer::link(
+            new moodle_url(
+                '/auth/outage/info.php',
+                [
+                    'id' => $this->outage->id,
+                    'auth_outage_preview' => $this->outage->id,
+                    'auth_outage_delta' => $delta,
+                ]
+            ),
+            get_string('info'.$title, 'auth_outage')
+        );
+    }
+
+    $admineditlink = html_writer::link(
+        new moodle_url('/auth/outage/edit.php', ['id' => $this->outage->id]),
+        get_string('outageedit', 'auth_outage')
+    );
 }
 ?>
 
 <div class="auth_outage_info">
+
     <div>
         <b><?php echo get_string('infofrom', 'auth_outage'); ?></b>
-        <?php echo userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')); ?>
+        <?php echo userdate($this->outage->starttime, get_string('datetimeformat', 'auth_outage')); ?>
     </div>
     <div>
         <b><?php echo get_string('infountil', 'auth_outage'); ?></b>
-        <?php echo userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage')); ?>
+        <?php echo userdate($this->outage->stoptime, get_string('datetimeformat', 'auth_outage')); ?>
     </div>
-    <div class="auth_outage_info_description"><?php echo $outage->get_description(); ?></div>
+    <div class="auth_outage_info_description"><?php echo $this->outage->get_description(); ?></div>
 
-    <?php if (!$static && is_siteadmin()): ?>
+    <?php if ($this->has_admin_options()): ?>
         <div class="auth_outage_info_adminlinks">
             <b><?php echo get_string('preview'); ?>:</b>
-            <?php echo implode(' | ', $adminlinks); ?><br />
+            <?php echo implode(' | ', $adminlinks); ?><br/>
             <?php echo $admineditlink; ?>
         </div>
     <?php endif; ?>

@@ -39,7 +39,7 @@ if (!defined('MOODLE_INTERNAL')) {
     </div>
     <div class="auth_outage_info_description"><?php echo $outage->get_description(); ?></div>
 
-    <?php if (is_siteadmin()): ?>
+    <?php if (!$static && is_siteadmin()): ?>
         <div class="auth_outage_info_adminlinks">
             <b><?php echo get_string('preview'); ?>:</b>
             <?php echo implode(' | ', $adminlinks); ?><br />

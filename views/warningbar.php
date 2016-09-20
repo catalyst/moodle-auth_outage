@@ -25,13 +25,21 @@
 
 use auth_outage\outagelib;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
 global $OUTPUT;
 
-$infolink = new moodle_url('/auth/outage/info.php', ['id' => $outage->id]);
+if (!isset($static)) {
+    $static = true;
+}
+
+if ($static) {
+    $start = userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'));
+    $stop = userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage'));
+    $countdown = get_string('messageoutageongoing', 'auth_outage', ['start' => $start, 'stop' => $stop]);
+} else {
+    $infolink = new moodle_url('/auth/outage/info.php', ['id' => $outage->id]);
+}
 
 echo html_writer::tag('style', outagelib::get_config()->css);
 ?>
@@ -41,13 +49,17 @@ echo html_writer::tag('style', outagelib::get_config()->css);
         <div id="auth_outage_warningbar_countdown"><?php echo $countdown; ?></div>
         <div>
             <?php
-            echo html_writer::link(
-                $infolink,
-                $outage->get_title(),
-                ['target' => '_blank', 'class' => 'auth_outage_warningbar_box_title']
-            );
+            if ($static) {
+                echo $outage->get_title();
+            } else {
+                echo html_writer::link(
+                    $infolink,
+                    $outage->get_title(),
+                    ['target' => '_blank', 'class' => 'auth_outage_warningbar_box_title']
+                );
+            }
 
-            if (is_siteadmin() && $outage->is_ongoing()) {
+            if (!$static && is_siteadmin() && $outage->is_ongoing()) {
                 $url = new moodle_url('/auth/outage/finish.php', ['id' => $outage->id]);
                 $text = html_writer::empty_tag('img', [
                         'src' => $OUTPUT->pix_url('t/check'),
@@ -65,7 +77,7 @@ echo html_writer::tag('style', outagelib::get_config()->css);
     </div>
 </div>
 
-<?php if (!$outage->is_ongoing($time)): ?>
+<?php if (!$static && !$outage->is_ongoing($time)): ?>
     <script>
         <?php require($CFG->dirroot . '/auth/outage/views/warningbar.js'); ?>
         auth_outage_countdown.init(

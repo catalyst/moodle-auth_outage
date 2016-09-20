@@ -34,16 +34,19 @@ if (is_null($outage)) {
     redirect(new moodle_url('/'));
 }
 
-$PAGE->set_context(context_system::instance());
-$PAGE->set_title($outage->get_title());
-$PAGE->set_heading($outage->get_title());
-$PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
+if (optional_param('static', false, PARAM_BOOL)) {
+    echo outagelib::get_renderer()->renderoutagepagestatic($outage);
+} else {
+    $PAGE->set_title($outage->get_title());
+    $PAGE->set_heading($outage->get_title());
+    $PAGE->set_url(new \moodle_url('/auth/outage/info.php'));
 
-// No hooks injecting into this page, do it manually.
-outagelib::inject();
+    // No hooks injecting into this page, do it manually.
+    outagelib::inject();
 
-echo $OUTPUT->header();
+    echo $OUTPUT->header();
 
-echo outagelib::get_renderer()->renderoutagepage($outage);
+    echo outagelib::get_renderer()->renderoutagepage($outage);
 
-echo $OUTPUT->footer();
+    echo $OUTPUT->footer();
+}

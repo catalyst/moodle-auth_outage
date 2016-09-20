@@ -37,7 +37,7 @@ class auth_outage_renderer extends plugin_renderer_base {
      */
     public function rendersubtitle($subtitlekey) {
         if (!is_string($subtitlekey)) {
-            throw new \InvalidArgumentException('$subtitle is not a string.');
+            throw new InvalidArgumentException('$subtitle is not a string.');
         }
         return html_writer::tag('h2', get_string($subtitlekey, 'auth_outage'));
     }
@@ -186,8 +186,9 @@ class auth_outage_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param outage $outage
-     * @param null $time
+     * Renders the outage page.
+     * @param outage $outage Outage to be rendered.
+     * @param null $time Time to use as refence. Null for current time.
      * @return string
      * @SuppressWarnings("unused") because $admineditlink is used inside require(...)
      */
@@ -197,8 +198,8 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (is_null($time)) {
             $time = time();
         }
-        if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time is not an int or null.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new InvalidArgumentException('$time is not an positive int or null.');
         }
 
         $adminlinks = [];
@@ -226,8 +227,30 @@ class auth_outage_renderer extends plugin_renderer_base {
             get_string('outageedit', 'auth_outage')
         );
 
+        $static = false;
+
         ob_start();
         require($CFG->dirroot . '/auth/outage/views/infopage.php');
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
+
+    /**
+     * Generates the HTML for a static info page.
+     * @param outage $outage Outage to generate the page.
+     * @return string The HTML code.
+     * @SuppressWarnings("unused") because variables are used in require(...)
+     */
+    public function renderoutagepagestatic(outage $outage) {
+        global $PAGE, $CFG;
+        $PAGE->set_context(context_system::instance());
+
+        $static = true;
+        $time = $outage->starttime;
+
+        ob_start();
+        require($CFG->dirroot . '/auth/outage/views/infopagestatic.php');
         $html = ob_get_contents();
         ob_end_clean();
         return $html;
@@ -246,8 +269,8 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (is_null($time)) {
             $time = time();
         }
-        if (!is_int($time)) {
-            throw new \InvalidArgumentException('$time is not an int or null.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new InvalidArgumentException('$time is not an positive int or null.');
         }
 
         $start = userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'));

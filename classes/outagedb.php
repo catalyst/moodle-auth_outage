@@ -120,6 +120,9 @@ class outagedb {
             self::calendar_update($outage);
         }
 
+        // Trigger static page update.
+        outagelib::updatestaticinfopagefile();
+
         // All done, return the id.
         return $outage->id;
     }
@@ -149,6 +152,9 @@ class outagedb {
         // Delete it and remove from calendar.
         $DB->delete_records('auth_outage', ['id' => $id]);
         self::calendar_delete($id);
+
+        // Trigger static page update.
+        outagelib::updatestaticinfopagefile();
     }
 
     /**
@@ -274,6 +280,37 @@ class outagedb {
 
         $outage->finished = $time;
         self::save($outage);
+    }
+
+    /**
+     * Gets the next outage which has not started yet.
+     * @param null $time Timestamp reference for current time.
+     * @return outage|null The outage or null if not found.
+     */
+    public static function get_next_starting($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new InvalidArgumentException('$time must be null or an positive int.');
+        }
+
+        $select = ':datetime <= starttime'; // End condition.
+        $data = $DB->get_records_select(
+            'auth_outage',
+            $select,
+            ['datetime' => $time],
+            'starttime ASC',
+            '*',
+            0,
+            1
+        );
+
+        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
+        // Allowing multiple records still raises an internal error.
+        return (count($data) == 0) ? null : new outage(array_shift($data));
     }
 
     /**

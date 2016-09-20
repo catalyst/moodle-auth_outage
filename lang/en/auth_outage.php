@@ -77,6 +77,7 @@ $string['infofrom'] = 'From:';
 $string['infountil'] = 'Until:';
 $string['infostart'] = 'start';
 $string['infostartofwarning'] = 'start of warning';
+$string['infopagestaticgenerated'] = 'This warning was generated on {$a->time}.';
 $string['menudefaults'] = 'Default Settings';
 $string['menumanage'] = 'Manage';
 $string['messageoutageongoing'] = 'Back online at {$a->stop}.';

@@ -16,7 +16,6 @@
 
 use auth_outage\infopage_controller;
 use auth_outage\models\outage;
-use auth_outage\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -53,7 +52,6 @@ class infopagecontroller_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         $PAGE->set_context(context_system::instance());
-        $renderer = outagelib::get_renderer();
         $now = time();
         $outage = new outage([
             'id' => 1,

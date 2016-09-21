@@ -22,18 +22,18 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Tests performed on outage class.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\event\outage_created
- * @covers     \auth_outage\event\outage_updated
- * @covers     \auth_outage\event\outage_deleted
+ * @package         auth_outage
+ * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright       Catalyst IT
+ * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers          \auth_outage\event\outage_created
+ * @covers          \auth_outage\event\outage_updated
+ * @covers          \auth_outage\event\outage_deleted
  */
 class events_test extends advanced_testcase {
     public function test_save() {
         global $DB;
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->resetAfterTest(false);
 
         // Save new outage.
@@ -54,7 +54,7 @@ class events_test extends advanced_testcase {
             'id',
             IGNORE_MISSING
         );
-        self::assertNotFalse($event);
+        self::assertTrue(is_object($event));
 
         // Another test will use it.
         return [$id, $event->id];
@@ -67,7 +67,7 @@ class events_test extends advanced_testcase {
     public function test_update($ids) {
         global $DB;
 
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->resetAfterTest(false);
 
         list($idoutage, $idevent) = $ids;
@@ -83,7 +83,7 @@ class events_test extends advanced_testcase {
             'id',
             IGNORE_MISSING
         );
-        self::assertNotFalse($event);
+        self::assertTrue(is_object($event));
         self::assertSame($idevent, $event->id);
 
         return $ids;
@@ -96,7 +96,7 @@ class events_test extends advanced_testcase {
     public function test_delete($ids) {
         global $DB;
 
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->resetAfterTest(true);
         list($idoutage, $idevent) = $ids;
 

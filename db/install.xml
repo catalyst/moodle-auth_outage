@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="auth/outage/db" VERSION="20160915" COMMENT="XMLDB file for Moodle auth/outage"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="auth/outage/db" VERSION="20160915"
+       COMMENT="XMLDB file for Moodle auth/outage"
+       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
-  <TABLES>
-    <TABLE NAME="auth_outage" COMMENT="Table used for auth/outage plugin. Holds information about all past, current and future outages.">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
-        <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
-        <FIELD NAME="warntime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When the outage will start showing a warning for that outage."/>
-        <FIELD NAME="title" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the outage (short description)."/>
-        <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="More information about the outage."/>
-        <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>
-        <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who last modified this entry."/>
-        <FIELD NAME="lastmodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When was this entry last modified."/>
-        <FIELD NAME="finished" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Timestamp of when the outage really finished."/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="start_stop_title" UNIQUE="false" FIELDS="starttime, stoptime, title"/>
-      </INDEXES>
-    </TABLE>
-  </TABLES>
+    <TABLES>
+        <TABLE NAME="auth_outage"
+               COMMENT="Table used for auth/outage plugin. Holds information about all past, current and future outages.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
+                <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>
+                <FIELD NAME="warntime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="When the outage will start showing a warning for that outage."/>
+                <FIELD NAME="title" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="Title for the outage (short description)."/>
+                <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="More information about the outage."/>
+                <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Who created this entry."/>
+                <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="Who last modified this entry."/>
+                <FIELD NAME="lastmodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
+                       COMMENT="When was this entry last modified."/>
+                <FIELD NAME="finished" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"
+                       COMMENT="Timestamp of when the outage really finished."/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="start_stop_title" UNIQUE="false" FIELDS="starttime, stoptime, title"/>
+            </INDEXES>
+        </TABLE>
+    </TABLES>
 </XMLDB>

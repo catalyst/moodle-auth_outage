@@ -19,7 +19,7 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,11 +28,11 @@ defined('MOODLE_INTERNAL') || die();
 if ($this->has_admin_options()) {
     $adminlinks = [];
     foreach ([
-                 'startofwarning' => -$this->outage->get_warning_duration(),
-                 '15secondsbefore' => -15,
-                 'start' => 0,
-                 'endofoutage' => $this->outage->get_duration_planned(),
-             ] as $title => $delta) {
+        'startofwarning' => -$this->outage->get_warning_duration(),
+        '15secondsbefore' => -15,
+        'start' => 0,
+        'endofoutage' => $this->outage->get_duration_planned(),
+    ] as $title => $delta) {
         $adminlinks[] = html_writer::link(
             new moodle_url(
                 '/auth/outage/info.php',

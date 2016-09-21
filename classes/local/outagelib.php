@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
+namespace auth_outage\local;
 
 use auth_outage_renderer;
 use Exception;
 use moodle_url;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -27,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib {
@@ -37,7 +38,7 @@ class outagelib {
      * Initializes admin pages for outage.
      * @return auth_outage_renderer The outage renderer for the page.
      */
-    public static function pagesetup() {
+    public static function page_setup() {
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
         $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
@@ -86,10 +87,10 @@ class outagelib {
             }
 
             // There is a previewing or active outage.
-            $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time)
-                . $CFG->additionalhtmltopofbody;
+            $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time).
+                                            $CFG->additionalhtmltopofbody;
         } catch (Exception $e) {
-            debugging('Exception occured while injecting our code: ' . $e->getMessage());
+            debugging('Exception occured while injecting our code: '.$e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
         }
     }
@@ -97,7 +98,7 @@ class outagelib {
     /**
      * Creates a configuration object ensuring all parameters are set,
      * loading defaults even if the plugin is not configured.
-     * @return object Configuration object with all parameters set.
+     * @return stdClass Configuration object with all parameters set.
      */
     public static function get_config() {
         return (object)array_merge(self::get_config_defaults(), (array)get_config('auth_outage'));
@@ -105,7 +106,7 @@ class outagelib {
 
     /**
      * Creates the default configurations. If the plugin is not configured we should use those defaults.
-     * @return array Default configuration.
+     * @return mixed[] Default configuration.
      */
     public static function get_config_defaults() {
         global $CFG;
@@ -115,7 +116,7 @@ class outagelib {
             'warning_duration' => 60,
             'warning_title' => get_string('defaultwarningtitlevalue', 'auth_outage'),
             'warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
-            'css' => file_get_contents($CFG->dirroot . '/auth/outage/views/warningbar.css'),
+            'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar.css'),
         ];
     }
 }

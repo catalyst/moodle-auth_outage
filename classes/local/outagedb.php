@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/calendar/lib.php');
+namespace auth_outage\local;
 
 use auth_outage\event\outage_created;
 use auth_outage\event\outage_deleted;
 use auth_outage\event\outage_updated;
-use auth_outage\models\outage;
+use auth_outage\local\controllers\infopage;
 use calendar_event;
-use InvalidArgumentException;
+use coding_exception;
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
  * The DB Context to manipulate Outages.
@@ -33,7 +33,7 @@ use InvalidArgumentException;
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagedb {
@@ -63,15 +63,13 @@ class outagedb {
     /**
      * @param $id int Outage id to get.
      * @return outage|null Returns the outage or null if not found.
+     * @throws coding_exception
      */
     public static function get_by_id($id) {
         global $DB;
 
-        if (!is_int($id)) {
-            throw new InvalidArgumentException('$id must be an int.');
-        }
-        if ($id <= 0) {
-            throw new InvalidArgumentException('$id must be positive.');
+        if (!is_int($id) || ($id <= 0)) {
+            throw new coding_exception('$id must be an positive int.', $id);
         }
 
         $outage = $DB->get_record('auth_outage', ['id' => $id]);
@@ -121,7 +119,7 @@ class outagedb {
         }
 
         // Trigger static page update.
-        infopage_controller::update_static_page();
+        infopage::update_static_page();
 
         // All done, return the id.
         return $outage->id;
@@ -131,16 +129,13 @@ class outagedb {
      * Deletes an outage from the database.
      *
      * @param int $id Outage ID to delete
-     * @throws InvalidArgumentException If ID is not valid.
+     * @throws coding_exception
      */
     public static function delete($id) {
         global $DB;
 
-        if (!is_int($id)) {
-            throw new InvalidArgumentException('$id must be an int.');
-        }
-        if ($id <= 0) {
-            throw new InvalidArgumentException('$id must be positive.');
+        if (!is_int($id) || ($id <= 0)) {
+            throw new coding_exception('$id must be an int.', $id);
         }
 
         // Log it.
@@ -154,7 +149,7 @@ class outagedb {
         self::calendar_delete($id);
 
         // Trigger static page update.
-        infopage_controller::update_static_page();
+        infopage::update_static_page();
     }
 
     /**
@@ -164,6 +159,7 @@ class outagedb {
      *  - Outages that stop later are more important.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
      * @return outage|null The outage or null if no active outages were found.
+     * @throws coding_exception
      */
     public static function get_active($time = null) {
         global $DB;
@@ -171,8 +167,8 @@ class outagedb {
         if ($time === null) {
             $time = time();
         }
-        if (!is_int($time)) {
-            throw new InvalidArgumentException('$time must be null or an int.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
         $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
@@ -195,7 +191,8 @@ class outagedb {
     /**
      * Gets all outages that have not ended yet.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
-     * @return array An array of outages or an empty array if no unded outages were found.
+     * @return outage[] An array of outages or an empty array if no unded outages were found.
+     * @throws coding_exception
      */
     public static function get_all_unended($time = null) {
         global $DB;
@@ -203,8 +200,8 @@ class outagedb {
         if ($time === null) {
             $time = time();
         }
-        if (!is_int($time)) {
-            throw new InvalidArgumentException('$time must be null or an int.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.');
         }
 
         $outages = [];
@@ -226,7 +223,8 @@ class outagedb {
     /**
      * Gets all ended outages.
      * @param int|null $time Timestamp considered to check for outages, null for current date/time.
-     * @return array An array of outages or an empty array if no ended outages found.
+     * @return outage[] An array of outages or an empty array if no ended outages found.
+     * @throws coding_exception
      */
     public static function get_all_ended($time = null) {
         global $DB;
@@ -234,8 +232,8 @@ class outagedb {
         if ($time === null) {
             $time = time();
         }
-        if (!is_int($time)) {
-            throw new InvalidArgumentException('$time must be null or an int.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
         $outages = [];
@@ -258,23 +256,24 @@ class outagedb {
      * Marks an outage as finished.
      * @param int $id Outage id.
      * @param int|null $time Timestamp to consider as finished date or null for current time.
+     * @throws coding_exception
      */
     public static function finish($id, $time = null) {
         if (is_null($time)) {
             $time = time();
         }
-        if (!is_int($time) && ($time <= 0)) {
-            throw new InvalidArgumentException('$time must be an int or null.');
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
         $outage = self::get_by_id($id);
         if (is_null($outage)) {
-            debugging('Cannot finish outage #' . $id . ': outage not found.');
+            debugging('Cannot finish outage #'.$id.': outage not found.');
             return;
         }
 
         if (!$outage->is_ongoing($time)) {
-            debugging('Cannot finish outage #' . $id . ': outage not ongoing.');
+            debugging('Cannot finish outage #'.$id.': outage not ongoing.');
             return;
         }
 
@@ -286,6 +285,7 @@ class outagedb {
      * Gets the next outage which has not started yet.
      * @param null $time Timestamp reference for current time.
      * @return outage|null The outage or null if not found.
+     * @throws coding_exception
      */
     public static function get_next_starting($time = null) {
         global $DB;
@@ -294,7 +294,7 @@ class outagedb {
             $time = time();
         }
         if (!is_int($time) || ($time <= 0)) {
-            throw new InvalidArgumentException('$time must be null or an positive int.');
+            throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
         $select = ':datetime <= starttime'; // End condition.
@@ -329,7 +329,7 @@ class outagedb {
         $event = self::calendar_load($outage->id);
 
         if (is_null($event)) {
-            debugging('Cannot update calendar entry for outage #' . $outage->id . ', event not found. Creating it...');
+            debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
             self::calendar_create($outage);
         } else {
             $event->update(self::calendar_data($outage));
@@ -345,7 +345,7 @@ class outagedb {
 
         // If not found (was not created before) ignore it.
         if (is_null($event)) {
-            debugging('Cannot delete calendar entry for outage #' . $outageid . ', event not found. Ignoring it...');
+            debugging('Cannot delete calendar entry for outage #'.$outageid.', event not found. Ignoring it...');
         } else {
             $event->delete();
         }
@@ -354,7 +354,7 @@ class outagedb {
     /**
      * Generates an array with the calendar event data based on an outage object.
      * @param outage $outage Outage to use as reference for the calendar event.
-     * @return array Calendar event data.
+     * @return mixed[] Calendar event data.
      */
     private static function calendar_data(outage $outage) {
         return [

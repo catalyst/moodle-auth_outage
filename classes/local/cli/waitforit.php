@@ -14,17 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\cli;
+namespace auth_outage\local\cli;
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Outage CLI to wait for an outage to start.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class waitforit extends clibase {
@@ -40,9 +42,9 @@ class waitforit extends clibase {
 
     /**
      * Generates all options (parameters) available for the CLI command.
-     * @return array Options.
+     * @return mixed[] Options.
      */
-    public function generateoptions() {
+    public function generate_options() {
         // Do not provide some defaults, if cloning an outage we need to know which parameters were provided.
         $options = [
             'help' => false,
@@ -56,9 +58,9 @@ class waitforit extends clibase {
 
     /**
      * Generate all short forms for the available options.
-     * @return array Short form options.
+     * @return string[] Short form options.
      */
-    public function generateshortcuts() {
+    public function generate_shortcuts() {
         return [
             'h' => 'help',
             'id' => 'outageid',
@@ -82,7 +84,7 @@ class waitforit extends clibase {
     public function execute() {
         // Help always overrides any other parameter.
         if ($this->options['help']) {
-            $this->showhelp('waitforit');
+            $this->show_help('waitforit');
             return;
         }
 
@@ -90,20 +92,20 @@ class waitforit extends clibase {
         $byid = !is_null($this->options['outageid']);
         $byactive = $this->options['active'];
         if ($byid == $byactive) {
-            throw new cliexception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
+            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
         }
 
         $this->verbose('Verbose mode activated.');
 
         $outage = $this->get_outage();
 
-        while ($sleep = $this->waitforoutagestart($outage)) {
+        while ($sleep = $this->wait_for_outage_to_start($outage)) {
             if (is_null($this->sleepcallback)) {
-                $this->verbose('Sleeping for ' . $sleep . ' second(s).');
+                $this->verbose('Sleeping for '.$sleep.' second(s).');
                 sleep($sleep);
                 $this->time = time();
             } else {
-                $this->verbose('Calling callback to sleep ' . $sleep . ' second(s).');
+                $this->verbose('Calling callback to sleep '.$sleep.' second(s).');
                 $callback = $this->sleepcallback;
                 $this->time = $callback($sleep);
             }
@@ -126,7 +128,7 @@ class waitforit extends clibase {
     /**
      * Gets the outage to wait for.
      * @return outage|null The outage to wait for.
-     * @throws cliexception
+     * @throws cli_exception
      */
     private function get_outage() {
         if ($this->options['active']) {
@@ -135,29 +137,35 @@ class waitforit extends clibase {
         } else {
             $id = $this->options['outageid'];
             if (!is_number($id) || ($id <= 0)) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
             }
-            $this->verbose('Querying database for outage #' . $id . '...');
+            $this->verbose('Querying database for outage #'.$id.'...');
             $outage = outagedb::get_by_id((int)$id);
         }
 
         if (is_null($outage)) {
-            throw new cliexception(get_string('clierroroutagenotfound', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'));
         }
 
-        $this->verbose('Found outage #' . $outage->id . ': ' . $outage->get_title());
+        $this->verbose('Found outage #'.$outage->id.': '.$outage->get_title());
         return $outage;
     }
 
-    private function waitforoutagestart(outage $outage) {
+    /**
+     * Calculate how many seconds to wait for the outage to start.
+     * @param outage $outage Outage to consider.
+     * @return int Seconds until it stars.
+     * @throws cli_exception
+     */
+    private function wait_for_outage_to_start(outage $outage) {
         $this->verbose('Checking outage status...');
         // Outage should not change while waiting to start.
         if (outagedb::get_by_id($outage->id) != $outage) {
-            throw new cliexception(get_string('clierroroutagechanged', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagechanged', 'auth_outage'));
         }
         // Outage cannot have already ended.
         if ($outage->has_ended($this->time)) {
-            throw new cliexception(get_string('clierroroutageended', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutageended', 'auth_outage'));
         }
         // If outage has started, do not wait.
         if ($outage->is_ongoing($this->time)) {

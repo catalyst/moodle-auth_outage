@@ -14,21 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\tables\manage;
+namespace auth_outage\local\output\manage;
 
-use auth_outage\models\outage;
+use auth_outage\local\outage;
+use html_writer;
+use moodle_url;
 
-require_once($CFG->libdir . '/tablelib.php');
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir.'/tablelib.php');
 
 /**
  * Manage outages table.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <danielroperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class planned extends managebase {
+class planned_table extends base_table {
     /**
      * Constructor
      */
@@ -55,12 +59,18 @@ class planned extends managebase {
      */
     public function set_data(array $outages) {
         foreach ($outages as $outage) {
+            $title = html_writer::link(
+                new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                $outage->get_title(),
+                ['title' => get_string('edit')]
+            );
+
             $this->add_data([
                 format_time($outage->get_warning_duration()),
                 userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
                 format_time($outage->get_duration_planned()),
-                $outage->get_title(),
-                $this->set_data_buttons($outage, true),
+                $title,
+                $this->set_data_buttons($outage, false),
             ]);
         }
     }

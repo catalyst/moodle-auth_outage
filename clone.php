@@ -19,32 +19,33 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\form\outage\edit;
+use auth_outage\local\outagedb;
+use auth_outage\local\outagelib;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir.'/formslib.php');
 
-$renderer = outagelib::pagesetup();
+$renderer = outagelib::page_setup();
 
-$mform = new \auth_outage\forms\outage\edit();
+$mform = new edit();
 
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php');
 } else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
+    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
 }
 
 $id = required_param('id', PARAM_INT);
 $outage = outagedb::get_by_id($id);
 if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
+    throw new invalid_parameter_exception('Outage #'.$id.' not found.');
 }
 
 // Remove outage id to force creating a new one.

@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,7 +61,7 @@ class events_test extends advanced_testcase {
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      * @depends test_save
      */
     public function test_update($ids) {
@@ -90,7 +90,7 @@ class events_test extends advanced_testcase {
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      * @depends test_update
      */
     public function test_delete($ids) {

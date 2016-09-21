@@ -19,17 +19,17 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\local\outagedb;
+use auth_outage\local\outagelib;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
 
-$renderer = outagelib::pagesetup();
+$renderer = outagelib::page_setup();
 
 echo $OUTPUT->header();
 

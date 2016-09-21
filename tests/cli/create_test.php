@@ -14,27 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\cli\cliexception;
-use auth_outage\cli\create;
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\create;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
-require_once('cli_testcase.php');
+require_once(__DIR__.'/cli_testcase.php');
 
 /**
  * Tests performed on CLI create class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class create_test extends cli_testcase {
     public function test_noarguments() {
         $cli = new create();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -47,7 +47,7 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -60,7 +60,7 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -73,7 +73,7 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -86,7 +86,7 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -101,12 +101,12 @@ class create_test extends cli_testcase {
     public function test_options() {
         $cli = new create();
 
-        $options = $cli->generateoptions();
+        $options = $cli->generate_options();
         foreach (array_keys($options) as $k) {
             self::assertTrue(is_string($k));
         }
 
-        $shorts = $cli->generateshortcuts();
+        $shorts = $cli->generate_shortcuts();
         foreach ($shorts as $s) {
             self::assertArrayHasKey($s, $options);
         }
@@ -209,7 +209,7 @@ class create_test extends cli_testcase {
         $this->set_parameters([
             '--onlyid',
             '--start=60',
-            '--clone=' . $id,
+            '--clone='.$id,
         ]);
         $cli = new create();
         $cli->set_referencetime($now);
@@ -224,7 +224,7 @@ class create_test extends cli_testcase {
     }
 
     public function test_create_withclone_invalid() {
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->set_parameters([
             '--start=60',
             '--clone=-1',

@@ -14,22 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\cli\cliexception;
-use auth_outage\cli\waitforit;
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\waitforit;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
-require_once('cli_testcase.php');
+require_once(__DIR__.'/cli_testcase.php');
 
 /**
  * Tests performed on CLI waitforit class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\cli\waitforit
+ * @covers     \auth_outage\local\cli\waitforit
  * @SuppressWarnings("public")
  */
 class waitforit_test extends cli_testcase {
@@ -40,7 +40,7 @@ class waitforit_test extends cli_testcase {
 
     public function test_generateoptions() {
         $cli = new waitforit();
-        $options = $cli->generateoptions();
+        $options = $cli->generate_options();
         foreach (array_keys($options) as $k) {
             self::assertTrue(is_string($k));
         }
@@ -48,8 +48,8 @@ class waitforit_test extends cli_testcase {
 
     public function test_generateshortcuts() {
         $cli = new waitforit();
-        $options = $cli->generateoptions();
-        $shorts = $cli->generateshortcuts();
+        $options = $cli->generate_options();
+        $shorts = $cli->generate_shortcuts();
         foreach ($shorts as $s) {
             self::assertArrayHasKey($s, $options);
         }
@@ -66,21 +66,21 @@ class waitforit_test extends cli_testcase {
     public function test_bothparams() {
         $this->set_parameters(['--outageid=1', '--active']);
         $cli = new waitforit();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $cli->execute();
     }
 
     public function test_invalidoutageid() {
         $this->set_parameters(['-id=-1']);
         $cli = new waitforit();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
     public function test_outagenotfound() {
         $this->set_parameters(['-a']);
         $cli = new waitforit();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -94,10 +94,10 @@ class waitforit_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id=' . $id]);
+        $this->set_parameters(['-id='.$id]);
         $cli = new waitforit();
         $cli->set_referencetime($now);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -166,7 +166,7 @@ class waitforit_test extends cli_testcase {
             // Pretend it is time to start, but it should get an error instead.
             return $outage->starttime;
         });
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 }

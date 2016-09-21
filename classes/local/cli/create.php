@@ -14,32 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\cli;
+namespace auth_outage\local\cli;
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Outage CLI to create outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class create extends clibase {
     /**
-     * @var array Defaults to use if given option is null.
+     * @var mixed[] Defaults to use if given option is null.
      */
     private $defaults;
 
     /**
      * Generates all options (parameters) available for the CLI command.
-     * @return array Options.
+     * @return mixed[] Options.
      */
-    public function generateoptions() {
+    public function generate_options() {
         // Do not provide some defaults, if cloning an outage we need to know which parameters were provided.
-        $options = [
+        return [
             'help' => false,
             'clone' => null,
             'warn' => null,
@@ -50,14 +52,13 @@ class create extends clibase {
             'onlyid' => false,
             'block' => false,
         ];
-        return $options;
     }
 
     /**
      * Generate all short forms for the available options.
-     * @return array Short form options.
+     * @return string[] Short form options.
      */
-    public function generateshortcuts() {
+    public function generate_shortcuts() {
         return [
             'b' => 'block',
             'c' => 'clone',
@@ -72,7 +73,7 @@ class create extends clibase {
 
     /**
      * Sets the default values for options.
-     * @param array $defaults Defaults.
+     * @param mixed[] $defaults Defaults.
      */
     public function set_defaults(array $defaults) {
         $this->defaults = $defaults;
@@ -84,23 +85,23 @@ class create extends clibase {
     public function execute() {
         // Help always overrides any other parameter.
         if ($this->options['help']) {
-            $this->showhelp('create');
+            $this->show_help('create');
             return;
         }
 
         // If not help mode, 'start' is required and cannot use default.
         if (is_null($this->options['start'])) {
-            throw new cliexception(get_string('clierrormissingparamaters', 'auth_outage'));
+            throw new cli_exception(get_string('clierrormissingparamaters', 'auth_outage'));
         }
 
         // If cloning, set defaults to outage being cloned.
         if (!is_null($this->options['clone'])) {
-            $this->clonedefaults();
+            $this->clone_defaults();
         }
 
         // Merge provided parameters with defaults then create outage.
-        $options = $this->mergeoptions();
-        $id = $this->createoutage($options);
+        $options = $this->merge_options();
+        $id = $this->create_outage($options);
 
         if ($options['block']) {
             $block = new waitforit(['outageid' => $id]);
@@ -110,10 +111,10 @@ class create extends clibase {
 
     /**
      * Merges provided options with defaults, checking and converting types as needed.
-     * @return array Parameters to use.
-     * @throws cliexception
+     * @return mixed[] Parameters to use.
+     * @throws cli_exception
      */
-    private function mergeoptions() {
+    private function merge_options() {
         $options = $this->options;
         // Merge with defaults.
         if (!is_null($this->defaults)) {
@@ -124,17 +125,17 @@ class create extends clibase {
             }
         }
 
-        return $this->mergeoptions_checkparameters($options);
+        return $this->merge_options_check_parameters($options);
     }
 
     /**
      * Creates an outages based on the provided options.
-     * @param array $options Options used to create the outage.
+     * @param mixed[] $options Options used to create the outage.
      * @return int Id of the new outage.
      */
-    private function createoutage(array $options) {
+    private function create_outage(array $options) {
         // We need to become an admin to avoid permission problems.
-        $this->becomeadmin();
+        $this->become_admin_user();
 
         // Create the outage.
         $start = $this->time + $options['start'];
@@ -157,10 +158,10 @@ class create extends clibase {
         return $id;
     }
 
-    private function clonedefaults() {
+    private function clone_defaults() {
         $id = $this->options['clone'];
         if (!is_number($id) || ($id <= 0)) {
-            throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'clone']));
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'clone']));
         }
 
         $outage = outagedb::get_by_id((int)$id);
@@ -174,30 +175,30 @@ class create extends clibase {
 
     /**
      * Check parameters converting their type as needed.
-     * @param array $options Input options.
-     * @return array Output options.
-     * @throws cliexception
+     * @param mixed $options Input options.
+     * @return mixed Output options.
+     * @throws cli_exception
      */
-    private function mergeoptions_checkparameters(array $options) {
+    private function merge_options_check_parameters(array $options) {
         // Check parameters that must be a non-negative int while converting their type to int.
         foreach (['start', 'warn', 'duration'] as $param) {
             if (!is_number($options[$param])) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
             }
             $options[$param] = (int)$options[$param];
             if ($options[$param] < 0) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
             }
         }
 
         // Check parameters that must be a non empty string.
         foreach (['title', 'description'] as $param) {
             if (!is_string($options[$param])) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
             }
             $options[$param] = trim($options[$param]);
             if (strlen($options[$param]) == 0) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
             }
         }
 

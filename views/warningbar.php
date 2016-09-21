@@ -19,11 +19,11 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\outagelib;
+use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -64,11 +64,11 @@ echo html_writer::tag('style', outagelib::get_config()->css);
                 $text = html_writer::empty_tag('img', [
                         'src' => $OUTPUT->pix_url('t/check'),
                         'alt' => get_string('finish', 'auth_outage'),
-                        'class' => 'iconsmall'
-                    ]) . ' ' . get_string('finish', 'auth_outage');
+                        'class' => 'iconsmall',
+                    ]).' '.get_string('finish', 'auth_outage');
                 $attr = [
                     'title' => get_string('finish', 'auth_outage'),
-                    'class' => 'auth_outage_warningbar_box_finish'
+                    'class' => 'auth_outage_warningbar_box_finish',
                 ];
                 echo html_writer::link($url, $text, $attr);
             }
@@ -79,7 +79,7 @@ echo html_writer::tag('style', outagelib::get_config()->css);
 
 <?php if (!$static && !$outage->is_ongoing($time)): ?>
     <script>
-        <?php require($CFG->dirroot . '/auth/outage/views/warningbar.js'); ?>
+        <?php require($CFG->dirroot.'/auth/outage/views/warningbar.js'); ?>
         auth_outage_countdown.init(
             <?php echo($outage->starttime - $time); ?>,
             <?php echo(is_siteadmin() ? 'true' : 'false'); ?>,

@@ -14,25 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\cli;
+namespace auth_outage\local\cli;
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Outage CLI to finish an outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class finish extends clibase {
     /**
      * Generates all options (parameters) available for the CLI command.
-     * @return array Options.
+     * @return mixed[] Options.
      */
-    public function generateoptions() {
+    public function generate_options() {
         // Do not provide some defaults, if cloning an outage we need to know which parameters were provided.
         $options = [
             'help' => false,
@@ -44,9 +46,9 @@ class finish extends clibase {
 
     /**
      * Generate all short forms for the available options.
-     * @return array Short form options.
+     * @return string[] Short form options.
      */
-    public function generateshortcuts() {
+    public function generate_shortcuts() {
         return [
             'h' => 'help',
             'id' => 'outageid',
@@ -60,7 +62,7 @@ class finish extends clibase {
     public function execute() {
         // Help always overrides any other parameter.
         if ($this->options['help']) {
-            $this->showhelp('finish');
+            $this->show_help('finish');
             return;
         }
 
@@ -68,12 +70,12 @@ class finish extends clibase {
         $byid = !is_null($this->options['outageid']);
         $byactive = $this->options['active'];
         if ($byid == $byactive) {
-            throw new cliexception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
+            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
         }
 
         $outage = $this->get_outage();
         if (!$outage->is_ongoing()) {
-            throw new cliexception(get_string('clifinishnotongoing', 'auth_outage'));
+            throw new cli_exception(get_string('clifinishnotongoing', 'auth_outage'));
         }
 
         outagedb::finish($outage->id, $this->time);
@@ -82,7 +84,7 @@ class finish extends clibase {
     /**
      * Gets the outage to finish.
      * @return outage|null The outage to wait for.
-     * @throws cliexception
+     * @throws cli_exception
      */
     private function get_outage() {
         if ($this->options['active']) {
@@ -90,13 +92,13 @@ class finish extends clibase {
         } else {
             $id = $this->options['outageid'];
             if (!is_number($id) || ($id <= 0)) {
-                throw new cliexception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
             }
             $outage = outagedb::get_by_id((int)$id);
         }
 
         if (is_null($outage)) {
-            throw new cliexception(get_string('clierroroutagenotfound', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'));
         }
 
         return $outage;

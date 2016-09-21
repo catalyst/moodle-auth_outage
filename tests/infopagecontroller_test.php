@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\infopage_controller;
-use auth_outage\models\outage;
+use auth_outage\local\controllers\infopage;
+use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\infopage_controller
  */
@@ -34,7 +34,7 @@ class infopagecontroller_test extends advanced_testcase {
             if (is_file($this->get_file())) {
                 unlink($this->get_file());
             } else {
-                self::fail('Invalid temp file: ' . $this->get_file());
+                self::fail('Invalid temp file: '.$this->get_file());
             }
         }
     }
@@ -44,7 +44,7 @@ class infopagecontroller_test extends advanced_testcase {
      * @return string Default file.
      */
     public function get_file() {
-        return sys_get_temp_dir() . '/phpunit_authoutage.tmp';
+        return sys_get_temp_dir().'/phpunit_authoutage.tmp';
     }
 
     public function test_staticpage_output() {
@@ -61,13 +61,13 @@ class infopagecontroller_test extends advanced_testcase {
             'title' => 'Outage Title at {{start}}',
             'description' => 'This is an <b>important</b> outage, starting at {{start}}.',
         ]);
-        $info = new infopage_controller(['static' => true, 'outage' => $outage]);
+        $info = new infopage(['static' => true, 'outage' => $outage]);
         $html = $info->get_output();
         self::assertContains('<!DOCTYPE html>', $html);
         self::assertContains('</html>', $html);
         self::assertContains($outage->get_title(), $html);
         self::assertContains($outage->get_description(), $html);
-        self::assertSame($outage->id, infopage_controller::find_outageid_from_infopage($html));
+        self::assertSame($outage->id, infopage::find_outageid_from_infopage($html));
     }
 
     public function test_staticpage_file() {
@@ -80,17 +80,17 @@ class infopagecontroller_test extends advanced_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
-        infopage_controller::save_static_page($outage, $this->get_file());
+        infopage::save_static_page($outage, $this->get_file());
         self::assertFileExists($this->get_file());
 
-        $id = infopage_controller::find_outageid_from_infopage(file_get_contents($this->get_file()));
+        $id = infopage::find_outageid_from_infopage(file_get_contents($this->get_file()));
         self::assertSame($outage->id, $id);
 
         unlink($this->get_file());
     }
 
     public function test_getdefaulttemplatefile() {
-        $file = infopage_controller::get_defaulttemplatefile();
+        $file = infopage::get_defaulttemplatefile();
         self::assertTrue(is_string($file));
         self::assertContains('template', $file);
     }

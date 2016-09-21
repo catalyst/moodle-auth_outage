@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
+namespace auth_outage\local\controllers;
 
-use auth_outage\models\outage;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
+use auth_outage\local\outagelib;
 use coding_exception;
 use context_system;
-use Exception;
-use InvalidArgumentException;
+use file_exception;
+use invalid_state_exception;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class infopage_controller {
+class infopage {
     /**
      * @var outage|null The outage to display or null if none found.
      */
@@ -46,7 +48,7 @@ class infopage_controller {
 
     /**
      * infopage_controller constructor.
-     * @param array|null $params Parameters to use or null to get from Moodle API (request).
+     * @param mixed[]|null $params Parameters to use or null to get from Moodle API (request).
      */
     public function __construct(array $params = null) {
         if (is_null($params)) {
@@ -74,7 +76,7 @@ class infopage_controller {
      */
     public static function find_outageid_from_infopage($html) {
         if (!is_string($html)) {
-            throw new InvalidArgumentException('$html must be a string.');
+            throw new coding_exception('$html must be a string.', $html);
         }
 
         $output = [];
@@ -88,24 +90,23 @@ class infopage_controller {
      * Saves a static info page for the given outage.
      * @param outage $outage Outage to generate the info page.
      * @param string $file File to save the static info page.
-     * @throws Exception
      */
     public static function save_static_page(outage $outage, $file) {
         if (!is_string($file)) {
-            throw new InvalidArgumentException('$file is not a string.');
+            throw new coding_exception('$file is not a string.', $file);
         }
 
-        $info = new infopage_controller(['outage' => $outage, 'static' => true]);
+        $info = new infopage(['outage' => $outage, 'static' => true]);
         $html = $info->get_output();
 
         // Sanity check before writing/overwriting old file.
         if (!is_string($html) || ($html == '') || (html_to_text($html) == '')) {
-            throw new Exception('Sanity check failed. Invalid contents on $html.');
+            throw new invalid_state_exception('Sanity check failed. Invalid contents on $html.');
         }
 
         $dir = dirname($file);
         if (!file_exists($dir) || !is_dir($dir)) {
-            throw new Exception('Directory must exists: ' . $dir);
+            throw new file_exception('Directory must exists: '.$dir);
         }
         file_put_contents($file, $html);
     }
@@ -113,14 +114,13 @@ class infopage_controller {
     /**
      * Updates the static info page by (re)creating or deleting it as needed.
      * @param null $file
-     * @throws Exception
      */
     public static function update_static_page($file = null) {
         if (is_null($file)) {
             $file = self::get_defaulttemplatefile();
         }
         if (!is_string($file)) {
-            throw new InvalidArgumentException('$file is not a string.');
+            throw new coding_exception('$file is not a string.', $file);
         }
 
         $outage = outagedb::get_next_starting();
@@ -129,7 +129,7 @@ class infopage_controller {
                 if (is_file($file) && is_writable($file)) {
                     unlink($file);
                 } else {
-                    throw new Exception('Cannot remove: ' . $file);
+                    throw new file_exception('Cannot remove: '.$file);
                 }
             }
         } else {
@@ -142,7 +142,7 @@ class infopage_controller {
      */
     public static function get_defaulttemplatefile() {
         global $CFG;
-        return $CFG->dataroot . '/climaintenance.template.html';
+        return $CFG->dataroot.'/climaintenance.template.html';
     }
 
     /**
@@ -152,6 +152,7 @@ class infopage_controller {
     public function get_output() {
         ob_start();
         try {
+            // TODO what if redirection occurs here?
             $this->output();
             return ob_get_contents();
         } finally {
@@ -184,7 +185,7 @@ class infopage_controller {
 
         $PAGE->set_context(context_system::instance());
         if ($this->static) {
-            require($CFG->dirroot . '/auth/outage/views/info/static.php');
+            require($CFG->dirroot.'/auth/outage/views/info/static.php');
         } else {
             $PAGE->set_title($this->outage->get_title());
             $PAGE->set_heading($this->outage->get_title());
@@ -194,22 +195,22 @@ class infopage_controller {
             outagelib::inject();
 
             echo $OUTPUT->header();
-            require($CFG->dirroot . '/auth/outage/views/info/content.php');
+            require($CFG->dirroot.'/auth/outage/views/info/content.php');
             echo $OUTPUT->footer();
         }
     }
 
     /**
      * Adjusts the fields according to the given parameters.
-     * @param array $params
+     * @param mixed[] $params
      */
     private function set_parameters(array $params) {
         if (!is_null($params['outage']) && !($params['outage'] instanceof outage)) {
-            throw new InvalidArgumentException('Provided outage is not a valid outage object.');
+            throw new coding_exception('Provided outage is not a valid outage object.', $params['outage']);
         }
 
         if (!is_null($params['id']) && !is_null($params['outage']) && ($params['id'] !== $params['outage']->id)) {
-            throw new InvalidArgumentException('Provided id and outage->id do not match.');
+            throw new coding_exception('Provided id and outage->id do not match.', $params);
         }
 
         if (is_null($params['id']) && is_null($params['outage'])) {

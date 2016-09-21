@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\cli\clibase;
+use auth_outage\local\cli\clibase;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cli_testcase extends advanced_testcase {
@@ -35,7 +35,7 @@ class cli_testcase extends advanced_testcase {
 
     /**
      * Mocks the command line parameters.
-     * @param array $options Options to use as parameters.
+     * @param string[] $options Options to use as parameters.
      */
     protected function set_parameters(array $options) {
         array_unshift($options, 'cli.php');

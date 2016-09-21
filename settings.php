@@ -19,10 +19,10 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use auth_outage\outagelib;
+use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -76,7 +76,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         new admin_externalpage(
             'auth_outage_manage',
             get_string('menumanage', 'auth_outage'),
-            new moodle_url($CFG->wwwroot . '/auth/outage/manage.php')
+            new moodle_url($CFG->wwwroot.'/auth/outage/manage.php')
         )
     );
 }

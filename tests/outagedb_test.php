@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -24,22 +24,14 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagedb_test extends advanced_testcase {
     /**
-     * Ensure DB tests run as admin.
-     */
-    public function setUp() {
-        parent::setUp();
-        $this->setAdminUser();
-    }
-
-    /**
      * Creates an array of ids in from the given outages array.
-     * @param array $outages An array of outages.
-     * @return array An array with the keys of the outages as values.
+     * @param outage[] $outages An array of outages.
+     * @return int[] An array with the keys of the outages as values.
      */
     private static function createidarray(array $outages) {
         $ids = [];
@@ -47,6 +39,36 @@ class outagedb_test extends advanced_testcase {
             $ids[] = $outage->id;
         }
         return $ids;
+    }
+
+    /**
+     * Helper function to create an outage then save it to the database.
+     *
+     * @param int $now Timestamp for now, such as time().
+     * @param int $warning In how many hours the warning starts. Can be negative.
+     * @param int $start In how many hours this outage starts. Can be negative.
+     * @param int $stop In how many hours this outage finishes. Can be negative.
+     * @param string $title Title for the outage.
+     * @param int|null $finished In how many hours this outage is marked as finished. Can be negative or null.
+     * @return int Id the of created outage.
+     */
+    private static function saveoutage($now, $warning, $start, $stop, $title, $finished = null) {
+        return outagedb::save(new outage([
+            'warntime' => $now + ($warning * 60 * 60),
+            'starttime' => $now + ($start * 60 * 60),
+            'stoptime' => $now + ($stop * 60 * 60),
+            'finished' => is_null($finished) ? null : ($now + ($finished * 60 * 60)),
+            'title' => $title,
+            'description' => 'Test Outage Description.',
+        ]));
+    }
+
+    /**
+     * Ensure DB tests run as admin.
+     */
+    public function setUp() {
+        parent::setUp();
+        $this->setAdminUser();
     }
 
     /**
@@ -150,7 +172,7 @@ class outagedb_test extends advanced_testcase {
             self::assertNotNull($inserted);
             // Check its data.
             foreach (['starttime', 'stoptime', 'warntime', 'title', 'description'] as $field) {
-                self::assertSame($outage->$field, $inserted->$field, 'Field ' . $field . ' does not match.');
+                self::assertSame($outage->$field, $inserted->$field, 'Field '.$field.' does not match.');
             }
             // Check generated data.
             self::assertGreaterThan(0, $inserted->id);
@@ -158,11 +180,11 @@ class outagedb_test extends advanced_testcase {
             self::assertNotNull($inserted->createdby);
             self::assertNotNull($inserted->modifiedby);
             // Change it.
-            $inserted->title = 'Title ID' . $id;
+            $inserted->title = 'Title ID'.$id;
             outagedb::save($inserted);
             // Get it again and check data.
             $updated = outagedb::get_by_id($id);
-            self::assertSame('Title ID' . $id, $updated->title);
+            self::assertSame('Title ID'.$id, $updated->title);
             self::assertSame($inserted->description, $updated->description);
             // Delete it.
             outagedb::delete($id);
@@ -296,28 +318,6 @@ class outagedb_test extends advanced_testcase {
     }
 
     /**
-     * Helper function to create an outage then save it to the database.
-     *
-     * @param int $now Timestamp for now, such as time().
-     * @param int $warning In how many hours the warning starts. Can be negative.
-     * @param int $start In how many hours this outage starts. Can be negative.
-     * @param int $stop In how many hours this outage finishes. Can be negative.
-     * @param string $title Title for the outage.
-     * @param int|null $finished In how many hours this outage is marked as finished. Can be negative or null.
-     * @return int Id the of created outage.
-     */
-    private static function saveoutage($now, $warning, $start, $stop, $title, $finished = null) {
-        return outagedb::save(new outage([
-            'warntime' => $now + ($warning * 60 * 60),
-            'starttime' => $now + ($start * 60 * 60),
-            'stoptime' => $now + ($stop * 60 * 60),
-            'finished' => is_null($finished) ? null : ($now + ($finished * 60 * 60)),
-            'title' => $title,
-            'description' => 'Test Outage Description.'
-        ]));
-    }
-
-    /**
      * Helper function to create an outage for tests.
      *
      * @param $i int Used to populate the information.
@@ -328,8 +328,8 @@ class outagedb_test extends advanced_testcase {
             'starttime' => $i * 100,
             'stoptime' => $i * 100 + 50,
             'warntime' => $i * 60,
-            'title' => 'The Title ' . $i,
-            'description' => 'A <b>description</b> in HTML.'
+            'title' => 'The Title '.$i,
+            'description' => 'A <b>description</b> in HTML.',
         ]);
     }
 }

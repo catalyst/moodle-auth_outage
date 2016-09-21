@@ -19,26 +19,27 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\form\outage\edit;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
+use auth_outage\local\outagelib;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir.'/formslib.php');
 
-outagelib::pagesetup();
+outagelib::page_setup();
 
-$mform = new \auth_outage\forms\outage\edit();
+$mform = new edit();
 if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php');
 } else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect('/auth/outage/manage.php#auth_outage_id_' . $id);
+    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
 }
 
 $config = outagelib::get_config();
@@ -47,7 +48,7 @@ $defaults = new outage([
     'stoptime' => time() + ($config->default_duration * 60),
     'warntime' => time() - ($config->warning_duration * 60),
     'title' => $config->warning_title,
-    'description' => $config->warning_description
+    'description' => $config->warning_description,
 ]);
 $mform->set_data($defaults);
 

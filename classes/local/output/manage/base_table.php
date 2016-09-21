@@ -14,24 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\tables\manage;
+namespace auth_outage\local\output\manage;
 
-use auth_outage\models\outage;
+use auth_outage\local\outage;
 use flexible_table;
 use html_writer;
 use moodle_url;
 
-require_once($CFG->libdir . '/tablelib.php');
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir.'/tablelib.php');
 
 /**
  * Manage outages table base.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <danielroperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class managebase extends flexible_table {
+class base_table extends flexible_table {
     private static $autoid = 0;
 
     /**
@@ -42,7 +44,7 @@ class managebase extends flexible_table {
         global $PAGE;
 
         $id = (is_null($id) ? self::$autoid++ : $id);
-        parent::__construct('auth_outage_manage_' . $id);
+        parent::__construct('auth_outage_manage_'.$id);
 
         $this->define_baseurl($PAGE->url);
         $this->set_attribute('class', 'generaltable admintable');
@@ -80,7 +82,7 @@ class managebase extends flexible_table {
                 html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/edit'),
                     'alt' => get_string('edit'),
-                    'class' => 'iconsmall'
+                    'class' => 'iconsmall',
                 ]),
                 ['title' => get_string('edit')]
             );
@@ -105,7 +107,7 @@ class managebase extends flexible_table {
                 html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/check'),
                     'alt' => get_string('finish', 'auth_outage'),
-                    'class' => 'iconsmall'
+                    'class' => 'iconsmall',
                 ]),
                 ['title' => get_string('finish', 'auth_outage')]
             );
@@ -118,12 +120,12 @@ class managebase extends flexible_table {
                 html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/delete'),
                     'alt' => get_string('delete'),
-                    'class' => 'iconsmall'
+                    'class' => 'iconsmall',
                 ]),
                 ['title' => get_string('delete')]
             );
         }
 
-        return '<nobr>' . $buttons . '</nobr>';
+        return '<nobr>'.$buttons.'</nobr>';
     }
 }

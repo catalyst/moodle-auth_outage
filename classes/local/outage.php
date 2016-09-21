@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\models;
+namespace auth_outage\local;
 
-use InvalidArgumentException;
+use coding_exception;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Outage class with all information about one specific outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outage {
@@ -104,8 +107,8 @@ class outage {
 
     /**
      * outage constructor.
-     * @param object|array|null The data for the outage.
-     * @throws InvalidArgumentException
+     * @param stdClass|mixed[]|null The data for the outage.
+     * @throws coding_exception
      */
     public function __construct($data = null) {
         if (is_null($data)) {
@@ -115,7 +118,7 @@ class outage {
             $data = (array)$data;
         }
         if (!is_array($data)) {
-            throw new InvalidArgumentException('$data is not an object, an array or null.');
+            throw new coding_exception('$data is not an object, an array or null.', $data);
         }
 
         // Load data from array.
@@ -136,13 +139,14 @@ class outage {
      * Gets at which stage is this outage.
      * @param int|null $time Null to check the current stage or a timestamp to check for another time.
      * @return int Stage, compare with STAGE_* constants.
+     * @throws coding_exception
      */
     public function get_stage($time = null) {
         if ($time === null) {
             $time = time();
         }
         if (!is_int($time) || ($time <= 0)) {
-            throw new InvalidArgumentException('$time must be an positive int.');
+            throw new coding_exception('$time must be an positive int.', $time);
         }
 
         if (!is_null($this->finished) && ($time >= $this->finished)) {
@@ -219,27 +223,6 @@ class outage {
     }
 
     /**
-     * Returns the input string with all placeholders replaced.
-     * @param $str string Input string.
-     * @return string Output string.
-     */
-    private function replace_placeholders($str) {
-        return str_replace(
-            [
-                '{{start}}',
-                '{{stop}}',
-                '{{duration}}',
-            ],
-            [
-                userdate($this->starttime, get_string('datetimeformat', 'auth_outage')),
-                userdate($this->stoptime, get_string('datetimeformat', 'auth_outage')),
-                format_time($this->get_duration_planned()),
-            ],
-            $str
-        );
-    }
-
-    /**
      * Gets the planned duration of the outage (start to planned stop, warning not included).
      * @return int Duration in seconds.
      */
@@ -261,5 +244,26 @@ class outage {
      */
     public function get_warning_duration() {
         return $this->starttime - $this->warntime;
+    }
+
+    /**
+     * Returns the input string with all placeholders replaced.
+     * @param $str string Input string.
+     * @return string Output string.
+     */
+    private function replace_placeholders($str) {
+        return str_replace(
+            [
+                '{{start}}',
+                '{{stop}}',
+                '{{duration}}',
+            ],
+            [
+                userdate($this->starttime, get_string('datetimeformat', 'auth_outage')),
+                userdate($this->stoptime, get_string('datetimeformat', 'auth_outage')),
+                format_time($this->get_duration_planned()),
+            ],
+            $str
+        );
     }
 }

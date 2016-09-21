@@ -14,19 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\models\outage;
-use auth_outage\tables\manage\planned;
+use auth_outage\local\outage;
+use auth_outage\local\output\manage\history_table;
+use auth_outage\local\output\manage\planned_table;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * auth_outage auth_outage_renderer
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class auth_outage_renderer extends plugin_renderer_base {
@@ -37,7 +36,7 @@ class auth_outage_renderer extends plugin_renderer_base {
      */
     public function rendersubtitle($subtitlekey) {
         if (!is_string($subtitlekey)) {
-            throw new InvalidArgumentException('$subtitle is not a string.');
+            throw new coding_exception('$subtitlekeym is not a string.', $subtitlekey);
         }
         return html_writer::tag('h2', get_string($subtitlekey, 'auth_outage'));
     }
@@ -48,9 +47,9 @@ class auth_outage_renderer extends plugin_renderer_base {
      * @return string HTML for the page.
      */
     public function renderdeleteconfirmation(outage $outage) {
-        return $this->rendersubtitle('outagedelete')
-        . html_writer::tag('p', get_string('outagedeletewarning', 'auth_outage'))
-        . $this->renderoutage($outage, false);
+        return $this->rendersubtitle('outagedelete').
+               html_writer::tag('p', get_string('outagedeletewarning', 'auth_outage')).
+               $this->renderoutage($outage, false);
     }
 
     /**
@@ -59,15 +58,15 @@ class auth_outage_renderer extends plugin_renderer_base {
      * @return string HTML for the page.
      */
     public function renderfinishconfirmation(outage $outage) {
-        return $this->rendersubtitle('outagefinish')
-        . html_writer::tag('p', get_string('outagefinishwarning', 'auth_outage'))
-        . $this->renderoutage($outage, false);
+        return $this->rendersubtitle('outagefinish').
+               html_writer::tag('p', get_string('outagefinishwarning', 'auth_outage')).
+               $this->renderoutage($outage, false);
     }
 
     /**
      * Outputs the HTML data listing all given outages.
-     * @param array $future Outages to list as planned.
-     * @param array $past Outages to list as history.
+     * @param outage[] $future Outages to list as planned.
+     * @param outage[] $past Outages to list as history.
      */
     public function renderoutagelist(array $future, array $past) {
         global $OUTPUT;
@@ -79,7 +78,7 @@ class auth_outage_renderer extends plugin_renderer_base {
         echo html_writer::tag('p',
             html_writer::link(
                 $url,
-                $img . ' ' . get_string('outagecreate', 'auth_outage'),
+                $img.' '.get_string('outagecreate', 'auth_outage'),
                 ['title' => get_string('delete')]
             )
         );
@@ -88,7 +87,7 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (empty($future)) {
             echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
         } else {
-            $table = new planned();
+            $table = new planned_table();
             $table->set_data($future);
             $table->finish_output();
         }
@@ -97,10 +96,43 @@ class auth_outage_renderer extends plugin_renderer_base {
         if (empty($past)) {
             echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
         } else {
-            $table = new \auth_outage\tables\manage\history();
+            $table = new history_table();
             $table->set_data($past);
             $table->finish_output();
         }
+    }
+
+    /**
+     * Renders the warning bar.
+     * @param outage $outage The outage to show in the warning bar.
+     * @param int|null $time Timestamp to send to the outage bar in order to render the outage. Null for current time.
+     * @return string HTML of the warning bar.
+     * @SuppressWarnings("unused") because $countdown is used inside require()
+     */
+    public function renderoutagebar(outage $outage, $time = null) {
+        global $CFG;
+
+        if (is_null($time)) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time is not an positive int or null.', $time);
+        }
+
+        $start = userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'));
+        $stop = userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage'));
+
+        $countdown = get_string(
+            $outage->is_ongoing($time) ? 'messageoutageongoing' : 'messageoutagewarning',
+            'auth_outage',
+            ['start' => $start, 'stop' => $stop]
+        );
+
+        ob_start();
+        require($CFG->dirroot.'/auth/outage/views/warningbar.php');
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
     }
 
     /**
@@ -118,7 +150,7 @@ class auth_outage_renderer extends plugin_renderer_base {
             $created = core_user::get_user($outage->createdby, 'firstname,lastname', MUST_EXIST);
             $created = html_writer::link(
                 new moodle_url('/user/profile.php', ['id' => $outage->createdby]),
-                trim($created->firstname . ' ' . $created->lastname)
+                trim($created->firstname.' '.$created->lastname)
             );
         }
 
@@ -128,7 +160,7 @@ class auth_outage_renderer extends plugin_renderer_base {
             $modified = core_user::get_user($outage->modifiedby, 'firstname,lastname', MUST_EXIST);
             $modified = html_writer::link(
                 new moodle_url('/user/profile.php', ['id' => $outage->modifiedby]),
-                trim($modified->firstname . ' ' . $modified->lastname)
+                trim($modified->firstname.' '.$modified->lastname)
             );
         }
 
@@ -155,66 +187,33 @@ class auth_outage_renderer extends plugin_renderer_base {
 
         return html_writer::div(
             html_writer::tag('blockquote',
-                html_writer::div(html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->id]))
-                . html_writer::div(html_writer::tag('i', $outage->get_description()))
-                . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderwarnbefore', 'auth_outage') . ': ')
-                    . format_time($outage->get_warning_duration())
-                )
-                . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderstarttime', 'auth_outage') . ': ')
-                    . userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'))
-                )
-                . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderdurationplanned', 'auth_outage') . ': ')
-                    . format_time($outage->get_duration_planned())
-                )
-                . html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderdurationactual', 'auth_outage') . ': ')
-                    . $finished
-                )
-                . html_writer::div(
+                html_writer::div(html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->id])).
+                html_writer::div(html_writer::tag('i', $outage->get_description())).
+                html_writer::div(
+                    html_writer::tag('b', get_string('tableheaderwarnbefore', 'auth_outage').': ').
+                    format_time($outage->get_warning_duration())
+                ).
+                html_writer::div(
+                    html_writer::tag('b', get_string('tableheaderstarttime', 'auth_outage').': ').
+                    userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'))
+                ).
+                html_writer::div(
+                    html_writer::tag('b', get_string('tableheaderdurationplanned', 'auth_outage').': ').
+                    format_time($outage->get_duration_planned())
+                ).
+                html_writer::div(
+                    html_writer::tag('b', get_string('tableheaderdurationactual', 'auth_outage').': ').
+                    $finished
+                ).
+                html_writer::div(
                     html_writer::tag('small',
-                        'Created by ' . $created
-                        . ', modified by ' . $modified . ' on '
-                        . userdate($outage->lastmodified, get_string('datetimeformat', 'auth_outage'))
+                        'Created by '.$created.
+                        ', modified by '.$modified.' on '.
+                        userdate($outage->lastmodified, get_string('datetimeformat', 'auth_outage'))
                     )
-                )
-                . ($buttons ? html_writer::div($linkedit . $linkdelete) : '')
+                ).
+                ($buttons ? html_writer::div($linkedit.$linkdelete) : '')
             )
         );
-    }
-
-    /**
-     * Renders the warning bar.
-     * @param outage $outage The outage to show in the warning bar.
-     * @param int|null $time Timestamp to send to the outage bar in order to render the outage. Null for current time.
-     * @return string HTML of the warning bar.
-     * @SuppressWarnings("unused") because $countdown is used inside require(...)
-     */
-    public function renderoutagebar(outage $outage, $time = null) {
-        global $CFG;
-
-        if (is_null($time)) {
-            $time = time();
-        }
-        if (!is_int($time) || ($time <= 0)) {
-            throw new InvalidArgumentException('$time is not an positive int or null.');
-        }
-
-        $start = userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'));
-        $stop = userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage'));
-
-        $countdown = get_string(
-            $outage->is_ongoing($time) ? 'messageoutageongoing' : 'messageoutagewarning',
-            'auth_outage',
-            ['start' => $start, 'stop' => $stop]
-        );
-
-        ob_start();
-        require($CFG->dirroot . '/auth/outage/views/warningbar.php');
-        $html = ob_get_contents();
-        ob_end_clean();
-        return $html;
     }
 }

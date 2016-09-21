@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/authlib.php');
+require_once($CFG->libdir.'/authlib.php');
 
 /**
  * Class auth_plugin_outage
@@ -53,6 +53,6 @@ class auth_plugin_outage extends auth_plugin_base {
      * Login page hook.
      */
     public function loginpage_hook() {
-        \auth_outage\outagelib::inject();
+        \auth_outage\local\outagelib::inject();
     }
 }

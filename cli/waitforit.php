@@ -19,21 +19,21 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\cli\cliexception;
-use auth_outage\cli\waitforit;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\waitforit;
 
 define('CLI_SCRIPT', true);
-require('../../config.php');
+require_once(__DIR__.'/../../../config.php');
 
 $cli = new waitforit();
 
 try {
     $cli->execute();
-} catch (cliexception $e) {
+} catch (cli_exception $e) {
     cli_error($e->getMessage());
 }
 

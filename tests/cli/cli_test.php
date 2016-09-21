@@ -14,32 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\cli\cliexception;
-use auth_outage\cli\create;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\create;
 
 defined('MOODLE_INTERNAL') || die();
-require_once('cli_testcase.php');
+require_once(__DIR__.'/cli_testcase.php');
 
 /**
  * Tests performed on CLI base and exception class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\cli\clibase
- * @covers     \auth_outage\cli\cliexception
+ * @covers     \auth_outage\local\cli\clibase
+ * @covers     \auth_outage\local\cli\cli_exception
  * @SuppressWarnings("public")
  */
 class cli_test extends cli_testcase {
     public function test_invalidargumentparam() {
         $this->set_parameters(['--aninvalidparameter']);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         new create();
     }
 
     public function test_invalidargumentgiven() {
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         new create(['anotherinvalidparameter']);
     }
 
@@ -51,7 +51,7 @@ class cli_test extends cli_testcase {
 
     public function test_setreferencetime_invalid() {
         $cli = new create(['start' => 0]);
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->setExpectedException(coding_exception::class);
         $cli->set_referencetime(-1);
     }
 
@@ -64,7 +64,7 @@ class cli_test extends cli_testcase {
     }
 
     public function test_exception() {
-        self::setExpectedException(cliexception::class, '*ERROR* An CLI exception.', 5);
-        throw new cliexception('An CLI exception.', 5);
+        self::setExpectedException(cli_exception::class, '*ERROR* An CLI exception.', 5);
+        throw new cli_exception('An CLI exception.', 5);
     }
 }

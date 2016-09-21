@@ -19,7 +19,7 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -56,7 +56,7 @@ require($CFG->dirroot.'/auth/outage/views/warningbar.php');
 
 <section>
     <h2><?php echo $this->outage->get_title(); ?></h2>
-    <?php require('content.php'); ?>
+    <?php require(__DIR__.'/content.php'); ?>
 </section>
 
 <!-- <?php echo

@@ -14,22 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\forms\outage;
+namespace auth_outage\form\outage;
 
-use auth_outage\models\outage;
+use auth_outage\local\outage;
+use coding_exception;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir.'/formslib.php');
 
 /**
  * Outage form.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit extends \moodleform {
@@ -58,7 +57,7 @@ class edit extends \moodleform {
             'text',
             'title',
             get_string('title', 'auth_outage'),
-            'maxlength="' . self::TITLE_MAX_CHARS . '" size="60"'
+            'maxlength="'.self::TITLE_MAX_CHARS.'" size="60"'
         );
         $mform->setType('title', PARAM_TEXT);
         $mform->addHelpButton('title', 'title', 'auth_outage');
@@ -74,9 +73,9 @@ class edit extends \moodleform {
     /**
      * Validate the parts of the request form for this module
      *
-     * @param array $data An array of form data
-     * @param array $files An array of form files
-     * @return array of error messages
+     * @param mixed[] $data An array of form data
+     * @param string[] $files An array of form files
+     * @return string[] of error messages
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
@@ -110,7 +109,7 @@ class edit extends \moodleform {
             return null;
         }
         if ($data->description['format'] != '1') {
-            debugging('Not implemented for format ' . $data->description['format'], DEBUG_DEVELOPER);
+            debugging('Not implemented for format '.$data->description['format'], DEBUG_DEVELOPER);
             return null;
         }
         // Return an outage.
@@ -120,16 +119,17 @@ class edit extends \moodleform {
             'stoptime' => $data->starttime + $data->outageduration,
             'warntime' => $data->starttime - $data->warningduration,
             'title' => $data->title,
-            'description' => $data->description['text']
+            'description' => $data->description['text'],
         ]);
     }
 
     /**
      * Load in existing outage as form defaults.
-     *
      * @param outage $outage outage object with default values
+     * @throws coding_exception
      */
     public function set_data($outage) {
+        // Cannot change method signature, check type.
         if ($outage instanceof outage) {
             $this->_form->setDefaults([
                 'id' => $outage->id,
@@ -137,10 +137,10 @@ class edit extends \moodleform {
                 'outageduration' => $outage->get_duration_planned(),
                 'warningduration' => $outage->get_warning_duration(),
                 'title' => $outage->title,
-                'description' => ['text' => $outage->description, 'format' => '1']
+                'description' => ['text' => $outage->description, 'format' => '1'],
             ]);
         } else {
-            throw new \InvalidArgumentException('$outage must be an outage object.');
+            throw new coding_exception('$outage must be an outage object.', $outage);
         }
     }
 }

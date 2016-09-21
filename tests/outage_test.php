@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\models\outage;
+use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,9 +23,9 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\models\outage
+ * @covers     \auth_outage\local\outage
  */
 class outage_test extends basic_testcase {
     public function test_constructor() {
@@ -47,7 +47,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now - (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertFalse($outage->is_ongoing($now));
 
@@ -57,7 +57,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now + (1 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertTrue($outage->is_ongoing($now));
 
@@ -67,7 +67,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now + (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertFalse($outage->is_ongoing($now));
     }
@@ -81,7 +81,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now - (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertFalse($outage->is_active($now));
 
@@ -91,7 +91,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now + (1 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertTrue($outage->is_active($now));
 
@@ -101,7 +101,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now + (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertTrue($outage->is_active($now));
 
@@ -111,7 +111,7 @@ class outage_test extends basic_testcase {
             'stoptime' => $now + (3 * 60 * 60),
             'warntime' => $now + (1 * 60 * 60),
             'title' => '',
-            'description' => ''
+            'description' => '',
         ]);
         self::assertFalse($outage->is_active($now));
     }

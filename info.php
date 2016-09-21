@@ -19,13 +19,13 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\infopage_controller;
+use auth_outage\local\controllers\infopage;
 
-require_once('../../config.php');
+require_once(__DIR__.'/../../config.php');
 
-$info = new infopage_controller();
+$info = new infopage();
 $info->output();

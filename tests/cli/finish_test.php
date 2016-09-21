@@ -14,22 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\cli\cliexception;
-use auth_outage\cli\finish;
-use auth_outage\models\outage;
-use auth_outage\outagedb;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\finish;
+use auth_outage\local\outage;
+use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
-require_once('cli_testcase.php');
+require_once(__DIR__.'/cli_testcase.php');
 
 /**
  * Tests performed on CLI finish class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\cli\finish
+ * @covers     \auth_outage\local\cli\finish
  */
 class finish_test extends cli_testcase {
     public function test_constructor() {
@@ -40,12 +40,12 @@ class finish_test extends cli_testcase {
     public function test_options() {
         $cli = new finish();
 
-        $options = $cli->generateoptions();
+        $options = $cli->generate_options();
         foreach (array_keys($options) as $k) {
             self::assertTrue(is_string($k));
         }
 
-        $shorts = $cli->generateshortcuts();
+        $shorts = $cli->generate_shortcuts();
         foreach ($shorts as $s) {
             self::assertArrayHasKey($s, $options);
         }
@@ -61,7 +61,7 @@ class finish_test extends cli_testcase {
 
     public function test_noarguments() {
         $cli = new finish();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -75,10 +75,10 @@ class finish_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id=' . $id]);
+        $this->set_parameters(['-id='.$id]);
         $cli = new finish();
         $cli->set_referencetime($now);
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -92,7 +92,7 @@ class finish_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id=' . $id]);
+        $this->set_parameters(['-id='.$id]);
         $cli = new finish();
         $cli->set_referencetime($now);
         $this->execute($cli);
@@ -102,7 +102,7 @@ class finish_test extends cli_testcase {
         $this->setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -110,7 +110,7 @@ class finish_test extends cli_testcase {
         $this->setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -118,7 +118,7 @@ class finish_test extends cli_testcase {
         $this->setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();
-        $this->setExpectedException(cliexception::class);
+        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 }

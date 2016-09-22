@@ -66,7 +66,7 @@ class history_table extends base_table {
                 format_time($outage->get_duration_planned()),
                 $finished,
                 $outage->get_title(),
-                $this->set_data_buttons($outage, true),
+                $this->set_data_buttons($outage, false),
             ]);
         }
     }

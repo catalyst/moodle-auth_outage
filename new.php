@@ -46,9 +46,9 @@ $config = outagelib::get_config();
 $defaults = new outage([
     'starttime' => time(),
     'stoptime' => time() + ($config->default_duration * 60),
-    'warntime' => time() - ($config->warning_duration * 60),
-    'title' => $config->warning_title,
-    'description' => $config->warning_description,
+    'warntime' => time() - ($config->default_warning_duration * 60),
+    'title' => $config->default_warning_title,
+    'description' => $config->default_warning_description,
 ]);
 $mform->set_data($defaults);
 

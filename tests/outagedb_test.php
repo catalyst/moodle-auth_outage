@@ -44,6 +44,7 @@ class outagedb_test extends advanced_testcase {
     /**
      * Helper function to create an outage then save it to the database.
      *
+     * @param bool $autostart If outage should automatically start.
      * @param int $now Timestamp for now, such as time().
      * @param int $warning In how many hours the warning starts. Can be negative.
      * @param int $start In how many hours this outage starts. Can be negative.
@@ -52,8 +53,9 @@ class outagedb_test extends advanced_testcase {
      * @param int|null $finished In how many hours this outage is marked as finished. Can be negative or null.
      * @return int Id the of created outage.
      */
-    private static function saveoutage($now, $warning, $start, $stop, $title, $finished = null) {
+    private static function saveoutage($autostart, $now, $warning, $start, $stop, $title, $finished = null) {
         return outagedb::save(new outage([
+            'autostart' => $autostart,
             'warntime' => $now + ($warning * 60 * 60),
             'starttime' => $now + ($start * 60 * 60),
             'stoptime' => $now + ($stop * 60 * 60),
@@ -82,6 +84,21 @@ class outagedb_test extends advanced_testcase {
         $outage = $this->createoutage(2);
         $outage->id = $id;
         outagedb::save($outage);
+    }
+
+    public function test_saved_fields() {
+        $this->resetAfterTest(true);
+        for ($i = 0; $i < 4; $i++) {
+            $expected = $this->createoutage($i);
+            $expected->id = outagedb::save($expected);
+            $actual = outagedb::get_by_id($expected->id);
+            // Ignore the following fields.
+            $expected->lastmodified = $actual->lastmodified;
+            $expected->createdby = $actual->createdby;
+            $expected->modifiedby = $actual->modifiedby;
+            // Check if fields are the same.
+            self::assertEquals($expected, $actual, 'Failed for $i='.$i);
+        }
     }
 
     /**
@@ -121,7 +138,7 @@ class outagedb_test extends advanced_testcase {
         $now = time();
         $this->resetAfterTest(true);
         // Create it.
-        $id = self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
+        $id = self::saveoutage(false, $now, -3, -2, 2, 'An ongoing outage.');
         $outage = outagedb::get_by_id($id);
         self::assertTrue($outage->is_active($now));
         self::assertTrue($outage->is_ongoing($now));
@@ -202,34 +219,29 @@ class outagedb_test extends advanced_testcase {
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
         self::assertNull(outagedb::get_active($now), 'There should be no active outage at this point.');
 
-        self::saveoutage($now, 1, 2, 3,
-            'An outage that starts in the future and is not in warning period.');
+        self::saveoutage(false, $now, 1, 2, 3, 'An outage that starts in the future and is not in warning period.');
         self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
-        self::saveoutage($now, -3, -2, -1,
-            'An outage that is already in the past.');
+        self::saveoutage(false, $now, -3, -2, -1, 'An outage that is already in the past.');
         self::assertNull(outagedb::get_active($now), 'No active outages yet.');
 
-        $activeid = self::saveoutage($now, -2, 1, 2,
-            'An outage in warning period.');
+        $activeid = self::saveoutage(false, $now, -2, 1, 2, 'An outage in warning period.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        self::saveoutage($now, -1, 2, 3,
+        self::saveoutage(false, $now, -1, 2, 3,
             'Another outage in warning period, but ignored as it starts after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        self::saveoutage($now, -3, -2, 2, 'An finished outage.', -1);
+        self::saveoutage(false, $now, -3, -2, 2, 'An finished outage.', -1);
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        $activeid = self::saveoutage($now, -3, -2, 2,
-            'An ongoing outage.');
+        $activeid = self::saveoutage(false, $now, -3, -2, 2, 'An ongoing outage.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        self::saveoutage($now, -3, -1, 1,
-            'Another ongoing outage but ignored because it started after the previous one.');
+        self::saveoutage(false, $now, -3, -1, 1, 'Another ongoing outage but ignored because it started after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
-        self::saveoutage($now, -3, -2, 1,
+        self::saveoutage(false, $now, -3, -2, 1,
             'Another ongoing outage starting at the same time, but ignored as it stops before the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
     }
@@ -243,41 +255,41 @@ class outagedb_test extends advanced_testcase {
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
         self::assertEquals([], outagedb::get_all_unended($now), 'There should be no future outages at this point.');
 
-        self::saveoutage($now, -3, -2, -1, 'A past outage.');
+        self::saveoutage(false, $now, -3, -2, -1, 'A past outage.');
         self::assertEquals([], outagedb::get_all_unended($now), 'No future outages yet.');
 
-        self::saveoutage($now, -3, -2, 2, 'A finished outage.', -1);
+        self::saveoutage(false, $now, -3, -2, 2, 'A finished outage.', -1);
         self::assertEquals([], outagedb::get_all_unended($now), 'No future outages yet.');
 
-        $id1 = self::saveoutage($now, 2, 3, 4, 'A future outage.');
+        $id1 = self::saveoutage(false, $now, 2, 3, 4, 'A future outage.');
         self::assertEquals([$id1],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id2 = self::saveoutage($now, 1, 4, 5, 'Another future outage.');
+        $id2 = self::saveoutage(false, $now, 1, 4, 5, 'Another future outage.');
         self::assertEquals([$id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id3 = self::saveoutage($now, 1, 3, 5, 'Yet another future outage.');
+        $id3 = self::saveoutage(false, $now, 1, 3, 5, 'Yet another future outage.');
         self::assertEquals([$id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id4 = self::saveoutage($now, -2, 1, 2, 'An outage in warning period.');
+        $id4 = self::saveoutage(false, $now, -2, 1, 2, 'An outage in warning period.');
         self::assertEquals([$id4, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id5 = self::saveoutage($now, -1, 2, 3, 'Another outage in warning period.');
+        $id5 = self::saveoutage(false, $now, -1, 2, 3, 'Another outage in warning period.');
         self::assertEquals([$id4, $id5, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id6 = self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
+        $id6 = self::saveoutage(false, $now, -3, -2, 2, 'An ongoing outage.');
         self::assertEquals([$id6, $id4, $id5, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id7 = self::saveoutage($now, -3, -1, 1, 'Another ongoing outage.');
+        $id7 = self::saveoutage(false, $now, -3, -1, 1, 'Another ongoing outage.');
         self::assertEquals([$id6, $id7, $id4, $id5, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
 
-        $id8 = self::saveoutage($now, -3, -2, 1, 'Yet another ongoing outage.');
+        $id8 = self::saveoutage(false, $now, -3, -2, 1, 'Yet another ongoing outage.');
         self::assertEquals([$id6, $id8, $id7, $id4, $id5, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_unended($now)), 'Wrong future data.');
     }
@@ -291,28 +303,28 @@ class outagedb_test extends advanced_testcase {
         self::assertEquals([], outagedb::get_all(), 'Ensure there are no other outages that can affect the test.');
         self::assertEquals([], outagedb::get_all_ended($now), 'There should be no future outages at this point.');
 
-        self::saveoutage($now, -2, 1, 2, 'An outage in warning period.');
+        self::saveoutage(false, $now, -2, 1, 2, 'An outage in warning period.');
         self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
-        self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
+        self::saveoutage(false, $now, -3, -2, 2, 'An ongoing outage.');
         self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
-        self::saveoutage($now, 2, 3, 4, 'A future outage.');
+        self::saveoutage(false, $now, 2, 3, 4, 'A future outage.');
         self::assertEquals([], outagedb::get_all_ended($now), 'No past outages yet.');
 
-        $id1 = self::saveoutage($now, -8, -6, -4, 'A past outage.');
+        $id1 = self::saveoutage(false, $now, -8, -6, -4, 'A past outage.');
         self::assertEquals([$id1],
             self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
 
-        $id2 = self::saveoutage($now, -8, -7, -5, 'Another past outage.');
+        $id2 = self::saveoutage(false, $now, -8, -7, -5, 'Another past outage.');
         self::assertEquals([$id1, $id2],
             self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
 
-        $id3 = self::saveoutage($now, -8, -5, -3, 'Yet another past outage.');
+        $id3 = self::saveoutage(false, $now, -8, -5, -3, 'Yet another past outage.');
         self::assertEquals([$id3, $id1, $id2],
             self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
 
-        $id4 = self::saveoutage($now, -3, -2, 2, 'A finished outage.', -1);
+        $id4 = self::saveoutage(false, $now, -3, -2, 2, 'A finished outage.', -1);
         self::assertEquals([$id4, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
     }
@@ -325,6 +337,7 @@ class outagedb_test extends advanced_testcase {
      */
     private function createoutage($i) {
         return new outage([
+            'autostart' => ($i % 2 == 0),
             'starttime' => $i * 100,
             'stoptime' => $i * 100 + 50,
             'warntime' => $i * 60,

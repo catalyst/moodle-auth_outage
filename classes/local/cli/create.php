@@ -18,6 +18,7 @@ namespace auth_outage\local\cli;
 
 use auth_outage\local\outage;
 use auth_outage\local\outagedb;
+use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,6 +45,7 @@ class create extends clibase {
         return [
             'help' => false,
             'clone' => null,
+            'autostart' => null,
             'warn' => null,
             'start' => null,
             'duration' => null,
@@ -60,6 +62,7 @@ class create extends clibase {
      */
     public function generate_shortcuts() {
         return [
+            'a' => 'autostart',
             'b' => 'block',
             'c' => 'clone',
             'd' => 'duration',
@@ -74,8 +77,26 @@ class create extends clibase {
     /**
      * Sets the default values for options.
      * @param mixed[] $defaults Defaults.
+     * @throws coding_exception
      */
     public function set_defaults(array $defaults) {
+        $missing = $this->generate_options();
+
+        // Check if any extra parameter was given.
+        foreach (array_keys($defaults) as $key) {
+            if (!array_key_exists($key, $missing)) {
+                throw new coding_exception('$default['.$key.'] is not valid.');
+            }
+            unset($missing[$key]);
+        }
+
+        // Check if any required parameter is missing.
+        foreach (array_keys($missing) as $k => $v) {
+            if (is_null($v)) {
+                throw new coding_exception('$default[] missing: '.$k);
+            }
+        }
+
         $this->defaults = $defaults;
     }
 
@@ -110,12 +131,13 @@ class create extends clibase {
     }
 
     /**
-     * Merges provided options with defaults, checking and converting types as needed.
+     * Merges provided options with defaults.
      * @return mixed[] Parameters to use.
      * @throws cli_exception
      */
     private function merge_options() {
         $options = $this->options;
+
         // Merge with defaults.
         if (!is_null($this->defaults)) {
             foreach ($options as $k => $v) {
@@ -140,6 +162,7 @@ class create extends clibase {
         // Create the outage.
         $start = $this->time + $options['start'];
         $outage = new outage([
+            'autostart' => $options['autostart'],
             'warntime' => $start - $options['warn'],
             'starttime' => $start,
             'stoptime' => $start + $options['duration'],
@@ -166,6 +189,7 @@ class create extends clibase {
 
         $outage = outagedb::get_by_id((int)$id);
         $this->set_defaults([
+            'autostart' => $outage->autostart,
             'warn' => $outage->get_warning_duration(),
             'duration' => $outage->get_duration_planned(),
             'title' => $outage->title,
@@ -198,6 +222,29 @@ class create extends clibase {
             }
             $options[$param] = trim($options[$param]);
             if (strlen($options[$param]) == 0) {
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+            }
+        }
+
+        // Check parameters that must be a specified bool.
+        foreach (['autostart'] as $param) {
+            if (is_string($options[$param])) {
+                switch (strtoupper($options[$param])) {
+                    case '0':
+                    case 'FALSE':
+                    case 'NO':
+                    case 'N':
+                        $options[$param] = false;
+                        break;
+                    case '1':
+                    case 'TRUE':
+                    case 'YES':
+                    case 'Y':
+                        $options[$param] = true;
+                        break;
+                }
+            }
+            if (!is_bool($options[$param])) {
                 throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
             }
         }

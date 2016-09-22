@@ -90,6 +90,9 @@ class infopage {
      * Saves a static info page for the given outage.
      * @param outage $outage Outage to generate the info page.
      * @param string $file File to save the static info page.
+     * @throws coding_exception
+     * @throws file_exception
+     * @throws invalid_state_exception
      */
     public static function save_static_page(outage $outage, $file) {
         if (!is_string($file)) {

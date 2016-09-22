@@ -66,9 +66,10 @@ class finish_test extends cli_testcase {
     }
 
     public function test_endedoutage() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
+            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now - 50,
@@ -83,9 +84,10 @@ class finish_test extends cli_testcase {
     }
 
     public function test_finish() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
+            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now + 100,
@@ -99,7 +101,7 @@ class finish_test extends cli_testcase {
     }
 
     public function test_activenotfound() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
         $this->setExpectedException(cli_exception::class);
@@ -107,7 +109,7 @@ class finish_test extends cli_testcase {
     }
 
     public function test_invalidid() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
         $this->setExpectedException(cli_exception::class);
@@ -115,7 +117,7 @@ class finish_test extends cli_testcase {
     }
 
     public function test_idnotfound() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();
         $this->setExpectedException(cli_exception::class);

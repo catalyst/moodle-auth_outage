@@ -16,6 +16,7 @@
 
 namespace auth_outage\local;
 
+use auth_outage\local\controllers\infopage;
 use auth_outage_renderer;
 use Exception;
 use moodle_url;
@@ -112,11 +113,32 @@ class outagelib {
         global $CFG;
 
         return [
+            'default_autostart' => false,
             'default_duration' => 60,
-            'warning_duration' => 60,
-            'warning_title' => get_string('defaultwarningtitlevalue', 'auth_outage'),
-            'warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
+            'default_warning_duration' => 60,
+            'default_warning_title' => get_string('defaultwarningtitlevalue', 'auth_outage'),
+            'default_warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
             'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar.css'),
         ];
+    }
+
+    /**
+     * Executed when outages are modified (created, updated or deleted).
+     */
+    public static function outages_modified() {
+        infopage::update_static_page();
+        self::update_maintenance_later();
+    }
+
+    /**
+     * Calls Moodle API - set_maintenance_later() to set when the next outage starts.
+     */
+    private static function update_maintenance_later() {
+        $next = outagedb::get_next_autostarting();
+        if (is_null($next)) {
+            unset_config('maintenance_later');
+        } else {
+            set_config('maintenance_later', $next->starttime);
+        }
     }
 }

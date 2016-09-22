@@ -19,7 +19,6 @@ namespace auth_outage\local;
 use auth_outage\event\outage_created;
 use auth_outage\event\outage_deleted;
 use auth_outage\event\outage_updated;
-use auth_outage\local\controllers\infopage;
 use calendar_event;
 use coding_exception;
 
@@ -118,8 +117,8 @@ class outagedb {
             self::calendar_update($outage);
         }
 
-        // Trigger static page update.
-        infopage::update_static_page();
+        // Trigger outages modified events.
+        outagelib::outages_modified();
 
         // All done, return the id.
         return $outage->id;
@@ -148,8 +147,8 @@ class outagedb {
         $DB->delete_records('auth_outage', ['id' => $id]);
         self::calendar_delete($id);
 
-        // Trigger static page update.
-        infopage::update_static_page();
+        // Trigger events.
+        outagelib::outages_modified();
     }
 
     /**
@@ -297,10 +296,40 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
-        $select = ':datetime <= starttime'; // End condition.
         $data = $DB->get_records_select(
             'auth_outage',
-            $select,
+            ':datetime <= starttime',
+            ['datetime' => $time],
+            'starttime ASC',
+            '*',
+            0,
+            1
+        );
+
+        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
+        // Allowing multiple records still raises an internal error.
+        return (count($data) == 0) ? null : new outage(array_shift($data));
+    }
+
+    /**
+     * Gets the next outage which has not started yet and has the autostart flag set to true.
+     * @param null $time Timestamp reference for current time.
+     * @return outage|null The outage or null if not found.
+     * @throws coding_exception
+     */
+    public static function get_next_autostarting($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.', $time);
+        }
+
+        $data = $DB->get_records_select(
+            'auth_outage',
+            '(:datetime <= starttime) AND (autostart = 1)',
             ['datetime' => $time],
             'starttime ASC',
             '*',

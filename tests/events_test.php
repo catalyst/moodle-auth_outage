@@ -39,6 +39,7 @@ class events_test extends advanced_testcase {
         // Save new outage.
         $now = time();
         $id = outagedb::save(new outage([
+            'autostart' => false,
             'warntime' => $now - 60,
             'starttime' => 60,
             'stoptime' => 120,

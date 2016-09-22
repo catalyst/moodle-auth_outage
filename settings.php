@@ -30,6 +30,13 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $defaults = outagelib::get_config_defaults();
     // Configure default settings page.
     $settings->visiblename = get_string('menudefaults', 'auth_outage');
+    $settings->add(new admin_setting_configcheckbox(
+        'auth_outage/default_autostart',
+        get_string('defaultoutageautostart', 'auth_outage'),
+        get_string('defaultoutageautostartdescription', 'auth_outage'),
+        $defaults['default_autostart'],
+        PARAM_BOOL
+    ));
     $settings->add(new admin_setting_configtext(
         'auth_outage/default_duration',
         get_string('defaultoutageduration', 'auth_outage'),
@@ -38,24 +45,24 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         PARAM_INT
     ));
     $settings->add(new admin_setting_configtext(
-        'auth_outage/warning_duration',
+        'auth_outage/default_warning_duration',
         get_string('defaultwarningduration', 'auth_outage'),
         get_string('defaultwarningdurationdescription', 'auth_outage'),
-        $defaults['warning_duration'],
+        $defaults['default_warning_duration'],
         PARAM_INT
     ));
     $settings->add(new admin_setting_configtext(
-        'auth_outage/warning_title',
+        'auth_outage/default_warning_title',
         get_string('defaultwarningtitle', 'auth_outage'),
         get_string('defaultwarningtitledescription', 'auth_outage'),
-        $defaults['warning_title'],
+        $defaults['default_warning_title'],
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configtextarea(
-        'auth_outage/warning_description',
+        'auth_outage/default_warning_description',
         get_string('defaultwarningdescription', 'auth_outage'),
         get_string('defaultwarningdescriptiondescription', 'auth_outage'),
-        $defaults['warning_description'],
+        $defaults['default_warning_description'],
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configtextarea(

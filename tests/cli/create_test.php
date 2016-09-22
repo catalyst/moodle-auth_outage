@@ -114,6 +114,7 @@ class create_test extends cli_testcase {
 
     public function test_create_withoptions() {
         $this->set_parameters([
+            '--autostart=true',
             '--warn=10',
             '--start=0',
             '--duration=30',
@@ -140,6 +141,7 @@ class create_test extends cli_testcase {
     public function test_create_onlyid() {
         $this->set_parameters([
             '--onlyid',
+            '--autostart=N',
             '--warn=10',
             '--start=0',
             '--duration=30',
@@ -173,6 +175,7 @@ class create_test extends cli_testcase {
         $cli = new create();
         $cli->set_referencetime($now);
         $cli->set_defaults([
+            'autostart' => false,
             'warn' => 50,
             'start' => 200,
             'duration' => 300,
@@ -194,10 +197,11 @@ class create_test extends cli_testcase {
     }
 
     public function test_create_withclone() {
-        $this->setAdminUser();
+        self::setAdminUser();
         $now = time();
         // Create the outage to clone.
         $original = new outage([
+            'autostart' => false,
             'warntime' => $now - 120,
             'starttime' => $now,
             'stoptime' => $now + 120,
@@ -236,6 +240,7 @@ class create_test extends cli_testcase {
     public function test_create_withblock() {
         // Not an extensive test in the blocking API, cliwaitforit tests should cover them deeper.
         $this->set_parameters([
+            '--autostart=N',
             '--block',
             '--warn=60',
             '--start=0',

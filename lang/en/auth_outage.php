@@ -25,6 +25,7 @@
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
 $string['clicreatehelp'] = 'Creates a new outage.';
+$string['clicreateparamautostart'] = 'must be Y or N, sets if the outage automatically triggers maintenance mode.';
 $string['clicreateparamblock'] = 'blocks until outage starts.';
 $string['clicreateparamclone'] = 'clone another outage except for the start time.';
 $string['clicreateparamdescription'] = 'the description of the outage.';
@@ -58,6 +59,8 @@ $string['clone'] = 'Clone';
 $string['datetimeformat'] = '%a %d %h %Y at %I:%M%P %Z';
 $string['defaultlayoutcss'] = 'Layout CSS';
 $string['defaultlayoutcssdescription'] = 'This CSS code will be used to display the Outage Warning Bar.';
+$string['defaultoutageautostart'] = 'Outage Auto Start';
+$string['defaultoutageautostartdescription'] = 'If the outage should automatically trigger maintenance mode once it starts, locking down the whole site.';
 $string['defaultoutageduration'] = 'Outage Duration';
 $string['defaultoutagedurationdescription'] = 'Default duration (in minutes) of an outage.';
 $string['defaultwarningduration'] = 'Warning Duration';
@@ -105,6 +108,7 @@ $string['tableheaderdurationactual'] = 'Actual Duration';
 $string['tableheaderstarttime'] = 'Starts on';
 $string['tableheaderwarnbefore'] = 'Warns before';
 $string['tableheadertitle'] = 'Title';
+$string['taskupdatestaticpage'] = 'Update static outage page';
 $string['textplaceholdershint'] = 'You can use {{start}}, {{stop}} and {{duration}} as placeholders on the title and description.';
 $string['titleerrorinvalid'] = 'Title cannot be left blank.';
 $string['titleerrortoolong'] = 'Title cannot have more than {$a} characters.';

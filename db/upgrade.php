@@ -30,5 +30,22 @@ defined('MOODLE_INTERNAL') || die();
  * @SuppressWarnings("unused")
  */
 function xmldb_auth_outage_upgrade($oldversion) {
+    global $DB;
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2016092200) {
+        // Define field autostart to be added to auth_outage.
+        $table = new xmldb_table('auth_outage');
+        $field = new xmldb_field('autostart', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'finished');
+
+        // Conditionally launch add field autostart.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Outage savepoint reached.
+        upgrade_plugin_savepoint(true, 2016092200, 'auth', 'outage');
+    }
+
     return true;
 }

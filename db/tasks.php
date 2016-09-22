@@ -15,20 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information.
+ * Tasks information.
  *
  * @package   auth_outage
- * @author    Marcus Boon <marcus@catalyst-au.net>
- * @author    Brendan Heywood <brendan@catalyst-au.net>
  * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright Catalyst IT
+ * @copyright 2016 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = "auth_outage";
-$plugin->version = 2016092207;                  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = 'Build '.$plugin->version;   // Human-readable release information.
-$plugin->requires = 2014051200;                 // Requires Moodle 2.7 or later.
-$plugin->maturity = MATURITY_ALPHA;             // Not suitable for PRODUCTION environments yet!
+$tasks = [
+    [
+        'classname' => 'auth_outage\task\update_static_page',
+        'blocking' => 0,
+        'minute' => '23',
+        'hour' => '*',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ],
+];

@@ -35,11 +35,11 @@ $cli = new create();
 $config = outagelib::get_config();
 $cli->set_defaults([
     'help' => false,
-    'warn' => (int)($config->warning_duration),
+    'warn' => (int)($config->default_warning_duration),
     'start' => null,
     'duration' => (int)($config->default_duration),
-    'title' => $config->warning_title,
-    'description' => $config->warning_description,
+    'title' => $config->default_warning_title,
+    'description' => $config->default_warning_description,
 ]);
 
 try {

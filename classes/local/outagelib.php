@@ -16,6 +16,7 @@
 
 namespace auth_outage\local;
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
 use auth_outage_renderer;
 use Exception;

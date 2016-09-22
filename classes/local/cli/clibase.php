@@ -56,14 +56,15 @@ abstract class clibase {
             list($options, $unrecognized) = cli_get_params($this->generate_options(), $this->generate_shortcuts());
             if ($unrecognized) {
                 $unrecognized = implode("\n  ", $unrecognized);
-                throw new cli_exception(get_string('cliunknowoption', 'admin', $unrecognized));
+                throw new cli_exception(get_string('cliunknowoption', 'admin', $unrecognized),
+                    cli_exception::ERROR_PARAMETER_UNKNOWN);
             }
         } else {
             // If not using Moodle CLI API to read parameters, ensure all keys exist.
             $default = $this->generate_options();
             foreach ($options as $k => $v) {
                 if (!array_key_exists($k, $default)) {
-                    throw new cli_exception(get_string('cliunknowoption', 'admin', $k));
+                    throw new cli_exception(get_string('cliunknowoption', 'admin', $k), cli_exception::ERROR_PARAMETER_UNKNOWN);
                 }
                 $default[$k] = $v;
             }

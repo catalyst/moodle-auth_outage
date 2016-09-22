@@ -16,8 +16,8 @@
 
 namespace auth_outage\local\cli;
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -92,7 +92,8 @@ class waitforit extends clibase {
         $byid = !is_null($this->options['outageid']);
         $byactive = $this->options['active'];
         if ($byid == $byactive) {
-            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
+            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'),
+                cli_exception::ERROR_PARAMETER_INVALID);
         }
 
         $this->verbose('Verbose mode activated.');
@@ -137,14 +138,15 @@ class waitforit extends clibase {
         } else {
             $id = $this->options['outageid'];
             if (!is_number($id) || ($id <= 0)) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']),
+                    cli_exception::ERROR_PARAMETER_INVALID);
             }
             $this->verbose('Querying database for outage #'.$id.'...');
             $outage = outagedb::get_by_id((int)$id);
         }
 
         if (is_null($outage)) {
-            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'), cli_exception::ERROR_OUTAGE_NOT_FOUND);
         }
 
         $this->verbose('Found outage #'.$outage->id.': '.$outage->get_title());
@@ -161,11 +163,11 @@ class waitforit extends clibase {
         $this->verbose('Checking outage status...');
         // Outage should not change while waiting to start.
         if (outagedb::get_by_id($outage->id) != $outage) {
-            throw new cli_exception(get_string('clierroroutagechanged', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagechanged', 'auth_outage'), cli_exception::ERROR_OUTAGE_CHANGED);
         }
         // Outage cannot have already ended.
         if ($outage->has_ended($this->time)) {
-            throw new cli_exception(get_string('clierroroutageended', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutageended', 'auth_outage'), cli_exception::ERROR_OUTAGE_INVALID);
         }
         // If outage has started, do not wait.
         if ($outage->is_ongoing($this->time)) {

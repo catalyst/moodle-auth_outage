@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\create;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
@@ -32,12 +32,19 @@ require_once(__DIR__.'/cli_testcase.php');
  * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class create_test extends cli_testcase {
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 4
+     */
     public function test_noarguments() {
         $cli = new create();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidparam_notanumber() {
         $cli = new create(['start' => 'some day']);
         $cli->set_defaults([
@@ -47,10 +54,13 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidparam_negative() {
         $cli = new create(['start' => -1]);
         $cli->set_defaults([
@@ -60,10 +70,13 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidparam_emptystring() {
         $cli = new create(['start' => 0, 'title' => '']);
         $cli->set_defaults([
@@ -73,10 +86,13 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidparam_notastring() {
         $cli = new create(['start' => 0, 'title' => true]);
         $cli->set_defaults([
@@ -86,7 +102,6 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -227,8 +242,11 @@ class create_test extends cli_testcase {
         self::assertSame($original->description, $cloned->description);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_create_withclone_invalid() {
-        $this->setExpectedException(cli_exception::class);
         $this->set_parameters([
             '--start=60',
             '--clone=-1',

@@ -16,8 +16,8 @@
 
 namespace auth_outage\local\controllers;
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 use auth_outage\local\outagelib;
 use coding_exception;
 use context_system;

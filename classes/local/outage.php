@@ -132,15 +132,7 @@ class outage {
                 $this->$k = $v;
             }
         }
-
-        // Adjust int fields.
-        $fs = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warntime', 'finished'];
-        foreach ($fs as $f) {
-            $this->$f = ($this->$f === null) ? null : (int)$this->$f;
-        }
-
-        // Adjust bool fields.
-        $this->autostart = ($this->autostart === null) ? null : (bool)$this->autostart;
+        $this->adjust_field_types();
     }
 
     /**
@@ -273,5 +265,16 @@ class outage {
             ],
             $str
         );
+    }
+
+    private function adjust_field_types() {
+        // Adjust int fields.
+        $fs = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warntime', 'finished'];
+        foreach ($fs as $f) {
+            $this->$f = ($this->$f === null) ? null : (int)$this->$f;
+        }
+
+        // Adjust bool fields.
+        $this->autostart = ($this->autostart === null) ? null : (bool)$this->autostart;
     }
 }

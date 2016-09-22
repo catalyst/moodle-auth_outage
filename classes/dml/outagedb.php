@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\local;
+namespace auth_outage\dml;
 
+use auth_outage\calendar\calendar;
 use auth_outage\event\outage_created;
 use auth_outage\event\outage_deleted;
 use auth_outage\event\outage_updated;
-use calendar_event;
+use auth_outage\local\outage;
+use auth_outage\local\outagelib;
 use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -104,7 +106,7 @@ class outagedb {
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Create calendar entry.
-            self::calendar_create($outage);
+            calendar::calendar_create($outage);
         } else {
             // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
@@ -114,7 +116,7 @@ class outagedb {
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Update calendar entry.
-            self::calendar_update($outage);
+            calendar::calendar_update($outage);
         }
 
         // Trigger outages modified events.
@@ -145,7 +147,7 @@ class outagedb {
 
         // Delete it and remove from calendar.
         $DB->delete_records('auth_outage', ['id' => $id]);
-        self::calendar_delete($id);
+        calendar::calendar_delete($id);
 
         // Trigger events.
         outagelib::outages_modified();
@@ -340,83 +342,5 @@ class outagedb {
         // Not using $DB->get_record_select instead because there is no 'limit' parameter.
         // Allowing multiple records still raises an internal error.
         return (count($data) == 0) ? null : new outage(array_shift($data));
-    }
-
-    /**
-     * Create an event on the calendar for this outage.
-     * @param outage $outage Outage to be added to the calendar.
-     */
-    private static function calendar_create(outage $outage) {
-        calendar_event::create(self::calendar_data($outage));
-    }
-
-    /**
-     * Updates an event on the calendar based on this outage.
-     * @param outage $outage Outage to be updated in the calendar.
-     */
-    private static function calendar_update(outage $outage) {
-        $event = self::calendar_load($outage->id);
-
-        if (is_null($event)) {
-            debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
-            self::calendar_create($outage);
-        } else {
-            $event->update(self::calendar_data($outage));
-        }
-    }
-
-    /**
-     * Removes an event from the calendar related to this outage.
-     * @param int $outageid Id of outage to be deleted from the calendar.
-     */
-    private static function calendar_delete($outageid) {
-        $event = self::calendar_load($outageid);
-
-        // If not found (was not created before) ignore it.
-        if (is_null($event)) {
-            debugging('Cannot delete calendar entry for outage #'.$outageid.', event not found. Ignoring it...');
-        } else {
-            $event->delete();
-        }
-    }
-
-    /**
-     * Generates an array with the calendar event data based on an outage object.
-     * @param outage $outage Outage to use as reference for the calendar event.
-     * @return mixed[] Calendar event data.
-     */
-    private static function calendar_data(outage $outage) {
-        return [
-            'name' => $outage->get_title(),
-            'description' => $outage->get_description(),
-            'courseid' => 1,
-            'groupid' => 0,
-            'userid' => 0,
-            'modulename' => '',
-            'instance' => $outage->id,
-            'eventtype' => 'auth_outage',
-            'timestart' => $outage->starttime,
-            'visible' => true,
-            'timeduration' => $outage->get_duration_planned(),
-        ];
-    }
-
-    /**
-     * Finds the calendar event for an specific outage.
-     * @param int $outageid The outage id to find in the calendar.
-     * @return calendar_event|null The calendar event or null if not found.
-     */
-    private static function calendar_load($outageid) {
-        global $DB;
-
-        $event = $DB->get_record_select(
-            'event',
-            "(eventtype = 'auth_outage' AND instance = :outageid)",
-            ['outageid' => $outageid],
-            'id',
-            IGNORE_MISSING
-        );
-
-        return ($event === false) ? null : calendar_event::load($event->id);
     }
 }

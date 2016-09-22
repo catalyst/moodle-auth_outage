@@ -16,8 +16,8 @@
 
 namespace auth_outage\local\cli;
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -112,7 +112,8 @@ class create extends clibase {
 
         // If not help mode, 'start' is required and cannot use default.
         if (is_null($this->options['start'])) {
-            throw new cli_exception(get_string('clierrormissingparamaters', 'auth_outage'));
+            throw new cli_exception(get_string('clierrormissingparamaters', 'auth_outage'),
+                cli_exception::ERROR_PARAMETER_MISSING);
         }
 
         // If cloning, set defaults to outage being cloned.
@@ -184,7 +185,8 @@ class create extends clibase {
     private function clone_defaults() {
         $id = $this->options['clone'];
         if (!is_number($id) || ($id <= 0)) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'clone']));
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'clone']),
+                cli_exception::ERROR_PARAMETER_INVALID);
         }
 
         $outage = outagedb::get_by_id((int)$id);
@@ -204,51 +206,84 @@ class create extends clibase {
      * @throws cli_exception
      */
     private function merge_options_check_parameters(array $options) {
-        // Check parameters that must be a non-negative int while converting their type to int.
         foreach (['start', 'warn', 'duration'] as $param) {
-            if (!is_number($options[$param])) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
-            }
-            $options[$param] = (int)$options[$param];
-            if ($options[$param] < 0) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
-            }
+            $options[$param] = $this->merge_options_check_parameters_int_nonnegative($options[$param], $param);
         }
 
-        // Check parameters that must be a non empty string.
         foreach (['title', 'description'] as $param) {
-            if (!is_string($options[$param])) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
-            }
-            $options[$param] = trim($options[$param]);
-            if (strlen($options[$param]) == 0) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
-            }
+            $options[$param] = $this->merge_options_check_parameters_string_nonempty($options[$param], $param);
         }
 
-        // Check parameters that must be a specified bool.
         foreach (['autostart'] as $param) {
-            if (is_string($options[$param])) {
-                switch (strtoupper($options[$param])) {
-                    case '0':
-                    case 'FALSE':
-                    case 'NO':
-                    case 'N':
-                        $options[$param] = false;
-                        break;
-                    case '1':
-                    case 'TRUE':
-                    case 'YES':
-                    case 'Y':
-                        $options[$param] = true;
-                        break;
-                }
-            }
-            if (!is_bool($options[$param])) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
-            }
+            $options[$param] = $this->merge_options_check_parameters_bool($options[$param], $param);
         }
 
         return $options;
+    }
+
+    /**
+     * Ensures the given option is or can be converted to a non-negative int.
+     * @param mixed $option The parameter to check.
+     * @param string $param Name of that parameter.
+     * @return int The converted parameter.
+     * @throws cli_exception
+     */
+    private function merge_options_check_parameters_int_nonnegative($option, $param) {
+        if (!is_number($option)) {
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+                cli_exception::ERROR_PARAMETER_INVALID);
+        }
+        $option = (int)$option;
+        if ($option < 0) {
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+                cli_exception::ERROR_PARAMETER_INVALID);
+        }
+        return $option;
+    }
+
+    /**
+     * Ensures the given option is or can be converted to a non-empty string.
+     * @param mixed $option The parameter to check.
+     * @param string $param Name of that parameter.
+     * @return string The converted parameter.
+     * @throws cli_exception
+     */
+
+    private function merge_options_check_parameters_string_nonempty($option, $param) {
+        if (!is_string($option)) {
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+                cli_exception::ERROR_PARAMETER_INVALID);
+        }
+        $option = trim($option);
+        if (strlen($option) == 0) {
+            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+                cli_exception::ERROR_PARAMETER_INVALID);
+        }
+        return $option;
+    }
+
+    /**
+     * Ensures the given option is or can be converted to a bool.
+     * @param mixed $option The parameter to check.
+     * @param string $param Name of that parameter.
+     * @return bool The converted parameter.
+     * @throws cli_exception
+     */
+    private function merge_options_check_parameters_bool($option, $param) {
+        if (is_bool($option)) {
+            return $option;
+        }
+
+        if (is_string($option)) {
+            $option = strtoupper($option);
+            if (in_array($option, ['0', 'FALSE', 'NO', 'N'])) {
+                return false;
+            }
+            if (in_array($option, ['1', 'TRUE', 'YES', 'Y'])) {
+                return true;
+            }
+        }
+
+        throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
     }
 }

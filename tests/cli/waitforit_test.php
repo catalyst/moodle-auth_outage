@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\local\cli\cli_exception;
+use auth_outage\dml\outagedb;
 use auth_outage\local\cli\waitforit;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
@@ -63,27 +62,40 @@ class waitforit_test extends cli_testcase {
         self::assertContains('--help', $text);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_bothparams() {
         $this->set_parameters(['--outageid=1', '--active']);
         $cli = new waitforit();
-        $this->setExpectedException(cli_exception::class);
         $cli->execute();
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidoutageid() {
         $this->set_parameters(['-id=-1']);
         $cli = new waitforit();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 6
+     */
     public function test_outagenotfound() {
         $this->set_parameters(['-a']);
         $cli = new waitforit();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 5
+     */
     public function test_endedoutage() {
         self::setAdminUser();
         $now = time();
@@ -98,7 +110,6 @@ class waitforit_test extends cli_testcase {
         $this->set_parameters(['-id='.$id]);
         $cli = new waitforit();
         $cli->set_referencetime($now);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -148,6 +159,10 @@ class waitforit_test extends cli_testcase {
         self::assertContains("started!", $output);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 7
+     */
     public function test_outagechanged() {
         self::setAdminUser();
         $now = time();
@@ -170,7 +185,6 @@ class waitforit_test extends cli_testcase {
             // Pretend it is time to start, but it should get an error instead.
             return $outage->starttime;
         });
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 }

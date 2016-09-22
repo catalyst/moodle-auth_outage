@@ -29,10 +29,17 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class update_static_page extends scheduled_task {
+    /**
+     * Gets the name of this event.
+     * @return string Name of this event.
+     */
     public function get_name() {
         return get_string('taskupdatestaticpage', 'auth_outage');
     }
 
+    /**
+     * Executes the event.
+     */
     public function execute() {
         infopage::update_static_page();
     }

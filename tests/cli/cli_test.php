@@ -32,14 +32,20 @@ require_once(__DIR__.'/cli_testcase.php');
  * @SuppressWarnings("public")
  */
 class cli_test extends cli_testcase {
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 2
+     */
     public function test_invalidargumentparam() {
         $this->set_parameters(['--aninvalidparameter']);
-        $this->setExpectedException(cli_exception::class);
         new create();
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 2
+     */
     public function test_invalidargumentgiven() {
-        $this->setExpectedException(cli_exception::class);
         new create(['anotherinvalidparameter']);
     }
 
@@ -49,9 +55,12 @@ class cli_test extends cli_testcase {
         $cli->set_referencetime(60 * 60 * 24 * 7);
     }
 
+    /**
+     * @expectedException coding_exception
+     */
     public function test_setreferencetime_invalid() {
-        $cli = new create(['start' => 0]);
-        $this->setExpectedException(coding_exception::class);
+        $this->set_parameters(['--start=60']);
+        $cli = new create();
         $cli->set_referencetime(-1);
     }
 
@@ -63,8 +72,11 @@ class cli_test extends cli_testcase {
         self::assertContains('--help', $output);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 1
+     */
     public function test_exception() {
-        self::setExpectedException(cli_exception::class, '*ERROR* An CLI exception.', 5);
-        throw new cli_exception('An CLI exception.', 5);
+        throw new cli_exception('An CLI exception.');
     }
 }

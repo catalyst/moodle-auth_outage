@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\finish;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
@@ -59,12 +59,19 @@ class finish_test extends cli_testcase {
         self::assertContains('--help', $text);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 4
+     */
     public function test_noarguments() {
         $cli = new finish();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 5
+     */
     public function test_endedoutage() {
         self::setAdminUser();
         $now = time();
@@ -79,7 +86,6 @@ class finish_test extends cli_testcase {
         $this->set_parameters(['-id='.$id]);
         $cli = new finish();
         $cli->set_referencetime($now);
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
@@ -100,27 +106,36 @@ class finish_test extends cli_testcase {
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 6
+     */
     public function test_activenotfound() {
         self::setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
     public function test_invalidid() {
         self::setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 6
+     */
     public function test_idnotfound() {
         self::setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();
-        $this->setExpectedException(cli_exception::class);
         $this->execute($cli);
     }
 }

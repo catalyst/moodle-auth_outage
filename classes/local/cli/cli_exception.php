@@ -30,6 +30,41 @@ defined('MOODLE_INTERNAL') || die();
  */
 class cli_exception extends Exception {
     /**
+     * Undefined error.
+     */
+    const ERROR_UNDEFINED = 1;
+
+    /**
+     * Unknow parameter.
+     */
+    const ERROR_PARAMETER_UNKNOWN = 2;
+
+    /**
+     * Invalid parameter usage.
+     */
+    const ERROR_PARAMETER_INVALID = 3;
+
+    /**
+     * Missing required parameter.
+     */
+    const ERROR_PARAMETER_MISSING = 4;
+
+    /**
+     * The informed outage cannot be used for that purpose.
+     */
+    const ERROR_OUTAGE_INVALID = 5;
+
+    /**
+     * The informed outage was not found.
+     */
+    const ERROR_OUTAGE_NOT_FOUND = 6;
+
+    /**
+     * The outage has changed before the completion of the command.
+     */
+    const ERROR_OUTAGE_CHANGED = 7;
+
+    /**
      * cliexception constructor.
      * @param string $message An explanation of the exception.
      * @param int $code Exit code to be used.

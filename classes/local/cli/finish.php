@@ -16,8 +16,8 @@
 
 namespace auth_outage\local\cli;
 
+use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -70,12 +70,13 @@ class finish extends clibase {
         $byid = !is_null($this->options['outageid']);
         $byactive = $this->options['active'];
         if ($byid == $byactive) {
-            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'));
+            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'),
+                cli_exception::ERROR_PARAMETER_MISSING);
         }
 
         $outage = $this->get_outage();
         if (!$outage->is_ongoing()) {
-            throw new cli_exception(get_string('clifinishnotongoing', 'auth_outage'));
+            throw new cli_exception(get_string('clifinishnotongoing', 'auth_outage'), cli_exception::ERROR_OUTAGE_INVALID);
         }
 
         outagedb::finish($outage->id, $this->time);
@@ -92,13 +93,14 @@ class finish extends clibase {
         } else {
             $id = $this->options['outageid'];
             if (!is_number($id) || ($id <= 0)) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']));
+                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']),
+                    cli_exception::ERROR_PARAMETER_INVALID);
             }
             $outage = outagedb::get_by_id((int)$id);
         }
 
         if (is_null($outage)) {
-            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'));
+            throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'), cli_exception::ERROR_OUTAGE_NOT_FOUND);
         }
 
         return $outage;

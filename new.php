@@ -23,9 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use auth_outage\dml\outagedb;
 use auth_outage\form\outage\edit;
 use auth_outage\local\outage;
-use auth_outage\local\outagedb;
 use auth_outage\local\outagelib;
 
 require_once(__DIR__.'/../../config.php');

@@ -25,20 +25,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($this->has_admin_options()) {
+if ($viewbag['admin']) {
     $adminlinks = [];
     foreach ([
-        'startofwarning' => -$this->outage->get_warning_duration(),
+        'startofwarning' => -$viewbag['outage']->get_warning_duration(),
         '15secondsbefore' => -15,
         'start' => 0,
-        'endofoutage' => $this->outage->get_duration_planned(),
+        'endofoutage' => $viewbag['outage']->get_duration_planned() - 1,
     ] as $title => $delta) {
         $adminlinks[] = html_writer::link(
             new moodle_url(
                 '/auth/outage/info.php',
                 [
-                    'id' => $this->outage->id,
-                    'auth_outage_preview' => $this->outage->id,
+                    'id' => $viewbag['outage']->id,
+                    'auth_outage_preview' => $viewbag['outage']->id,
                     'auth_outage_delta' => $delta,
                 ]
             ),
@@ -47,7 +47,7 @@ if ($this->has_admin_options()) {
     }
 
     $admineditlink = html_writer::link(
-        new moodle_url('/auth/outage/edit.php', ['id' => $this->outage->id]),
+        new moodle_url('/auth/outage/edit.php', ['id' => $viewbag['outage']->id]),
         get_string('outageedit', 'auth_outage')
     );
 }
@@ -57,15 +57,15 @@ if ($this->has_admin_options()) {
 
     <div>
         <b><?php echo get_string('infofrom', 'auth_outage'); ?></b>
-        <?php echo userdate($this->outage->starttime, get_string('datetimeformat', 'auth_outage')); ?>
+        <?php echo userdate($viewbag['outage']->starttime, get_string('datetimeformat', 'auth_outage')); ?>
     </div>
     <div>
         <b><?php echo get_string('infountil', 'auth_outage'); ?></b>
-        <?php echo userdate($this->outage->stoptime, get_string('datetimeformat', 'auth_outage')); ?>
+        <?php echo userdate($viewbag['outage']->stoptime, get_string('datetimeformat', 'auth_outage')); ?>
     </div>
-    <div class="auth_outage_info_description"><?php echo $this->outage->get_description(); ?></div>
+    <div class="auth_outage_info_description"><?php echo $viewbag['outage']->get_description(); ?></div>
 
-    <?php if ($this->has_admin_options()): ?>
+    <?php if ($viewbag['admin']): ?>
         <div class="auth_outage_info_adminlinks">
             <b><?php echo get_string('preview'); ?>:</b>
             <?php echo implode(' | ', $adminlinks); ?><br/>

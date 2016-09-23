@@ -18,7 +18,7 @@ namespace auth_outage\local;
 
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
-use auth_outage_renderer;
+use auth_outage\output\renderer;
 use Exception;
 use moodle_url;
 use stdClass;
@@ -38,22 +38,13 @@ class outagelib {
 
     /**
      * Initializes admin pages for outage.
-     * @return auth_outage_renderer The outage renderer for the page.
+     * @return renderer The outage renderer for the page.
      */
     public static function page_setup() {
         global $PAGE;
         admin_externalpage_setup('auth_outage_manage');
         $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
-        return self::get_renderer();
-    }
-
-    /**
-     * Returns the outage renderer.
-     * @return auth_outage_renderer The outage renderer.
-     */
-    public static function get_renderer() {
-        global $PAGE;
-        return $PAGE->get_renderer('auth_outage');
+        return renderer::get();
     }
 
     /**
@@ -74,9 +65,10 @@ class outagelib {
             $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
             $time = time();
             if (is_null($previewid)) {
-                if (!$active = outagedb::get_active()) {
+                if (!$active = outagedb::get_active($time)) {
                     return;
                 }
+                $preview = false;
             } else {
                 if (!$active = outagedb::get_by_id($previewid)) {
                     return;
@@ -86,10 +78,11 @@ class outagelib {
                 if (!$active->is_active($time)) {
                     return;
                 }
+                $preview = true;
             }
 
             // There is a previewing or active outage.
-            $CFG->additionalhtmltopofbody = self::get_renderer()->renderoutagebar($active, $time).
+            $CFG->additionalhtmltopofbody = renderer::get()->render_warningbar($active, $time, false, $preview).
                                             $CFG->additionalhtmltopofbody;
         } catch (Exception $e) {
             debugging('Exception occured while injecting our code: '.$e->getMessage());
@@ -119,7 +112,7 @@ class outagelib {
             'default_warning_duration' => 60,
             'default_warning_title' => get_string('defaultwarningtitlevalue', 'auth_outage'),
             'default_warning_description' => get_string('defaultwarningdescriptionvalue', 'auth_outage'),
-            'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar.css'),
+            'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css'),
         ];
     }
 

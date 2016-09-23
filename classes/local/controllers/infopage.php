@@ -19,6 +19,7 @@ namespace auth_outage\local\controllers;
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
+use auth_outage\output\renderer;
 use coding_exception;
 use context_system;
 use file_exception;
@@ -186,9 +187,15 @@ class infopage {
             }
         }
 
+        $viewbag = [
+            'admin' => is_siteadmin(),
+            'outage' => $this->outage,
+        ];
+
         $PAGE->set_context(context_system::instance());
         if ($this->static) {
-            require($CFG->dirroot.'/auth/outage/views/info/static.php');
+            $viewbag['admin'] = false;
+            renderer::get()->output_view('info/static.php', $viewbag);
         } else {
             $PAGE->set_title($this->outage->get_title());
             $PAGE->set_heading($this->outage->get_title());

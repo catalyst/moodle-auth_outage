@@ -23,14 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use auth_outage\output\renderer;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $SITE;
+
+// The Meta Refresh will ensure the page keeps refreshing every 5 minutes until outage is over.
 ?>
 <!DOCTYPE html>
-<html data-outage-id="<?php echo $this->outage->id; ?>">
+<html data-outage-id="<?php echo $viewbag['outage']->id; ?>">
 <head>
     <title><?php echo strip_tags($SITE->fullname); ?></title>
+    <meta http-equiv="refresh" content="<?php echo (5 * 60); ?>">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -42,12 +47,8 @@ global $SITE;
 <body>
 
 <?php
-// TODO refactor warning bar to not require this.
-
-// The static page always shows as if outage has started.
-$outage = $this->outage;
-$static = true;
-require($CFG->dirroot.'/auth/outage/views/warningbar.php');
+// Static page is rendered as if outage started. It is never rendered as admin or preview mode.
+echo renderer::get()->render_warningbar($viewbag['outage'], $viewbag['outage']->starttime, false, false);
 ?>
 
 <header>
@@ -55,8 +56,8 @@ require($CFG->dirroot.'/auth/outage/views/warningbar.php');
 </header>
 
 <section>
-    <h2><?php echo $this->outage->get_title(); ?></h2>
-    <?php require(__DIR__.'/content.php'); ?>
+    <h2><?php echo $viewbag['outage']->get_title(); ?></h2>
+    <?php echo renderer::get()->render_view('info/content.php', $viewbag); ?>
 </section>
 
 <!-- <?php echo

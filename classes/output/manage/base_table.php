@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\local\output\manage;
+namespace auth_outage\output\manage;
 
 use auth_outage\local\outage;
 use flexible_table;

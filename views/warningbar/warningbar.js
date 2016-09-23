@@ -61,7 +61,7 @@ var auth_outage_warningbar = {
 
         if (this.preview) {
             // If one second before finish time, enfore finish. Otherwise, never finish it.
-            if (this.servertime == this.stops - 1) {
+            if (this.servertime === this.stops - 1) {
                 this.finish();
             }
             else {
@@ -84,8 +84,8 @@ var auth_outage_warningbar = {
     },
 
     ajaxCheckFinished: function (ajax) {
-        if (ajax.readyState == XMLHttpRequest.DONE) {
-            if (ajax.status == 200) {
+        if (ajax.readyState === XMLHttpRequest.DONE) {
+            if (ajax.status === 200) {
                 if (ajax.responseText.trim() === 'finished') {
                     this.finish();
                 }

@@ -15,37 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Create new outage.
+ * Called async from warning bar to check if the outage has finished.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\dml\outagedb;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__.'/../../config.php');
 
-outagelib::pagesetup();
+$active = outagedb::get_active();
 
-$mform = new \auth_outage\forms\outage\edit();
-if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
-    $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
-}
-
-$PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));
-echo $OUTPUT->header();
-
-$mform->display();
-
-echo $OUTPUT->footer();
+echo $active ? 'ongoing' : 'finished';

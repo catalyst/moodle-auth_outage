@@ -14,16 +14,38 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
+ * Outage plugin upgrade code
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @param int $oldversion the version we are upgrading from
+ * @return bool result
+ * @SuppressWarnings("unused")
+ */
+function xmldb_auth_outage_upgrade($oldversion) {
+    global $DB;
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2016092200) {
+        // Define field autostart to be added to auth_outage.
+        $table = new xmldb_table('auth_outage');
+        $field = new xmldb_field('autostart', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'finished');
+
+        // Conditionally launch add field autostart.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Outage savepoint reached.
+        upgrade_plugin_savepoint(true, 2016092200, 'auth', 'outage');
+    }
+
+    return true;
 }

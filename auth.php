@@ -24,17 +24,14 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/authlib.php');
+require_once($CFG->libdir.'/authlib.php');
 
 /**
  * Class auth_plugin_outage
  */
-class auth_plugin_outage extends auth_plugin_base
-{
+class auth_plugin_outage extends auth_plugin_base {
     /**
      * Constructor.
      */
@@ -43,10 +40,19 @@ class auth_plugin_outage extends auth_plugin_base
     }
 
     /**
-     * Do not authenticate users.
+     * @param string $username Not used in this plugin.
+     * @param string $password Not used in this plugin.
      * @return bool False
+     * @SuppressWarnings("unused")
      */
     public function user_login($username, $password) {
         return false;
+    }
+
+    /**
+     * Login page hook.
+     */
+    public function loginpage_hook() {
+        \auth_outage\local\outagelib::inject();
     }
 }

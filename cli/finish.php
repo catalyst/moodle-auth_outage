@@ -14,16 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
+ * CLI for finishing an outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
+
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\finish;
+
+define('CLI_SCRIPT', true);
+require_once(__DIR__.'/../../../config.php');
+
+$cli = new finish();
+
+try {
+    $cli->execute();
+} catch (cli_exception $e) {
+    cli_error($e->getMessage());
 }
+

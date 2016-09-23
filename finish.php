@@ -15,24 +15,46 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List outages
+ * Mark an outage as finished.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\dml\outagedb;
+use auth_outage\form\outage\finish;
+use auth_outage\local\outagelib;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir.'/formslib.php');
 
-$renderer = outagelib::pagesetup();
+$renderer = outagelib::page_setup();
+
+$mform = new finish();
+if ($mform->is_cancelled()) {
+    redirect('/auth/outage/manage.php');
+} else if ($fromform = $mform->get_data()) {
+    outagedb::finish($fromform->id);
+    redirect('/auth/outage/manage.php');
+}
+
+$id = required_param('id', PARAM_INT);
+$outage = outagedb::get_by_id($id);
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage #'.$id.' not found.');
+}
+
+$dataid = new stdClass();
+$dataid->id = $outage->id;
+$mform->set_data($dataid);
 
 echo $OUTPUT->header();
 
-echo $renderer->renderoutagelist(outagedb::getall());
+echo $renderer->renderfinishconfirmation($outage);
+
+$mform->display();
 
 echo $OUTPUT->footer();

@@ -14,16 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
+ * Tasks information.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   auth_outage
+ * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright 2016 Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
-}
+
+$tasks = [
+    [
+        'classname' => 'auth_outage\task\update_static_page',
+        'blocking' => 0,
+        'minute' => '23',
+        'hour' => '*',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ],
+];

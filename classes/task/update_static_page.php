@@ -14,16 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace auth_outage\task;
+
+use auth_outage\local\controllers\infopage;
+use core\task\scheduled_task;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
- *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Tasks information.
+ * @package   auth_outage
+ * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright 2016 Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
+class update_static_page extends scheduled_task {
+    /**
+     * Gets the name of this event.
+     * @return string Name of this event.
+     */
+    public function get_name() {
+        return get_string('taskupdatestaticpage', 'auth_outage');
+    }
+
+    /**
+     * Executes the event.
+     */
+    public function execute() {
+        infopage::update_static_page();
+    }
 }

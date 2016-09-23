@@ -19,7 +19,15 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
+
+function auth_outage_extend_navigation_user() {
+    \auth_outage\local\outagelib::inject();
+}
+
+function auth_outage_extend_navigation_frontpage() {
+    \auth_outage\local\outagelib::inject();
+}

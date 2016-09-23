@@ -14,16 +14,43 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
+ * Create new outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
+
+use auth_outage\dml\outagedb;
+use auth_outage\form\outage\edit;
+use auth_outage\local\outagelib;
+
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir.'/formslib.php');
+
+$renderer = outagelib::page_setup();
+
+$mform = new edit();
+
+if ($mform->is_cancelled()) {
+    redirect('/auth/outage/manage.php');
+} else if ($outage = $mform->get_data()) {
+    $id = outagedb::save($outage);
+    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
 }
+
+$id = required_param('id', PARAM_INT);
+$outage = outagedb::get_by_id($id);
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage #'.$id.' not found.');
+}
+$mform->set_data($outage);
+
+$PAGE->navbar->add($outage->get_title());
+echo $OUTPUT->header();
+echo $renderer->rendersubtitle('outageedit');
+$mform->display();
+echo $OUTPUT->footer();

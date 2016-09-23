@@ -14,16 +14,48 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use auth_outage\local\cli\clibase;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
- * This is done to keep code organized and make easier to run tests and check coverage.
+ * Tests performed on CLIs.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_outage_renderer extends auth_outage\output\renderer {
+class cli_testcase extends advanced_testcase {
+    public function setUp() {
+        $this->resetAfterTest(true);
+        $this->set_parameters([]);
+        parent::setUp();
+    }
+
+    /**
+     * Mocks the command line parameters.
+     * @param string[] $options Options to use as parameters.
+     */
+    protected function set_parameters(array $options) {
+        array_unshift($options, 'cli.php');
+        $_SERVER['argv'] = $options;
+        $_SERVER['argc'] = count($options);
+    }
+
+    /**
+     * Executes the CLI.
+     * @param clibase $cli CLI to execute.
+     * @return string The output text.
+     */
+    protected function execute(clibase $cli) {
+        ob_start();
+        try {
+            $cli->execute();
+            $text = ob_get_contents();
+            return $text;
+        } finally {
+            ob_end_clean();
+        }
+    }
 }

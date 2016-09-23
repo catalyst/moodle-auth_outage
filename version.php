@@ -25,12 +25,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016090500;     // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release   = $plugin->version;     // Same as version
-$plugin->requires  = 2014051200;     // Requires Moodle 2.7 or later.
 $plugin->component = "auth_outage";
-$plugin->maturity  = MATURITY_ALPHA; // Not suitable for PRODUCTION environments yet!
+$plugin->version = 2016092207;                  // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = 'Build '.$plugin->version;   // Human-readable release information.
+$plugin->requires = 2014051200;                 // Requires Moodle 2.7 or later.
+$plugin->maturity = MATURITY_ALPHA;             // Not suitable for PRODUCTION environments yet!

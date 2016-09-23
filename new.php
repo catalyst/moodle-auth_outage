@@ -19,42 +19,42 @@
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\models\outage;
-use auth_outage\outagedb;
-use auth_outage\outagelib;
+use auth_outage\dml\outagedb;
+use auth_outage\form\outage\edit;
+use auth_outage\local\outage;
+use auth_outage\local\outagelib;
 
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir.'/formslib.php');
 
-$renderer = outagelib::pagesetup();
+outagelib::page_setup();
 
-$mform = new \auth_outage\forms\outage\edit();
-
+$mform = new edit();
 if ($mform->is_cancelled()) {
-    redirect('/auth/outage/list.php');
-} else if ($fromform = $mform->get_data()) {
-    $fromform = outagelib::parseformdata($fromform);
-    $outage = new outage($fromform);
+    redirect('/auth/outage/manage.php');
+} else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect('/auth/outage/list.php#auth_outage_id_' . $id);
+    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
 }
 
-$id = required_param('id', PARAM_INT);
-$outage = outagedb::getbyid($id);
-if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
-}
-$data = get_object_vars($outage);
-$data['description'] = ['text' => $data['description'], 'format' => '1'];
-$mform->set_data($data);
+$config = outagelib::get_config();
+$defaults = new outage([
+    'starttime' => time(),
+    'stoptime' => time() + ($config->default_duration * 60),
+    'warntime' => time() - ($config->default_warning_duration * 60),
+    'title' => $config->default_warning_title,
+    'description' => $config->default_warning_description,
+]);
+$mform->set_data($defaults);
 
-$PAGE->navbar->add($outage->title);
+$PAGE->navbar->add(get_string('outagecreate', 'auth_outage'));
 echo $OUTPUT->header();
-echo $renderer->rendersubtitle('modifyoutage');
+
 $mform->display();
+
 echo $OUTPUT->footer();

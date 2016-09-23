@@ -14,26 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\forms\outage;
+namespace auth_outage\form\outage;
 
-if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
-}
+use moodleform;
 
-require_once($CFG->libdir . '/formslib.php');
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Outage delete confirmation form.
+ * Outage finish confirmation form.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class delete extends \moodleform {
+class finish extends moodleform {
     /**
-     * {@inheritDoc}
-     * @see moodleform::definition()
+     * Defines the form elements.
      */
     public function definition() {
         $mform = $this->_form;
@@ -41,20 +40,6 @@ class delete extends \moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $this->add_action_buttons(true, get_string('remove'));
+        $this->add_action_buttons(true, get_string('finish', 'auth_outage'));
     }
-
-    /**
-     * Validate the parts of the request form for this module
-     *
-     * @param array $data An array of form data
-     * @param array $files An array of form files
-     * @return array of error messages
-     */
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-
-        return $errors;
-    }
-
 }

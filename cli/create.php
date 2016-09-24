@@ -38,8 +38,8 @@ $cli->set_defaults([
     'warn' => (int)($config->default_warning_duration),
     'start' => null,
     'duration' => (int)($config->default_duration),
-    'title' => $config->default_warning_title,
-    'description' => $config->default_warning_description,
+    'title' => $config->default_title,
+    'description' => $config->default_description,
 ]);
 
 try {

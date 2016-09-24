@@ -47,8 +47,8 @@ $defaults = new outage([
     'starttime' => time(),
     'stoptime' => time() + ($config->default_duration * 60),
     'warntime' => time() - ($config->default_warning_duration * 60),
-    'title' => $config->default_warning_title,
-    'description' => $config->default_warning_description,
+    'title' => $config->default_title,
+    'description' => $config->default_description,
 ]);
 $mform->set_data($defaults);
 

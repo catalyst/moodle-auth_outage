@@ -51,17 +51,17 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         PARAM_INT
     ));
     $settings->add(new admin_setting_configtext(
-        'auth_outage/default_warning_title',
-        get_string('defaultwarningtitle', 'auth_outage'),
-        get_string('defaultwarningtitledescription', 'auth_outage'),
-        $defaults['default_warning_title'],
+        'auth_outage/default_title',
+        get_string('defaulttitle', 'auth_outage'),
+        get_string('defaulttitledescription', 'auth_outage'),
+        $defaults['default_title'],
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configtextarea(
-        'auth_outage/default_warning_description',
-        get_string('defaultwarningdescription', 'auth_outage'),
-        get_string('defaultwarningdescriptiondescription', 'auth_outage'),
-        $defaults['default_warning_description'],
+        'auth_outage/default_description',
+        get_string('defaultdescription', 'auth_outage'),
+        get_string('defaultdescriptiondescription', 'auth_outage'),
+        $defaults['default_description'],
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configtextarea(

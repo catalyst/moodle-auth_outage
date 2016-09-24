@@ -34,21 +34,20 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),
         get_string('defaultoutageautostartdescription', 'auth_outage'),
-        $defaults['default_autostart'],
-        PARAM_BOOL
-    ));
-    $settings->add(new admin_setting_configtext(
-        'auth_outage/default_duration',
-        get_string('defaultoutageduration', 'auth_outage'),
-        get_string('defaultoutagedurationdescription', 'auth_outage'),
-        $defaults['default_duration'],
-        PARAM_INT
+        $defaults['default_autostart']
     ));
     $settings->add(new admin_setting_configtext(
         'auth_outage/default_warning_duration',
         get_string('defaultwarningduration', 'auth_outage'),
         get_string('defaultwarningdurationdescription', 'auth_outage'),
         $defaults['default_warning_duration'],
+        PARAM_INT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'auth_outage/default_duration',
+        get_string('defaultoutageduration', 'auth_outage'),
+        get_string('defaultoutagedurationdescription', 'auth_outage'),
+        $defaults['default_duration'],
         PARAM_INT
     ));
     $settings->add(new admin_setting_configtext(

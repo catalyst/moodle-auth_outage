@@ -125,7 +125,6 @@ class edit extends moodleform {
             'title' => $data->title,
             'description' => $data->description['text'],
         ];
-        var_dump($outagedata);
         return new outage($outagedata);
     }
 

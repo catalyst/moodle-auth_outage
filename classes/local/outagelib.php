@@ -108,8 +108,8 @@ class outagelib {
 
         return [
             'default_autostart' => false,
-            'default_duration' => 60,
-            'default_warning_duration' => 60,
+            'default_duration' => (60*60),
+            'default_warning_duration' => (60*60),
             'default_title' => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description' => get_string('defaultdescriptionvalue', 'auth_outage'),
             'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css'),

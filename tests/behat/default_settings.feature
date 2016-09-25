@@ -1,14 +1,11 @@
-@dev @auth @auth_outage @javascript
+@auth @auth_outage @javascript
 Feature: Test changing the default settings.
   In order to easily create outages
   As an admin
   I need to configure the outage defaults
 
-  Rules:
-  - Times should be expressed in minutes.
-
   Reminder:
-  - If one setting is not valid, but another setting is valid and modified, Moodle will display 'Settings Saved'.
+  - Event if one setting is not valid Moodle will display 'Changes Saved' if another setting was saved.
 
   Background:
     Given the authentication plugin "outage" is enabled
@@ -18,12 +15,14 @@ Feature: Test changing the default settings.
   Scenario Outline: Check if I can save the default settings.
     When I navigate to "Default Settings" node in "Site administration > Plugins > Authentication > Outage manager"
     And I set the following fields to these values:
-      | s_auth_outage_default_autostart        | <autostart>   |
-      | s_auth_outage_default_warning_duration | <warning>     |
-      | s_auth_outage_default_duration         | <duration>    |
-      | s_auth_outage_default_title            | <title>       |
-      | s_auth_outage_default_description      | <description> |
-      | s_auth_outage_css                      | <css>         |
+      | s_auth_outage_default_autostart           | <autostart>   |
+      | s_auth_outage_default_warning_duration[v] | <warning>     |
+      | s_auth_outage_default_warning_duration[u] | 60            |
+      | s_auth_outage_default_duration[v]         | <duration>    |
+      | s_auth_outage_default_duration[u]         | 60            |
+      | s_auth_outage_default_title               | <title>       |
+      | s_auth_outage_default_description         | <description> |
+      | s_auth_outage_css                         | <css>         |
     And I press "Save changes"
     Then I should see "Changes saved"
     When I visit the Create Outage Page
@@ -40,25 +39,3 @@ Feature: Test changing the default settings.
       | autostart | warning | duration | title                   | description                 | css             |
       | 1         | 15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
       | 0         | 30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */ |
-
-
-##  Scenario Outline: Check if I can save invalid values for default settings.
-##    When I navigate to "Default Settings" node in "Site administration > Plugins > Authentication > Outage manager"
-##    And I set the following fields to these values:
-##      | s_auth_outage_default_autostart        | 1               |
-##      | s_auth_outage_default_warning_duration | <warning>       |
-##      | s_auth_outage_default_duration         | <duration>      |
-##      | s_auth_outage_default_title            | <title>         |
-##      | s_auth_outage_default_description      | <description>   |
-##      | s_auth_outage_css                      | /* Some CSS. */ |
-##    And I press "Save changes"
-##    Then I should <seeornot> "Changes saved"
-##
-##    Examples:
-##      | warning | duration | title    | description    | seeornot |
-##      | 15      | 30       | My Title | My Description | see      |
-##      | -1      | 30       | My Title | My Description | not see  |
-##      | 15      | -1       | My Title | My Description | not see  |
-##      | 15      | 30       |          | My Description | not see  |
-##      | 15      | 30       | My Title |                | not see  |
-#

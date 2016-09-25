@@ -24,7 +24,6 @@ Feature: Test changing the default settings.
       | s_auth_outage_default_title            | <title>       |
       | s_auth_outage_default_description      | <description> |
       | s_auth_outage_css                      | <css>         |
-    And I wait "600" seconds
     And I press "Save changes"
     Then I should see "Changes saved"
     When I visit the Create Outage Page
@@ -39,7 +38,7 @@ Feature: Test changing the default settings.
 
     Examples:
       | autostart | warning | duration | title                   | description                 | css             |
-#      | 1         | 15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
+      | 1         | 15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
       | 0         | 30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */ |
 
 

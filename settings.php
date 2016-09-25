@@ -62,14 +62,14 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         get_string('defaultdescription', 'auth_outage'),
         get_string('defaultdescriptiondescription', 'auth_outage'),
         $defaults['default_description'],
-        PARAM_TEXT
+        PARAM_RAW_TRIMMED
     ));
     $settings->add(new admin_setting_configtextarea(
         'auth_outage/css',
         get_string('defaultlayoutcss', 'auth_outage'),
         get_string('defaultlayoutcssdescription', 'auth_outage'),
         $defaults['css'],
-        PARAM_TEXT
+        PARAM_RAW_TRIMMED
     ));
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));

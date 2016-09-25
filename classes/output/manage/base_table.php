@@ -56,7 +56,7 @@ class base_table extends flexible_table {
      * @param bool $editdelete If it should display the edit and delete button.
      * @return string The HTML code of the action buttons.
      */
-    protected function set_data_buttons(outage $outage, $editdelete) {
+    protected function create_data_buttons(outage $outage, $editdelete) {
         global $OUTPUT;
         $buttons = '';
 
@@ -126,6 +126,6 @@ class base_table extends flexible_table {
             );
         }
 
-        return '<nobr>'.$buttons.'</nobr>';
+        return html_writer::tag('nobr', $buttons);
     }
 }

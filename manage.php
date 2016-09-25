@@ -33,6 +33,9 @@ $renderer = outagelib::page_setup();
 
 echo $OUTPUT->header();
 
-$renderer->renderoutagelist(outagedb::get_all_unended(), outagedb::get_all_ended());
+$renderer->output_view('manage.php', [
+    'unended' => outagedb::get_all_unended(),
+    'ended' => outagedb::get_all_ended(),
+]);
 
 echo $OUTPUT->footer();

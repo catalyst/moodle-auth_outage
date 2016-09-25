@@ -120,8 +120,11 @@ class behat_auth_outage extends behat_base {
      * @Then I should see the action :action
      */
     public function i_should_see_the_action($action) {
-        if (!$this->can_i_see_action($action)) {
-            throw new ExpectationException('"'.$action.'" action was not found', $this->getSession());
+        $expected = ($action == 'Edit') ? 2 : 1; // Edit is an action through the title or button.
+        $found = $this->can_i_see_action($action);
+        if ($found != $expected) {
+            throw new ExpectationException('"'.$action.'" action not found, expected '.$expected
+                                           .' but found '.$found.'.', $this->getSession());
         }
     }
 
@@ -129,7 +132,7 @@ class behat_auth_outage extends behat_base {
      * @Then I should not see the action :action
      */
     public function iShouldNotSeeTheAction($action) {
-        if ($this->can_i_see_action($action)) {
+        if ($this->can_i_see_action($action) != 0) {
             throw new ExpectationException('"'.$action.'" action was found', $this->getSession());
         }
     }
@@ -138,6 +141,6 @@ class behat_auth_outage extends behat_base {
         $selector = 'css';
         $locator = "div[role='main'] a[title='${action}']";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
-        return (count($items) > 0);
+        return count($items);
     }
 }

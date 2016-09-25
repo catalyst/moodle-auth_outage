@@ -42,13 +42,12 @@ class planned_table extends base_table {
         $this->define_columns(['warning', 'starts', 'duration', 'title', 'actions']);
 
         $this->define_headers([
-                get_string('tableheaderwarnbefore', 'auth_outage'),
-                get_string('tableheaderstarttime', 'auth_outage'),
-                get_string('tableheaderduration', 'auth_outage'),
-                get_string('tableheadertitle', 'auth_outage'),
-                get_string('actions'),
-            ]
-        );
+            get_string('tableheaderwarnbefore', 'auth_outage'),
+            get_string('tableheaderstarttime', 'auth_outage'),
+            get_string('tableheaderduration', 'auth_outage'),
+            get_string('tableheadertitle', 'auth_outage'),
+            get_string('actions'),
+        ]);
 
         $this->setup();
     }
@@ -57,7 +56,7 @@ class planned_table extends base_table {
      * Sets the data of the table.
      * @param outage[] $outages An array with outage objects.
      */
-    public function set_data(array $outages) {
+    public function show_data(array $outages) {
         foreach ($outages as $outage) {
             $title = html_writer::link(
                 new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
@@ -70,7 +69,7 @@ class planned_table extends base_table {
                 userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
                 format_time($outage->get_duration_planned()),
                 $title,
-                $this->set_data_buttons($outage, true),
+                $this->create_data_buttons($outage, true),
             ]);
         }
     }

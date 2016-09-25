@@ -109,44 +109,6 @@ class renderer extends plugin_renderer_base {
     }
 
     /**
-     * Outputs the HTML data listing all given outages.
-     * @param outage[] $future Outages to list as planned.
-     * @param outage[] $past Outages to list as history.
-     */
-    public function renderoutagelist(array $future, array $past) {
-        global $OUTPUT;
-
-        echo html_writer::start_tag('section', ['id' => 'section_planned_outages']);
-        echo $this->rendersubtitle('outageslistfuture');
-        if (empty($future)) {
-            echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
-        } else {
-            $table = new planned_table();
-            $table->set_data($future);
-            $table->finish_output();
-        }
-        $url = new moodle_url('/auth/outage/new.php');
-        echo html_writer::empty_tag('input', [
-            'class' => 'form-submit',
-            'type' => 'button',
-            'value' => get_string('outagecreate', 'auth_outage'),
-            'onclick' => "location.href='${url}';"
-        ]);
-        echo html_writer::end_tag('section');
-
-        echo html_writer::start_tag('section', ['id' => 'section_outage_history']);
-        echo $this->rendersubtitle('outageslistpast');
-        if (empty($past)) {
-            echo html_writer::tag('p', html_writer::tag('small', get_string('notfound', 'auth_outage')));
-        } else {
-            $table = new history_table();
-            $table->set_data($past);
-            $table->finish_output();
-        }
-        echo html_writer::end_tag('section');
-    }
-
-    /**
      * Renders the warning bar.
      * @param outage $outage The outage to show in the warning bar.
      * @param int $time Timestamp to send to the outage bar in order to render the outage.

@@ -56,7 +56,7 @@ class history_table extends base_table {
      * Sets the data of the table.
      * @param outage[] $outages An array with outage objects.
      */
-    public function set_data(array $outages) {
+    public function show_data(array $outages) {
         foreach ($outages as $outage) {
             $finished = $outage->get_duration_actual();
             $finished = is_null($finished) ? '-' : format_time($finished);
@@ -66,7 +66,7 @@ class history_table extends base_table {
                 format_time($outage->get_duration_planned()),
                 $finished,
                 $outage->get_title(),
-                $this->set_data_buttons($outage, false),
+                $this->create_data_buttons($outage, false),
             ]);
         }
     }

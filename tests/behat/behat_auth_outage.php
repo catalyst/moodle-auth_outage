@@ -25,8 +25,11 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use auth_outage\dml\outagedb;
+use auth_outage\local\outage;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 
 require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
@@ -68,5 +71,73 @@ class behat_auth_outage extends behat_base {
      */
     public function i_visit_the_create_outage_page() {
         $this->getSession()->visit($this->locate_path('/auth/outage/new.php'));
+    }
+
+    /**
+     * @Given there is a :type outage
+     */
+    public function there_is_a_outage($type) {
+        $data = [
+            'autostart' => false,
+            'finished' => null,
+            'title' => 'Example of '.$type.' outage',
+            'description' => 'An outage: '.$type,
+        ];
+        switch ($type) {
+            case 'waiting':
+                $data['starttime'] = time() + (60 * 60 * 24 * 7); // Starts in 1 week.
+                $data['warntime'] = $data['starttime'] - 60;
+                $data['stoptime'] = $data['starttime'] + 120;
+                break;
+            case 'warning':
+                $data['starttime'] = time() + (60 * 60); // Starts in 1 hour.
+                $data['warntime'] = $data['starttime'] - (60 * 60 * 2); // Warns before 2 hours.
+                $data['stoptime'] = $data['starttime'] + (60 * 60 * 24 * 7); // Ends after 1 week.
+                break;
+            case 'ongoing':
+                $data['starttime'] = time() - (60 * 60); // Started 1 hour ago.
+                $data['warntime'] = $data['starttime'] - 60;
+                $data['stoptime'] = $data['starttime'] + (60 * 60 * 24 * 7); // Ends after 1 week.
+                break;
+            case 'finished':
+                $data['starttime'] = time() - (60 * 60); // Started 1 hour ago.
+                $data['warntime'] = $data['starttime'] - 60;
+                $data['finished'] = time() - 60; // Finished 1 minute ago.
+                $data['stoptime'] = $data['starttime'] + (60 * 60 * 24 * 7); // Ends after 1 week.
+                break;
+            case 'stopped':
+                $data['starttime'] = time() - (60 * 60 * 2); // Started 2 hour ago.
+                $data['warntime'] = $data['starttime'] - 60;
+                $data['stoptime'] = time() - (60 * 60 * 2); // Stopped 1 hour ago.
+                break;
+            default:
+                throw new InvalidArgumentException('$type='.$type.' is not valid.');
+        }
+        outagedb::save(new outage($data));
+    }
+
+    /**
+     * @Then I should see the action :action
+     */
+    public function i_should_see_the_action($action) {
+        if (!$this->can_i_see_action($action)) {
+            throw new ExpectationException('"'.$action.'" action was not found', $this->getSession());
+        }
+    }
+
+    /**
+     * @Then I should not see the action :action
+     */
+    public function iShouldNotSeeTheAction($action) {
+        if ($this->can_i_see_action($action)) {
+            throw new ExpectationException('"'.$action.'" action was found', $this->getSession());
+        }
+    }
+
+    private function can_i_see_action($action) {
+        $selector = 'css';
+        $locator = "div[role='main'] a[title='${action}']";
+        $items = $this->getSession()->getPage()->findAll($selector, $locator);
+        return (count($items) > 0);
     }
 }

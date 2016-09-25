@@ -1,20 +1,67 @@
-@auth @auth_outage @javascript
+@dev @auth @auth_outage @javascript
 Feature: Test the outage management functionality.
   In order to check if I can manage outages
   As an admin
   I need to create, edit, delete, clone and finish an outage.
 
+  Outage stage terminology:
+  - waiting is an outage in the future, not yet in the warning period.
+  - warning is an outage in the future but already in the warning period.
+  - ongoing is an outage that has started, but not yet reached the stop time nor is marked as finished.
+  - finished is an outage that has explicitly been marked as finished.
+  - stopped is an outage that has already ended but not explicitly marked as finished.
+
+
   Background: Always login as admin, enable the auth_outage plugin and go to the outage management page.
-    Given The authentication plugin "outage" is enabled
+    Given the authentication plugin "outage" is enabled
     And I log in as "admin"
+
 
   Scenario: Check if I can navigate to management page.
     Given I am on homepage
     When I navigate to "Manage" node in "Site administration > Plugins > Authentication > Outage manager"
-    Then I should see "Create Outage"
     Then I should see "Planned outages"
-    Then I should see "Outage history"
+    And I should see "No outages found." in the "#section_planned_outages" "css_element"
+    And I should see "Outage history"
+    And I should see "No outages found." in the "#section_outage_history" "css_element"
 
-  Scenario: Check if creating outages uses the configured defaults.
+
+  Scenario Outline: Planned outages should include all outages not finished or stopped.
+    Given there is a <type> outage
+    When I am on Outage Management Page
+    Then I should see "Example of <type> outage" in the "#section_<section>" "css_element"
+
+    Examples:
+      | type     | section         |
+      | waiting  | planned_outages |
+      | warning  | planned_outages |
+      | ongoing  | planned_outages |
+      | finished | outage_history  |
+      | stopped  | outage_history  |
+
+
+  Scenario Outline: Planned and history outages have different actions.
+    Given there is a <type> outage
+    When I am on Outage Management Page
+    Then I should see "Example of <type> outage"
+    And I should <view> the action "View"
+    And I should <clone> the action "Clone"
+    And I should <edit> the action "Edit"
+    And I should <delete> the action "Delete"
+    And I should <finish> the action "Finish"
+
+    Examples:
+      | type     | view | clone | edit    | delete  | finish  |
+      | waiting  | see  | see   | see     | see     | not see |
+      | warning  | see  | see   | see     | see     | not see |
+      | ongoing  | see  | see   | see     | see     | see     |
+      | finished | see  | see   | not see | not see | not see |
+      | stopped  | see  | see   | not see | not see | not see |
+
+
+  Scenario: Create an outage using defaults.
     Given I am on Outage Management Page
-    When I click on "([^"]|\"*)" "<string>"
+    When I press "Create Outage"
+    And I press "Save changes"
+    And I should not see "No outages found." in the "#section_planned_outages" "css_element"
+    And I should see "No outages found." in the "#section_outage_history" "css_element"

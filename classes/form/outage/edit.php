@@ -18,6 +18,7 @@ namespace auth_outage\form\outage;
 
 use auth_outage\local\outage;
 use coding_exception;
+use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +32,7 @@ require_once($CFG->libdir.'/formslib.php');
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit extends \moodleform {
+class edit extends moodleform {
     const TITLE_MAX_CHARS = 100;
 
     /**
@@ -43,6 +44,9 @@ class edit extends \moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+
+        $mform->addElement('checkbox', 'autostart', get_string('autostart', 'auth_outage'));
+        $mform->addHelpButton('autostart', 'autostart', 'auth_outage');
 
         $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
         $mform->addHelpButton('warningduration', 'warningduration', 'auth_outage');
@@ -112,15 +116,17 @@ class edit extends \moodleform {
             debugging('Not implemented for format '.$data->description['format'], DEBUG_DEVELOPER);
             return null;
         }
-        // Return an outage.
-        return new outage([
+        $outagedata = [
             'id' => ($data->id === 0) ? null : $data->id,
+            'autostart' => (isset($data->autostart) && ($data->autostart == 1)),
             'starttime' => $data->starttime,
             'stoptime' => $data->starttime + $data->outageduration,
             'warntime' => $data->starttime - $data->warningduration,
             'title' => $data->title,
             'description' => $data->description['text'],
-        ]);
+        ];
+        var_dump($outagedata);
+        return new outage($outagedata);
     }
 
     /**
@@ -133,6 +139,7 @@ class edit extends \moodleform {
         if ($outage instanceof outage) {
             $this->_form->setDefaults([
                 'id' => $outage->id,
+                'autostart' => $outage->autostart,
                 'starttime' => $outage->starttime,
                 'outageduration' => $outage->get_duration_planned(),
                 'warningduration' => $outage->get_warning_duration(),

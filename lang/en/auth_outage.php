@@ -24,6 +24,8 @@
  */
 
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
+$string['autostart'] = 'Auto start maintenance mode.';
+$string['autostart_help'] = 'If selected, when the outage starts it will automatically turn on Moodle maintenance mode.';
 $string['clicreatehelp'] = 'Creates a new outage.';
 $string['clicreateparamautostart'] = 'must be Y or N, sets if the outage automatically triggers maintenance mode.';
 $string['clicreateparamblock'] = 'blocks until outage starts.';

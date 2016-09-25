@@ -44,6 +44,7 @@ if ($mform->is_cancelled()) {
 
 $config = outagelib::get_config();
 $defaults = new outage([
+    'autostart' => $config->default_autostart,
     'starttime' => time(),
     'stoptime' => time() + ($config->default_duration * 60),
     'warntime' => time() - ($config->default_warning_duration * 60),

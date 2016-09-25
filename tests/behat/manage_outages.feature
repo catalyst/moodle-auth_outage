@@ -1,8 +1,8 @@
-@dev @auth @auth_outage @javascript
+@auth @auth_outage @javascript
 Feature: Test the outage management functionality.
   In order to check if I can manage outages
   As an admin
-  I need to create, edit, delete, clone and finish an outage.
+  I need to view, create, edit, delete, clone and finish an outage.
 
   Outage stage terminology:
   - waiting is an outage in the future, not yet in the warning period.
@@ -17,27 +17,27 @@ Feature: Test the outage management functionality.
     And I log in as "admin"
 
 
-#  Scenario: Check if I can navigate to management page.
-#    Given I am on homepage
-#    When I navigate to "Manage" node in "Site administration > Plugins > Authentication > Outage manager"
-#    Then I should see "Planned outages"
-#    And I should see "No outages found." in the "#section_planned_outages" "css_element"
-#    And I should see "Outage history"
-#    And I should see "No outages found." in the "#section_outage_history" "css_element"
-#
-#
-#  Scenario Outline: Planned outages should include all outages not finished or stopped.
-#    Given there is a <type> outage
-#    When I am on Outage Management Page
-#    Then I should see "Example of <type> outage" in the "#section_<section>" "css_element"
-#
-#    Examples:
-#      | type     | section         |
-#      | waiting  | planned_outages |
-#      | warning  | planned_outages |
-#      | ongoing  | planned_outages |
-#      | finished | outage_history  |
-#      | stopped  | outage_history  |
+  Scenario: Check if I can navigate to management page.
+    Given I am on homepage
+    When I navigate to "Manage" node in "Site administration > Plugins > Authentication > Outage manager"
+    Then I should see "Planned outages"
+    And I should see "No outages found." in the "#section_planned_outages" "css_element"
+    And I should see "Outage history"
+    And I should see "No outages found." in the "#section_outage_history" "css_element"
+
+
+  Scenario Outline: Planned outages should include all outages not finished or stopped.
+    Given there is a <type> outage
+    When I am on Outage Management Page
+    Then I should see "Example of <type> outage" in the "#section_<section>" "css_element"
+
+    Examples:
+      | type     | section         |
+      | waiting  | planned_outages |
+      | warning  | planned_outages |
+      | ongoing  | planned_outages |
+      | finished | outage_history  |
+      | stopped  | outage_history  |
 
 
   Scenario Outline: Planned and history outages have different actions.
@@ -59,9 +59,63 @@ Feature: Test the outage management functionality.
       | stopped  | see  | see   | not see | not see | not see |
 
 
-#  Scenario: Create an outage using defaults.
-#    Given I am on Outage Management Page
-#    When I press "Create Outage"
-#    And I press "Save changes"
-#    And I should not see "No outages found." in the "#section_planned_outages" "css_element"
-#    And I should see "No outages found." in the "#section_outage_history" "css_element"
+  Scenario: Create an outage using defaults.
+    Given I am on Outage Management Page
+    When I press "Create Outage"
+    And I press "Save changes"
+    And I should not see "No outages found." in the "#section_planned_outages" "css_element"
+    And I should see "No outages found." in the "#section_outage_history" "css_element"
+
+
+  Scenario: View an outage which should open in a new window or tab.
+    Given there is a waiting outage
+    And I am on Outage Management Page
+    When I click on the View action button
+    Then I should be in a new window
+    And I should see "Example of waiting outage"
+
+
+  Scenario: Clone an outage.
+    Given there is a waiting outage
+    And I am on Outage Management Page
+    When I click on the Clone action button
+    Then I should see "Clone Outage"
+    And I set the field "title" to "My cloned outage"
+    And I press "Save changes"
+    Then I should see "Example of waiting outage"
+    And I should see "My cloned outage"
+
+
+  Scenario: Edit an outage.
+    Given there is a warning outage
+    And I am on Outage Management Page
+    And I should see "Example of warning outage"
+    When I click on the Edit action button
+    Then I should see "Edit Outage"
+    And I set the field "title" to "My previous warning outage"
+    And I press "Save changes"
+    Then I should not see "Example of warning outage"
+    And I should see "My previous warning outage"
+
+
+  Scenario: Delete an outage
+    Given there is a warning outage
+    And I am on Outage Management Page
+    And I should see "Example of warning outage"
+    When I click on the Delete action button
+    Then I should see "Delete Outage"
+    And I should see "Example of warning outage"
+    Then I press "Delete"
+    And I should not see "Example of warning outage"
+
+
+  Scenario: Finish an outage
+    Given there is a ongoing outage
+    And I am on Outage Management Page
+    And I should see "Example of ongoing outage" in the "#section_planned_outages" "css_element"
+    When I click on the Finish action button
+    Then I should see "Finish Outage"
+    And I should see "Example of ongoing outage"
+    Then I click on "input[value='Finish']" "css_element"
+    And I should not see "Example of ongoing outage" in the "#section_planned_outages" "css_element"
+    But I should see "Example of ongoing outage" in the "#section_outage_history" "css_element"

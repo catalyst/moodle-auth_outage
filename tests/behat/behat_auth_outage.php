@@ -131,7 +131,7 @@ class behat_auth_outage extends behat_base {
     /**
      * @Then I should not see the action :action
      */
-    public function iShouldNotSeeTheAction($action) {
+    public function i_should_not_see_the_action($action) {
         if ($this->can_i_see_action($action) != 0) {
             throw new ExpectationException('"'.$action.'" action was found', $this->getSession());
         }
@@ -142,5 +142,24 @@ class behat_auth_outage extends behat_base {
         $locator = "div[role='main'] a[title='${action}']";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
         return count($items);
+    }
+
+    /**
+     * @Then I click on the :action action button
+     */
+    public function i_click_on_the_action_button($action) {
+        $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='${action}']");
+        $this->ensure_node_is_visible($node);
+        $node->click();
+    }
+
+    /**
+     * @Given I should be in a new window
+     */
+    public function i_should_be_in_a_new_window() {
+        $count = count($this->getSession()->getWindowNames());
+        if ($count != 2) {
+            throw new ExpectationException('Number of windows: '.$count, $this->getSession());
+        }
     }
 }

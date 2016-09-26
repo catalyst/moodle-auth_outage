@@ -132,6 +132,15 @@ class outagelib {
         if (is_null($next)) {
             unset_config('maintenance_later');
         } else {
+            $message = get_config('moodle', 'maintenance_message');
+            if ($message) {
+                if (!defined('PHPUNIT_TEST') || !PHPUNIT_TEST) {
+                    error_log('Disabling $CFG->maintenance_message to allow our template page to take place.');
+                    error_log('Previous value: '.$message);
+                }
+                // We cannot do much if forced config, but the logs will show the error.
+                unset_config('maintenance_message');
+            }
             set_config('maintenance_later', $next->starttime);
         }
     }

@@ -48,7 +48,7 @@ global $SITE;
 
 <?php
 // Static page is rendered as if outage started. It is never rendered as admin or preview mode.
-echo renderer::get()->render_warningbar($viewbag['outage'], $viewbag['outage']->starttime, false, false);
+echo renderer::get()->render_warningbar($viewbag['outage'], $viewbag['outage']->starttime, true, false);
 ?>
 
 <header>

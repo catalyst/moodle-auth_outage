@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\infopage_controller
+ * @covers     \auth_outage\local\controllers\infopage
  */
 class infopagecontroller_test extends advanced_testcase {
     public function setUp() {
@@ -63,10 +63,17 @@ class infopagecontroller_test extends advanced_testcase {
         ]);
         $info = new infopage(['static' => true, 'outage' => $outage]);
         $html = $info->get_output();
+        // Must find...
         self::assertContains('<!DOCTYPE html>', $html);
+        self::assertContains('<meta http-equiv="refresh" ', $html);
         self::assertContains('</html>', $html);
         self::assertContains($outage->get_title(), $html);
         self::assertContains($outage->get_description(), $html);
+        // Must not find...
+        self::assertNotContains('<link ', $html);
+        self::assertNotContains('<a ', $html);
+        self::assertNotContains('<script ', $html);
+        // Ensure it has the id encoded in it...
         self::assertSame($outage->id, infopage::find_outageid_from_infopage($html));
     }
 

@@ -170,7 +170,7 @@ class renderer extends plugin_renderer_base {
             );
         }
 
-        $url = new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]);
+        $url = new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
             ['src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']

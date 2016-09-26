@@ -47,7 +47,7 @@ if ($viewbag['admin']) {
     }
 
     $admineditlink = html_writer::link(
-        new moodle_url('/auth/outage/edit.php', ['id' => $viewbag['outage']->id]),
+        new moodle_url('/auth/outage/edit.php', ['edit' => $viewbag['outage']->id]),
         get_string('outageedit', 'auth_outage')
     );
 }

@@ -78,7 +78,7 @@ class base_table extends flexible_table {
         // Edit button if required.
         if ($editdelete) {
             $buttons .= html_writer::link(
-                new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]),
                 html_writer::empty_tag('img', [
                     'src' => $OUTPUT->pix_url('t/edit'),
                     'alt' => get_string('edit'),
@@ -90,7 +90,7 @@ class base_table extends flexible_table {
 
         // Clone button.
         $buttons .= html_writer::link(
-            new moodle_url('/auth/outage/clone.php', ['id' => $outage->id]),
+            new moodle_url('/auth/outage/edit.php', ['clone' => $outage->id]),
             html_writer::empty_tag('img', [
                 'src' => $OUTPUT->pix_url('t/copy'),
                 'alt' => get_string('clone', 'auth_outage'),

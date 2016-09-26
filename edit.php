@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Create new outage.
+ * Edit an outage.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -25,6 +25,8 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\form\outage\edit;
+use auth_outage\local\outage;
+use auth_outage\local\outagelib;
 use auth_outage\output\renderer;
 
 require_once(__DIR__.'/../../config.php');
@@ -43,15 +45,41 @@ if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
 }
 
-$id = required_param('id', PARAM_INT);
-$outage = outagedb::get_by_id($id);
-if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #'.$id.' not found.');
+$clone = optional_param('clone', 0, PARAM_INT);
+$edit = optional_param('edit', 0, PARAM_INT);
+if ($clone && $edit) {
+    throw new invalid_parameter_exception('Cannot provide both clone and edit ids.');
 }
+if ($clone) {
+    // Remove outage id to force creating a new one.
+    $outage = outagedb::get_by_id($clone);
+    $outage->id = null;
+    $action = 'outageclone';
+} else if ($edit) {
+    $outage = outagedb::get_by_id($edit);
+    $action = 'outageedit';
+} else {
+    $config = outagelib::get_config();
+    $time = time();
+    $outage = new outage([
+        'autostart' => $config->default_autostart,
+        'starttime' => $time,
+        'stoptime' => $time + $config->default_duration,
+        'warntime' => $time - $config->default_warning_duration,
+        'title' => $config->default_title,
+        'description' => $config->default_description,
+    ]);
+    $action = 'outagecreate';
+}
+
+if ($outage == null) {
+    throw new invalid_parameter_exception('Outage not found.');
+}
+
 $mform->set_data($outage);
 
-$PAGE->navbar->add($outage->get_title());
+$PAGE->navbar->add(get_string($action.'crumb', 'auth_outage'));
 echo $OUTPUT->header();
-echo renderer::get()->rendersubtitle('outageedit');
+echo renderer::get()->rendersubtitle($action);
 $mform->display();
 echo $OUTPUT->footer();

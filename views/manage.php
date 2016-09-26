@@ -29,7 +29,7 @@ use auth_outage\output\renderer;
 
 defined('MOODLE_INTERNAL') || die();
 
-$urlnew = new moodle_url('/auth/outage/new.php');
+$urlnew = new moodle_url('/auth/outage/edit.php');
 ?>
 
 <section id="section_planned_outages">

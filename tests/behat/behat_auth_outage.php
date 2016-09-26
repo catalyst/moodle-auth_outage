@@ -67,7 +67,7 @@ class behat_auth_outage extends behat_base {
      * @Given /^I visit the Create Outage Page$/
      */
     public function i_visit_the_create_outage_page() {
-        $this->getSession()->visit($this->locate_path('/auth/outage/new.php'));
+        $this->getSession()->visit($this->locate_path('/auth/outage/edit.php'));
     }
 
     /**

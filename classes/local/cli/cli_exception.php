@@ -65,6 +65,11 @@ class cli_exception extends Exception {
     const ERROR_OUTAGE_CHANGED = 7;
 
     /**
+     * The outage plugin is not enabled.
+     */
+    const ERROR_PLUGIN_DISABLED = 8;
+
+    /**
      * cliexception constructor.
      * @param string $message An explanation of the exception.
      * @param int $code Exit code to be used.

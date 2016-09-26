@@ -20,6 +20,7 @@ use coding_exception;
 use core\session\manager;
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->libdir.'/clilib.php');
 
 /**
  * Outage CLI base class.
@@ -47,7 +48,9 @@ abstract class clibase {
      */
     public function __construct(array $options = null) {
         global $CFG;
-        require_once($CFG->libdir.'/clilib.php');
+        if (!is_enabled_auth('outage')) {
+            throw new cli_exception(get_string('cliplugindisabled', 'auth_outage'), cli_exception::ERROR_PLUGIN_DISABLED);
+        }
 
         $this->become_admin_user();
 

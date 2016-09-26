@@ -79,4 +79,17 @@ class cli_test extends cli_testcase {
     public function test_exception() {
         throw new cli_exception('An CLI exception.');
     }
+
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 8
+     */
+    public function test_authdisabled() {
+        // Disable all auth plugins.
+        set_config('auth', '');
+        \core\session\manager::gc(); // Remove stale sessions.
+        core_plugin_manager::reset_caches();
+        // Try to create an CLI
+        $cli = new create();
+    }
 }

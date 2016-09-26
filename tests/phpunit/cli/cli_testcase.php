@@ -28,6 +28,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 class cli_testcase extends advanced_testcase {
     public function setUp() {
+        // Enable auth plugins.
+        set_config('auth', 'outage');
+        \core\session\manager::gc(); // Remove stale sessions.
+        core_plugin_manager::reset_caches();
+
         $this->resetAfterTest(true);
         $this->set_parameters([]);
         parent::setUp();

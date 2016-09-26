@@ -28,10 +28,10 @@ use auth_outage\local\cli\finish;
 
 define('CLI_SCRIPT', true);
 require_once(__DIR__.'/../../../config.php');
-
-$cli = new finish();
+require_once($CFG->libdir.'/clilib.php');
 
 try {
+    $cli = new finish();
     $cli->execute();
 } catch (cli_exception $e) {
     cli_error($e->getMessage());

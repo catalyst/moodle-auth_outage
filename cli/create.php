@@ -29,20 +29,19 @@ use auth_outage\local\outagelib;
 
 define('CLI_SCRIPT', true);
 require_once(__DIR__.'/../../../config.php');
-
-$cli = new create();
-
-$config = outagelib::get_config();
-$cli->set_defaults([
-    'help' => false,
-    'warn' => (int)($config->default_warning_duration),
-    'start' => null,
-    'duration' => (int)($config->default_duration),
-    'title' => $config->default_title,
-    'description' => $config->default_description,
-]);
+require_once($CFG->libdir.'/clilib.php');
 
 try {
+    $cli = new create();
+    $config = outagelib::get_config();
+    $cli->set_defaults([
+        'help' => false,
+        'warn' => (int)($config->default_warning_duration),
+        'start' => null,
+        'duration' => (int)($config->default_duration),
+        'title' => $config->default_title,
+        'description' => $config->default_description,
+    ]);
     $cli->execute();
 } catch (cli_exception $e) {
     cli_error($e->getMessage());

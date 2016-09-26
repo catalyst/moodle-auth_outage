@@ -20,7 +20,6 @@ use auth_outage\local\outage;
 use calendar_event;
 
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
@@ -34,6 +33,7 @@ require_once($CFG->dirroot.'/calendar/lib.php');
 class calendar {
     /**
      * Private constructor, use static methods instead.
+     * @codeCoverageIgnore
      */
     private function __construct() {
     }
@@ -42,22 +42,23 @@ class calendar {
      * Create an event on the calendar for this outage.
      * @param outage $outage Outage to be added to the calendar.
      */
-    public static function calendar_create(outage $outage) {
-        calendar_event::create(self::calendar_data($outage));
+    public static function create(outage $outage) {
+        calendar_event::create(self::create_data($outage));
     }
 
     /**
      * Updates an event on the calendar based on this outage.
      * @param outage $outage Outage to be updated in the calendar.
+     * @SuppressWarnings("comment") Allow this test to have as many tests as necessary.
      */
-    public static function calendar_update(outage $outage) {
-        $event = self::calendar_load($outage->id);
+    public static function update(outage $outage) {
+        $event = self::load($outage->id);
 
         if (is_null($event)) {
             debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
-            self::calendar_create($outage);
+            self::create($outage);
         } else {
-            $event->update(self::calendar_data($outage));
+            $event->update(self::create_data($outage));
         }
     }
 
@@ -65,8 +66,8 @@ class calendar {
      * Removes an event from the calendar related to this outage.
      * @param int $outageid Id of outage to be deleted from the calendar.
      */
-    public static function calendar_delete($outageid) {
-        $event = self::calendar_load($outageid);
+    public static function delete($outageid) {
+        $event = self::load($outageid);
 
         // If not found (was not created before) ignore it.
         if (is_null($event)) {
@@ -81,7 +82,7 @@ class calendar {
      * @param outage $outage Outage to use as reference for the calendar event.
      * @return mixed[] Calendar event data.
      */
-    private static function calendar_data(outage $outage) {
+    private static function create_data(outage $outage) {
         return [
             'name' => $outage->get_title(),
             'description' => $outage->get_description(),
@@ -102,7 +103,7 @@ class calendar {
      * @param int $outageid The outage id to find in the calendar.
      * @return calendar_event|null The calendar event or null if not found.
      */
-    private static function calendar_load($outageid) {
+    public static function load($outageid) {
         global $DB;
 
         $event = $DB->get_record_select(

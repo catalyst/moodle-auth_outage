@@ -26,9 +26,6 @@ defined('MOODLE_INTERNAL') || die();
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright       Catalyst IT
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers          \auth_outage\event\outage_created
- * @covers          \auth_outage\event\outage_updated
- * @covers          \auth_outage\event\outage_deleted
  */
 class events_test extends advanced_testcase {
     public function test_save() {

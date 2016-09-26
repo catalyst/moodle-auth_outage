@@ -25,11 +25,10 @@ require_once(__DIR__.'/cli_testcase.php');
 /**
  * Tests performed on CLI finish class.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\local\cli\finish
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class finish_test extends cli_testcase {
     public function test_constructor() {

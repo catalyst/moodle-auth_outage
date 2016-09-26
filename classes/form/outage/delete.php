@@ -32,8 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class delete extends \moodleform {
     /**
-     * {@inheritDoc}
-     * @see moodleform::definition()
+     * Defines the form elements.
      */
     public function definition() {
         $mform = $this->_form;

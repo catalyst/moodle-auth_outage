@@ -32,7 +32,8 @@ require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/formslib.php');
 
-outagelib::page_setup();
+admin_externalpage_setup('auth_outage_manage');
+$PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
 
 $mform = new edit();
 if ($mform->is_cancelled()) {

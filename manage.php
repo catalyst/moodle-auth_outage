@@ -24,16 +24,17 @@
  */
 
 use auth_outage\dml\outagedb;
-use auth_outage\local\outagelib;
+use auth_outage\output\renderer;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-$renderer = outagelib::page_setup();
+admin_externalpage_setup('auth_outage_manage');
+$PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
 
 echo $OUTPUT->header();
 
-$renderer->output_view('manage.php', [
+renderer::get()->output_view('manage.php', [
     'unended' => outagedb::get_all_unended(),
     'ended' => outagedb::get_all_ended(),
 ]);

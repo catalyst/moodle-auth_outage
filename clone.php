@@ -25,13 +25,14 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\form\outage\edit;
-use auth_outage\local\outagelib;
+use auth_outage\output\renderer;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/formslib.php');
 
-$renderer = outagelib::page_setup();
+admin_externalpage_setup('auth_outage_manage');
+$PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
 
 $mform = new edit();
 
@@ -54,6 +55,6 @@ $mform->set_data($outage);
 
 $PAGE->navbar->add($outage->get_title());
 echo $OUTPUT->header();
-echo $renderer->rendersubtitle('outageclone');
+echo renderer::get()->rendersubtitle('outageclone');
 $mform->display();
 echo $OUTPUT->footer();

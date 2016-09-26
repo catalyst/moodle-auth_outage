@@ -25,10 +25,10 @@ require_once(__DIR__.'/cli_testcase.php');
 /**
  * Tests performed on CLI create class.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class create_test extends cli_testcase {
@@ -272,5 +272,30 @@ class create_test extends cli_testcase {
         $text = $this->execute($cli);
         self::assertContains('created', $text);
         self::assertContains('started', $text);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_setdefaults_extra() {
+        $cli = new create([]);
+        $cli->set_defaults(['aninvalidparameter' => 'value']);
+    }
+
+    /**
+     * @expectedException auth_outage\local\cli\cli_exception
+     * @expectedExceptionCode 3
+     */
+    public function test_invalid_bool() {
+        $this->set_parameters([
+            '--autostart=maybe',
+            '--warn=60',
+            '--start=0',
+            '--duration=600',
+            '--title=Title',
+            '--description=Description',
+        ]);
+        $cli = new create();
+        $cli->execute();
     }
 }

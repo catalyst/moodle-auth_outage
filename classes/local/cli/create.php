@@ -284,6 +284,7 @@ class create extends clibase {
             }
         }
 
-        throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]));
+        throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+            cli_exception::ERROR_PARAMETER_INVALID);
     }
 }

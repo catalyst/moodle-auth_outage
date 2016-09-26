@@ -25,7 +25,6 @@ defined('MOODLE_INTERNAL') || die();
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \auth_outage\local\outage
  */
 class outage_test extends basic_testcase {
     public function test_constructor() {
@@ -36,6 +35,55 @@ class outage_test extends basic_testcase {
         foreach ($outage as $v) {
             self::assertNull($v);
         }
+    }
+
+    public function test_constructor_object() {
+        $obj = new stdClass();
+        $obj->id = 1;
+        $obj->autostart = true;
+        $obj->warntime = 2;
+        $obj->starttime = 3;
+        $obj->finished = 4;
+        $obj->stoptime = 5;
+        $obj->title = 'Title';
+        $obj->description = 'Description';
+        $outage = new outage($obj);
+        self::assertSame($obj->id, $outage->id);
+        self::assertSame($obj->autostart, $outage->autostart);
+        self::assertSame($obj->warntime, $outage->warntime);
+        self::assertSame($obj->starttime, $outage->starttime);
+        self::assertSame($obj->finished, $outage->finished);
+        self::assertSame($obj->stoptime, $outage->stoptime);
+        self::assertSame($obj->title, $outage->title);
+        self::assertSame($obj->description, $outage->description);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_constructor_invalid() {
+        new outage('My outage');
+    }
+
+    public function test_getstage_now() {
+        $now = time();
+        // Make sure it is in the past.
+        $outage = new outage([
+            'starttime' => $now - (3 * 60 * 60),
+            'stoptime' => $now - (2 * 60 * 60),
+            'warntime' => $now - (2 * 60 * 60),
+            'title' => '',
+            'description' => '',
+        ]);
+        self::assertSame(outage::STAGE_STOPPED, $outage->get_stage());
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getstage_invalidtime() {
+        $outage = new outage();
+        $outage->get_stage(-1);
     }
 
     public function test_isongoing() {
@@ -128,6 +176,7 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_WAITING, $outage->get_stage($now));
         self::assertFalse($outage->is_active($now));
         self::assertFalse($outage->is_ongoing($now));
+        self::assertFalse($outage->has_ended());
 
         $outage = new outage([
             'warntime' => $now - 10,
@@ -138,6 +187,7 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_WARNING, $outage->get_stage($now));
         self::assertTrue($outage->is_active($now));
         self::assertFalse($outage->is_ongoing($now));
+        self::assertFalse($outage->has_ended());
 
         $outage = new outage([
             'warntime' => $now - 20,
@@ -148,6 +198,7 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_ONGOING, $outage->get_stage($now));
         self::assertTrue($outage->is_active($now));
         self::assertTrue($outage->is_ongoing($now));
+        self::assertFalse($outage->has_ended());
 
         $outage = new outage([
             'warntime' => $now - 50,
@@ -158,6 +209,7 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_STOPPED, $outage->get_stage($now));
         self::assertFalse($outage->is_active($now));
         self::assertFalse($outage->is_ongoing($now));
+        self::assertTrue($outage->has_ended());
 
         $outage = new outage([
             'warntime' => $now - 50,
@@ -169,6 +221,7 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_FINISHED, $outage->get_stage($now));
         self::assertFalse($outage->is_active($now));
         self::assertFalse($outage->is_ongoing($now));
+        self::assertTrue($outage->has_ended());
 
         $outage = new outage([
             'warntime' => $now - 50,
@@ -180,5 +233,38 @@ class outage_test extends basic_testcase {
         self::assertSame(outage::STAGE_FINISHED, $outage->get_stage($now));
         self::assertFalse($outage->is_active($now));
         self::assertFalse($outage->is_ongoing($now));
+        self::assertTrue($outage->has_ended());
+    }
+
+    public function test_gettitle_getdescription() {
+        $now = time();
+        $outage = new outage([
+            'warntime' => $now - 50,
+            'starttime' => $now - 40,
+            'stoptime' => $now - 30,
+            'finished' => $now - 20,
+            'title' => 'Title {{start}} {{stop}} {{duration}}',
+            'description' => 'Description {{start}} {{stop}} {{duration}}',
+        ]);
+        $title = $outage->get_title();
+        self::assertNotContains('{', $title);
+        self::assertNotContains('}', $title);
+        $description = $outage->get_description();
+        self::assertNotContains('{', $description);
+        self::assertNotContains('}', $description);
+    }
+
+    public function test_getdurations() {
+        $outage = new outage(['starttime' => 1000]);
+        self::assertNull($outage->get_duration_actual());
+
+        $outage->finished = 3000;
+        self::assertSame(2000, $outage->get_duration_actual());
+
+        $outage->stoptime = 3050;
+        self::assertEquals(2050, $outage->get_duration_planned());
+
+        $outage->warntime = 600;
+        self::assertEquals(400, $outage->get_warning_duration());
     }
 }

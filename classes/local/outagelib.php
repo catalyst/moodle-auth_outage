@@ -20,7 +20,6 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
 use auth_outage\output\renderer;
 use Exception;
-use moodle_url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -34,17 +33,14 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib {
-    private static $initialized = false;
+    private static $injected = false;
 
     /**
-     * Initializes admin pages for outage.
-     * @return renderer The outage renderer for the page.
+     * Calls inject even if it was already called before.
      */
-    public static function page_setup() {
-        global $PAGE;
-        admin_externalpage_setup('auth_outage_manage');
-        $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
-        return renderer::get();
+    public static function reinject() {
+        self::$injected = false;
+        self::inject();
     }
 
     /**
@@ -54,13 +50,18 @@ class outagelib {
         global $CFG;
 
         // Many hooks can call it, execute only once.
-        if (self::$initialized) {
+        if (self::$injected) {
             return;
         }
-        self::$initialized = true;
+        self::$injected = true;
 
         // Ensure we do not kill the whole website in case of an error.
         try {
+            // Ensure no exceptions break the code.
+            if (PHPUNIT_TEST && optional_param('auth_outage_break_code', false, PARAM_INT)) {
+                (new stdClass())->invalidfield;
+            }
+
             // Check for a previewing outage, then for an active outage.
             $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
             $time = time();
@@ -74,7 +75,8 @@ class outagelib {
                     return;
                 }
                 // Delta is in seconds, setting the time our warning bar will consider relative to the outage start time.
-                $time = $active->starttime + optional_param('auth_outage_delta', 0, PARAM_INT);
+                $delta = optional_param('auth_outage_delta', 0, PARAM_INT);
+                $time = $active->starttime + $delta;
                 if (!$active->is_active($time)) {
                     return;
                 }
@@ -134,10 +136,8 @@ class outagelib {
         } else {
             $message = get_config('moodle', 'maintenance_message');
             if ($message) {
-                if (!defined('PHPUNIT_TEST') || !PHPUNIT_TEST) {
-                    error_log('Disabling $CFG->maintenance_message to allow our template page to take place.');
-                    error_log('Previous value: '.$message);
-                }
+                debugging('Disabling $CFG->maintenance_message to allow our template page to take place.');
+                debugging('Previous value: '.$message);
                 // We cannot do much if forced config, but the logs will show the error.
                 unset_config('maintenance_message');
             }

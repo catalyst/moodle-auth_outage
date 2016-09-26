@@ -74,10 +74,11 @@ class infopage {
      * Given the HTML code for the static page, find the outage id for that page.
      * @param string $html Static info page HTML.
      * @return int|null Outage id or null if not found.
+     * @throws coding_exception
      */
     public static function find_outageid_from_infopage($html) {
         if (!is_string($html)) {
-            throw new coding_exception('$html must be a string.', $html);
+            throw new coding_exception('$html must be a string.', gettype($html));
         }
 
         $output = [];
@@ -103,10 +104,7 @@ class infopage {
         $info = new infopage(['outage' => $outage, 'static' => true]);
         $html = $info->get_output();
 
-        // Sanity check before writing/overwriting old file.
-        if (!is_string($html) || ($html == '') || (html_to_text($html) == '')) {
-            throw new invalid_state_exception('Sanity check failed. Invalid contents on $html.');
-        }
+        self::save_static_page_sanitycheck($html);
 
         $dir = dirname($file);
         if (!file_exists($dir) || !is_dir($dir)) {
@@ -117,7 +115,9 @@ class infopage {
 
     /**
      * Updates the static info page by (re)creating or deleting it as needed.
-     * @param null $file
+     * @param string|null $file File to update. Null to use default.
+     * @throws coding_exception
+     * @throws file_exception
      */
     public static function update_static_page($file = null) {
         if (is_null($file)) {
@@ -150,18 +150,32 @@ class infopage {
     }
 
     /**
+     * Ensures the data to create the page is valid.
+     * It should never be invalid, but if it is we will get a blank page while the maintenance is ongoing and the
+     * system administrators may become frustrated to understand why it is not working, let's not provoke them!
+     * @param string $html The HTML to check.
+     * @throws invalid_state_exception
+     */
+    public static function save_static_page_sanitycheck($html) {
+        if (!is_string($html) || (trim($html) == '') || (trim(html_to_text($html)) == '')) {
+            throw new invalid_state_exception('Sanity check failed. Invalid contents on $html.');
+        }
+    }
+
+    /**
      * Generates and returns the HTML for the info page.
      * @return string HTML for the info page.
      */
     public function get_output() {
         ob_start();
+        $output = null;
         try {
-            // TODO what if redirection occurs here?
             $this->output();
-            return ob_get_contents();
+            $output = ob_get_contents();
         } finally {
             ob_end_clean();
         }
+        return $output;
     }
 
     /**
@@ -213,6 +227,7 @@ class infopage {
     /**
      * Adjusts the fields according to the given parameters.
      * @param mixed[] $params
+     * @throws coding_exception
      */
     private function set_parameters(array $params) {
         if (!is_null($params['outage']) && !($params['outage'] instanceof outage)) {
@@ -220,7 +235,7 @@ class infopage {
         }
 
         if (!is_null($params['id']) && !is_null($params['outage']) && ($params['id'] !== $params['outage']->id)) {
-            throw new coding_exception('Provided id and outage->id do not match.', $params);
+            throw new coding_exception('Provided id and outage->id do not match.', $params['id'].'/'.$params['outage']->id);
         }
 
         if (is_null($params['id']) && is_null($params['outage'])) {

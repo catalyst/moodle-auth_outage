@@ -22,10 +22,11 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Tests performed on outage class.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class outagedb_test extends advanced_testcase {
     /**
@@ -327,6 +328,106 @@ class outagedb_test extends advanced_testcase {
         $id4 = self::saveoutage(false, $now, -3, -2, 2, 'A finished outage.', -1);
         self::assertEquals([$id4, $id3, $id1, $id2],
             self::createidarray(outagedb::get_all_ended($now)), 'Wrong past data.');
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getbyid_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_by_id(-1);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_delete_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::delete(-1);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getactive_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_active(-1);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getallunended_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_all_unended(-1);
+    }
+
+    public function test_getallunended_now() {
+        $this->resetAfterTest(true);
+        outagedb::get_all_unended();
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getallended_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_all_ended(-1);
+    }
+
+    public function test_getallended_now() {
+        $this->resetAfterTest(true);
+        outagedb::get_all_ended();
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_finish_invalid() {
+        $this->resetAfterTest(true);
+        outagedb::finish(1, -1);
+    }
+
+    public function test_finish_now_notfound() {
+        $this->resetAfterTest(true);
+        outagedb::finish(1);
+        self::assertCount(1, phpunit_util::get_debugging_messages());
+        phpunit_util::reset_debugging();
+    }
+
+    public function test_finish_notongoing() {
+        $this->resetAfterTest(true);
+        $time = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $time + (60 * 60 * 24 * 1),
+            'starttime' => $time + (60 * 60 * 24 * 2),
+            'stoptime' => $time + (60 * 60 * 24 * 3),
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        $id = outagedb::save($outage);
+        self::assertTrue(!$outage->is_ongoing($time));
+
+        outagedb::finish($id, $time);
+        self::assertCount(1, phpunit_util::get_debugging_messages());
+        phpunit_util::reset_debugging();
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getnextstartinginvalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_next_starting(-1);
+    }
+
+    /**
+     * @expectedException coding_exception
+     */
+    public function test_getnextautostartinginvalid() {
+        $this->resetAfterTest(true);
+        outagedb::get_next_autostarting(-1);
     }
 
     /**

@@ -40,6 +40,7 @@ require_once($CFG->dirroot.'/calendar/lib.php');
 class outagedb {
     /**
      * Private constructor, use static methods instead.
+     * @codeCoverageIgnore
      */
     private function __construct() {
     }
@@ -62,7 +63,7 @@ class outagedb {
     }
 
     /**
-     * @param $id int Outage id to get.
+     * @param int $id Outage id to get.
      * @return outage|null Returns the outage or null if not found.
      * @throws coding_exception
      */
@@ -106,7 +107,7 @@ class outagedb {
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Create calendar entry.
-            calendar::calendar_create($outage);
+            calendar::create($outage);
         } else {
             // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
@@ -116,7 +117,7 @@ class outagedb {
                 ['objectid' => $outage->id, 'other' => (array)$outage]
             )->trigger();
             // Update calendar entry.
-            calendar::calendar_update($outage);
+            calendar::update($outage);
         }
 
         // Trigger outages modified events.
@@ -147,7 +148,7 @@ class outagedb {
 
         // Delete it and remove from calendar.
         $DB->delete_records('auth_outage', ['id' => $id]);
-        calendar::calendar_delete($id);
+        calendar::delete($id);
 
         // Trigger events.
         outagelib::outages_modified();

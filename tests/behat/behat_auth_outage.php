@@ -27,9 +27,6 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 
 require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
@@ -59,8 +56,8 @@ class behat_auth_outage extends behat_base {
         $this->getSession()->visit($this->locate_path('login/index.php'));
 
         // Enter username and password.
-        $this->execute('behat_forms::i_set_the_field_to', array('Username', $this->escape('admin')));
-        $this->execute('behat_forms::i_set_the_field_to', array('Password', $this->escape('admin')));
+        $this->execute('behat_forms::i_set_the_field_to', ['Username', $this->escape('admin')]);
+        $this->execute('behat_forms::i_set_the_field_to', ['Password', $this->escape('admin')]);
 
         // Press log in button, no need to check for exceptions as it will checked after this step execution.
         $this->execute('behat_forms::press_button', get_string('login'));
@@ -139,7 +136,7 @@ class behat_auth_outage extends behat_base {
 
     private function can_i_see_action($action) {
         $selector = 'css';
-        $locator = "div[role='main'] a[title='${action}']";
+        $locator = "div[role='main'] a[title='".$action."']";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
         return count($items);
     }
@@ -148,7 +145,7 @@ class behat_auth_outage extends behat_base {
      * @Then I click on the :action action button
      */
     public function i_click_on_the_action_button($action) {
-        $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='${action}']");
+        $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='".$action."']");
         $this->ensure_node_is_visible($node);
         $node->click();
     }

@@ -89,7 +89,7 @@ class cli_test extends cli_testcase {
         set_config('auth', '');
         \core\session\manager::gc(); // Remove stale sessions.
         core_plugin_manager::reset_caches();
-        // Try to create an CLI
-        $cli = new create();
+        // Try to create an CLI object.
+        new create();
     }
 }

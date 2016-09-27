@@ -1,5 +1,5 @@
 @auth @auth_outage @javascript
-Feature: Test changing the default settings.
+Feature: Change the default settings
   In order to easily create outages
   As an admin
   I need to configure the outage defaults

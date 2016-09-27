@@ -1,8 +1,8 @@
 @auth @auth_outage @javascript
-Feature: Test the outage management functionality.
-  In order to check if I can manage outages
+Feature: Manage outages
+  In order to manage outages
   As an admin
-  I need to view, create, edit, delete, clone and finish an outage.
+  I need to view, create, edit, delete, clone and finish an outage
 
   Outage stage terminology:
   - waiting is an outage in the future, not yet in the warning period.

@@ -78,9 +78,18 @@ var auth_outage_warningbar = {
         xmlhttp.open("GET", this.checkfinishedurl, true);
         xmlhttp.send();
 
+        var estimatedServerTime = this.servertime + (Date.now() - this.clienttime);
+        var sleepSeconds = this.stops - estimatedServerTime; // How long to sleep until it stops.
+        if (sleepSeconds <= 0) {
+            sleepSeconds = 5; // It should be back, keep checking every 5 seconds.
+        }
+        else {
+            sleepSeconds = Math.min(sleepSeconds, (5 * 60)); // Check at least every 5 minutes.
+        }
+
         setTimeout(function () {
             $this.tickOngoing();
-        }, (5 * 60 * 1000)); // Check every 5 minutes.
+        }, sleepSeconds * 1000);
     },
 
     ajaxCheckFinished: function (ajax) {
@@ -94,6 +103,7 @@ var auth_outage_warningbar = {
     },
 
     finish: function () {
+        this.finished = true;
         this.divblock.className = 'auth_outage_finished_period';
         if (this.finishbutton) {
             this.finishbutton.style.display = 'none';

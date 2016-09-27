@@ -86,7 +86,6 @@ class outagelib_test extends advanced_testcase {
     }
 
     public function test_inject_broken() {
-        global $CFG;
         $_GET = ['auth_outage_break_code' => '1'];
         outagelib::reinject();
         self::assertCount(2, phpunit_util::get_debugging_messages());

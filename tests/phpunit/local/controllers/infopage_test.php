@@ -17,6 +17,7 @@
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
 use auth_outage\local\outage;
+use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -272,13 +273,12 @@ class infopagecontroller_test extends advanced_testcase {
             'description' => 'Description',
         ]);
         $info = new infopage(['outage' => $outage]);
-        self::hasExpectationOnOutput();
         $output = $info->get_output();
         self::assertContains('auth_outage_info', $output);
     }
 
     public function test_tasks() {
-        $task = new \auth_outage\task\update_static_page();
+        $task = new update_static_page();
         self::assertNotEmpty($task->get_name());
         $task->execute();
     }

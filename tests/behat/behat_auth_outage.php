@@ -14,24 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Steps definitions related to auth_outage.
- *
- * @package   auth_outage
- * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright 2016 Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
+use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
 require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
 
+/**
+ * Steps definitions related to auth_outage.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
+ */
 class behat_auth_outage extends behat_base {
+    /**
+     * @var outage Which outage are we checking.
+     */
+    private $outage = null;
+
     /**
      * @Given the authentication plugin :name is enabled
      */
@@ -157,6 +163,111 @@ class behat_auth_outage extends behat_base {
         $count = count($this->getSession()->getWindowNames());
         if ($count != 2) {
             throw new ExpectationException('Number of windows: '.$count, $this->getSession());
+        }
+    }
+
+    /**
+     * @Then I should see :text in the warning bar
+     */
+    public function i_should_see_in_the_warning_bar($text) {
+        $element = '#auth_outage_warningbar_box';
+
+        $container = $this->getSession()->getPage()->findAll('css', $element);
+        if (count($container) == 0) {
+            throw new ExpectationException('"'.$element.'" element not found', $this->getSession());
+        }
+        $container = $container[0];
+
+        $xpathliteral = behat_context_helper::escape($text);
+        $xpath = "/descendant-or-self::*[contains(., $xpathliteral)]".
+                 "[count(descendant::*[contains(., $xpathliteral)]) = 0]";
+
+        $found = $this->find_all('xpath', $xpath, false, $container);
+        if (count($found) == 0) {
+            throw new ExpectationException('"'.$text.'" text was not found in the "'.$element.'" element', $this->getSession());
+        }
+
+        foreach ($found as $node) {
+            if ($node->isVisible()) {
+                return;
+            }
+        }
+        throw new ExpectationException('"'.$text.'" text was found in the "'.$element.'" element but was not visible',
+            $this->getSession());
+    }
+
+    /**
+     * @Then I should not see the warning bar
+     */
+    public function i_should_not_see_the_warning_bar() {
+        $selector = 'css';
+        $locator = "#auth_outage_warningbar_box";
+        $items = $this->getSession()->getPage()->findAll($selector, $locator);
+        if (count($items) > 0) {
+            throw new ExpectationException($locator.' found, not expected.', $this->getSession());
+        }
+    }
+
+    /**
+     * @Given there is the following outage:
+     */
+    public function there_is_the_following_outage(TableNode $data) {
+        $time = time();
+        $row = $data->getHash()[0];
+
+        // Set defaults.
+        $row = array_merge(
+            [
+                'autostart' => 'no',
+                'warnbefore' => 60,
+                'startsin' => 0,
+                'stopsafter' => 60,
+                'finished' => null,
+                'title' => 'Outage Title',
+                'description' => 'Outage Description.',
+            ],
+            $row
+        );
+        if (($row['autostart'] != 'yes') && ($row['autostart'] != 'no')) {
+            throw new Exception('autostart must be yes or no, found: '.$row['autostart']);
+        }
+        if ($row['finished'] == '') {
+            $row['finished'] = null;
+        }
+
+        $starttime = $time + $row['startsin'];
+        $this->outage = new outage([
+            'autostart' => ($row['autostart'] == 'yes'),
+            'warntime' => $starttime - $row['warnbefore'],
+            'starttime' => $starttime,
+            'stoptime' => $starttime + $row['stopsafter'],
+            'finished' => $row['finished'],
+            'title' => $row['title'],
+            'description' => $row['description'],
+        ]);
+        outagedb::save($this->outage);
+    }
+
+    /**
+     * @When /^I wait until the outage (?P<what>warns|starts|stops)$/
+     */
+    public function i_wait_until_outage($what) {
+        switch ($what) {
+            case 'warns':
+                $seconds = $this->outage->warntime - time();
+                break;
+            case 'starts':
+                $seconds = $this->outage->starttime - time();
+                break;
+            case 'stops':
+                $seconds = $this->outage->stoptime - time();
+                break;
+            default:
+                throw new Exception('Invalid $what='.$what);
+        }
+        if ($seconds >= 0) {
+            $seconds++; // Give one extra second for things to happen.
+            $this->getSession()->wait($seconds * 1000, false);
         }
     }
 }

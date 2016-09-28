@@ -15,27 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * auth_outage plugin lib
+ * Version information.
  *
- * @package    auth_outage
- * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright  2016 Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     local_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\local\outagelib;
+defined('MOODLE_INTERNAL') || die();
 
-defined('MOODLE_INTERNAL') || die;
-
-function auth_outage_extend_navigation_user_settings() {
-    outagelib::inject();
-}
-
-function auth_outage_extend_navigation_frontpage() {
-    outagelib::inject();
-}
-
-function auth_outage_extend_navigation_user() {
-    outagelib::inject();
-}
-
+$plugin->component = "local_outage";
+$plugin->version = 2016092900;                  // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = 'Build '.$plugin->version;   // Human-readable release information.
+$plugin->requires = 2014051200;                 // Requires Moodle 2.7 or later.
+$plugin->maturity = MATURITY_STABLE;            // Not suitable for PRODUCTION environments yet!

@@ -220,7 +220,11 @@ class infopage {
 
             echo $OUTPUT->header();
             require($CFG->dirroot.'/auth/outage/views/info/content.php');
-            echo $OUTPUT->footer();
+
+            // Moodle 2.7 did not check for CLI mode, which was fixed later.
+            if (!($CFG->branch == '27' && CLI_SCRIPT)) {
+                echo $OUTPUT->footer();
+            }
         }
     }
 

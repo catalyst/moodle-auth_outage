@@ -35,7 +35,7 @@ global $SITE;
 <html data-outage-id="<?php echo $viewbag['outage']->id; ?>">
 <head>
     <title><?php echo strip_tags($SITE->fullname); ?></title>
-    <meta http-equiv="refresh" content="<?php echo (5 * 60); ?>">
+    <meta http-equiv="refresh" content="<?php echo $viewbag['outage']->get_duration_planned(); ?>">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>

@@ -126,8 +126,8 @@ class behat_auth_outage extends behat_base {
         $expected = ($action == 'Edit') ? 2 : 1; // Edit is an action through the title or button.
         $found = $this->can_i_see_action($action);
         if ($found != $expected) {
-            throw new ExpectationException('"'.$action.'" action not found, expected '.$expected
-                                           .' but found '.$found.'.', $this->getSession());
+            throw new ExpectationException('"'.$action.'" action not found, expected '.$expected.
+                                           ' but found '.$found.'.', $this->getSession());
         }
     }
 

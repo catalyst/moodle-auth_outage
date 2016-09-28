@@ -22,12 +22,31 @@
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use auth_outage\local\outagelib;
+
 defined('MOODLE_INTERNAL') || die;
 
-function auth_outage_extend_navigation_user() {
-    \auth_outage\local\outagelib::inject();
+function auth_outage_extends_navigation() {
+    outagelib::inject();
+}
+
+function auth_outage_extends_settings_navigation() {
+    outagelib::inject();
+}
+
+function auth_outage_extend_navigation() {
+    outagelib::inject();
+}
+
+function auth_outage_extend_settings_navigation() {
+    outagelib::inject();
 }
 
 function auth_outage_extend_navigation_frontpage() {
-    \auth_outage\local\outagelib::inject();
+    outagelib::inject();
 }
+
+function auth_outage_extend_navigation_user() {
+    outagelib::inject();
+}
+

@@ -24,6 +24,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
+use auth_outage\local\outagelib;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
@@ -53,6 +55,6 @@ class auth_plugin_outage extends auth_plugin_base {
      * Login page hook.
      */
     public function loginpage_hook() {
-        \auth_outage\local\outagelib::inject();
+        outagelib::inject();
     }
 }

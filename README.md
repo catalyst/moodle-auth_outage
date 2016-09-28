@@ -42,7 +42,7 @@ Installation
 1. Install the plugin the same as any standard moodle plugin either via the
 Moodle plugin directory, or you can use git to clone it into your source:
 
-     ```git clone git@github.com:catalyst/moodle-auth_outage.git auth/basic```
+     `git clone git@github.com:catalyst/moodle-auth_outage.git auth/outage`
 
     Or install via the Moodle plugin directory:
     

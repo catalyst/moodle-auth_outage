@@ -92,7 +92,7 @@ class infopagecontroller_test extends advanced_testcase {
         $html = $info->get_output();
         // Must find...
         self::assertContains('<!DOCTYPE html>', $html);
-        self::assertContains('<meta http-equiv="refresh" content="'.$outage->get_duration_planned().'">', $html); // Issue #53.
+        self::assertContains('<meta http-equiv="refresh" content="'.(60 * 60).'">', $html); // Issue #53.
         self::assertContains('</html>', $html);
         self::assertContains($outage->get_title(), $html);
         self::assertContains($outage->get_description(), $html);

@@ -19,6 +19,7 @@ namespace auth_outage\local;
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
 use auth_outage\output\renderer;
+use coding_exception;
 use Exception;
 use stdClass;
 
@@ -96,9 +97,20 @@ class outagelib {
      * Creates a configuration object ensuring all parameters are set,
      * loading defaults even if the plugin is not configured.
      * @return stdClass Configuration object with all parameters set.
+     * @throws coding_exception
      */
     public static function get_config() {
-        return (object)array_merge(self::get_config_defaults(), (array)get_config('auth_outage'));
+        $config = (array)get_config('auth_outage');
+        foreach ($config as $k => $v) {
+            if (!is_string($v)) {
+                throw new coding_exception('Config is expected to give string.');
+            }
+            if (trim($v) == '') {
+                unset($config[$k]);
+            }
+        }
+
+        return (object)array_merge(self::get_config_defaults(), $config);
     }
 
     /**
@@ -109,9 +121,9 @@ class outagelib {
         global $CFG;
 
         return [
-            'default_autostart' => false,
-            'default_duration' => (60 * 60),
-            'default_warning_duration' => (60 * 60),
+            'default_autostart' => '0',
+            'default_duration' => (string)(60 * 60),
+            'default_warning_duration' => (string)(60 * 60),
             'default_title' => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description' => get_string('defaultdescriptionvalue', 'auth_outage'),
             'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css'),

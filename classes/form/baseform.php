@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Outage base for forms, extends Moodle form to fix a but in the validation method.
+ * Outage base for forms, extends Moodle form to fix an issue in the validation method.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>

@@ -147,5 +147,44 @@ class outagelib_test extends advanced_testcase {
     public function test_inject_noactive() {
         outagelib::reinject();
     }
+
+    public function test_get_config() {
+        $this->resetAfterTest(true);
+        $keys = [
+            'css',
+            'default_autostart',
+            'default_description',
+            'default_duration',
+            'default_title',
+            'default_warning_duration',
+        ];
+        // Set config with invalid values.
+        foreach ($keys as $k) {
+            set_config($k, $k.'_value', 'auth_outage');
+        }
+        // Ensure it is not using any defaults.
+        $config = outagelib::get_config();
+        foreach ($keys as $k) {
+            self::assertSame($config->$k, $k.'_value', 'auth_outage');
+        }
+    }
+
+    public function test_get_config_invalid() {
+        $this->resetAfterTest(true);
+        // Set config with invalid values.
+        set_config('css', " \n", 'auth_outage');
+        set_config('default_autostart', " \n", 'auth_outage');
+        set_config('default_description', " \n", 'auth_outage');
+        set_config('default_duration', " \n", 'auth_outage');
+        set_config('default_title', " \n", 'auth_outage');
+        set_config('default_warning_duration', " \n", 'auth_outage');
+        // Get defaults.
+        $defaults = outagelib::get_config_defaults();
+        $config = outagelib::get_config();
+        // Ensure it is using all defailts.
+        foreach ($defaults as $k => $v) {
+            self::assertSame($v, $config->$k);
+        }
+    }
 }
 

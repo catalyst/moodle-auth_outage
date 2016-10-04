@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * baseform class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\form;
 
 use moodleform;
@@ -23,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Outage base for forms, extends Moodle form to fix an issue in the validation method.
+ * baseform class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -32,16 +41,7 @@ require_once($CFG->libdir.'/formslib.php');
  */
 abstract class baseform extends moodleform {
     /**
-     * Validate the form.
-     *
-     * You almost always want to call {@link is_validated} instead of this
-     * because it calls {@link definition_after_data} first, before validating the form,
-     * which is what you want in 99% of cases.
-     *
-     * This is provided as a separate function for those special cases where
-     * you want the form validated before definition_after_data is called
-     * for example, to selectively add new elements depending on a no_submit_button press,
-     * but only when the form is valid when the no_submit_button is pressed,
+     * Validate the form. See MDL-56250.
      *
      * @param bool $validateonnosubmit optional, defaults to false.  The default behaviour
      *             is NOT to validate the form when a no submit button has been pressed.
@@ -49,7 +49,6 @@ abstract class baseform extends moodleform {
      *
      * @return bool true if form data valid
      * @SuppressWarnings(PHPMD) It is better to not refactor this method as it is linked to its parent functionality.
-     * @codeCoverageIgnore
      */
     public function validate_defined_fields($validateonnosubmit = false) {
         // One validation NOT is enough (if mocking). See parent method.

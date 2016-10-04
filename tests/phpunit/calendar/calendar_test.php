@@ -14,13 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * calendar_test test class.
+ *
+ * @package         auth_outage
+ * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright       Catalyst IT
+ * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\calendar\calendar;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Tests performed on outage class.
+ * calendar_test test class.
  *
  * @package         auth_outage
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -28,6 +37,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class calendar_test extends advanced_testcase {
+    /**
+     * Creates an outage and checks if its in the calendar.
+     * @return outage Created outage.
+     */
     public function test_create() {
         self::setAdminUser();
         $this->resetAfterTest(false);
@@ -49,7 +62,10 @@ class calendar_test extends advanced_testcase {
     }
 
     /**
+     * Updates an outage and checks the calendar.
      * @depends test_create
+     * @param outage $outage Outage to be updated.
+     * @return outage Updated outage.
      */
     public function test_update(outage $outage) {
         self::setAdminUser();
@@ -63,7 +79,9 @@ class calendar_test extends advanced_testcase {
     }
 
     /**
+     * Deletes an outage and checks the calendar.
      * @depends test_update
+     * @param outage $outage Outage to delete.
      */
     public function test_delete($outage) {
         self::setAdminUser();
@@ -73,6 +91,9 @@ class calendar_test extends advanced_testcase {
         self::assertNull(calendar::load($outage->id));
     }
 
+    /**
+     * Try to update a non existing outage.
+     */
     public function test_update_notfound() {
         self::setAdminUser();
         $this->resetAfterTest(true);
@@ -93,6 +114,9 @@ class calendar_test extends advanced_testcase {
         phpunit_util::reset_debugging();
     }
 
+    /**
+     * Try to delete a non existing outage.
+     */
     public function test_delete_notfound() {
         self::setAdminUser();
         $this->resetAfterTest(true);
@@ -101,6 +125,10 @@ class calendar_test extends advanced_testcase {
         phpunit_util::reset_debugging();
     }
 
+    /**
+     * Check if there is a calendar entry for the given outage.
+     * @param outage $outage Outage to check.
+     */
     private function check_calendar(outage $outage) {
         $calendar = calendar::load($outage->id);
         self::assertSame($outage->title, $calendar->name);

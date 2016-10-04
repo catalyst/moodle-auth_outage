@@ -14,19 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\local\outage;
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * Tests performed on outage class.
+ * outage_test test class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outage_test extends basic_testcase {
+
+use auth_outage\local\outage;
+
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/../base_testcase.php');
+
+/**
+ * outage_test test class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class outage_test extends auth_outage_base_testcase {
+    /**
+     * Tests the constructor.
+     */
     public function test_constructor() {
         $outage = new outage();
         // Very important, this should never change.
@@ -37,6 +50,9 @@ class outage_test extends basic_testcase {
         }
     }
 
+    /**
+     * Tests the constructor, giving data as an object.
+     */
     public function test_constructor_object() {
         $obj = new stdClass();
         $obj->id = 1;
@@ -59,12 +75,16 @@ class outage_test extends basic_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests the constructor with invalid data.
      */
     public function test_constructor_invalid() {
+        $this->set_expected_exception(coding_exception::class);
         new outage('My outage');
     }
 
+    /**
+     * Tests getting the stage considering the current time (now).
+     */
     public function test_getstage_now() {
         $now = time();
         // Make sure it is in the past.
@@ -79,13 +99,17 @@ class outage_test extends basic_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests getting the stage providing an invalid time reference.
      */
     public function test_getstage_invalidtime() {
         $outage = new outage();
+        $this->set_expected_exception(coding_exception::class);
         $outage->get_stage(-1);
     }
 
+    /**
+     * Tests is_ongoing() with different outage stages.
+     */
     public function test_isongoing() {
         $now = time();
 
@@ -120,6 +144,9 @@ class outage_test extends basic_testcase {
         self::assertFalse($outage->is_ongoing($now));
     }
 
+    /**
+     * Tests is_active() with different outage stages.
+     */
     public function test_isactive() {
         $now = time();
 
@@ -164,6 +191,9 @@ class outage_test extends basic_testcase {
         self::assertFalse($outage->is_active($now));
     }
 
+    /**
+     * Tests different outage stages.
+     */
     public function test_stages() {
         $now = time();
 
@@ -236,6 +266,9 @@ class outage_test extends basic_testcase {
         self::assertTrue($outage->has_ended());
     }
 
+    /**
+     * Tests if getting title and description replaces the placeholders.
+     */
     public function test_gettitle_getdescription() {
         $now = time();
         $outage = new outage([
@@ -254,6 +287,9 @@ class outage_test extends basic_testcase {
         self::assertNotContains('}', $description);
     }
 
+    /**
+     * Tests getting the durations.
+     */
     public function test_getdurations() {
         $outage = new outage(['starttime' => 1000]);
         self::assertNull($outage->get_duration_actual());

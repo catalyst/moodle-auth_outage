@@ -14,30 +14,49 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\form\outage\delete;
-use auth_outage\form\outage\edit;
-use auth_outage\form\outage\finish;
-use auth_outage\local\outage;
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * Tests performed on forms classes.
+ * forms_test test class.
  *
  * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class forms_test extends advanced_testcase {
+
+use auth_outage\form\outage\delete;
+use auth_outage\form\outage\edit;
+use auth_outage\form\outage\finish;
+use auth_outage\local\outage;
+
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/../base_testcase.php');
+
+/**
+ * forms_test test class.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class forms_test extends auth_outage_base_testcase {
+    /**
+     * Create a delete form.
+     */
     public function test_delete() {
         new delete();
     }
 
+    /**
+     * Create a finish form.
+     */
     public function test_finish() {
         new finish();
     }
 
+    /**
+     * Mock some data and check values.
+     */
     public function test_edit_valid() {
         $this->mock_edit_post();
         $edit = new edit();
@@ -52,6 +71,9 @@ class forms_test extends advanced_testcase {
         self::assertSame('The <b>description</b>.', $outage->description);
     }
 
+    /**
+     * Check invalid warning duration.
+     */
     public function test_edit_invalid_warning() {
         $this->mock_edit_post();
         $_POST['warningduration'] = ['number' => '-1', 'timeunit' => '60'];
@@ -60,6 +82,9 @@ class forms_test extends advanced_testcase {
         self::assertNull($outage);
     }
 
+    /**
+     * Check invalid outage duration.
+     */
     public function test_edit_invalid_duration() {
         $this->mock_edit_post();
         $_POST['outageduration'] = ['number' => '-2', 'timeunit' => '3600'];
@@ -67,6 +92,9 @@ class forms_test extends advanced_testcase {
         self::assertNull($edit->get_data());
     }
 
+    /**
+     * Check invalid title (empty).
+     */
     public function test_edit_invalid_title() {
         $this->mock_edit_post();
         $_POST['title'] = '';
@@ -74,6 +102,9 @@ class forms_test extends advanced_testcase {
         self::assertNull($edit->get_data());
     }
 
+    /**
+     * Check invalid title (too long).
+     */
     public function test_edit_invalid_title_toolong() {
         $this->mock_edit_post();
         $_POST['title'] = 'This is a very long time, it is so long that at some point it should not be valid. '.
@@ -83,6 +114,9 @@ class forms_test extends advanced_testcase {
         self::assertNull($edit->get_data());
     }
 
+    /**
+     * Check invalid format for description.
+     */
     public function test_edit_description_invalid_format() {
         $this->mock_edit_post();
         $_POST['description'] = ['text' => 'The <b>description</b>.', 'format' => '2'];
@@ -92,6 +126,9 @@ class forms_test extends advanced_testcase {
         phpunit_util::reset_debugging();
     }
 
+    /**
+     * Check if set data works properly.
+     */
     public function test_setdata() {
         $outage = new outage([
             'autostart' => false,
@@ -106,15 +143,18 @@ class forms_test extends advanced_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Check edit::set_data() with invalid parameter.
      */
     public function test_setdata_invalid() {
         $edit = new edit();
+        $this->set_expected_exception(coding_exception::class);
         $edit->set_data(null);
     }
 
+    /**
+     * Mock a post, see MDL-56233.
+     */
     private function mock_edit_post() {
-        // There is a bug in moodleform::mock_submit so we make our own version.
         $_POST = [
             'id' => '1',
             'sesskey' => sesskey(),

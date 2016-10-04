@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * planned_table class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <danielroperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\output\manage;
 
 use auth_outage\local\outage;
@@ -25,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/tablelib.php');
 
 /**
- * Manage outages table.
+ * planned_table class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <danielroperto@catalyst-au.net>

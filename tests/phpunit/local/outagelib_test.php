@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * outagelib_test test class.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
@@ -21,7 +30,7 @@ use auth_outage\local\outagelib;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Tests performed on outagelib class.
+ * outagelib_test test class.
  *
  * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -29,6 +38,9 @@ defined('MOODLE_INTERNAL') || die();
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib_test extends advanced_testcase {
+    /**
+     * Check if maintenance message is disabled as needed.
+     */
     public function test_maintenancemessage() {
         $this->resetAfterTest(true);
         static::setAdminUser();
@@ -50,6 +62,9 @@ class outagelib_test extends advanced_testcase {
         phpunit_util::reset_debugging();
     }
 
+    /**
+     * Check if maintenance later is removed if no outage set.
+     */
     public function test_maintenancelater_nonext() {
         $this->resetAfterTest(true);
         set_config('maintenance_later', time() + (60 * 60 * 24 * 7)); // In 1 week.
@@ -58,6 +73,9 @@ class outagelib_test extends advanced_testcase {
         self::assertEmpty(get_config('moodle', 'maintenance_later'));
     }
 
+    /**
+     * Check outagelib::inject() works as expected.
+     */
     public function test_inject() {
         global $CFG;
 
@@ -85,6 +103,9 @@ class outagelib_test extends advanced_testcase {
         self::assertSame($size, strlen($CFG->additionalhtmltopofbody));
     }
 
+    /**
+     * Check outagelib::inject() will not break the page if something goes wrong.
+     */
     public function test_inject_broken() {
         $_GET = ['auth_outage_break_code' => '1'];
         outagelib::reinject();
@@ -92,6 +113,9 @@ class outagelib_test extends advanced_testcase {
         phpunit_util::reset_debugging();
     }
 
+    /**
+     * Check if injection works with preview.
+     */
     public function test_inject_preview() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -114,6 +138,9 @@ class outagelib_test extends advanced_testcase {
         self::assertContains('<script>', $CFG->additionalhtmltopofbody);
     }
 
+    /**
+     * Check if injection works with invalid preview without stopping the page.
+     */
     public function test_inject_preview_notfound() {
         global $CFG;
         self::assertEmpty($CFG->additionalhtmltopofbody);
@@ -123,6 +150,9 @@ class outagelib_test extends advanced_testcase {
         self::assertEmpty($CFG->additionalhtmltopofbody);
     }
 
+    /**
+     * Test injection with preview and delta.
+     */
     public function test_inject_preview_withdelta() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -144,10 +174,16 @@ class outagelib_test extends advanced_testcase {
         self::assertEmpty($CFG->additionalhtmltopofbody);
     }
 
+    /**
+     * Test injection without active outage.
+     */
     public function test_inject_noactive() {
         outagelib::reinject();
     }
 
+    /**
+     * Check if get config works without getting defaults.
+     */
     public function test_get_config() {
         $this->resetAfterTest(true);
         $keys = [
@@ -158,7 +194,7 @@ class outagelib_test extends advanced_testcase {
             'default_title',
             'default_warning_duration',
         ];
-        // Set config with invalid values.
+        // Set config with values.
         foreach ($keys as $k) {
             set_config($k, $k.'_value', 'auth_outage');
         }
@@ -169,6 +205,9 @@ class outagelib_test extends advanced_testcase {
         }
     }
 
+    /**
+     * Check if get config works getting defaults when needed.
+     */
     public function test_get_config_invalid() {
         $this->resetAfterTest(true);
         // Set config with invalid values.

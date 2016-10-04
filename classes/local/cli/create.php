@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * create class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local\cli;
 
 use auth_outage\dml\outagedb;
@@ -23,7 +32,7 @@ use coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Outage CLI to create outage.
+ * create class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -182,6 +191,10 @@ class create extends clibase {
         return $id;
     }
 
+    /**
+     * Sets the defaults to the outage to clone.
+     * @throws cli_exception
+     */
     private function clone_defaults() {
         $id = $this->options['clone'];
         if (!is_number($id) || ($id <= 0)) {
@@ -201,7 +214,7 @@ class create extends clibase {
 
     /**
      * Check parameters converting their type as needed.
-     * @param mixed $options Input options.
+     * @param array $options Input options.
      * @return mixed Output options.
      * @throws cli_exception
      */
@@ -248,7 +261,6 @@ class create extends clibase {
      * @return string The converted parameter.
      * @throws cli_exception
      */
-
     private function merge_options_check_parameters_string_nonempty($option, $param) {
         if (!is_string($option)) {
             throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),

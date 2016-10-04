@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * finish_test test class.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\finish;
@@ -23,19 +32,25 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
 
 /**
- * Tests performed on CLI finish class.
+ * finish_test test class.
  *
  * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class finish_test extends cli_testcase {
+class finish_test extends auth_outage_cli_testcase {
+    /**
+     * Tests the constructor.
+     */
     public function test_constructor() {
         $cli = new finish();
         self::assertNotNull($cli);
     }
 
+    /**
+     * Tests the generated options and shortcuts.
+     */
     public function test_options() {
         $cli = new finish();
 
@@ -50,6 +65,9 @@ class finish_test extends cli_testcase {
         }
     }
 
+    /**
+     * Tests the help.
+     */
     public function test_help() {
         $this->set_parameters(['--help']);
         $cli = new finish();
@@ -59,17 +77,16 @@ class finish_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 4
+     * Tests if running without arguments.
      */
     public function test_noarguments() {
         $cli = new finish();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_MISSING);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 5
+     * Tests finishing an already ended outage.
      */
     public function test_endedoutage() {
         self::setAdminUser();
@@ -85,9 +102,13 @@ class finish_test extends cli_testcase {
         $this->set_parameters(['-id='.$id]);
         $cli = new finish();
         $cli->set_referencetime($now);
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_INVALID);
         $this->execute($cli);
     }
 
+    /**
+     * Tests finishing an outage.
+     */
     public function test_finish() {
         self::setAdminUser();
         $now = time();
@@ -106,35 +127,35 @@ class finish_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 6
+     * Tests finishing an active outage when it does not exists.
      */
     public function test_activenotfound() {
         self::setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_NOT_FOUND);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests providing an invalid outage id.
      */
     public function test_invalidid() {
         self::setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 6
+     * Tests when the outage is not found.
      */
     public function test_idnotfound() {
         self::setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_NOT_FOUND);
         $this->execute($cli);
     }
 }

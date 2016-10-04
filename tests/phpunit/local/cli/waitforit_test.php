@@ -14,15 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\dml\outagedb;
-use auth_outage\local\cli\waitforit;
-use auth_outage\local\outage;
-
-defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/cli_testcase.php');
-
 /**
- * Tests performed on CLI waitforit class.
+ * waitforit_test test class.
  *
  * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -30,12 +23,36 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public")
  */
-class waitforit_test extends cli_testcase {
+
+use auth_outage\dml\outagedb;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\waitforit;
+use auth_outage\local\outage;
+
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/cli_testcase.php');
+
+/**
+ * waitforit_test test class.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @SuppressWarnings("public")
+ */
+class waitforit_test extends auth_outage_cli_testcase {
+    /**
+     * Tests the constructor.
+     */
     public function test_constructor() {
         $cli = new waitforit();
         self::assertNotNull($cli);
     }
 
+    /**
+     * Tests the generated options.
+     */
     public function test_generateoptions() {
         $cli = new waitforit();
         $options = $cli->generate_options();
@@ -44,6 +61,9 @@ class waitforit_test extends cli_testcase {
         }
     }
 
+    /**
+     * Tests the generated shortcut options.
+     */
     public function test_generateshortcuts() {
         $cli = new waitforit();
         $options = $cli->generate_options();
@@ -53,6 +73,9 @@ class waitforit_test extends cli_testcase {
         }
     }
 
+    /**
+     * Tests if help works.
+     */
     public function test_help() {
         $this->set_parameters(['--help']);
         $cli = new waitforit();
@@ -62,38 +85,37 @@ class waitforit_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Checks if providing an outageid and active parameter.
      */
     public function test_bothparams() {
         $this->set_parameters(['--outageid=1', '--active']);
         $cli = new waitforit();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $cli->execute();
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests with an invalid outage id
      */
     public function test_invalidoutageid() {
         $this->set_parameters(['-id=-1']);
         $cli = new waitforit();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 6
+     * Tests with an active outage when it does not exists.
      */
     public function test_outagenotfound() {
         $this->set_parameters(['-a']);
         $cli = new waitforit();
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_NOT_FOUND);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 5
+     * Tests with an outage that already ended.
      */
     public function test_endedoutage() {
         self::setAdminUser();
@@ -109,9 +131,13 @@ class waitforit_test extends cli_testcase {
         $this->set_parameters(['-id='.$id]);
         $cli = new waitforit();
         $cli->set_referencetime($now);
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_INVALID);
         $this->execute($cli);
     }
 
+    /**
+     * Tests waiting for an existing active outage, verbose mode.
+     */
     public function test_activeverbose() {
         self::setAdminUser();
         $now = time();
@@ -132,6 +158,9 @@ class waitforit_test extends cli_testcase {
         self::assertContains('started', $output);
     }
 
+    /**
+     * Tests the countdown.
+     */
     public function test_countdown() {
         self::setAdminUser();
         $now = time();
@@ -159,8 +188,7 @@ class waitforit_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 7
+     * Tests if the outage changed while waiting.
      */
     public function test_outagechanged() {
         self::setAdminUser();
@@ -184,6 +212,7 @@ class waitforit_test extends cli_testcase {
             // Pretend it is time to start, but it should get an error instead.
             return $outage->starttime;
         });
+        $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_CHANGED);
         $this->execute($cli);
     }
 }

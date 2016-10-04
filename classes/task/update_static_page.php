@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * update_static_page class.
+ *
+ * @package   auth_outage
+ * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright 2016 Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\task;
 
 use auth_outage\local\controllers\infopage;
@@ -22,7 +31,8 @@ use core\task\scheduled_task;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Tasks information.
+ * update_static_page class.
+ *
  * @package   auth_outage
  * @author    Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright 2016 Catalyst IT

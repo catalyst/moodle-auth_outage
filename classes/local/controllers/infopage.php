@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * infopage class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local\controllers;
 
 use auth_outage\dml\outagedb;
@@ -29,7 +38,7 @@ use moodle_url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Controller for the info page.
+ * infopage class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -49,7 +58,7 @@ class infopage {
 
     /**
      * infopage_controller constructor.
-     * @param mixed[]|null $params Parameters to use or null to get from Moodle API (request).
+     * @param array $params Parameters to use or null to get from Moodle API (request).
      */
     public function __construct(array $params = null) {
         if (is_null($params)) {
@@ -142,6 +151,7 @@ class infopage {
     }
 
     /**
+     * Gets the default template file to use for static info page.
      * @return string The default template file to use for static info page.
      */
     public static function get_defaulttemplatefile() {

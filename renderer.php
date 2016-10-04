@@ -14,9 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * auth_outage_renderer class.
+ *
+ * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
+ * This is done to keep code organized and make easier to run tests and check coverage.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * auth_outage_renderer class.
+ *
  * auth_outage auth_outage_renderer should just extend our renderer class in the classes directory.
  * This is done to keep code organized and make easier to run tests and check coverage.
  *

@@ -17,7 +17,7 @@
 /**
  * Strings for component 'local_outage', language 'en'.
  *
- * @package     local_outage
+ * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

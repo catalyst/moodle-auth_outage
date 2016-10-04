@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * create_test test class.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\create;
@@ -23,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
 
 /**
- * Tests performed on CLI create class.
+ * create_test test class.
  *
  * @package     auth_outage
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -31,19 +40,18 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
-class create_test extends cli_testcase {
+class create_test extends auth_outage_cli_testcase {
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 4
+     * Tests without any arguments.
      */
     public function test_noarguments() {
         $cli = new create();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_MISSING);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests when the start time is not a valid number.
      */
     public function test_invalidparam_notanumber() {
         $cli = new create(['start' => 'some day']);
@@ -54,12 +62,12 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests when providing a negative start time.
      */
     public function test_invalidparam_negative() {
         $cli = new create(['start' => -1]);
@@ -70,12 +78,12 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests providing an empty title.
      */
     public function test_invalidparam_emptystring() {
         $cli = new create(['start' => 0, 'title' => '']);
@@ -86,12 +94,12 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests if not providing the title (it will be send as true).
      */
     public function test_invalidparam_notastring() {
         $cli = new create(['start' => 0, 'title' => true]);
@@ -102,9 +110,13 @@ class create_test extends cli_testcase {
             'title' => 'Default Title',
             'description' => 'Default Description',
         ]);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
+    /**
+     * Tests the help.
+     */
     public function test_help() {
         $this->set_parameters(['--help']);
         $cli = new create();
@@ -113,6 +125,9 @@ class create_test extends cli_testcase {
         self::assertContains('--help', $output);
     }
 
+    /**
+     * Tests the options and shortcuts.
+     */
     public function test_options() {
         $cli = new create();
 
@@ -127,6 +142,9 @@ class create_test extends cli_testcase {
         }
     }
 
+    /**
+     * Tests creating with all given options.
+     */
     public function test_create_withoptions() {
         $this->set_parameters([
             '--autostart=true',
@@ -153,6 +171,9 @@ class create_test extends cli_testcase {
         self::assertSame('A Description', $outage->description);
     }
 
+    /**
+     * Tests creating with the onlyid parameter.
+     */
     public function test_create_onlyid() {
         $this->set_parameters([
             '--onlyid',
@@ -181,6 +202,9 @@ class create_test extends cli_testcase {
         self::assertSame('Description', $outage->description);
     }
 
+    /**
+     * Tests creating using some default values.
+     */
     public function test_create_withdefaults() {
         $this->set_parameters([
             '--warn=100',
@@ -211,6 +235,9 @@ class create_test extends cli_testcase {
         self::assertSame('Default Description', $outage->description);
     }
 
+    /**
+     * Tests creating with clone.
+     */
     public function test_create_withclone() {
         self::setAdminUser();
         $now = time();
@@ -243,8 +270,7 @@ class create_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests creating with an invalid clone id.
      */
     public function test_create_withclone_invalid() {
         $this->set_parameters([
@@ -252,9 +278,13 @@ class create_test extends cli_testcase {
             '--clone=-1',
         ]);
         $cli = new create();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $this->execute($cli);
     }
 
+    /**
+     * Tests creating with the block flag.
+     */
     public function test_create_withblock() {
         // Not an extensive test in the blocking API, cliwaitforit tests should cover them deeper.
         $this->set_parameters([
@@ -275,16 +305,16 @@ class create_test extends cli_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests providing an invalid option as default.
      */
     public function test_setdefaults_extra() {
         $cli = new create([]);
+        $this->set_expected_exception(coding_exception::class);
         $cli->set_defaults(['aninvalidparameter' => 'value']);
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 3
+     * Tests with an invalud autostart bool value.
      */
     public function test_invalid_bool() {
         $this->set_parameters([
@@ -296,6 +326,7 @@ class create_test extends cli_testcase {
             '--description=Description',
         ]);
         $cli = new create();
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
         $cli->execute();
     }
 }

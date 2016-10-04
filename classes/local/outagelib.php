@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * outagelib class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local;
 
 use auth_outage\dml\outagedb;
@@ -26,7 +35,7 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Outage related functions.
+ * outagelib class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -34,6 +43,9 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib {
+    /**
+     * @var bool Flags in the page was already injected with the warning bar if needed.
+     */
     private static $injected = false;
 
     /**

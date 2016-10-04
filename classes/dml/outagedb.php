@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * outagedb class.
+ *
+ * The DB Context to manipulate Outages.
+ * It will also commit changes to the calendar as you change outages.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\dml;
 
 use auth_outage\calendar\calendar;
@@ -29,6 +41,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
+ * outagedb class.
+ *
  * The DB Context to manipulate Outages.
  * It will also commit changes to the calendar as you change outages.
  *
@@ -40,7 +54,6 @@ require_once($CFG->dirroot.'/calendar/lib.php');
 class outagedb {
     /**
      * Private constructor, use static methods instead.
-     * @codeCoverageIgnore
      */
     private function __construct() {
     }
@@ -63,6 +76,7 @@ class outagedb {
     }
 
     /**
+     * Gets an outage based on the given id.
      * @param int $id Outage id to get.
      * @return outage|null Returns the outage or null if not found.
      * @throws coding_exception

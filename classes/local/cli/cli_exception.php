@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * cli_exception class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local\cli;
 
 use Exception;
@@ -21,7 +30,7 @@ use Exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Exception executing CLI.
+ * cli_exception class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -73,7 +82,7 @@ class cli_exception extends Exception {
      * cliexception constructor.
      * @param string $message An explanation of the exception.
      * @param int $code Exit code to be used.
-     * @param Exception|null $previous Another exception as reference.
+     * @param Exception $previous Another exception as reference or null.
      */
     public function __construct($message, $code = 1, Exception $previous = null) {
         parent::__construct('*ERROR* '.$message, $code, $previous = null);

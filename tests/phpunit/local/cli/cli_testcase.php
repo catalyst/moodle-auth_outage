@@ -14,19 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use auth_outage\local\cli\clibase;
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * Tests performed on CLIs.
+ * auth_outage_cli_testcase class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cli_testcase extends advanced_testcase {
+
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\clibase;
+
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/../../base_testcase.php');
+
+/**
+ * auth_outage_cli_testcase class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
+    /**
+     * Always enable the auth outage plugin, resets after test and set no parameters.
+     */
     public function setUp() {
         // Enable auth plugins.
         set_config('auth', 'outage');
@@ -62,5 +76,13 @@ class cli_testcase extends advanced_testcase {
         } finally {
             ob_end_clean();
         }
+    }
+
+    /**
+     * Sets the expected exception as cli_exception with the given error code.
+     * @param int $errorcode Error code.
+     */
+    protected function set_expected_cli_exception($errorcode) {
+        $this->set_expected_exception(cli_exception::class, null, $errorcode);
     }
 }

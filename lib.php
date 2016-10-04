@@ -27,14 +27,23 @@ use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Used in Moodle 30+ when a user is logged on.
+ */
 function auth_outage_extend_navigation_user_settings() {
     outagelib::inject();
 }
 
+/**
+ * Used in Moodle 30+ on the frontpage.
+ */
 function auth_outage_extend_navigation_frontpage() {
     outagelib::inject();
 }
 
+/**
+ * Used in Moodle 31+ when a user is logged on.
+ */
 function auth_outage_extend_navigation_user() {
     outagelib::inject();
 }

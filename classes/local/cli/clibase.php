@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * clibase class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local\cli;
 
 use coding_exception;
@@ -22,7 +31,7 @@ use core\session\manager;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Outage CLI base class.
+ * clibase class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -42,7 +51,7 @@ abstract class clibase {
 
     /**
      * clibase constructor.
-     * @param mixed[]|null $options The parameters to use or null to read from the command line.
+     * @param array $options The parameters to use.
      * @throws cli_exception
      */
     public function __construct(array $options = null) {

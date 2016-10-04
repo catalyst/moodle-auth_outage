@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Steps definitions related to auth_outage.
+ *
+ * @package     auth_outage
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 use auth_outage\dml\outagedb;
@@ -39,7 +48,9 @@ class behat_auth_outage extends behat_base {
     private $outage = null;
 
     /**
+     * Checks if a authentication plugin is enabled
      * @Given the authentication plugin :name is enabled
+     * @param string $name Name of authentication plugin to check.
      */
     public function the_authentication_plugin_is_enabled($name) {
         set_config('auth', $name);
@@ -48,6 +59,7 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Opens the Outage Management page.
      * @Given /^I am on Outage Management Page$/
      */
     public function i_am_on_outage_management_page() {
@@ -55,6 +67,7 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Logs into the system.
      * @Given /^I am an administrator$/
      */
     public function i_am_an_administrator() {
@@ -70,6 +83,7 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Opens the create outage page.
      * @Given /^I visit the Create Outage Page$/
      */
     public function i_visit_the_create_outage_page() {
@@ -77,7 +91,9 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Creates an outage of the given type.
      * @Given there is a :type outage
+     * @param string $type Type (stage) of outage to create.
      */
     public function there_is_a_outage($type) {
         $data = [
@@ -120,11 +136,14 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Check if there is an action button with the given name.
      * @Then I should see the action :action
+     * @param string $action Action to check.
+     * @throws ExpectationException
      */
     public function i_should_see_the_action($action) {
         $expected = ($action == 'Edit') ? 2 : 1; // Edit is an action through the title or button.
-        $found = $this->can_i_see_action($action);
+        $found = $this->how_many_times_can_i_see_action($action);
         if ($found != $expected) {
             throw new ExpectationException('"'.$action.'" action not found, expected '.$expected.
                                            ' but found '.$found.'.', $this->getSession());
@@ -132,15 +151,23 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Check if an specific action is not visible.
      * @Then I should not see the action :action
+     * @param string $action Action to check.
+     * @throws ExpectationException
      */
     public function i_should_not_see_the_action($action) {
-        if ($this->can_i_see_action($action) != 0) {
+        if ($this->how_many_times_can_i_see_action($action) != 0) {
             throw new ExpectationException('"'.$action.'" action was found', $this->getSession());
         }
     }
 
-    private function can_i_see_action($action) {
+    /**
+     * Counts how many times an specific action is visible.
+     * @param string $action Action to check.
+     * @return int Number of times it is shown.
+     */
+    private function how_many_times_can_i_see_action($action) {
         $selector = 'css';
         $locator = "div[role='main'] a[title='".$action."']";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
@@ -148,7 +175,9 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Click the given action button.
      * @Then I click on the :action action button
+     * @param string $action Action button to click.
      */
     public function i_click_on_the_action_button($action) {
         $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='".$action."']");
@@ -157,7 +186,9 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Check if a new window was opened.
      * @Given I should be in a new window
+     * @throws ExpectationException
      */
     public function i_should_be_in_a_new_window() {
         $count = count($this->getSession()->getWindowNames());
@@ -167,7 +198,10 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Checks if the warning bar is visible.
      * @Then I should see :text in the warning bar
+     * @param string $text Text that should be in the warning bar.
+     * @throws ExpectationException
      */
     public function i_should_see_in_the_warning_bar($text) {
         $element = '#auth_outage_warningbar_box';
@@ -197,7 +231,9 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Checks if the warning bar is not visible.
      * @Then I should not see the warning bar
+     * @throws ExpectationException
      */
     public function i_should_not_see_the_warning_bar() {
         $selector = 'css';
@@ -209,7 +245,10 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Creates an outage for the given data.
      * @Given there is the following outage:
+     * @param TableNode $data Outage data.
+     * @throws Exception
      */
     public function there_is_the_following_outage(TableNode $data) {
         $time = time();
@@ -249,7 +288,10 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Waits (sleep) until outage reaches a stage.
      * @When /^I wait until the outage (?P<what>warns|starts|stops)$/
+     * @param string $what What to wait for.
+     * @throws Exception
      */
     public function i_wait_until_outage($what) {
         switch ($what) {

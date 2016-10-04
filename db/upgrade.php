@@ -25,9 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * Outage plugin upgrade code
+ *
  * @param int $oldversion the version we are upgrading from
  * @return bool result
- * @SuppressWarnings("unused")
  */
 function xmldb_auth_outage_upgrade($oldversion) {
     global $DB;

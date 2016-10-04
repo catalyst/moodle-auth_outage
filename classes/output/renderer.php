@@ -14,11 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * auth_outage_renderer class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\output;
 
 use auth_outage\local\outage;
-use auth_outage\output\manage\history_table;
-use auth_outage\output\manage\planned_table;
 use coding_exception;
 use core_user;
 use html_writer;
@@ -28,7 +35,7 @@ use plugin_renderer_base;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * auth_outage auth_outage_renderer
+ * auth_outage_renderer class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -117,10 +124,8 @@ class renderer extends plugin_renderer_base {
      * @param bool $preview If in preview mode the warning bar will not check if we are back online.
      * @return string HTML of the warning bar.
      * @throws coding_exception
-     * @SuppressWarnings("unused") because $viewbag is used inside require()
      */
     public function render_warningbar(outage $outage, $time, $static, $preview) {
-        global $CFG;
         if (!is_int($time) || ($time <= 0)) {
             throw new coding_exception('$time is not an positive int or null.', $time);
         }

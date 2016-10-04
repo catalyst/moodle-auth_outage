@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * auth_plugin_outage class.
+ *
  * This plugin allows for an outage window to be configured
  * and then optionally allows only a subset of IPs to connect,
  * it also shows an outage notification to users.
  *
  * @package     auth_outage
  * @author      Marcus Boon<marcus@catalyst-au.net>
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
@@ -31,7 +35,17 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/authlib.php');
 
 /**
- * Class auth_plugin_outage
+ * auth_plugin_outage class.
+ *
+ * This plugin allows for an outage window to be configured
+ * and then optionally allows only a subset of IPs to connect,
+ * it also shows an outage notification to users.
+ *
+ * @package     auth_outage
+ * @author      Marcus Boon<marcus@catalyst-au.net>
+ * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright   2016 Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 class auth_plugin_outage extends auth_plugin_base {
     /**
@@ -42,6 +56,7 @@ class auth_plugin_outage extends auth_plugin_base {
     }
 
     /**
+     * Always returns false (password wrong or user does not exist).
      * @param string $username Not used in this plugin.
      * @param string $password Not used in this plugin.
      * @return bool False

@@ -14,12 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Tests performed on infopage controller class and update_static_page task class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\infopage;
 use auth_outage\local\outage;
 use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/../../base_testcase.php');
 
 /**
  * Tests performed on infopage controller class and update_static_page task class.
@@ -30,7 +40,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
-class infopagecontroller_test extends advanced_testcase {
+class infopagecontroller_test extends auth_outage_base_testcase {
+    /**
+     * Ensures the template file does not exist when starting a test.
+     */
     public function setUp() {
         $file = infopage::get_defaulttemplatefile();
         if (file_exists($file)) {
@@ -42,17 +55,23 @@ class infopagecontroller_test extends advanced_testcase {
         }
     }
 
+    /**
+     * Tests the constructor.
+     */
     public function test_constructor() {
         new infopage();
     }
 
+    /**
+     * Tests the constructor with given parameters.
+     */
     public function test_constructor_withparams() {
         $_GET = ['id' => 1, 'static' => 'true'];
         new infopage();
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests the constructor with different id and outage id.
      */
     public function test_constructor_idmismatch() {
         $outage = new outage([
@@ -64,16 +83,21 @@ class infopagecontroller_test extends advanced_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        $this->set_expected_exception(coding_exception::class);
         new infopage(['id' => 2, 'outage' => $outage]);
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests the constructor with an invalid outage.
      */
     public function test_constructor_invalidoutage() {
+        $this->set_expected_exception(coding_exception::class);
         new infopage(['outage' => 'My outage']);
     }
 
+    /**
+     * Tests the static page contents.
+     */
     public function test_staticpage_output() {
         global $PAGE;
         $this->resetAfterTest(true);
@@ -104,6 +128,9 @@ class infopagecontroller_test extends advanced_testcase {
         self::assertSame($outage->id, infopage::find_outageid_from_infopage($html));
     }
 
+    /**
+     * Tests the static page file contents.
+     */
     public function test_staticpage_file() {
         $now = time();
         $outage = new outage([
@@ -124,6 +151,9 @@ class infopagecontroller_test extends advanced_testcase {
         unlink($file);
     }
 
+    /**
+     * Checks if the default template file is a valid string with the name templage.
+     */
     public function test_getdefaulttemplatefile() {
         $file = infopage::get_defaulttemplatefile();
         self::assertTrue(is_string($file));
@@ -131,12 +161,16 @@ class infopagecontroller_test extends advanced_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests infopage::find_outageid_from_infopage() with an invalid parameter.
      */
     public function test_findoutageid_notstring() {
+        $this->set_expected_exception(coding_exception::class);
         infopage::find_outageid_from_infopage(new stdClass());
     }
 
+    /**
+     * Tests infopage::find_outageid_from_infopage() when the id is not found.
+     */
     public function test_findoutageid_notfound() {
         self::assertNull(
             infopage::find_outageid_from_infopage(
@@ -146,14 +180,15 @@ class infopagecontroller_test extends advanced_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests infopage::save_static_page() with an invalid parameter.
      */
     public function test_savestaticpage_filenotstring() {
+        $this->set_expected_exception(coding_exception::class);
         infopage::save_static_page(new outage(), 1);
     }
 
     /**
-     * @expectedException file_exception
+     * Tests infopage::save_static_page() with an invalid filename.
      */
     public function test_savestaticpage_fileinvalid() {
         global $CFG;
@@ -165,30 +200,38 @@ class infopagecontroller_test extends advanced_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+
+        $this->set_expected_exception(file_exception::class);
         infopage::save_static_page($outage, $CFG->dataroot.'/someinvalidpath/someinvalidfile');
     }
 
     /**
-     * @expectedException invalid_state_exception
+     * Tests infopage::test_sanity_notstring() with invalid contents: an int.
      */
     public function test_sanity_notstring() {
+        $this->set_expected_exception(invalid_state_exception::class);
         infopage::save_static_page_sanitycheck(404);
     }
 
     /**
-     * @expectedException invalid_state_exception
+     * Tests infopage::test_sanity_notstring() with invalid contents: an empty string.
      */
     public function test_sanity_empty() {
+        $this->set_expected_exception(invalid_state_exception::class);
         infopage::save_static_page_sanitycheck('    ');
     }
 
     /**
-     * @expectedException invalid_state_exception
+     * Tests infopage::test_sanity_notstring() with invalid contents: an empty HTML.
      */
     public function test_sanity_clearhtml() {
+        $this->set_expected_exception(invalid_state_exception::class);
         infopage::save_static_page_sanitycheck('<html><head></head><body><b>  <!-- Nothing -->  </b></body></html>');
     }
 
+    /**
+     * Tests updating the static page.
+     */
     public function test_updatestaticpage() {
         $this->resetAfterTest(true);
         self::setAdminUser();
@@ -210,10 +253,16 @@ class infopagecontroller_test extends advanced_testcase {
         unlink($file);
     }
 
+    /**
+     * Tests updating the static page when there is no outage.
+     */
     public function test_updatestaticpage_nooutage() {
         infopage::update_static_page();
     }
 
+    /**
+     * Tests updating the static page when there is no outage but the file existed before.
+     */
     public function test_updatestaticpage_hasfile() {
         $file = infopage::get_defaulttemplatefile();
         touch($file);
@@ -223,12 +272,16 @@ class infopagecontroller_test extends advanced_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests updating the static page with an invalid filename.
      */
     public function test_updatestaticpage_invalidfile() {
+        $this->set_expected_exception(coding_exception::class);
         infopage::update_static_page(123);
     }
 
+    /**
+     * Checks if infopage::has_admin_options() works as expected.
+     */
     public function test_hasadminoptions() {
         $this->resetAfterTest(true);
         $static = new infopage(['static' => true]);
@@ -245,22 +298,27 @@ class infopagecontroller_test extends advanced_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tries to output a static page without a defined outage.
      */
     public function test_output_static_nooutage() {
         $info = new infopage(['static' => true]);
+
+        $this->set_expected_exception(coding_exception::class);
         $info->output();
     }
 
     /**
      * We should have an exception because CLI cannot redirect.
-     * @expectedException moodle_exception
      */
     public function test_output_nonstatic_nooutage() {
         $info = new infopage(['static' => false]);
+        $this->set_expected_exception(moodle_exception::class);
         $info->output();
     }
 
+    /**
+     * Checks the output of the info page.
+     */
     public function test_output() {
         $now = time();
         $outage = new outage([
@@ -277,6 +335,9 @@ class infopagecontroller_test extends advanced_testcase {
         self::assertContains('auth_outage_info', $output);
     }
 
+    /**
+     * Checks if we can create and execute a task to update outage pages.
+     */
     public function test_tasks() {
         $task = new update_static_page();
         self::assertNotEmpty($task->get_name());

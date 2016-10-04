@@ -14,13 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * events_test tests class.
+ *
+ * @package         auth_outage
+ * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright       Catalyst IT
+ * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Tests performed on outage class.
+ * events_test tests class.
  *
  * @package         auth_outage
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -28,6 +37,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class events_test extends advanced_testcase {
+    /**
+     * Saves an outage and check if the event was created.
+     * @return array With the outage id and the event id.
+     */
     public function test_save() {
         global $DB;
         self::setAdminUser();
@@ -59,10 +72,12 @@ class events_test extends advanced_testcase {
     }
 
     /**
-     * @param int[] $ids
+     * Updates an outage and checks if the event was updated.
+     * @param int[] $ids Outage id and event id.
+     * @return int[] same as input parameter.
      * @depends test_save
      */
-    public function test_update($ids) {
+    public function test_update(array $ids) {
         global $DB;
 
         self::setAdminUser();
@@ -88,7 +103,8 @@ class events_test extends advanced_testcase {
     }
 
     /**
-     * @param int[] $ids
+     * Deletes an outage and checks if the event was deleted.
+     * @param int[] $ids Outage id and event id.
      * @depends test_update
      */
     public function test_delete($ids) {

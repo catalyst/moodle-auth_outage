@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * calendar class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\calendar;
 
 use auth_outage\local\outage;
@@ -23,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
- * Manages outages in the calendar.
+ * calendar class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -33,7 +42,6 @@ require_once($CFG->dirroot.'/calendar/lib.php');
 class calendar {
     /**
      * Private constructor, use static methods instead.
-     * @codeCoverageIgnore
      */
     private function __construct() {
     }

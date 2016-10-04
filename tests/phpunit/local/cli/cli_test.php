@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * cli_test test class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\create;
 
@@ -21,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
 
 /**
- * Tests performed on CLI base and exception class.
+ * cli_test test class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -29,24 +38,27 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings("public")
  */
-class cli_test extends cli_testcase {
+class cli_test extends auth_outage_cli_testcase {
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 2
+     * Tests providing an unknown parameter.
      */
     public function test_invalidargumentparam() {
         $this->set_parameters(['--aninvalidparameter']);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_UNKNOWN);
         new create();
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 2
+     * Tests providing another unknow parameter (without --).
      */
     public function test_invalidargumentgiven() {
+        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_UNKNOWN);
         new create(['anotherinvalidparameter']);
     }
 
+    /**
+     * Tests setting reference times.
+     */
     public function test_setreferencetime() {
         $cli = new create(['start' => 0]);
         $cli->set_referencetime(1);
@@ -54,14 +66,18 @@ class cli_test extends cli_testcase {
     }
 
     /**
-     * @expectedException coding_exception
+     * Tests setting an invalid reference time.
      */
     public function test_setreferencetime_invalid() {
         $this->set_parameters(['--start=60']);
         $cli = new create();
+        $this->set_expected_exception(coding_exception::class);
         $cli->set_referencetime(-1);
     }
 
+    /**
+     * Tests the help.
+     */
     public function test_help() {
         $this->set_parameters(['-h']);
         $cli = new create();
@@ -71,16 +87,15 @@ class cli_test extends cli_testcase {
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 1
+     * Tests the cli_exception.
      */
     public function test_exception() {
+        $this->set_expected_cli_exception(cli_exception::ERROR_UNDEFINED);
         throw new cli_exception('An CLI exception.');
     }
 
     /**
-     * @expectedException auth_outage\local\cli\cli_exception
-     * @expectedExceptionCode 8
+     * Tests with the auth_outage plugin disabled.
      */
     public function test_authdisabled() {
         // Disable all auth plugins.
@@ -88,6 +103,7 @@ class cli_test extends cli_testcase {
         \core\session\manager::gc(); // Remove stale sessions.
         core_plugin_manager::reset_caches();
         // Try to create an CLI object.
+        $this->set_expected_cli_exception(cli_exception::ERROR_PLUGIN_DISABLED);
         new create();
     }
 }

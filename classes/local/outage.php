@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * outage class.
+ *
+ * @package    auth_outage
+ * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
+ * @copyright  2016 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace auth_outage\local;
 
 use coding_exception;
@@ -22,7 +31,7 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Outage class with all information about one specific outage.
+ * outage class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -112,7 +121,7 @@ class outage {
 
     /**
      * outage constructor.
-     * @param stdClass|mixed[]|null The data for the outage.
+     * @param stdClass|array|null $data The data for the outage.
      * @throws coding_exception
      */
     public function __construct($data = null) {
@@ -248,7 +257,7 @@ class outage {
 
     /**
      * Returns the input string with all placeholders replaced.
-     * @param $str string Input string.
+     * @param string $str Input string.
      * @return string Output string.
      */
     private function replace_placeholders($str) {
@@ -267,6 +276,9 @@ class outage {
         );
     }
 
+    /**
+     * Converts the type of the fields as needed.
+     */
     private function adjust_field_types() {
         // Adjust int fields.
         $fs = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warntime', 'finished'];

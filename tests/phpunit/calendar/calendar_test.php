@@ -31,6 +31,9 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * calendar_test test class.
  *
+ * We are using static variables instead of test dependencies as the
+ * annotation 'depends' is not accepted in moodle checker.
+ *
  * @package         auth_outage
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright       Catalyst IT
@@ -38,15 +41,19 @@ defined('MOODLE_INTERNAL') || die();
  */
 class calendar_test extends advanced_testcase {
     /**
+     * @var outage|null The calendar entry owner.
+     */
+    private static $outage = null;
+
+    /**
      * Creates an outage and checks if its in the calendar.
-     * @return outage Created outage.
      */
     public function test_create() {
         self::setAdminUser();
         $this->resetAfterTest(false);
 
         $time = time();
-        $outage = new outage([
+        self::$outage = new outage([
             'id' => 1,
             'autostart' => false,
             'warntime' => $time - 100,
@@ -55,40 +62,31 @@ class calendar_test extends advanced_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
-        calendar::create($outage);
-        $this->check_calendar($outage);
-
-        return $outage;
+        calendar::create(self::$outage);
+        $this->check_calendar(self::$outage);
     }
 
     /**
      * Updates an outage and checks the calendar.
-     * @depends test_create
-     * @param outage $outage Outage to be updated.
-     * @return outage Updated outage.
      */
-    public function test_update(outage $outage) {
+    public function test_update() {
         self::setAdminUser();
         $this->resetAfterTest(false);
 
-        $outage->title = 'New Title';
-        calendar::update($outage);
-        $this->check_calendar($outage);
-
-        return $outage;
+        self::$outage->title = 'New Title';
+        calendar::update(self::$outage);
+        $this->check_calendar(self::$outage);
     }
 
     /**
      * Deletes an outage and checks the calendar.
-     * @depends test_update
-     * @param outage $outage Outage to delete.
      */
-    public function test_delete($outage) {
+    public function test_delete() {
         self::setAdminUser();
         $this->resetAfterTest(true);
 
-        calendar::delete($outage->id);
-        self::assertNull(calendar::load($outage->id));
+        calendar::delete(self::$outage->id);
+        self::assertNull(calendar::load(self::$outage->id));
     }
 
     /**
@@ -127,14 +125,13 @@ class calendar_test extends advanced_testcase {
 
     /**
      * Check if there is a calendar entry for the given outage.
-     * @param outage $outage Outage to check.
      */
-    private function check_calendar(outage $outage) {
-        $calendar = calendar::load($outage->id);
-        self::assertSame($outage->title, $calendar->name);
-        self::assertSame($outage->description, $calendar->description);
+    private function check_calendar() {
+        $calendar = calendar::load(self::$outage->id);
+        self::assertSame(self::$outage->title, $calendar->name);
+        self::assertSame(self::$outage->description, $calendar->description);
         self::assertSame('auth_outage', $calendar->eventtype);
-        self::assertEquals($outage->starttime, $calendar->timestart);
-        self::assertEquals($outage->get_duration_planned(), $calendar->timeduration);
+        self::assertEquals(self::$outage->starttime, $calendar->timestart);
+        self::assertEquals(self::$outage->get_duration_planned(), $calendar->timeduration);
     }
 }

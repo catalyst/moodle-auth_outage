@@ -31,12 +31,25 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * events_test tests class.
  *
+ * We are using static variables instead of test dependencies as the
+ * annotation 'depends' is not accepted in moodle checker.
+ *
  * @package         auth_outage
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright       Catalyst IT
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class events_test extends advanced_testcase {
+    /**
+     * @var outage|null Outage used in the tests.
+     */
+    private static $outage = null;
+
+    /**
+     * @var stdClass|null Data for the created event.
+     */
+    private static $event = null;
+
     /**
      * Saves an outage and check if the event was created.
      * @return array With the outage id and the event id.
@@ -48,79 +61,69 @@ class events_test extends advanced_testcase {
 
         // Save new outage.
         $now = time();
-        $id = outagedb::save(new outage([
+        $outage = new outage([
             'autostart' => false,
             'warntime' => $now - 60,
             'starttime' => 60,
             'stoptime' => 120,
             'title' => 'Title',
             'description' => 'Description',
-        ]));
+        ]);
+        $outage->id = outagedb::save($outage);
+        self::$outage = $outage;
 
         // Check existance.
-        $event = $DB->get_record_select(
+        self::$event = $DB->get_record_select(
             'event',
             "(eventtype = 'auth_outage' AND instance = :outageid)",
-            ['outageid' => $id],
+            ['outageid' => self::$outage->id],
             'id',
             IGNORE_MISSING
         );
-        self::assertTrue(is_object($event));
-
-        // Another test will use it.
-        return [$id, $event->id];
+        self::assertTrue(is_object(self::$event));
     }
 
     /**
      * Updates an outage and checks if the event was updated.
-     * @param int[] $ids Outage id and event id.
-     * @return int[] same as input parameter.
-     * @depends test_save
      */
-    public function test_update(array $ids) {
+    public function test_update() {
         global $DB;
 
         self::setAdminUser();
         $this->resetAfterTest(false);
 
-        list($idoutage, $idevent) = $ids;
-        $outage = outagedb::get_by_id($idoutage);
-        $outage->starttime += 10;
-        outagedb::save($outage);
+        self::$outage->starttime += 10;
+        outagedb::save(self::$outage);
 
         // Should still exist.
         $event = $DB->get_record_select(
             'event',
             "(eventtype = 'auth_outage' AND instance = :idoutage)",
-            ['idoutage' => $idoutage],
+            ['idoutage' => self::$outage->id],
             'id',
             IGNORE_MISSING
         );
         self::assertTrue(is_object($event));
-        self::assertSame($idevent, $event->id);
-
-        return $ids;
+        self::assertSame(self::$event->id, $event->id);
+        self::$event = $event;
     }
 
     /**
      * Deletes an outage and checks if the event was deleted.
-     * @param int[] $ids Outage id and event id.
-     * @depends test_update
      */
-    public function test_delete($ids) {
+    public function test_delete() {
         global $DB;
 
         self::setAdminUser();
         $this->resetAfterTest(true);
-        list($idoutage, $idevent) = $ids;
 
-        outagedb::delete($idoutage);
+        outagedb::delete(self::$outage->id);
 
         // Should not exist.
         $event = $DB->get_record_select(
             'event',
             "(eventtype = 'auth_outage' AND instance = :idoutage) OR (id = :idevent)",
-            ['idoutage' => $idoutage, 'idevent' => $idevent],
+            ['idoutage' => self::$outage->id, 'idevent' => self::$event->id],
             'id',
             IGNORE_MISSING
         );

@@ -60,7 +60,6 @@ class auth_plugin_outage extends auth_plugin_base {
      * @param string $username Not used in this plugin.
      * @param string $password Not used in this plugin.
      * @return bool False
-     * @SuppressWarnings("unused")
      */
     public function user_login($username, $password) {
         return false;

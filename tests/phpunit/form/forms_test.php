@@ -62,7 +62,7 @@ class forms_test extends auth_outage_base_testcase {
         $edit = new edit();
         self::assertFalse($edit->is_cancelled());
         $outage = $edit->get_data();
-        self::assertInstanceOf(outage::class, $outage);
+        self::assertInstanceOf('\\auth_outage\\local\\outage', $outage);
         self::assertSame(false, $outage->autostart);
         self::assertSame(60, $outage->get_warning_duration());
         self::assertSame(mktime(14, 15, 0, 2, 1, 2013), $outage->starttime);
@@ -147,7 +147,7 @@ class forms_test extends auth_outage_base_testcase {
      */
     public function test_setdata_invalid() {
         $edit = new edit();
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         $edit->set_data(null);
     }
 

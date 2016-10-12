@@ -57,7 +57,6 @@ class calendar {
     /**
      * Updates an event on the calendar based on this outage.
      * @param outage $outage Outage to be updated in the calendar.
-     * @SuppressWarnings("comment") Allow this test to have as many tests as necessary.
      */
     public static function update(outage $outage) {
         $event = self::load($outage->id);

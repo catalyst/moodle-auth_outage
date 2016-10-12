@@ -78,7 +78,7 @@ class outage_test extends auth_outage_base_testcase {
      * Tests the constructor with invalid data.
      */
     public function test_constructor_invalid() {
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         new outage('My outage');
     }
 
@@ -103,7 +103,7 @@ class outage_test extends auth_outage_base_testcase {
      */
     public function test_getstage_invalidtime() {
         $outage = new outage();
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         $outage->get_stage(-1);
     }
 

@@ -1,5 +1,6 @@
-var auth_outage_warningbar = {
-    init: function (params) {
+/* exported authOutageWarningBar */
+var authOutageWarningBar = {
+    init: function(params) {
         this.preview = params.preview;
         this.countdown = params.countdown;
         this.ongoing = params.ongoing;
@@ -18,7 +19,7 @@ var auth_outage_warningbar = {
         this.startWarning();
     },
 
-    startWarning: function () {
+    startWarning: function() {
         if (this.finishbutton) {
             this.finishbutton.style.display = 'none';
         }
@@ -26,7 +27,7 @@ var auth_outage_warningbar = {
         this.tickWarning();
     },
 
-    tickWarning: function () {
+    tickWarning: function() {
         var elapsed = Math.round((Date.now() - this.clienttime) / 1000);
         var missing = (this.starts - this.servertime) - elapsed;
 
@@ -39,13 +40,13 @@ var auth_outage_warningbar = {
             this.divtext.innerHTML = this.countdown.replace('{{countdown}}', this.seconds2hms(missing));
 
             var $this = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 $this.tickWarning();
             }, 1000);
         }
     },
 
-    startOngoing: function () {
+    startOngoing: function() {
         this.divblock.className = 'auth_outage_ongoing_period';
         if (this.finishbutton) {
             this.finishbutton.style.display = '';
@@ -54,7 +55,7 @@ var auth_outage_warningbar = {
         this.tickOngoing();
     },
 
-    tickOngoing: function () {
+    tickOngoing: function() {
         if (this.finished) {
             return;
         }
@@ -63,8 +64,7 @@ var auth_outage_warningbar = {
             // If one second before finish time, enfore finish. Otherwise, never finish it.
             if (this.servertime === this.stops - 1) {
                 this.finish();
-            }
-            else {
+            } else {
                 return;
             }
         }
@@ -72,7 +72,7 @@ var auth_outage_warningbar = {
         var $this = this;
 
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
+        xmlhttp.onreadystatechange = function() {
             $this.ajaxCheckFinished(this);
         };
         xmlhttp.open("GET", this.checkfinishedurl, true);
@@ -82,17 +82,16 @@ var auth_outage_warningbar = {
         var sleepSeconds = this.stops - estimatedServerTime; // How long to sleep until it stops.
         if (sleepSeconds <= 0) {
             sleepSeconds = 5; // It should be back, keep checking every 5 seconds.
-        }
-        else {
+        } else {
             sleepSeconds = Math.min(sleepSeconds, (5 * 60)); // Check at least every 5 minutes.
         }
 
-        setTimeout(function () {
+        setTimeout(function() {
             $this.tickOngoing();
         }, sleepSeconds * 1000);
     },
 
-    ajaxCheckFinished: function (ajax) {
+    ajaxCheckFinished: function(ajax) {
         if (ajax.readyState === XMLHttpRequest.DONE) {
             if (ajax.status === 200) {
                 if (ajax.responseText.trim() === 'finished') {
@@ -102,7 +101,7 @@ var auth_outage_warningbar = {
         }
     },
 
-    finish: function () {
+    finish: function() {
         this.finished = true;
         this.divblock.className = 'auth_outage_finished_period';
         if (this.finishbutton) {
@@ -112,7 +111,7 @@ var auth_outage_warningbar = {
         this.divtitle.innerHTML = this.backonlinedescription;
     },
 
-    seconds2hms: function (seconds) {
+    seconds2hms: function(seconds) {
         var minutes = Math.floor(seconds / 60);
         var hours = Math.floor(minutes / 60);
         seconds %= 60;
@@ -127,6 +126,3 @@ var auth_outage_warningbar = {
         return hours + ':' + minutes + ':' + seconds;
     }
 };
-
-// auth_outage_countdown is used outside this js file.
-/* jshint unused:false */

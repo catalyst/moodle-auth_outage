@@ -21,7 +21,6 @@
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public")
  */
 
 use auth_outage\dml\outagedb;
@@ -39,7 +38,6 @@ require_once(__DIR__.'/cli_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public")
  */
 class waitforit_test extends auth_outage_cli_testcase {
     /**

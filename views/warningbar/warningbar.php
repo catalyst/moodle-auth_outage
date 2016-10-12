@@ -87,7 +87,7 @@ echo html_writer::tag('style', outagelib::get_config()->css);
             'preview' => $viewbag['preview'],
             'checkfinishedurl' => (string)(new moodle_url('/auth/outage/checkfinished.php')),
         ]);
-        echo 'auth_outage_warningbar.init('.$json.');';
+        echo 'authOutageWarningBar.init('.$json.');';
         ?>
     </script>
 <?php endif;

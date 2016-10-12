@@ -21,7 +21,6 @@
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 
 use auth_outage\dml\outagedb;
@@ -37,7 +36,6 @@ require_once(__DIR__.'/../base_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class outagedb_test extends auth_outage_base_testcase {
     /**
@@ -358,7 +356,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getbyid_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_by_id(-1);
     }
 
@@ -367,7 +365,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_delete_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::delete(-1);
     }
 
@@ -376,7 +374,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getactive_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_active(-1);
     }
 
@@ -385,7 +383,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getallunended_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_all_unended(-1);
     }
 
@@ -402,7 +400,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getallended_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_all_ended(-1);
     }
 
@@ -419,7 +417,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_finish_invalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::finish(1, -1);
     }
 
@@ -460,7 +458,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getnextstartinginvalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_next_starting(-1);
     }
 
@@ -469,7 +467,7 @@ class outagedb_test extends auth_outage_base_testcase {
      */
     public function test_getnextautostartinginvalid() {
         $this->resetAfterTest(true);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         outagedb::get_next_autostarting(-1);
     }
 

@@ -38,7 +38,6 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public") Allow this test to have as many tests as necessary.
  */
 class infopagecontroller_test extends auth_outage_base_testcase {
     /**
@@ -83,7 +82,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         new infopage(['id' => 2, 'outage' => $outage]);
     }
 
@@ -91,7 +90,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor with an invalid outage.
      */
     public function test_constructor_invalidoutage() {
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         new infopage(['outage' => 'My outage']);
     }
 
@@ -164,7 +163,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests infopage::find_outageid_from_infopage() with an invalid parameter.
      */
     public function test_findoutageid_notstring() {
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         infopage::find_outageid_from_infopage(new stdClass());
     }
 
@@ -183,7 +182,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests infopage::save_static_page() with an invalid parameter.
      */
     public function test_savestaticpage_filenotstring() {
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         infopage::save_static_page(new outage(), 1);
     }
 
@@ -201,7 +200,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
 
-        $this->set_expected_exception(file_exception::class);
+        $this->set_expected_exception('file_exception');
         infopage::save_static_page($outage, $CFG->dataroot.'/someinvalidpath/someinvalidfile');
     }
 
@@ -209,7 +208,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests infopage::test_sanity_notstring() with invalid contents: an int.
      */
     public function test_sanity_notstring() {
-        $this->set_expected_exception(invalid_state_exception::class);
+        $this->set_expected_exception('invalid_state_exception');
         infopage::save_static_page_sanitycheck(404);
     }
 
@@ -217,7 +216,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests infopage::test_sanity_notstring() with invalid contents: an empty string.
      */
     public function test_sanity_empty() {
-        $this->set_expected_exception(invalid_state_exception::class);
+        $this->set_expected_exception('invalid_state_exception');
         infopage::save_static_page_sanitycheck('    ');
     }
 
@@ -225,7 +224,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests infopage::test_sanity_notstring() with invalid contents: an empty HTML.
      */
     public function test_sanity_clearhtml() {
-        $this->set_expected_exception(invalid_state_exception::class);
+        $this->set_expected_exception('invalid_state_exception');
         infopage::save_static_page_sanitycheck('<html><head></head><body><b>  <!-- Nothing -->  </b></body></html>');
     }
 
@@ -275,7 +274,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests updating the static page with an invalid filename.
      */
     public function test_updatestaticpage_invalidfile() {
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         infopage::update_static_page(123);
     }
 
@@ -303,7 +302,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
     public function test_output_static_nooutage() {
         $info = new infopage(['static' => true]);
 
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         $info->output();
     }
 
@@ -312,7 +311,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      */
     public function test_output_nonstatic_nooutage() {
         $info = new infopage(['static' => false]);
-        $this->set_expected_exception(moodle_exception::class);
+        $this->set_expected_exception('moodle_exception');
         $info->output();
     }
 

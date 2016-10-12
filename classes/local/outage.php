@@ -137,7 +137,7 @@ class outage {
 
         // Load data from array.
         foreach ($data as $k => $v) {
-            if (property_exists(self::class, $k)) {
+            if (property_exists($this, $k)) {
                 $this->$k = $v;
             }
         }

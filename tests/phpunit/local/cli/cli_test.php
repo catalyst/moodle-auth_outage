@@ -36,7 +36,6 @@ require_once(__DIR__.'/cli_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings("public")
  */
 class cli_test extends auth_outage_cli_testcase {
     /**
@@ -71,7 +70,7 @@ class cli_test extends auth_outage_cli_testcase {
     public function test_setreferencetime_invalid() {
         $this->set_parameters(['--start=60']);
         $cli = new create();
-        $this->set_expected_exception(coding_exception::class);
+        $this->set_expected_exception('coding_exception');
         $cli->set_referencetime(-1);
     }
 

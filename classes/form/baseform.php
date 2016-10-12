@@ -48,7 +48,6 @@ abstract class baseform extends moodleform {
      *             pass true here to override this behaviour
      *
      * @return bool true if form data valid
-     * @SuppressWarnings(PHPMD) It is better to not refactor this method as it is linked to its parent functionality.
      */
     public function validate_defined_fields($validateonnosubmit = false) {
         // One validation NOT is enough (if mocking). See parent method.

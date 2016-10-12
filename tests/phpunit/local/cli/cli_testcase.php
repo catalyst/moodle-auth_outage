@@ -83,6 +83,6 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
      * @param int $errorcode Error code.
      */
     protected function set_expected_cli_exception($errorcode) {
-        $this->set_expected_exception(cli_exception::class, null, $errorcode);
+        $this->set_expected_exception('\\auth_outage\\local\\cli\\cli_exception', null, $errorcode);
     }
 }

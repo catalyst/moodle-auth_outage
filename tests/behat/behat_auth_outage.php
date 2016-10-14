@@ -48,7 +48,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Checks if a authentication plugin is enabled
-     * @Given the authentication plugin :name is enabled
+     * @Given /^the authentication plugin "([^"]*)" is enabled$/
      * @param string $name Name of authentication plugin to check.
      */
     public function the_authentication_plugin_is_enabled($name) {
@@ -91,7 +91,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Creates an outage of the given type.
-     * @Given there is a :type outage
+     * @Given /^there is a "([^"]*)" outage$/
      * @param string $type Type (stage) of outage to create.
      */
     public function there_is_a_outage($type) {
@@ -136,7 +136,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Check if there is an action button with the given name.
-     * @Then I should see the action :action
+     * @Then /^I should see the action "([^"]*)"$/
      * @param string $action Action to check.
      * @throws ExpectationException
      */
@@ -151,7 +151,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Check if an specific action is not visible.
-     * @Then I should not see the action :action
+     * @Then /^I should not see the action "([^"]*)"$/
      * @param string $action Action to check.
      * @throws ExpectationException
      */
@@ -175,7 +175,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Click the given action button.
-     * @Then I click on the :action action button
+     * @Then /^I click on the "([^"]*)" action button$/
      * @param string $action Action button to click.
      */
     public function i_click_on_the_action_button($action) {
@@ -190,6 +190,10 @@ class behat_auth_outage extends behat_base {
      * @throws ExpectationException
      */
     public function i_should_be_in_a_new_window() {
+        if (! $this->is_behat_3()) {
+            return;
+        }
+
         $count = count($this->getSession()->getWindowNames());
         if ($count != 2) {
             throw new ExpectationException('Number of windows: '.$count, $this->getSession());
@@ -198,7 +202,7 @@ class behat_auth_outage extends behat_base {
 
     /**
      * Checks if the warning bar is visible.
-     * @Then I should see :text in the warning bar
+     * @Then /^I should see "([^"]*)" in the warning bar$/
      * @param string $text Text that should be in the warning bar.
      * @throws ExpectationException
      */
@@ -211,7 +215,7 @@ class behat_auth_outage extends behat_base {
         }
         $container = $container[0];
 
-        $xpathliteral = behat_context_helper::escape($text);
+        $xpathliteral = $this->getSession()->getSelectorsHandler()->xpathLiteral($text);
         $xpath = "/descendant-or-self::*[contains(., $xpathliteral)]".
                  "[count(descendant::*[contains(., $xpathliteral)]) = 0]";
 
@@ -310,5 +314,15 @@ class behat_auth_outage extends behat_base {
             $seconds++; // Give one extra second for things to happen.
             $this->getSession()->wait($seconds * 1000, false);
         }
+    }
+
+    /**
+     * Checks if behat3+ is running.
+     * @return bool If behat is 3+
+     */
+    private function is_behat_3() {
+        global $version;
+        list($behat) = explode('.', $version);
+        return ($behat >= 3);
     }
 }

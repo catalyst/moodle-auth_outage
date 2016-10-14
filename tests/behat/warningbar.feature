@@ -1,4 +1,4 @@
-@dev @auth @auth_outage @javascript
+@auth @auth_outage @javascript
 Feature: Warning bar
   In order alert users about an outage
   As any user
@@ -34,7 +34,7 @@ Feature: Warning bar
 
 
   Scenario Outline: Some stages should show its own warning message.
-    Given there is a <type> outage
+    Given there is a "<type>" outage
     When I am on homepage
     Then I should see "<see>" in the warning bar
 
@@ -45,7 +45,7 @@ Feature: Warning bar
 
 
   Scenario Outline: Some stages should not have a warning bar.
-    Given there is a <type> outage
+    Given there is a "<type>" outage
     When I am on homepage
     Then I should not see the warning bar
 

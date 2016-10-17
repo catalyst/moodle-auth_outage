@@ -5,6 +5,7 @@
 # Moodle Outage manager plugin
 
 * [What is this?](#what-is-this)
+* [Moodle Requirements](#moodle-requirements)
 * [Screenshots](#screenshots)
 * [Installation](#installation)
 * [How to use](#how-to-use)
@@ -22,6 +23,16 @@ The main idea is that instead of an outage being a very booleon on/off situation
 this plugin creates the concept of graduated outages where at predefined times before
 an outage and after, different levels of warning and access can be provided to students
 and testers letting them know what is about to happen and why.
+
+
+Moodle Requirements
+-------------------
+
+This plugin will work out-of-the-box with Moodle 3+.
+
+If you have an older version of Moodle you can still make it work but you will
+need to manually add one extra plugin, please check:
+* https://github.com/catalyst/moodle-local_outage
 
 
 Screenshots

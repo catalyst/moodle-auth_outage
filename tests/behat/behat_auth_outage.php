@@ -27,6 +27,7 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
+use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
@@ -68,17 +69,10 @@ class behat_auth_outage extends behat_base {
     /**
      * Logs into the system.
      * @Given /^I am an administrator$/
+     * @return Given to execute.
      */
     public function i_am_an_administrator() {
-        // Visit login page.
-        $this->getSession()->visit($this->locate_path('login/index.php'));
-
-        // Enter username and password.
-        $this->execute('behat_forms::i_set_the_field_to', ['Username', $this->escape('admin')]);
-        $this->execute('behat_forms::i_set_the_field_to', ['Password', $this->escape('admin')]);
-
-        // Press log in button, no need to check for exceptions as it will checked after this step execution.
-        $this->execute('behat_forms::press_button', get_string('login'));
+        return new Given('I log in as "admin"');
     }
 
     /**

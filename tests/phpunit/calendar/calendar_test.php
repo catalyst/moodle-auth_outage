@@ -130,7 +130,8 @@ class calendar_test extends advanced_testcase {
         $calendar = calendar::load(self::$outage->id);
         self::assertSame(self::$outage->title, $calendar->name);
         self::assertSame(self::$outage->description, $calendar->description);
-        self::assertSame('auth_outage', $calendar->eventtype);
+        self::assertSame('outage', $calendar->eventtype);
+        self::assertSame('auth_outage', $calendar->modulename);
         self::assertEquals(self::$outage->starttime, $calendar->timestart);
         self::assertEquals(self::$outage->get_duration_planned(), $calendar->timeduration);
     }

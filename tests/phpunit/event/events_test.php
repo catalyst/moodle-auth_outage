@@ -75,7 +75,7 @@ class events_test extends advanced_testcase {
         // Check existance.
         self::$event = $DB->get_record_select(
             'event',
-            "(modulename='auth_outage' AND eventtype='outage' AND instance=:idoutage)",
+            "(eventtype = 'auth_outage' AND instance = :idoutage)",
             ['idoutage' => self::$outage->id],
             'id',
             IGNORE_MISSING
@@ -98,7 +98,7 @@ class events_test extends advanced_testcase {
         // Should still exist.
         $event = $DB->get_record_select(
             'event',
-            "(modulename='auth_outage' AND eventtype='outage' AND instance=:idoutage)",
+            "(eventtype = 'auth_outage' AND instance = :idoutage)",
             ['idoutage' => self::$outage->id],
             'id',
             IGNORE_MISSING
@@ -122,7 +122,7 @@ class events_test extends advanced_testcase {
         // Should not exist.
         $event = $DB->get_record_select(
             'event',
-            "(modulename='auth_outage' AND eventtype='outage' AND instance=:idoutage) OR (id = :idevent)",
+            "(eventtype = 'auth_outage' AND instance = :idoutage) OR (id = :idevent)",
             ['idoutage' => self::$outage->id, 'idevent' => self::$event->id],
             'id',
             IGNORE_MISSING

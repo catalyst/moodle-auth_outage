@@ -96,9 +96,9 @@ class calendar {
             'courseid' => 1,
             'groupid' => 0,
             'userid' => 0,
-            'modulename' => 'auth_outage',
+            'modulename' => '',
             'instance' => $outage->id,
-            'eventtype' => 'outage',
+            'eventtype' => 'auth_outage',
             'timestart' => $outage->starttime,
             'visible' => true,
             'timeduration' => $outage->get_duration_planned(),
@@ -115,7 +115,7 @@ class calendar {
 
         $event = $DB->get_record_select(
             'event',
-            "(modulename='auth_outage' AND eventtype='outage' AND instance = :outageid)",
+            "(eventtype = 'auth_outage' AND instance = :outageid)",
             ['outageid' => $outageid],
             'id',
             IGNORE_MISSING

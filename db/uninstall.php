@@ -31,6 +31,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 
 function xmldb_auth_outage_uninstall() {
+    global $DB;
+
+    // Delete all outage events.
+    $DB->delete_records('event', ['eventtype' => 'auth_outage']);
+
     // Delete template file.
     $template = auth_outage\local\controllers\infopage::get_defaulttemplatefile();
     if (file_exists($template)) {

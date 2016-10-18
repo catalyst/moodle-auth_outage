@@ -5,6 +5,7 @@
 # Moodle Outage manager plugin
 
 * [What is this?](#what-is-this)
+* [Change Log](#change-log)
 * [Moodle Requirements](#moodle-requirements)
 * [Screenshots](#screenshots)
 * [Installation](#installation)
@@ -24,6 +25,11 @@ this plugin creates the concept of graduated outages where at predefined times b
 an outage and after, different levels of warning and access can be provided to students
 and testers letting them know what is about to happen and why.
 
+
+Change Log
+----------
+
+Please see [CHANGELOG.md](CHANGELOG.md)
 
 Moodle Requirements
 -------------------

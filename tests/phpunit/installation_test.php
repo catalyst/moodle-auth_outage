@@ -82,5 +82,9 @@ class installation_test extends auth_outage_base_testcase {
             'Maintenance later must not be set.'); // Issue #57.
         self::assertFalse($dbman->table_exists('auth_outage'),
             'Table "auth_outage" was not dropped.');
+
+        // Create tables back so tests do not fail with MySQL ...
+        require_once($CFG->libdir.'/upgradelib.php');
+        $DB->get_manager()->install_from_xmldb_file($CFG->dirroot.'/auth/outage/db/install.xml');
     }
 }

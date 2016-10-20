@@ -97,7 +97,7 @@ class outagelib_test extends advanced_testcase {
         self::assertContains('<style>', $CFG->additionalhtmltopofbody);
         self::assertContains('<script>', $CFG->additionalhtmltopofbody);
 
-        // Should not inject again.
+        // Should not inject more than once with the inject() function.
         $size = strlen($CFG->additionalhtmltopofbody);
         outagelib::inject();
         self::assertSame($size, strlen($CFG->additionalhtmltopofbody));
@@ -224,6 +224,35 @@ class outagelib_test extends advanced_testcase {
         foreach ($defaults as $k => $v) {
             self::assertSame($v, $config->$k);
         }
+    }
+
+    /**
+     * Check if outagelib::inject() does not inject on admin/settings.php
+     *
+     * See Issue #65.
+     */
+    public function test_inject_settings() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => true,
+            'warntime' => $now,
+            'starttime' => $now + 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        $outage->id = outagedb::save($outage);
+        self::assertEmpty($CFG->additionalhtmltopofbody);
+
+        // Pretend we are there...
+        $_SERVER['SCRIPT_FILENAME'] = $CFG->dirroot.'/admin/settings.php';
+        outagelib::reinject();
+
+        self::assertEmpty($CFG->additionalhtmltopofbody);
     }
 }
 

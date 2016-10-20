@@ -44,15 +44,15 @@ defined('MOODLE_INTERNAL') || die();
  */
 class outagelib {
     /**
-     * @var bool Flags in the page was already injected with the warning bar if needed.
+     * @var bool Flags in the injection function was already called.
      */
-    private static $injected = false;
+    private static $injectcalled = false;
 
     /**
      * Calls inject even if it was already called before.
      */
     public static function reinject() {
-        self::$injected = false;
+        self::$injectcalled = false;
         self::inject();
     }
 
@@ -62,15 +62,14 @@ class outagelib {
     public static function inject() {
         global $CFG;
 
-        // Many hooks can call it, execute only once.
-        if (self::$injected) {
-            return;
-        }
-        self::$injected = true;
-
         // Ensure we do not kill the whole website in case of an error.
         try {
-            // Ensure no exceptions break the code.
+            // Check if we should inject the code.
+            if (!self::injection_allowed()) {
+                return;
+            }
+
+            // Used to test the try block in case of errors.
             if (PHPUNIT_TEST && optional_param('auth_outage_break_code', false, PARAM_INT)) {
                 (new stdClass())->invalidfield;
             }
@@ -167,5 +166,27 @@ class outagelib {
             }
             set_config('maintenance_later', $next->starttime);
         }
+    }
+
+    /**
+     * Checks if we should try to inject an warning bar.
+     * @return bool
+     */
+    private static function injection_allowed() {
+        global $CFG;
+
+        // Injection should only be called once, if called more times by other hooks ignore it.
+        if (self::$injectcalled) {
+            return false;
+        }
+        self::$injectcalled = true;
+
+        // Do not inject into admin/settings.php, see Issue #65.
+        if ($_SERVER['SCRIPT_FILENAME'] === $CFG->dirroot.'/admin/settings.php') {
+            return false;
+        }
+
+        // Nothing preventing the injection.
+        return true;
     }
 }

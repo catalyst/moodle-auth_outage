@@ -129,15 +129,13 @@ class outagelib {
      * @return mixed[] Default configuration.
      */
     public static function get_config_defaults() {
-        global $CFG;
-
         return [
             'default_autostart' => '0',
             'default_duration' => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
             'default_title' => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description' => get_string('defaultdescriptionvalue', 'auth_outage'),
-            'css' => file_get_contents($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css'),
+            'css' => '',
         ];
     }
 

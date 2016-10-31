@@ -25,9 +25,9 @@ this plugin creates the concept of graduated outages where at predefined times b
 an outage and after, different levels of warning and access can be provided to students
 and testers letting them know what is about to happen and why.
 
-<img alt="Default" src="https://cdn.rawgit.com/CatalystIT-AU/moodle-auth_outage/master/docs/default.svg" width="520">
+<img alt="Default" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/default.svg" width="520">
 
-<img alt="Manager" src="https://cdn.rawgit.com/CatalystIT-AU/moodle-auth_outage/master/docs/manager.svg" width="520">
+<img alt="Manager" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/manager.svg" width="520">
 
 Change Log
 ----------

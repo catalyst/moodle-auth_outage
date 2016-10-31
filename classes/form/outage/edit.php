@@ -25,9 +25,9 @@
 
 namespace auth_outage\form\outage;
 
-use auth_outage\form\baseform;
 use auth_outage\local\outage;
 use coding_exception;
+use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -41,7 +41,7 @@ require_once($CFG->libdir.'/formslib.php');
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edit extends baseform {
+class edit extends moodleform {
     /**
      * @var int Maximum number of characters for a title.
      */

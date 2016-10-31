@@ -27,7 +27,6 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
-use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
@@ -40,6 +39,7 @@ require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @SuppressWarnings(public) Allow as many methods as needed.
  */
 class behat_auth_outage extends behat_base {
     /**
@@ -69,10 +69,9 @@ class behat_auth_outage extends behat_base {
     /**
      * Logs into the system.
      * @Given /^I am an administrator$/
-     * @return Given to execute.
      */
     public function i_am_an_administrator() {
-        return new Given('I log in as "admin"');
+        $this->execute('behat_auth::i_log_in_as', ['admin']);
     }
 
     /**
@@ -300,6 +299,7 @@ class behat_auth_outage extends behat_base {
                 break;
             case 'stops':
                 $seconds = $this->outage->stoptime - time();
+                $seconds += 5; // Give it some extra time to pool the server.
                 break;
             default:
                 throw new Exception('Invalid $what='.$what);

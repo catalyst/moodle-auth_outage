@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 if ($hassiteconfig && is_enabled_auth('outage')) {
     $defaults = outagelib::get_config_defaults();
     // Configure default settings page.
-    $settings->visiblename = get_string('menudefaults', 'auth_outage');
+    $settings->visiblename = get_string('menusettings', 'auth_outage');
     $settings->add(new admin_setting_configcheckbox(
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),

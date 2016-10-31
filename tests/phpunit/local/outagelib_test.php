@@ -36,6 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @SuppressWarnings(public) Allow as many methods as needed.
  */
 class outagelib_test extends advanced_testcase {
     /**

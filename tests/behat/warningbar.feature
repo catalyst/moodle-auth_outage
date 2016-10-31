@@ -1,4 +1,4 @@
-@auth @auth_outage @javascript
+@dev @auth @auth_outage @javascript
 Feature: Warning bar
   In order alert users about an outage
   As any user
@@ -31,26 +31,26 @@ Feature: Warning bar
     Then I should see "We are back online!" in the warning bar
     When I reload the page
     Then I should not see the warning bar
-
-
-  Scenario Outline: Some stages should show its own warning message.
-    Given there is a "<type>" outage
-    When I am on homepage
-    Then I should see "<see>" in the warning bar
-
-    Examples:
-      | type    | see              |
-      | warning | Shutting down in |
-      | ongoing | Back online at   |
-
-
-  Scenario Outline: Some stages should not have a warning bar.
-    Given there is a "<type>" outage
-    When I am on homepage
-    Then I should not see the warning bar
-
-    Examples:
-      | type     |
-      | waiting  |
-      | finished |
-      | stopped  |
+#
+#
+#  Scenario Outline: Some stages should show its own warning message.
+#    Given there is a "<type>" outage
+#    When I am on homepage
+#    Then I should see "<see>" in the warning bar
+#
+#    Examples:
+#      | type    | see              |
+#      | warning | Shutting down in |
+#      | ongoing | Back online at   |
+#
+#
+#  Scenario Outline: Some stages should not have a warning bar.
+#    Given there is a "<type>" outage
+#    When I am on homepage
+#    Then I should not see the warning bar
+#
+#    Examples:
+#      | type     |
+#      | waiting  |
+#      | finished |
+#      | stopped  |

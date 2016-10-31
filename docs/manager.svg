@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="100" style="font-family: Arial; text-anchor: middle;">
+  <text x="260" y="40" style="font-family: Arial;">Outage manager blurs the boundaries</text>
+  <rect x="10"  y="50" height="50" width="150" style="stroke:#000; fill: #eee;"   /><text x="90"  y="80">Open</text>
+  <rect x="160" y="50" height="50" width="50"  style="stroke:#000; fill: #ff7c00;"/><text x="185" y="80">Warn</text>
+  <rect x="210" y="50" height="50" width="100" style="stroke:#000; fill: #800080;"/><text x="260" y="80" fill=white>Maint</text>
+  <rect x="310" y="50" height="50" width="50"  style="stroke:#000; fill: #e00;"   /><text x="335" y="80" fill=white>Test</text>
+  <rect x="360" y="50" height="50" width="20"  style="stroke:#000; fill: #090;"   /><text x="370" y="80" fill=white>✓</text>
+  <rect x="380" y="50" height="50" width="130" style="stroke:#000; fill: #eee;"   /><text x="445" y="80">Open</text>
+</svg>

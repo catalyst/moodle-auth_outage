@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="100" style="font-family: Arial; text-anchor: middle;">
+  <text x="260" y="40" style="font-family: Arial;">Default moodle outages are black and white</text>
+  <rect x="10"  y="50" height="50" width="200" style="stroke:#000; fill: #eee;"/><text x="110" y="80">Open</text>
+  <rect x="210" y="50" height="50" width="100" style="stroke:#000; fill: #333;"/><text x="260" y="80" fill="white">Maint</text>
+  <rect x="310" y="50" height="50" width="200" style="stroke:#000; fill: #eee;"/><text x="410" y="80">Open</text>
+</svg>

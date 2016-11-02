@@ -135,7 +135,7 @@ class outagedb {
         }
 
         // Trigger outages modified events.
-        outagelib::outages_modified();
+        outagelib::prepare_next_outage();
 
         // All done, return the id.
         return $outage->id;
@@ -165,7 +165,7 @@ class outagedb {
         calendar::delete($id);
 
         // Trigger events.
-        outagelib::outages_modified();
+        outagelib::prepare_next_outage();
     }
 
     /**
@@ -349,6 +349,37 @@ class outagedb {
             '(:datetime <= starttime) AND (autostart = 1)',
             ['datetime' => $time],
             'starttime ASC',
+            '*',
+            0,
+            1
+        );
+
+        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
+        // Allowing multiple records still raises an internal error.
+        return (count($data) == 0) ? null : new outage(array_shift($data));
+    }
+
+    /**
+     * Gets an ongoing outage (between start and stop time but not finished).
+     * @param int|null $time Timestamp considered to check for outages, null for current date/time.
+     * @return outage|null The outage or null if no active outages were found.
+     * @throws coding_exception
+     */
+    public static function get_ongoing($time = null) {
+        global $DB;
+
+        if ($time === null) {
+            $time = time();
+        }
+        if (!is_int($time) || ($time <= 0)) {
+            throw new coding_exception('$time must be null or a positive int.', $time);
+        }
+
+        $data = $DB->get_records_select(
+            'auth_outage',
+            'starttime <= :datetime1 AND :datetime2 <= stoptime AND finished IS NULL',
+            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
+            'starttime ASC, stoptime DESC, title ASC',
             '*',
             0,
             1

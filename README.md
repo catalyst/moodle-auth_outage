@@ -77,6 +77,17 @@ https://github.com/catalyst/moodle-auth_outage/issues
 3. Go to `Dashboard ► Site administration ► Plugins ► Authentication ► Manage authentication`,
 enable the `Outage manager` plugin and place it on the top.
 
+4. If you need to use the IP Blocking, please add the following lines into your `config.php`
+after your `$CFG->dataroot` is set:
+
+```
+if (file_exists("$CFG->dataroot/climaintenance.php")) {
+    $CFG->dirroot = __DIR__;
+    require("$CFG->dataroot/climaintenance.php");
+} else {
+    $CFG->auth_outage_check = 1;
+}
+```
 
 How to use
 ----------

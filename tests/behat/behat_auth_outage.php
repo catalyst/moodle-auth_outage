@@ -155,6 +155,21 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * @Then /^I should see an empty settings text area "([^"]*)"$/
+     * @param string $name
+     */
+    public function i_should_see_an_empty_settings_text_area($name) {
+        $this->assertSession()->fieldValueEquals('s_auth_outage_'.$name, '');
+    }
+
+    /**
+     * @When /^I go to the "Outage Settings" page$/
+     */
+    public function i_go_to_the_outage_settings_page() {
+        $this->getSession()->visit($this->locate_path('/admin/settings.php?section=authsettingoutage'));
+    }
+
+    /**
      * Counts how many times an specific action is visible.
      * @param string $action Action to check.
      * @return int Number of times it is shown.

@@ -124,26 +124,25 @@ class infopage {
 
     /**
      * Updates the static info page by (re)creating or deleting it as needed.
+     * @param outage|null $outage Outage or null if no scheduled outage.
      * @param string|null $file File to update. Null to use default.
      * @throws coding_exception
      * @throws file_exception
      */
-    public static function update_static_page($file = null) {
+    public static function update_static_page($outage, $file = null) {
         if (is_null($file)) {
             $file = self::get_defaulttemplatefile();
         }
         if (!is_string($file)) {
             throw new coding_exception('$file is not a string.', $file);
         }
+        if (!is_null($outage) && !($outage instanceof outage)) {
+            throw new coding_exception('$outage must be null or an outage object.');
+        }
 
-        $outage = outagedb::get_next_starting();
         if (is_null($outage)) {
             if (file_exists($file)) {
-                if (is_file($file) && is_writable($file)) {
-                    unlink($file);
-                } else {
-                    throw new file_exception('Cannot remove: '.$file);
-                }
+                unlink($file);
             }
         } else {
             self::save_static_page($outage, $file);

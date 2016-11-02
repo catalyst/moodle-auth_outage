@@ -1,4 +1,4 @@
-@dev @auth @auth_outage @javascript
+@auth @auth_outage @javascript
 Feature: Warning bar
   In order alert users about an outage
   As any user

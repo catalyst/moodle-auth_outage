@@ -257,7 +257,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Tests updating the static page when there is no outage.
      */
     public function test_updatestaticpage_nooutage() {
-        infopage::update_static_page();
+        infopage::update_static_page(null);
     }
 
     /**
@@ -267,7 +267,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
         $file = infopage::get_defaulttemplatefile();
         touch($file);
         self::assertFileExists($file);
-        infopage::update_static_page();
+        infopage::update_static_page(null);
         self::assertFileNotExists($file);
     }
 
@@ -276,7 +276,15 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      */
     public function test_updatestaticpage_invalidfile() {
         $this->set_expected_exception('coding_exception');
-        infopage::update_static_page(123);
+        infopage::update_static_page(null, 123);
+    }
+
+    /**
+     * Tests updating the static page with an invalid outage.
+     */
+    public function test_updatestaticpage_invalidoutage() {
+        $this->set_expected_exception('coding_exception');
+        infopage::update_static_page("foobar");
     }
 
     /**
@@ -339,6 +347,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
      * Checks if we can create and execute a task to update outage pages.
      */
     public function test_tasks() {
+        $this->resetAfterTest(true);
         $task = new update_static_page();
         self::assertNotEmpty($task->get_name());
         $task->execute();

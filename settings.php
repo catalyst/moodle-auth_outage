@@ -28,8 +28,12 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig && is_enabled_auth('outage')) {
     $defaults = outagelib::get_config_defaults();
-    // Configure default settings page.
     $settings->visiblename = get_string('menusettings', 'auth_outage');
+
+    $settings->add(new admin_setting_heading(
+        'defaults',
+        get_string('settingssectiondefaults', 'auth_outage'),
+        get_string('settingssectiondefaultsdescription', 'auth_outage')));
     $settings->add(new admin_setting_configcheckbox(
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),
@@ -64,6 +68,12 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         $defaults['default_description'],
         PARAM_RAW
     ));
+
+    $settings->add(new admin_setting_heading(
+        'plugin',
+        get_string('settingssectionplugin', 'auth_outage'),
+        get_string('settingssectionplugindescription', 'auth_outage')));
+
     $settings->add(new admin_setting_configtextarea(
         'auth_outage/css',
         get_string('defaultlayoutcss', 'auth_outage'),
@@ -71,6 +81,36 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         $defaults['css'],
         PARAM_RAW
     ));
+
+    // Create 'Allowed IPs' settings.
+    $allowedips = outagelib::get_config()->allowedips;
+    $description = '';
+
+    if (!isset($CFG->auth_outage_check) || !$CFG->auth_outage_check) {
+        $description .= $OUTPUT->notification(get_string('allowedipsnoconfig', 'auth_outage'), 'notifyfailure');
+    }
+
+    if (trim($allowedips) == '') {
+        $message = 'allowedipsempty';
+        $type = 'notifymessage';
+    } else if (remoteip_in_list($allowedips)) {
+        $message = 'allowedipshasmyip';
+        $type = 'notifysuccess';
+    } else {
+        $message = 'allowedipshasntmyip';
+        $type = 'notifyfailure';
+    };
+    $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
+
+    $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
+
+    $settings->add(new admin_setting_configiplist(
+        'auth_outage/allowedips',
+        get_string('allowediplist', 'admin'),
+        $description,
+        $defaults['allowedips']
+    ));
+
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));
     // Add settings page toconfigure defaults.

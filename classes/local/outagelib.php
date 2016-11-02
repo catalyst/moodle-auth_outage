@@ -30,6 +30,8 @@ use auth_outage\local\controllers\infopage;
 use auth_outage\output\renderer;
 use coding_exception;
 use Exception;
+use file_exception;
+use invalid_parameter_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -130,29 +132,36 @@ class outagelib {
      */
     public static function get_config_defaults() {
         return [
+            'allowedips' => '',
+            'css' => '',
             'default_autostart' => '0',
             'default_duration' => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
             'default_title' => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description' => get_string('defaultdescriptionvalue', 'auth_outage'),
-            'css' => '',
         ];
     }
 
     /**
      * Executed when outages are modified (created, updated or deleted).
      */
-    public static function outages_modified() {
-        infopage::update_static_page();
-        self::update_maintenance_later();
+    public static function prepare_next_outage() {
+        // If there is an ongoing outage, prepare it instead.
+        $outage = outagedb::get_ongoing();
+        if (is_null($outage)) {
+            $outage = outagedb::get_next_starting();
+        }
+        infopage::update_static_page($outage);
+        self::update_climaintenance_code($outage);
+        self::update_maintenance_later($outage);
     }
 
     /**
      * Calls Moodle API - set_maintenance_later() to set when the next outage starts.
+     * @param outage|null $outage Outage or null if no scheduled outage.
      */
-    private static function update_maintenance_later() {
-        $next = outagedb::get_next_autostarting();
-        if (is_null($next)) {
+    private static function update_maintenance_later($outage) {
+        if (is_null($outage) || !$outage->autostart) {
             unset_config('maintenance_later');
         } else {
             $message = get_config('moodle', 'maintenance_message');
@@ -162,7 +171,7 @@ class outagelib {
                 // We cannot do much if forced config, but the logs will show the error.
                 unset_config('maintenance_message');
             }
-            set_config('maintenance_later', $next->starttime);
+            set_config('maintenance_later', $outage->starttime);
         }
     }
 
@@ -186,5 +195,91 @@ class outagelib {
 
         // Nothing preventing the injection.
         return true;
+    }
+
+    /**
+     * Generates the code to put in sitedata/climaintenance.php when needed.
+     * @param int $starttime Outage start time.
+     * @param int $stoptime Outage stop time.
+     * @param string $allowedips List of IPs allowed.
+     * @return string
+     * @throws invalid_parameter_exception
+     */
+    public static function create_climaintenancephp_code($starttime, $stoptime, $allowedips) {
+        if (!is_int($starttime) || !is_int($stoptime)) {
+            throw new invalid_parameter_exception('Make sure $startime and $stoptime are integers.');
+        }
+        if (!is_string($allowedips) || (trim($allowedips) == '')) {
+            throw new invalid_parameter_exception('$allowedips must be a valid string.');
+        }
+        // I know Moodle validation would clean up this field, but just in case, let's ensure no
+        // single-quotes (and double for the sake of it) are present otherwise it would break the code.
+        $allowedips = str_replace('\'"', '', $allowedips);
+
+        $code = <<<'EOT'
+<?php
+if (time() >= {{STARTTIME}}) {
+    if (!defined('CLI_SCRIPT') || !CLI_SCRIPT) {
+        define('MOODLE_INTERNAL', true);
+        require_once($CFG->dirroot.'/lib/moodlelib.php');
+        if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
+            header('Status: 503 Moodle under maintenance');
+            header('Retry-After: 300');
+            header('Content-type: text/html; charset=utf-8');
+            header('X-UA-Compatible: IE=edge');
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+            header('Pragma: no-cache');
+            header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+            header('Accept-Ranges: none');
+            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
+                require($CFG->dataroot.'/climaintenance.template.html');
+                exit(0);
+            }
+            // The file above should always exist, but just in case...
+            die('We are currently under maintentance, please try again later.');
+        }
+    }
+}
+$CFG->auth_outage_check = 1;
+EOT;
+        $search = ['{{STARTTIME}}', '{{ALLOWEDIPS}}', '{{YOURIP}}'];
+        $replace = [$starttime, $allowedips, getremoteaddr('n/a')];
+        return str_replace($search, $replace, $code);
+    }
+
+    /**
+     * Updates the static info page by (re)creating or deleting it as needed.
+     * @param outage|null $outage Outage or null if no scheduled outage.
+     * @throws coding_exception
+     * @throws file_exception
+     */
+    public static function update_climaintenance_code($outage) {
+        global $CFG;
+        $file = $CFG->dataroot.'/climaintenance.php';
+
+        if (!is_null($outage) && !($outage instanceof outage)) {
+            throw new coding_exception('$outage must be null or an outage object.');
+        }
+
+        $config = self::get_config();
+        $allowedips = trim($config->allowedips);
+
+        if (is_null($outage) || ($allowedips == '')) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        } else {
+            $code = self::create_climaintenancephp_code($outage->starttime, $outage->stoptime, $allowedips);
+
+            $dir = dirname($file);
+            if (!file_exists($dir) || !is_dir($dir)) {
+                throw new file_exception('Directory must exists: '.$dir);
+            }
+            file_put_contents($file, $code);
+        }
     }
 }

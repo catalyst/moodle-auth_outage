@@ -24,6 +24,7 @@
  */
 
 use auth_outage\dml\outagedb;
+use auth_outage\local\controllers\infopage;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
 
@@ -70,7 +71,7 @@ class outagelib_test extends advanced_testcase {
         $this->resetAfterTest(true);
         set_config('maintenance_later', time() + (60 * 60 * 24 * 7)); // In 1 week.
         self::assertNotEmpty(get_config('moodle', 'maintenance_later'));
-        outagelib::outages_modified();
+        outagelib::prepare_next_outage();
         self::assertEmpty(get_config('moodle', 'maintenance_later'));
     }
 
@@ -194,6 +195,7 @@ class outagelib_test extends advanced_testcase {
             'default_duration',
             'default_title',
             'default_warning_duration',
+            'allowedips',
         ];
         // Set config with values.
         foreach ($keys as $k) {
@@ -207,11 +209,32 @@ class outagelib_test extends advanced_testcase {
     }
 
     /**
+     * Check that config has key.
+     */
+    public function test_config_keys() {
+        $this->resetAfterTest(true);
+        $keys = [
+            'allowedips',
+            'css',
+            'default_autostart',
+            'default_description',
+            'default_duration',
+            'default_title',
+            'default_warning_duration',
+        ];
+        $defaults = outagelib::get_config_defaults();
+        foreach ($keys as $k) {
+            self::assertArrayHasKey($k, $defaults);
+        }
+    }
+
+    /**
      * Check if get config works getting defaults when needed.
      */
     public function test_get_config_invalid() {
         $this->resetAfterTest(true);
         // Set config with invalid values.
+        set_config('allowedips', " \n", 'auth_outage');
         set_config('css', " \n", 'auth_outage');
         set_config('default_autostart', " \n", 'auth_outage');
         set_config('default_description', " \n", 'auth_outage');
@@ -221,7 +244,7 @@ class outagelib_test extends advanced_testcase {
         // Get defaults.
         $defaults = outagelib::get_config_defaults();
         $config = outagelib::get_config();
-        // Ensure it is using all defailts.
+        // Ensure it is using all defaults.
         foreach ($defaults as $k => $v) {
             self::assertSame($v, $config->$k);
         }
@@ -255,5 +278,165 @@ class outagelib_test extends advanced_testcase {
 
         self::assertEmpty($CFG->additionalhtmltopofbody);
     }
-}
 
+    public function test_createmaintenancephpcode() {
+        $expected = <<<'EOT'
+<?php
+if (time() >= 123) {
+    if (!defined('CLI_SCRIPT') || !CLI_SCRIPT) {
+        define('MOODLE_INTERNAL', true);
+        require_once($CFG->dirroot.'/lib/moodlelib.php');
+        if (!remoteip_in_list('heyyou
+a.b.c.d
+e.e.e.e/20')) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
+            header('Status: 503 Moodle under maintenance');
+            header('Retry-After: 300');
+            header('Content-type: text/html; charset=utf-8');
+            header('X-UA-Compatible: IE=edge');
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+            header('Pragma: no-cache');
+            header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+            header('Accept-Ranges: none');
+            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
+                require($CFG->dataroot.'/climaintenance.template.html');
+                exit(0);
+            }
+            // The file above should always exist, but just in case...
+            die('We are currently under maintentance, please try again later.');
+        }
+    }
+}
+$CFG->auth_outage_check = 1;
+EOT;
+        $found = outagelib::create_climaintenancephp_code(123, 456, "hey'\"you\na.b.c.d\ne.e.e.e/20");
+        self::assertSame($expected, $found);
+    }
+
+    public function test_createmaintenancephpcode_withoutage() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        $expected = <<<'EOT'
+<?php
+if (time() >= 123) {
+    if (!defined('CLI_SCRIPT') || !CLI_SCRIPT) {
+        define('MOODLE_INTERNAL', true);
+        require_once($CFG->dirroot.'/lib/moodlelib.php');
+        if (!remoteip_in_list('127.0.0.1')) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
+            header('Status: 503 Moodle under maintenance');
+            header('Retry-After: 300');
+            header('Content-type: text/html; charset=utf-8');
+            header('X-UA-Compatible: IE=edge');
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+            header('Pragma: no-cache');
+            header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+            header('Accept-Ranges: none');
+            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
+                require($CFG->dataroot.'/climaintenance.template.html');
+                exit(0);
+            }
+            // The file above should always exist, but just in case...
+            die('We are currently under maintentance, please try again later.');
+        }
+    }
+}
+$CFG->auth_outage_check = 1;
+EOT;
+        $outage = new outage([
+            'starttime' => 123,
+            'stoptime' => 456,
+        ]);
+        $file = $CFG->dataroot.'/climaintenance.php';
+        set_config('allowedips', '127.0.0.1', 'auth_outage');
+
+        outagelib::update_climaintenance_code($outage);
+        self::assertFileExists($file);
+        $found = file_get_contents($file);
+        self::assertSame($found, $expected);
+    }
+
+    public function test_createmaintenancephpcode_withoutips() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        $outage = new outage([
+            'starttime' => 123,
+            'stoptime' => 456,
+        ]);
+        $file = $CFG->dataroot.'/climaintenance.php';
+        set_config('allowedips', '', 'auth_outage');
+
+        touch($file);
+        outagelib::update_climaintenance_code($outage);
+        self::assertFileNotExists($file);
+    }
+
+    public function test_createmaintenancephpcode_withoutoutage() {
+        global $CFG;
+        $file = $CFG->dataroot.'/climaintenance.php';
+
+        touch($file);
+        outagelib::update_climaintenance_code(null);
+        self::assertFileNotExists($file);
+    }
+
+    /**
+     * Related to Issue #70: Creating ongoing outage does not trigger maintenance file creation.
+     */
+    public function test_preparenextoutage_notautostart() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        set_config('allowedips', '127.0.0.1', 'auth_outage');
+        outagedb::save($outage);
+
+        // The method outagelib::prepare_next_outage() should have been called by save().
+        foreach ([infopage::get_defaulttemplatefile(), $CFG->dataroot.'/climaintenance.php'] as $file) {
+            self::assertFileExists($file);
+            unlink($file);
+        }
+    }
+
+    /**
+     * Related to Issue #72: IP Block still triggers cli maintenance mode even without autostart.
+     */
+    public function test_preparenextoutage_noautostarttrigger() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        outagedb::save($outage);
+
+        // The method outagelib::prepare_next_outage() should have been called by save().
+        self::assertFalse(get_config('moodle', 'maintenance_later'));
+        // This file should not exist even if the statement above fails as Moodle does not create it immediately but test anyway.
+        self::assertFileNotExists($CFG->dataroot.'/climaintenance.html');
+    }
+}

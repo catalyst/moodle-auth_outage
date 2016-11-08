@@ -80,6 +80,7 @@ $string['finish'] = 'Finish';
 $string['info15secondsbefore'] = '15 seconds before';
 $string['infoendofoutage'] = 'end of outage';
 $string['infofrom'] = 'From:';
+$string['infohidewarning'] = 'no warning bar';
 $string['infountil'] = 'Until:';
 $string['infostart'] = 'start';
 $string['infostartofwarning'] = 'start of warning';

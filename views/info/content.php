@@ -45,6 +45,18 @@ if ($viewbag['admin']) {
             get_string('info'.$title, 'auth_outage')
         );
     }
+    $adminlinks[] = html_writer::link(
+        new moodle_url(
+            '/auth/outage/info.php',
+            [
+                'id' => $viewbag['outage']->id,
+                'auth_outage_preview' => $viewbag['outage']->id,
+                'auth_outage_delta' => 0,
+                'auth_outage_hide_warning' => 1,
+            ]
+        ),
+        get_string('infohidewarning', 'auth_outage')
+    );
 
     $admineditlink = html_writer::link(
         new moodle_url('/auth/outage/edit.php', ['edit' => $viewbag['outage']->id]),

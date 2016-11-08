@@ -256,7 +256,7 @@ class outagedb {
 
         $rs = $DB->get_recordset_select(
             'auth_outage',
-            ':datetime1 >= stoptime OR (finished IS NOT NULL AND :datetime2 >= finished)',
+            'NOT (:datetime1 < stoptime AND (finished IS NULL OR :datetime2 < finished))',
             ['datetime1' => $time, 'datetime2' => $time],
             'stoptime DESC, starttime DESC, title ASC',
             '*');

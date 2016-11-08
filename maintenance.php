@@ -26,8 +26,30 @@
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\maintenance_static_page;
 
-require_once(__DIR__.'/../../config.php');
+if (isset($_GET['file'])) {
+    define('NO_DEBUG_DISPLAY', true);
+    define('ABORT_AFTER_CONFIG', true);
+    require_once(__DIR__.'/../../config.php');
 
-$outage = outagedb::get_next_starting();
-maintenance_static_page::create_from_outage($outage);
-readfile(maintenance_static_page::get_template_file());
+    // We are not using any external libraries or references in this file (cli maintenance is active).
+    // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
+    $resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
+
+    // Protect against path traversal attacks.
+    $file = $resourcedir.'/'.basename($_GET['file']);
+    if (realpath($file) !== $file) {
+        error_log('Invalid file: '.$_GET['file']);
+        http_response_code(404);
+        die('Not found.');
+    }
+
+    // Detect type, we only support css or PNG images.
+    $type = substr($file, -3);
+    if ($type == 'css') {
+        header('Content-type: text/css');
+    } else {
+        header('Content-type: image/png');
+    }
+    readfile($file);
+    return;
+}

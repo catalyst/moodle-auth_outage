@@ -64,6 +64,7 @@ class maintenance_static_page {
      */
     public static function get_resources_folder() {
         global $CFG;
+        // If you change the path, also change file auth/outage/maintenance.php as it does not use this reference.
         return $CFG->dataroot.'/auth_outage/climaintenance';
     }
 
@@ -120,6 +121,7 @@ class maintenance_static_page {
 
     private static function delete_directory_recursively($dir) {
         // It should never come from user, but protect against possible attacks anyway.
+        $dir = realpath($dir);
         $safedir = self::get_resources_folder();
         if (substr($dir, 0, strlen($safedir)) !== $safedir) {
             throw new invalid_parameter_exception('Unsafe to delete: '.$dir);
@@ -208,7 +210,7 @@ class maintenance_static_page {
             copy($url, $path);
         }
 
-        $url = (string)new moodle_url('/auth/outage/maintenance.php/'.$file);
+        $url = (string)new moodle_url('/auth/outage/maintenance.php?file='.$file);
         return $url;
     }
 }

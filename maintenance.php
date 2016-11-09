@@ -21,6 +21,8 @@
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @var stdClass $CFG
  */
 
 use auth_outage\dml\outagedb;
@@ -50,7 +52,7 @@ if (isset($_GET['file'])) {
 
     // Use cache.
     $lifetime = 60 * 60 * 24; // 1 day.
-    header('Expires: '. gmdate('D, d M Y H:i:s', time() + $lifetime) .' GMT');
+    header('Expires: '.gmdate('D, d M Y H:i:s', time() + $lifetime).' GMT');
     header('Pragma: ');
     header('Cache-Control: public, max-age='.$lifetime);
     header('Accept-Ranges: none');

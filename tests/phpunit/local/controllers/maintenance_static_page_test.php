@@ -128,6 +128,11 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=preview%2F', $generated);
     }
 
+    /**
+     * Generates the maintenance page (not using preview mode).
+     * @param string $html Input HTML.
+     * @return string Output HTML.
+     */
     private function generated_page_html($html) {
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();

@@ -28,6 +28,7 @@ namespace auth_outage\local\controllers;
 use auth_outage\local\outage;
 use coding_exception;
 use DOMDocument;
+use DOMElement;
 use invalid_parameter_exception;
 use moodle_url;
 
@@ -42,12 +43,23 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_static_page {
+    /**
+     * Creates a page based on the given outage.
+     * @param outage $outage
+     * @return maintenance_static_page
+     */
     public static function create_from_outage(outage $outage) {
         global $CFG;
         $html = file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
         return self::create_from_html($html);
     }
 
+    /**
+     * Creates a page based on the given HTML.
+     * @param string $html
+     * @return maintenance_static_page
+     * @throws coding_exception
+     */
     public static function create_from_html($html) {
         if (!is_string($html)) {
             throw new coding_exception('$html is not valid.');
@@ -69,6 +81,10 @@ class maintenance_static_page {
     /** @var bool */
     protected $preview = false;
 
+    /**
+     * maintenance_static_page constructor.
+     * @param DOMDocument $dom
+     */
     public function __construct(DOMDocument $dom) {
         $this->dom = $dom;
     }
@@ -103,6 +119,9 @@ class maintenance_static_page {
         }
     }
 
+    /**
+     * Generates the page.
+     */
     public function generate() {
         self::prepare_dataroot();
         self::remove_script_tags();
@@ -121,6 +140,9 @@ class maintenance_static_page {
         return $this;
     }
 
+    /**
+     * Remove script tags from DOM.
+     */
     private function remove_script_tags() {
         $scripts = $this->dom->getElementsByTagName('script');
         // List items to remove without changing the DOM.
@@ -134,6 +156,9 @@ class maintenance_static_page {
         }
     }
 
+    /**
+     * Clean up the dataroot as needed.
+     */
     private function prepare_dataroot() {
         $dir = self::get_resources_folder();
         if (is_dir($dir)) {
@@ -142,6 +167,12 @@ class maintenance_static_page {
         mkdir($dir, 0775, true);
     }
 
+    /**
+     * Deletes the given directory with all its files and subdirectories.
+     * @param string $dir Directory to delete.
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     */
     private function delete_directory_recursively($dir) {
         // It should never come from user, but protect against possible attacks anyway.
         $dir = realpath($dir);
@@ -172,6 +203,9 @@ class maintenance_static_page {
         rmdir($dir);
     }
 
+    /**
+     * Fetch and fixes all link rel="stylesheet" tags.
+     */
     private function update_link_stylesheet() {
         $links = $this->dom->getElementsByTagName('link');
 
@@ -185,6 +219,9 @@ class maintenance_static_page {
         }
     }
 
+    /**
+     * Fetch and fixes the favicon link tag.
+     */
     private function update_link_favicon() {
         $links = $this->dom->getElementsByTagName('link');
 
@@ -198,6 +235,9 @@ class maintenance_static_page {
         }
     }
 
+    /**
+     * Fetch and fixes all img tags.
+     */
     private function update_images() {
         $links = $this->dom->getElementsByTagName('img');
 
@@ -210,6 +250,12 @@ class maintenance_static_page {
         }
     }
 
+    /**
+     * Saves the content of the URL into a file, returning the new URL.
+     * @param string $url Input URL.
+     * @param string $type Type of file.
+     * @return string Output URL.
+     */
     private function prepare_url($url, $type) {
         global $CFG;
 

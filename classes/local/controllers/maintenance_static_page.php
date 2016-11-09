@@ -28,7 +28,6 @@ namespace auth_outage\local\controllers;
 use auth_outage\local\outage;
 use coding_exception;
 use DOMDocument;
-use DOMElement;
 use invalid_parameter_exception;
 use moodle_url;
 
@@ -43,9 +42,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_static_page {
-    /** @var int */
-    private static $nextfile = 1;
-
     /**
      * Gets the cli maintenance template file location.
      * @return string
@@ -199,18 +195,17 @@ class maintenance_static_page {
             return $url; // External URL, leave it.
         }
 
-        $file = self::$nextfile++;
-        if ($type != '') {
-            $file .= '.'.$type;
-        }
-        $path = self::get_resources_folder().'/'.$file;
-
         // PHPUnit will use www.example.com as wwwroot and we don't to copy the file.
-        if (!PHPUNIT_TEST) {
-            copy($url, $path);
+        if (PHPUNIT_TEST) {
+            $contents = '';
+        } else {
+            $contents = file_get_contents($url);
         }
+        $filename = sha1($contents).'.'.$type;
+        $filepath = self::get_resources_folder().'/'.$filename;
+        file_put_contents($filepath, $contents);
 
-        $url = (string)new moodle_url('/auth/outage/maintenance.php?file='.$file);
+        $url = (string)new moodle_url('/auth/outage/maintenance.php?file='.$filename);
         return $url;
     }
 }

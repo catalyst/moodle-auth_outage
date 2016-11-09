@@ -44,12 +44,15 @@ if (isset($_GET['file'])) {
     }
 
     // Detect type, we only support css or PNG images.
-    $type = substr($file, -3);
-    if ($type == 'css') {
-        header('Content-type: text/css');
-    } else {
-        header('Content-type: image/png');
-    }
+    header('Content-Type: '.(substr($file, -3) == 'css' ? 'text/css' : 'image/png'));
+
+    // Use cache.
+    $lifetime = 60 * 60 * 24; // 1 day.
+    header('Expires: '. gmdate('D, d M Y H:i:s', time() + $lifetime) .' GMT');
+    header('Pragma: ');
+    header('Cache-Control: public, max-age='.$lifetime);
+    header('Accept-Ranges: none');
+
     readfile($file);
     return;
 }

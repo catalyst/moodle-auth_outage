@@ -88,7 +88,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         maintenance_static_page::create_from_html($html);
         $generated = file_get_contents(maintenance_static_page::get_template_file());
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php/', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
         self::assertNotContains($link1, $generated);
         self::assertNotContains($link2, $generated);
         self::assertContains($link3, $generated);
@@ -104,7 +104,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         maintenance_static_page::create_from_html($html);
         $generated = file_get_contents(maintenance_static_page::get_template_file());
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php/', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
         self::assertNotContains($link1, $generated);
         self::assertNotContains($link2, $generated);
         self::assertContains($link3, $generated);
@@ -119,6 +119,6 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = file_get_contents(maintenance_static_page::get_template_file());
 
         self::assertNotContains($link, $generated);
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php/', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
     }
 }

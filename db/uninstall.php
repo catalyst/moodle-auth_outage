@@ -22,6 +22,8 @@
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use auth_outage\local\controllers\maintenance_static_page;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -36,13 +38,8 @@ function xmldb_auth_outage_uninstall() {
     // Delete all outage events.
     $DB->delete_records('event', ['eventtype' => 'auth_outage']);
 
-    // Delete template file.
-    $template = auth_outage\local\controllers\infopage::get_defaulttemplatefile();
-    if (file_exists($template)) {
-        if (!unlink($template)) {
-            throw new moodle_exception('Cannot remote maintenance template file: '.$template);
-        }
-    }
+    // Delete files.
+    maintenance_static_page::create_from_outage(null)->generate();
 
     // Remove 'maintenance later' which could have been set for the next outage.
     unset_config('maintenance_later');

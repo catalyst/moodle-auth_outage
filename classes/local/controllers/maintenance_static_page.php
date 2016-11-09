@@ -28,8 +28,8 @@ namespace auth_outage\local\controllers;
 use auth_outage\local\outage;
 use coding_exception;
 use DOMDocument;
-use DOMElement;
 use invalid_parameter_exception;
+use invalid_state_exception;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
@@ -45,32 +45,49 @@ defined('MOODLE_INTERNAL') || die();
 class maintenance_static_page {
     /**
      * Creates a page based on the given outage.
-     * @param outage $outage
+     * @param outage|null $outage
      * @return maintenance_static_page
+     * @throws coding_exception
      */
-    public static function create_from_outage(outage $outage) {
+    public static function create_from_outage($outage) {
         global $CFG;
-        $html = file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+
+        if (!is_null($outage) && !($outage instanceof outage)) {
+            throw new coding_exception('$outage must be null or an outage object.');
+        }
+
+        if (is_null($outage)) {
+            $html = null;
+        } else if (PHPUNIT_TEST) {
+            $html = '<html></html>';
+        } else {
+            $html = file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+        }
+
         return self::create_from_html($html);
     }
 
     /**
      * Creates a page based on the given HTML.
-     * @param string $html
+     * @param string|null $html
      * @return maintenance_static_page
      * @throws coding_exception
      */
     public static function create_from_html($html) {
-        if (!is_string($html)) {
+        if (!is_null($html) && !is_string($html)) {
             throw new coding_exception('$html is not valid.');
         }
 
-        $dom = new DOMDocument();
+        if (is_null($html)) {
+            $dom = null;
+        } else {
+            $dom = new DOMDocument();
 
-        // Let's assume we have no parsing errors as we cannot rely on a badly-formed page anyway.
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($html);
-        libxml_clear_errors();
+            // Let's assume we have no parsing errors as we cannot rely on a badly-formed page anyway.
+            libxml_use_internal_errors(true);
+            $dom->loadHTML($html);
+            libxml_clear_errors();
+        }
 
         return new maintenance_static_page($dom);
     }
@@ -83,9 +100,13 @@ class maintenance_static_page {
 
     /**
      * maintenance_static_page constructor.
-     * @param DOMDocument $dom
+     * @param DOMDocument|null $dom
+     * @throws coding_exception
      */
-    public function __construct(DOMDocument $dom) {
+    public function __construct($dom) {
+        if (!is_null($dom) && !($dom instanceof DOMDocument)) {
+            throw new coding_exception('$dom must be null or an DOMDocument object.');
+        }
         $this->dom = $dom;
     }
 
@@ -123,12 +144,21 @@ class maintenance_static_page {
      * Generates the page.
      */
     public function generate() {
-        self::prepare_dataroot();
-        self::remove_script_tags();
-        self::update_link_stylesheet();
-        self::update_link_favicon();
-        self::update_images();
-        file_put_contents(self::get_template_file(), $this->dom->saveHTML());
+        self::cleanup();
+
+        if (!is_null($this->dom)) {
+            self::remove_script_tags();
+            self::update_link_stylesheet();
+            self::update_link_favicon();
+            self::update_images();
+
+            $html = $this->dom->saveHTML();
+            if (trim($html) == '') {
+                // Should never happen, but just in case...
+                throw new invalid_state_exception('Sanity check failed, $html is empty.');
+            }
+            file_put_contents(self::get_template_file(), $html);
+        }
     }
 
     /**
@@ -159,12 +189,20 @@ class maintenance_static_page {
     /**
      * Clean up the dataroot as needed.
      */
-    private function prepare_dataroot() {
-        $dir = self::get_resources_folder();
-        if (is_dir($dir)) {
-            self::delete_directory_recursively($dir);
+    private function cleanup() {
+        $resources = $this->get_resources_folder();
+        if (is_dir($resources)) {
+            self::delete_directory_recursively($resources);
         }
-        mkdir($dir, 0775, true);
+
+        $template = $this->get_template_file();
+        if (is_file($template)) {
+            unlink($template);
+        }
+
+        if (!is_null($this->dom)) {
+            mkdir($resources, 0775, true);
+        }
     }
 
     /**

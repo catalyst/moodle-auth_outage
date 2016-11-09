@@ -409,7 +409,7 @@ EOT;
         outagedb::save($outage);
 
         // The method outagelib::prepare_next_outage() should have been called by save().
-        foreach ([infopage::get_defaulttemplatefile(), $CFG->dataroot.'/climaintenance.php'] as $file) {
+        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
             self::assertFileExists($file);
             unlink($file);
         }

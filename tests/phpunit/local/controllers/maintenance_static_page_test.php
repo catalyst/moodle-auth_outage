@@ -24,6 +24,7 @@
  */
 
 use auth_outage\local\controllers\maintenance_static_page;
+use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../../base_testcase.php');
@@ -138,5 +139,27 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
         $generated = trim(file_get_contents($page->get_template_file()));
         return $generated;
+    }
+
+    /**
+     * Checks if we can create and execute a task to update outage pages.
+     */
+    public function test_tasks() {
+        $this->resetAfterTest(true);
+        $task = new update_static_page();
+        self::assertNotEmpty($task->get_name());
+        $task->execute();
+    }
+
+    /**
+     * Tests updating the static page when there is no outage but the file existed before.
+     */
+    public function test_updatestaticpage_hasfile() {
+        global $CFG;
+        $file = $CFG->dataroot.'/climaintenance.template.html';
+        touch($file);
+        self::assertFileExists($file);
+        maintenance_static_page::create_from_outage(null)->generate();
+        self::assertFileNotExists($file);
     }
 }

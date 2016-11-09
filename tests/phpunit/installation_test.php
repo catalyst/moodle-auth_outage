@@ -51,7 +51,7 @@ class installation_test extends auth_outage_base_testcase {
         global $CFG, $DB;
 
         $this->resetAfterTest();
-        $this->setAdminUser();
+        static::setAdminUser();
         $dbman = $DB->get_manager();
 
         // Create a future outage with autostart.
@@ -77,7 +77,7 @@ class installation_test extends auth_outage_base_testcase {
         // Check ...
         self::assertSame(0, $DB->count_records_select('event', "eventtype = 'auth_outage'", null),
             'The outage events were not removed.');
-        self::assertFalse(file_exists(auth_outage\local\controllers\infopage::get_defaulttemplatefile()),
+        self::assertFalse(file_exists($CFG->dataroot.'/climaintenance.php'),
             'The maintenance template file was not deleted.');
         self::assertFalse(get_config('moodle', 'maintenance_later'),
             'Maintenance later must not be set.'); // Issue #57.

@@ -26,7 +26,7 @@
 namespace auth_outage\local;
 
 use auth_outage\dml\outagedb;
-use auth_outage\local\controllers\infopage;
+use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\output\renderer;
 use coding_exception;
 use Exception;
@@ -156,7 +156,7 @@ class outagelib {
         if (is_null($outage)) {
             $outage = outagedb::get_next_starting();
         }
-        infopage::update_static_page($outage);
+        maintenance_static_page::create_from_outage($outage)->generate();
         self::update_climaintenance_code($outage);
         self::update_maintenance_later($outage);
     }

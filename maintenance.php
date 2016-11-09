@@ -53,3 +53,12 @@ if (isset($_GET['file'])) {
     readfile($file);
     return;
 }
+
+if (isset($_GET['debug'])) {
+    // Use auth/outage/maintenance.php?debug to preview how it will render without triggering maintenance mode.
+    require_once(__DIR__.'/../../config.php');
+    $outage = outagedb::get_next_starting();
+    maintenance_static_page::create_from_outage($outage);
+    readfile(maintenance_static_page::get_template_file());
+    return;
+}

@@ -42,32 +42,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_static_page {
-    /**
-     * Gets the cli maintenance template file location.
-     * @return string
-     */
-    public static function get_template_file() {
-        global $CFG;
-        return $CFG->dataroot.'/climaintenance.template.html';
-    }
-
-    /**
-     * Gets the resources folder in dataroot.
-     *
-     * Warning: this folder will be deleted every time the page is regenerated.
-     *
-     * @return string
-     */
-    public static function get_resources_folder() {
-        global $CFG;
-        // If you change the path, also change file auth/outage/maintenance.php as it does not use this reference.
-        return $CFG->dataroot.'/auth_outage/climaintenance';
-    }
-
     public static function create_from_outage(outage $outage) {
         global $CFG;
         $html = file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
-        self::create_from_html($html);
+        return self::create_from_html($html);
     }
 
     public static function create_from_html($html) {
@@ -82,20 +60,69 @@ class maintenance_static_page {
         $dom->loadHTML($html);
         libxml_clear_errors();
 
-        self::generate($dom);
+        return new maintenance_static_page($dom);
     }
 
-    private static function generate(DOMDocument $dom) {
+    /** @var DOMDocument */
+    protected $dom;
+
+    /** @var bool */
+    protected $preview = false;
+
+    public function __construct(DOMDocument $dom) {
+        $this->dom = $dom;
+    }
+
+    /**
+     * Gets the cli maintenance template file location.
+     * @return string
+     */
+    public function get_template_file() {
+        global $CFG;
+        if ($this->preview) {
+            return $this->get_resources_folder().'/climaintenance.html';
+        } else {
+            return $CFG->dataroot.'/climaintenance.template.html';
+        }
+    }
+
+    /**
+     * Gets the resources folder in dataroot.
+     *
+     * Warning: this folder will be deleted every time the page is regenerated.
+     *
+     * @return string
+     */
+    public function get_resources_folder() {
+        global $CFG;
+        // If you change the path, also change file auth/outage/maintenance.php as it does not use this reference.
+        if ($this->preview) {
+            return $CFG->dataroot.'/auth_outage/climaintenance/preview';
+        } else {
+            return $CFG->dataroot.'/auth_outage/climaintenance';
+        }
+    }
+
+    public function generate() {
         self::prepare_dataroot();
-        self::remove_script_tags($dom);
-        self::update_link_stylesheet($dom);
-        self::update_link_favicon($dom);
-        self::update_images($dom);
-        file_put_contents(self::get_template_file(), $dom->saveHTML());
+        self::remove_script_tags();
+        self::update_link_stylesheet();
+        self::update_link_favicon();
+        self::update_images();
+        file_put_contents(self::get_template_file(), $this->dom->saveHTML());
     }
 
-    private static function remove_script_tags(DOMDocument $dom) {
-        $scripts = $dom->getElementsByTagName('script');
+    /**
+     * @param boolean $preview
+     * @return maintenance_static_page
+     */
+    public function set_preview($preview) {
+        $this->preview = $preview;
+        return $this;
+    }
+
+    private function remove_script_tags() {
+        $scripts = $this->dom->getElementsByTagName('script');
         // List items to remove without changing the DOM.
         $remove = [];
         foreach ($scripts as $node) {
@@ -107,7 +134,7 @@ class maintenance_static_page {
         }
     }
 
-    private static function prepare_dataroot() {
+    private function prepare_dataroot() {
         $dir = self::get_resources_folder();
         if (is_dir($dir)) {
             self::delete_directory_recursively($dir);
@@ -115,7 +142,7 @@ class maintenance_static_page {
         mkdir($dir, 0775, true);
     }
 
-    private static function delete_directory_recursively($dir) {
+    private function delete_directory_recursively($dir) {
         // It should never come from user, but protect against possible attacks anyway.
         $dir = realpath($dir);
         $safedir = self::get_resources_folder();
@@ -145,8 +172,8 @@ class maintenance_static_page {
         rmdir($dir);
     }
 
-    private static function update_link_stylesheet(DOMDocument $dom) {
-        $links = $dom->getElementsByTagName('link');
+    private function update_link_stylesheet() {
+        $links = $this->dom->getElementsByTagName('link');
 
         foreach ($links as $link) {
             $rel = $link->getAttribute("rel");
@@ -158,8 +185,8 @@ class maintenance_static_page {
         }
     }
 
-    private static function update_link_favicon(DOMDocument $dom) {
-        $links = $dom->getElementsByTagName('link');
+    private function update_link_favicon() {
+        $links = $this->dom->getElementsByTagName('link');
 
         foreach ($links as $link) {
             $rel = $link->getAttribute("rel");
@@ -171,8 +198,8 @@ class maintenance_static_page {
         }
     }
 
-    private static function update_images(DOMDocument $dom) {
-        $links = $dom->getElementsByTagName('img');
+    private function update_images() {
+        $links = $this->dom->getElementsByTagName('img');
 
         foreach ($links as $link) {
             $src = $link->getAttribute("src");
@@ -183,7 +210,7 @@ class maintenance_static_page {
         }
     }
 
-    private static function prepare_url($url, $type) {
+    private function prepare_url($url, $type) {
         global $CFG;
 
         if (!preg_match('#^http(s)?://#', $url)) {
@@ -205,7 +232,10 @@ class maintenance_static_page {
         $filepath = self::get_resources_folder().'/'.$filename;
         file_put_contents($filepath, $contents);
 
-        $url = (string)new moodle_url('/auth/outage/maintenance.php?file='.$filename);
+        if ($this->preview) {
+            $filename = 'preview/'.$filename;
+        }
+        $url = (string)new moodle_url('/auth/outage/maintenance.php', ['file' => $filename]);
         return $url;
     }
 }

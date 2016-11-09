@@ -36,9 +36,11 @@ if (isset($_GET['file'])) {
     $resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
 
     // Protect against path traversal attacks.
-    $file = $resourcedir.'/'.basename($_GET['file']);
+    $file = $resourcedir.'/'.$_GET['file'];
     if (realpath($file) !== $file) {
+        // @codingStandardsIgnoreStart
         error_log('Invalid file: '.$_GET['file']);
+        // @codingStandardsIgnoreEnd
         http_response_code(404);
         die('Not found.');
     }
@@ -59,9 +61,17 @@ if (isset($_GET['file'])) {
 
 if (isset($_GET['debug'])) {
     // Use auth/outage/maintenance.php?debug to preview how it will render without triggering maintenance mode.
+
     require_once(__DIR__.'/../../config.php');
-    $outage = outagedb::get_next_starting();
-    maintenance_static_page::create_from_outage($outage);
-    readfile(maintenance_static_page::get_template_file());
+    $id = optional_param('id', null, PARAM_INT);
+    $outage = is_null($id) ? outagedb::get_next_starting() : outagedb::get_by_id($id);
+    if (is_null($outage)) {
+        throw new invalid_parameter_exception('Outage not found.');
+    }
+
+    $page = maintenance_static_page::create_from_outage($outage);
+    $page->set_preview(true);
+    $page->generate();
+    readfile($page->get_template_file());
     return;
 }

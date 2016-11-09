@@ -84,6 +84,7 @@ $string['infohidewarning'] = 'no warning bar';
 $string['infountil'] = 'Until:';
 $string['infostart'] = 'start';
 $string['infostartofwarning'] = 'start of warning';
+$string['infostaticpage'] = 'static page';
 $string['infopagestaticgenerated'] = 'This warning was generated on {$a->time}.';
 $string['allowedipsempty'] = 'When the allowed IPs list is empty we will not block anyone. You can add your own IP address (<i>{$a->ip}</i>) and block all other IPs.';
 $string['allowedipshasmyip'] = 'Your IP (<i>{$a->ip}</i>) is in the list and you will not be blocked out during an Outage.';

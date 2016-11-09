@@ -38,23 +38,20 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @SuppressWarnings(public) Allow as many methods as needed.
  */
 class maintenance_static_page_test extends auth_outage_base_testcase {
-    /**
-     * Ensures the template file does not exist when starting a test.
-     */
-    public function setUp() {
-        $file = maintenance_static_page::get_template_file();
-        if (file_exists($file)) {
-            if (is_file($file)) {
-                unlink($file);
-            } else {
-                self::fail('Invalid temp file: '.$file);
-            }
-        }
-    }
-
     public function test_templatefile() {
         global $CFG;
-        self::assertSame($CFG->dataroot.'/climaintenance.template.html', maintenance_static_page::get_template_file());
+        $page = maintenance_static_page::create_from_html('<html></html>');
+        self::assertSame($CFG->dataroot.'/climaintenance.template.html', $page->get_template_file());
+        $page->set_preview(true);
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html', $page->get_template_file());
+    }
+
+    public function test_resourcesfolder() {
+        global $CFG;
+        $page = maintenance_static_page::create_from_html('<html></html>');
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance', $page->get_resources_folder());
+        $page->set_preview(true);
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview', $page->get_resources_folder());
     }
 
     public function test_createfromoutage() {
@@ -63,18 +60,16 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     public function test_createfromhtml() {
         $html = "<!DOCTYPE html>\n<html><head><title>Title</title></head><body>Content</body></html>";
-        maintenance_static_page::create_from_html($html);
-        $generated = trim(file_get_contents(maintenance_static_page::get_template_file()));
-        self::assertSame($html, $generated);
+        self::assertSame($html, $this->generated_page_html($html));
     }
 
     public function test_removescripttags() {
         $html = "<!DOCTYPE html>\n".
                 '<html><head><script type="text/javascript" src="http://xyz"></script><title>Title</title></head>'.
                 '<body>Content<script> a < 5; x > 3</script></body></html>';
-        maintenance_static_page::create_from_html($html);
+        maintenance_static_page::create_from_html($html)->generate();
 
-        $generated = file_get_contents(maintenance_static_page::get_template_file());
+        $generated = $this->generated_page_html($html);
         self::assertNotContains('<script', $generated);
     }
 
@@ -85,8 +80,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $html = "<!DOCTYPE html>\n".
                 '<html><head><link href="'.$link1.'" rel="stylesheet" /><title>Title</title></head>'.
                 '<body><link rel="stylesheet" href="'.$link2.'">Content<link rel="stylesheet" href="'.$link3.'"></body></html>';
-        maintenance_static_page::create_from_html($html);
-        $generated = file_get_contents(maintenance_static_page::get_template_file());
+        $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
         self::assertNotContains($link1, $generated);
@@ -101,8 +95,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $html = "<!DOCTYPE html>\n".
                 '<html><head><img src="'.$link1.'" alt="an image" /><title>Title</title></head>'.
                 '<body><img src="'.$link2.'">Content<img src="'.$link3.'" /></body></html>';
-        maintenance_static_page::create_from_html($html);
-        $generated = file_get_contents(maintenance_static_page::get_template_file());
+        $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
         self::assertNotContains($link1, $generated);
@@ -115,10 +108,30 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $html = "<!DOCTYPE html>\n".
                 '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
                 '<body>Content</body></html>';
-        maintenance_static_page::create_from_html($html);
-        $generated = file_get_contents(maintenance_static_page::get_template_file());
+        $generated = $this->generated_page_html($html);
 
         self::assertNotContains($link, $generated);
         self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
+    }
+
+    public function test_previewpath() {
+        $link = (string)new moodle_url('/favicon.jpg');
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
+                '<body>Content</body></html>';
+        $page = maintenance_static_page::create_from_html($html);
+        $page->set_preview(true);
+        $page->generate();
+        $generated = trim(file_get_contents($page->get_template_file()));
+
+        self::assertNotContains($link, $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=preview%2F', $generated);
+    }
+
+    private function generated_page_html($html) {
+        $page = maintenance_static_page::create_from_html($html);
+        $page->generate();
+        $generated = trim(file_get_contents($page->get_template_file()));
+        return $generated;
     }
 }

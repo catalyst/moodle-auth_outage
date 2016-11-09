@@ -27,31 +27,14 @@
  * @var stdClass $CFG
  */
 
-if (!isset($_GET['file'])) {
+// File should have at least 3 characters as we will check the extension below.
+if (!isset($_GET['file']) || (strlen($_GET['file']) < 3)) {
     http_response_code(400);
     die('Missing file parameter.');
 }
 
-define('NO_DEBUG_DISPLAY', true);
-define('ABORT_AFTER_CONFIG', true);
-require_once(__DIR__.'/../../config.php');
-
-// We are not using any external libraries or references in this file (cli maintenance is active).
-// If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
-$resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
-
-// Protect against path traversal attacks.
-$file = $resourcedir.'/'.$_GET['file'];
-if (realpath($file) !== $file) {
-    // @codingStandardsIgnoreStart
-    error_log('Invalid file: '.$_GET['file']);
-    // @codingStandardsIgnoreEnd
-    http_response_code(404);
-    die('Not found.');
-}
-
 // Detect type, we only support css or PNG images.
-header('Content-Type: '.(substr($file, -3) == 'css' ? 'text/css' : 'image/png'));
+header('Content-Type: '.(substr($_GET['file'], -3) == 'css' ? 'text/css' : 'image/png'));
 
 // Use cache.
 $lifetime = 60 * 60 * 24; // 1 day.
@@ -60,4 +43,10 @@ header('Pragma: ');
 header('Cache-Control: public, max-age='.$lifetime);
 header('Accept-Ranges: none');
 
-readfile($file);
+define('AUTH_OUTAGE_FILE', $_GET['file']);
+require_once(__DIR__.'/../../config.php');
+
+// We should never reach here if config.php and auth/outage/bootstrap.php intercepted it correctly.
+debugging('Your config.php is not properly configured for auth/outage plugin. '.
+          'Please check the plugin settings for information.');
+exit(1);

@@ -224,32 +224,29 @@ class outagelib {
         $code = <<<'EOT'
 <?php
 if (time() >= {{STARTTIME}}) {
-    if (!defined('CLI_SCRIPT') || !CLI_SCRIPT) {
-        define('MOODLE_INTERNAL', true);
-        require_once($CFG->dirroot.'/lib/moodlelib.php');
-        if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
-            header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
-            header('Status: 503 Moodle under maintenance');
-            header('Retry-After: 300');
-            header('Content-type: text/html; charset=utf-8');
-            header('X-UA-Compatible: IE=edge');
-            header('Cache-Control: no-store, no-cache, must-revalidate');
-            header('Cache-Control: post-check=0, pre-check=0', false);
-            header('Pragma: no-cache');
-            header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-            header('Accept-Ranges: none');
-            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
-            if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
-                require($CFG->dataroot.'/climaintenance.template.html');
-                exit(0);
-            }
-            // The file above should always exist, but just in case...
-            die('We are currently under maintentance, please try again later.');
+    define('MOODLE_INTERNAL', true);
+    require_once($CFG->dirroot.'/lib/moodlelib.php');
+    if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
+        header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
+        header('Status: 503 Moodle under maintenance');
+        header('Retry-After: 300');
+        header('Content-type: text/html; charset=utf-8');
+        header('X-UA-Compatible: IE=edge');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Cache-Control: post-check=0, pre-check=0', false);
+        header('Pragma: no-cache');
+        header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Accept-Ranges: none');
+        echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+        if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
+            require($CFG->dataroot.'/climaintenance.template.html');
+            exit(0);
         }
+        // The file above should always exist, but just in case...
+        die('We are currently under maintentance, please try again later.');
     }
 }
-$CFG->auth_outage_check = 1;
 EOT;
         $search = ['{{STARTTIME}}', '{{ALLOWEDIPS}}', '{{YOURIP}}'];
         $replace = [$starttime, $allowedips, getremoteaddr('n/a')];

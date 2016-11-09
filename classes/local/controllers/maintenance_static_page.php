@@ -133,7 +133,7 @@ class maintenance_static_page {
     public function get_resources_folder() {
         global $CFG;
 
-        // If you change the path, also change file auth/outage/file.php as it does not use this reference.
+        // If you change the path, also change file auth/outage/bootstrap.php as it does not use this reference.
         $dir = $CFG->dataroot.'/auth_outage/climaintenance';
 
         if ($this->preview) {

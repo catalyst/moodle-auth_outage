@@ -86,7 +86,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $allowedips = outagelib::get_config()->allowedips;
     $description = '';
 
-    if (!isset($CFG->auth_outage_check) || !$CFG->auth_outage_check) {
+    if (!isset($CFG->auth_outage_check) || ($CFG->auth_outage_check != 2)) {
         $description .= $OUTPUT->notification(get_string('allowedipsnoconfig', 'auth_outage'), 'notifyfailure');
     }
 

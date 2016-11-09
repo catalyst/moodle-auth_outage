@@ -43,7 +43,27 @@ header('Pragma: ');
 header('Cache-Control: public, max-age='.$lifetime);
 header('Accept-Ranges: none');
 
-define('AUTH_OUTAGE_FILE', $_GET['file']);
+$auth_outage_bootstrap_callback = function () {
+    global $CFG;
+
+    // We are not using any external libraries or references in this file (cli maintenance is active).
+    // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
+    $resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
+
+    // Protect against path traversal attacks.
+    $file = $resourcedir.'/'.$_GET['file'];
+    if (realpath($file) !== $file) {
+        // @codingStandardsIgnoreStart
+        error_log('Invalid file: '.$_GET['file']);
+        // @codingStandardsIgnoreEnd
+        http_response_code(404);
+        die('Not found.');
+    }
+
+    readfile($file);
+    exit(0);
+};
+
 require_once(__DIR__.'/../../config.php');
 
 // We should never reach here if config.php and auth/outage/bootstrap.php intercepted it correctly.

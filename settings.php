@@ -21,6 +21,11 @@
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @var stdClass $CFG
+ * @var admin_settingpage $settings
+ * @var bootstrap_renderer $OUTPUT
+ * @var admin_root $ADMIN
  */
 use auth_outage\local\outagelib;
 
@@ -86,7 +91,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $allowedips = outagelib::get_config()->allowedips;
     $description = '';
 
-    if (!isset($CFG->auth_outage_check) || ($CFG->auth_outage_check != 2)) {
+    if (!isset($CFG->auth_outage_check) || !$CFG->auth_outage_check) {
         $description .= $OUTPUT->notification(get_string('allowedipsnoconfig', 'auth_outage'), 'notifyfailure');
     }
 

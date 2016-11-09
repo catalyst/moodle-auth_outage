@@ -83,7 +83,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body><link rel="stylesheet" href="'.$link2.'">Content<link rel="stylesheet" href="'.$link3.'"></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($link1, $generated);
         self::assertNotContains($link2, $generated);
         self::assertContains($link3, $generated);
@@ -98,7 +98,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body><img src="'.$link2.'">Content<img src="'.$link3.'" /></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($link1, $generated);
         self::assertNotContains($link2, $generated);
         self::assertContains($link3, $generated);
@@ -112,7 +112,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = $this->generated_page_html($html);
 
         self::assertNotContains($link, $generated);
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
     }
 
     public function test_previewpath() {
@@ -126,7 +126,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = trim(file_get_contents($page->get_template_file()));
 
         self::assertNotContains($link, $generated);
-        self::assertContains('http://www.example.com/moodle/auth/outage/maintenance.php?file=preview%2F', $generated);
+        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
     }
 
     /**

@@ -17,7 +17,7 @@
  * This file should run before config.php requires '/lib/setup.php'.
  *
  * Main purpose of this file:
- * 1) Allow to 'file.php' to know where dataroot is located and serve files during a maintenance.
+ * 1) Create a hook allowing other scripts to run before Moodle loads, but after the $CFG is defined.
  * 2) Allow to 'pretend' maintenance mode for non-allowed IPs by calling 'climaintenance.php'.
  * 3) Set a flag that this file was loaded so we can warn users if this config is not working.
  *
@@ -34,24 +34,14 @@ if (defined('CLI_SCRIPT') && CLI_SCRIPT) {
     return;
 }
 
-// 1) Are we fetching a file? Non-allowed IPs can still see them.
-if (defined('AUTH_OUTAGE_FILE')) {
-    // We are not using any external libraries or references in this file (cli maintenance is active).
-    // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
-    $resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
+// We need the CFG->dataroot, if not set yet this script is called too early in config.php file.
+if (!isset($CFG->dataroot)) {
+    return;
+}
 
-    // Protect against path traversal attacks.
-    $file = $resourcedir.'/'.$_GET['file'];
-    if (realpath($file) !== $file) {
-        // @codingStandardsIgnoreStart
-        error_log('Invalid file: '.$_GET['file']);
-        // @codingStandardsIgnoreEnd
-        http_response_code(404);
-        die('Not found.');
-    }
-
-    readfile($file);
-    exit(0);
+// 1) Check and run the hook.
+if (isset($auth_outage_callback) && is_callable($auth_outage_callback)) {
+    $auth_outage_bootstrap_callback();
 }
 
 // 2) Check for allowed IPs during outages.
@@ -61,4 +51,4 @@ if (file_exists($CFG->dataroot.'/climaintenance.php')) {
 }
 
 // 3) Set flag this file was loaded.
-$CFG->auth_outage_check = 2;
+$CFG->auth_outage_check = 1;

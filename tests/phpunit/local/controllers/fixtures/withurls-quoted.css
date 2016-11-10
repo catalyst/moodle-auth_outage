@@ -1,0 +1,7 @@
+a {
+    font-size: 200%;
+}
+
+div {
+    background-image: url('/auth/outage/tests/phpunit/local/controllers/fixtures/catalyst.png');
+}

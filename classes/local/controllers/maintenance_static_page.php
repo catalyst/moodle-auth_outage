@@ -291,12 +291,12 @@ class maintenance_static_page {
             if (($rel != 'stylesheet') || ($href == '')) {
                 continue;
             }
-            $filename = $this->save_url_file($href);
-            if (is_null($filename)) {
+            $saved = $this->save_url_file($href);
+            if (is_null($saved['url'])) {
                 $url = $href; // Skipped, use original URL.
             } else {
-                $this->update_link_stylesheet_parse($filename);
-                $url = $this->get_url_for_file($filename);
+                $this->update_link_stylesheet_parse($saved['file'], dirname($href));
+                $url = $this->get_url_for_file($saved['url']);
             }
             $link->setAttribute('href', $url);
         }
@@ -306,7 +306,31 @@ class maintenance_static_page {
      * Checks for urls inside filename.
      * @param string $filename
      */
-    private function update_link_stylesheet_parse($filename) {
+    private function update_link_stylesheet_parse($filename, $baseref) {
+        global $CFG;
+
+        $contents = file_get_contents($filename);
+        if (!preg_match_all('#url\([\'"]?([^\'"\)]+)#', $contents, $matches)) {
+            return;
+        }
+        foreach ($matches[1] as $original_url) {
+            // Allow incomplete URLs in CSS, assume it is from moodle root.
+            if (self::is_url($original_url)) {
+                $full_url = $original_url;
+            } else if ($original_url[0] == '/') {
+                $full_url = $CFG->wwwroot.$original_url;
+            } else {
+                $full_url = $baseref.'/'.$original_url;
+            }
+
+            $saved = $this->save_url_file($full_url);
+            if (!is_null($saved)) {
+                $final_url = $this->get_url_for_file($saved['url']);
+                $contents = str_replace($original_url, $final_url, $contents);
+            }
+        }
+
+        file_put_contents($filename, $contents);
     }
 
     /**
@@ -346,11 +370,11 @@ class maintenance_static_page {
      * @return string Output URL.
      */
     private function generate_file_url($url) {
-        $filename = $this->save_url_file($url);
-        if (is_null($filename)) {
+        $saved = $this->save_url_file($url);
+        if (is_null($saved)) {
             return $url; // Skipped, use original URL.
         }
-        return $this->get_url_for_file($filename);
+        return $this->get_url_for_file($saved['url']);
     }
 
     /**
@@ -387,13 +411,14 @@ class maintenance_static_page {
         $data = self::file_get_data($url);
 
         $mime = trim(base64_encode($data['mime']), '=');
-        $filename = sha1($data['contents']).'.'.$mime;
-        $filepath = $this->get_resources_folder().'/'.$filename;
+        $url = sha1($data['contents']).'.'.$mime;
+        $filepath = $this->get_resources_folder().'/'.$url;
         file_put_contents($filepath, $data['contents']);
 
         if ($this->preview) {
-            $filename = 'preview/'.$filename;
+            $url = 'preview/'.$url;
         }
-        return $filename;
+
+        return ['file' => $filepath, 'url' => $url];
     }
 }

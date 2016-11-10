@@ -87,6 +87,51 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertContains($external_css_link, $generated);
     }
 
+    public function test_updatelinkstylesheet_urls() {
+        $local_css_link = $this->get_fixture_path('withurls.css');
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<body>Content</body></html>';
+        $page = maintenance_static_page::create_from_html($html);
+        $page->generate();
+
+        // Check for css file.
+        self::assertFileExists($page->get_resources_folder().'/622ef6e83acfcb274cdf37bdb3bffa0923f9a7ad.dGV4dC9wbGFpbg');
+
+        // Check for catalyst.png file referenced in url(..) of css.
+        self::assertFileExists($page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+    }
+
+    public function test_updatelinkstylesheet_urls_quoted() {
+        $local_css_link = $this->get_fixture_path('withurls-quoted.css');
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<body>Content</body></html>';
+        $page = maintenance_static_page::create_from_html($html);
+        $page->generate();
+
+        // Check for css file.
+        self::assertFileExists($page->get_resources_folder().'/1d84b6d321fef780237f84834b7316c079221a31.dGV4dC9wbGFpbg');
+
+        // Check for catalyst.png file referenced in url(..) of css.
+        self::assertFileExists($page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+    }
+
+    public function test_updatelinkstylesheet_urls_subdir() {
+        $local_css_link = $this->get_fixture_path('subdir/withurls-subdir.css');
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<body>Content</body></html>';
+        $page = maintenance_static_page::create_from_html($html);
+        $page->generate();
+
+        // Check for css file.
+        self::assertFileExists($page->get_resources_folder().'/4ea71b83ab326a15d0d784b34fcda702b6a7427d.dGV4dC9wbGFpbg');
+
+        // Check for file referenced in url(..) of css.
+        self::assertFileExists($page->get_resources_folder().'/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');
+    }
+
     public function test_updateimages() {
         $local_img_link = $this->get_fixture_path('catalyst.png');
         $external_img_link = 'http://google.com/coolstyle.css';
@@ -167,9 +212,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<html><head><title>Title</title></head>'.
                 '<body>Content<img src="'.$link.'" /></body></html>';
         $page = maintenance_static_page::create_from_html($html);
-        $page->set_preview(true);
         $page->generate();
-        $generated = trim(file_get_contents($page->get_template_file()));
 
         // This checks if content is correct and mime type is correct from the encoded name.
         $file = $page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';

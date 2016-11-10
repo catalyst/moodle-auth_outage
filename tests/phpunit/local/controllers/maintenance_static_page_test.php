@@ -24,6 +24,7 @@
  */
 
 use auth_outage\local\controllers\maintenance_static_page;
+use auth_outage\local\controllers\maintenance_static_page_io;
 use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
@@ -42,17 +43,17 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     public function test_templatefile() {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
-        self::assertSame($CFG->dataroot.'/climaintenance.template.html', $page->get_template_file());
-        $page->set_preview(true);
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html', $page->get_template_file());
+        self::assertSame($CFG->dataroot.'/climaintenance.template.html', $page->get_io()->get_template_file());
+        $page->get_io()->set_preview(true);
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html', $page->get_io()->get_template_file());
     }
 
     public function test_resourcesfolder() {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance', $page->get_resources_folder());
-        $page->set_preview(true);
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview', $page->get_resources_folder());
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance', $page->get_io()->get_resources_folder());
+        $page->get_io()->set_preview(true);
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview', $page->get_io()->get_resources_folder());
     }
 
     public function test_createfromoutage() {
@@ -96,10 +97,10 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_resources_folder().'/622ef6e83acfcb274cdf37bdb3bffa0923f9a7ad.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/622ef6e83acfcb274cdf37bdb3bffa0923f9a7ad.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
-        self::assertFileExists($page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
     }
 
     public function test_updatelinkstylesheet_urls_quoted() {
@@ -111,10 +112,10 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_resources_folder().'/1d84b6d321fef780237f84834b7316c079221a31.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/1d84b6d321fef780237f84834b7316c079221a31.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
-        self::assertFileExists($page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
     }
 
     public function test_updatelinkstylesheet_urls_subdir() {
@@ -126,10 +127,10 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_resources_folder().'/4ea71b83ab326a15d0d784b34fcda702b6a7427d.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/4ea71b83ab326a15d0d784b34fcda702b6a7427d.dGV4dC9wbGFpbg');
 
         // Check for file referenced in url(..) of css.
-        self::assertFileExists($page->get_resources_folder().'/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');
     }
 
     public function test_updateimages() {
@@ -162,9 +163,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
-        $page->set_preview(true);
+        $page->get_io()->set_preview(true);
         $page->generate();
-        $generated = trim(file_get_contents($page->get_template_file()));
+        $generated = trim(file_get_contents($page->get_io()->get_template_file()));
 
         self::assertNotContains($link, $generated);
         self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
@@ -178,7 +179,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     private function generated_page_html($html) {
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
-        $generated = trim(file_get_contents($page->get_template_file()));
+        $generated = trim(file_get_contents($page->get_io()->get_template_file()));
         return $generated;
     }
 
@@ -215,7 +216,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // This checks if content is correct and mime type is correct from the encoded name.
-        $file = $page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';
+        $file = $page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';
         self::assertFileExists($file);
 
         // We can still assert the contents really match, not just the hash.
@@ -231,5 +232,49 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
      */
     private function get_fixture_path($file) {
         return (string)new moodle_url('/auth/outage/tests/phpunit/local/controllers/fixtures/'.$file);
+    }
+
+    public function test_invalid_string_saving_template_empty() {
+        $io = new maintenance_static_page_io();
+        $this->set_expected_exception('coding_exception');
+        $io->save_template_file('');
+    }
+
+    public function test_invalid_string_saving_template_nostring() {
+        $io = new maintenance_static_page_io();
+        $this->set_expected_exception('coding_exception');
+        $io->save_template_file(50);
+    }
+
+    public function test_get_url_for_file() {
+        $io = new maintenance_static_page_io();
+        self::assertSame('http://www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
+    }
+
+    public function test_is_url() {
+        self::assertTrue(maintenance_static_page_io::is_url('http://catalyst.net.nz'));
+        self::assertTrue(maintenance_static_page_io::is_url('https://www.catalyst-au.net/'));
+        self::assertFalse(maintenance_static_page_io::is_url('/homepage'));
+        self::assertFalse(maintenance_static_page_io::is_url('file://homepage'));
+    }
+
+    public function test_file_get_data() {
+        $file = __DIR__.'/fixtures/catalyst.png';
+        $found = maintenance_static_page_io::file_get_data($file);
+        self::assertSame(file_get_contents($file), $found['contents']);
+        self::assertSame('image/png', $found['mime']);
+    }
+
+    public function test_file_get_data_invalidfile() {
+        $found = maintenance_static_page_io::file_get_data(__DIR__.'/fixtures/invalidfile');
+        self::assertSame('', $found['contents']);
+        self::assertSame('unknown', $found['mime']);
+        self::assertCount(1, phpunit_util::get_debugging_messages());
+        phpunit_util::reset_debugging();
+    }
+
+    public function test_file_get_data_invalidfilename() {
+        $this->set_expected_exception('coding_exception');
+        maintenance_static_page_io::file_get_data(200);
     }
 }

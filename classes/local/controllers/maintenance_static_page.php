@@ -146,20 +146,20 @@ class maintenance_static_page {
      * Generates the page.
      */
     public function generate() {
-        self::cleanup();
+        $this->cleanup();
 
         if (!is_null($this->dom)) {
-            self::remove_script_tags();
-            self::update_link_stylesheet();
-            self::update_link_favicon();
-            self::update_images();
+            $this->remove_script_tags();
+            $this->update_link_stylesheet();
+            $this->update_link_favicon();
+            $this->update_images();
 
             $html = $this->dom->saveHTML();
             if (trim($html) == '') {
                 // Should never happen, but just in case...
                 throw new invalid_state_exception('Sanity check failed, $html is empty.');
             }
-            file_put_contents(self::get_template_file(), $html);
+            file_put_contents($this->get_template_file(), $html);
         }
     }
 
@@ -194,7 +194,7 @@ class maintenance_static_page {
     private function cleanup() {
         $resources = $this->get_resources_folder();
         if (is_dir($resources)) {
-            self::delete_directory_recursively($resources);
+            $this->delete_directory_recursively($resources);
         }
 
         $template = $this->get_template_file();
@@ -216,7 +216,7 @@ class maintenance_static_page {
     private function delete_directory_recursively($dir) {
         // It should never come from user, but protect against possible attacks anyway.
         $dir = realpath($dir);
-        $safedir = self::get_resources_folder();
+        $safedir = $this->get_resources_folder();
         if (substr($dir, 0, strlen($safedir)) !== $safedir) {
             throw new invalid_parameter_exception('Unsafe to delete: '.$dir);
         }
@@ -235,7 +235,7 @@ class maintenance_static_page {
                 continue;
             }
             if (is_dir($file)) {
-                self::delete_directory_recursively($file);
+                $this->delete_directory_recursively($file);
                 continue;
             }
             throw new coding_exception('Not a file or directory: '.$file);
@@ -255,7 +255,13 @@ class maintenance_static_page {
             if (($rel != 'stylesheet') || ($href == '')) {
                 continue;
             }
-            $link->setAttribute('href', self::prepare_url($href, 'css'));
+            $filename = $this->save_url_file($href, 'css');
+            if (is_null($filename)) {
+                $url = $href; // Skipped, use original URL.
+            } else {
+                $url = $this->get_url_for_file($filename);
+            }
+            $link->setAttribute('href', $url);
         }
     }
 
@@ -271,7 +277,7 @@ class maintenance_static_page {
             if (($rel != 'shortcut icon') || ($href == '')) {
                 continue;
             }
-            $link->setAttribute('href', self::prepare_url($href, 'png')); // Works for most image formats.
+            $link->setAttribute('href', $this->generate_file_url($href, 'png')); // Works for most image formats.
         }
     }
 
@@ -286,7 +292,7 @@ class maintenance_static_page {
             if ($src == '') {
                 continue;
             }
-            $link->setAttribute('src', self::prepare_url($src, 'png')); // Works for most image formats.
+            $link->setAttribute('src', $this->generate_file_url($src, 'png')); // Works for most image formats.
         }
     }
 
@@ -296,16 +302,39 @@ class maintenance_static_page {
      * @param string $type Type of file.
      * @return string Output URL.
      */
-    private function prepare_url($url, $type) {
+    private function generate_file_url($url, $type) {
+        $filename = $this->save_url_file($url, $type);
+        if (is_null($filename)) {
+            return $url; // Skipped, use original URL.
+        }
+        return $this->get_url_for_file($filename);
+    }
+
+    /**
+     * Creates a URL for a resource file.
+     * @param string $filename
+     * @return string
+     */
+    private function get_url_for_file($filename) {
+        return (string)new moodle_url('/auth/outage/file.php', ['file' => $filename]);
+    }
+
+    /**
+     * Saves the content of the URL into a file, returning the local filename.
+     * @param string $url Input URL.
+     * @param string $type Type of file.
+     * @return string|null Output filename or null if skipped.
+     */
+    private function save_url_file($url, $type) {
         global $CFG;
 
         if (!preg_match('#^http(s)?://#', $url)) {
             debugging('Found a relative url ('.$url.') -- is it using moodle_url()?');
-            return $url; // Leave hardcoded URLs as it is.
+            return null; // Leave hardcoded URLs as it is.
         }
 
         if (substr($url, 0, strlen($CFG->wwwroot)) !== $CFG->wwwroot) {
-            return $url; // External URL, leave it.
+            return null; // External URL, leave it.
         }
 
         // PHPUnit will use www.example.com as wwwroot and we don't to copy the file.
@@ -315,13 +344,12 @@ class maintenance_static_page {
             $contents = file_get_contents($url);
         }
         $filename = sha1($contents).'.'.$type;
-        $filepath = self::get_resources_folder().'/'.$filename;
+        $filepath = $this->get_resources_folder().'/'.$filename;
         file_put_contents($filepath, $contents);
 
         if ($this->preview) {
             $filename = 'preview/'.$filename;
         }
-        $url = (string)new moodle_url('/auth/outage/file.php', ['file' => $filename]);
-        return $url;
+        return $filename;
     }
 }

@@ -40,7 +40,7 @@ if (!isset($CFG->dataroot)) {
 }
 
 // 1) Check and run the hook.
-if (isset($auth_outage_callback) && is_callable($auth_outage_callback)) {
+if (isset($auth_outage_bootstrap_callback) && is_callable($auth_outage_bootstrap_callback)) {
     $auth_outage_bootstrap_callback();
 }
 

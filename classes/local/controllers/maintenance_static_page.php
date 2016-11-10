@@ -61,7 +61,7 @@ class maintenance_static_page {
         } else if (PHPUNIT_TEST) {
             $html = '<html></html>';
         } else {
-            $html = file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+            $html = self::file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
         }
 
         return self::create_from_html($html);
@@ -90,6 +90,20 @@ class maintenance_static_page {
         }
 
         return new maintenance_static_page($dom);
+    }
+
+    /**
+     * Tries to get the contents of the file or URL.
+     * @param string $file File to get.
+     * @return string Contents of $file or an empty string if failed.
+     */
+    private static function file_get_contents($file) {
+        $contents = @file_get_contents($file);
+        if ($contents === false) {
+            debugging('Cannot fetch: '.$file);
+            return ''; // Better a broken link than halting the generation.
+        }
+        return $contents;
     }
 
     /** @var DOMDocument */
@@ -259,10 +273,18 @@ class maintenance_static_page {
             if (is_null($filename)) {
                 $url = $href; // Skipped, use original URL.
             } else {
+                $this->update_link_stylesheet_parse($filename);
                 $url = $this->get_url_for_file($filename);
             }
             $link->setAttribute('href', $url);
         }
+    }
+
+    /**
+     * Checks for urls inside filename.
+     * @param string $filename
+     */
+    private function update_link_stylesheet_parse($filename) {
     }
 
     /**
@@ -337,12 +359,12 @@ class maintenance_static_page {
             return null; // External URL, leave it.
         }
 
-        // PHPUnit will use www.example.com as wwwroot and we don't to copy the file.
+        // PHPUnit does not expose a web interface to fetch, point to local file instead.
         if (PHPUNIT_TEST) {
-            $contents = '';
-        } else {
-            $contents = file_get_contents($url);
+            $url = str_replace($CFG->wwwroot, $CFG->dirroot, $url);
         }
+
+        $contents = self::file_get_contents($url);
         $filename = sha1($contents).'.'.$type;
         $filepath = $this->get_resources_folder().'/'.$filename;
         file_put_contents($filepath, $contents);

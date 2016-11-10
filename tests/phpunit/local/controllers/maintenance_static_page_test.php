@@ -75,37 +75,33 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_updatelinkstylesheet() {
-        $link1 = (string)new moodle_url('/example.css');
-        $link2 = (string)new moodle_url('/auth/outage/stylesheet');
-        $link3 = 'http://google.com/coolstyle.css';
+        $local_css_link = $this->get_fixture_path('simple.css');
+        $external_css_link = 'http://google.com/coolstuff.css';
         $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$link1.'" rel="stylesheet" /><title>Title</title></head>'.
-                '<body><link rel="stylesheet" href="'.$link2.'">Content<link rel="stylesheet" href="'.$link3.'"></body></html>';
+                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<body>Content<link rel="stylesheet" href="'.$external_css_link.'"></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($link1, $generated);
-        self::assertNotContains($link2, $generated);
-        self::assertContains($link3, $generated);
+        self::assertNotContains($local_css_link, $generated);
+        self::assertContains($external_css_link, $generated);
     }
 
     public function test_updateimages() {
-        $link1 = (string)new moodle_url('/example.png');
-        $link2 = (string)new moodle_url('/auth/outage/imagefile');
-        $link3 = 'http://google.com/coolstyle.css';
+        $local_img_link = $this->get_fixture_path('catalyst.png');
+        $external_img_link = 'http://google.com/coolstyle.css';
         $html = "<!DOCTYPE html>\n".
-                '<html><head><img src="'.$link1.'" alt="an image" /><title>Title</title></head>'.
-                '<body><img src="'.$link2.'">Content<img src="'.$link3.'" /></body></html>';
+                '<html><head><title>Title</title></head>'.
+                '<body><img src="'.$local_img_link.'">Content<img src="'.$external_img_link.'" /></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($link1, $generated);
-        self::assertNotContains($link2, $generated);
-        self::assertContains($link3, $generated);
+        self::assertNotContains($local_img_link, $generated);
+        self::assertContains($external_img_link, $generated);
     }
 
     public function test_updatelinkfavicon() {
-        $link = (string)new moodle_url('/favicon.jpg');
+        $link = $this->get_fixture_path('catalyst.png');
         $html = "<!DOCTYPE html>\n".
                 '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
                 '<body>Content</body></html>';
@@ -116,7 +112,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_previewpath() {
-        $link = (string)new moodle_url('/favicon.jpg');
+        $link = $this->get_fixture_path('catalyst.png');
         $html = "<!DOCTYPE html>\n".
                 '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
                 '<body>Content</body></html>';
@@ -161,5 +157,14 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertFileExists($file);
         maintenance_static_page::create_from_outage(null)->generate();
         self::assertFileNotExists($file);
+    }
+
+    /**
+     * Gets a fixture file for this test case.
+     * @param $file
+     * @return string
+     */
+    private function get_fixture_path($file) {
+        return (string)new moodle_url('/auth/outage/tests/phpunit/local/controllers/fixtures/'.$file);
     }
 }

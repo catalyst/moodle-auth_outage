@@ -28,13 +28,20 @@
  */
 
 // File should have at least 3 characters as we will check the extension below.
-if (!isset($_GET['file']) || (strlen($_GET['file']) < 3)) {
+if (!isset($_GET['file'])) {
     http_response_code(400);
     die('Missing file parameter.');
 }
 
+$parts = explode('.', $_GET['file']);
+if (count($parts) != 2) {
+    http_response_code(400);
+    die('Invalid file requested.');
+}
+$mime = base64_decode($parts[1]);
+
 // Detect type, we only support css or PNG images.
-header('Content-Type: '.(substr($_GET['file'], -3) == 'css' ? 'text/css' : 'image/png'));
+header('Content-Type: '.$mime);
 
 // Use cache.
 $lifetime = 60 * 60 * 24; // 1 day.

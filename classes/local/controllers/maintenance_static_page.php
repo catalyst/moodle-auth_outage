@@ -28,6 +28,7 @@ namespace auth_outage\local\controllers;
 use auth_outage\local\outage;
 use coding_exception;
 use DOMDocument;
+use finfo;
 use invalid_parameter_exception;
 use invalid_state_exception;
 use moodle_url;
@@ -61,7 +62,8 @@ class maintenance_static_page {
         } else if (PHPUNIT_TEST) {
             $html = '<html></html>';
         } else {
-            $html = self::file_get_contents($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+            $data = self::file_get_data($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+            $html = $data['contents'];
         }
 
         return self::create_from_html($html);
@@ -97,13 +99,33 @@ class maintenance_static_page {
      * @param string $file File to get.
      * @return string Contents of $file or an empty string if failed.
      */
-    private static function file_get_contents($file) {
-        $contents = @file_get_contents($file);
+    private static function file_get_data($file) {
+        if (self::is_url($file)) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $file);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $contents = curl_exec($curl);
+            $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+            curl_close($curl);
+        } else {
+            $contents = @file_get_contents($file);
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($contents); // Not perfect, but try guessing it.
+        }
         if ($contents === false) {
             debugging('Cannot fetch: '.$file);
-            return ''; // Better a broken link than halting the generation.
+            $contents = '';
+            $mime = 'unknown';
         }
-        return $contents;
+        return ['contents' => $contents, 'mime' => $mime];
+    }
+
+    /**
+     * Checks if the given string starts with "http://" or "https://".
+     * @param $url
+     * @return bool
+     */
+    private static function is_url($url) {
+        return (bool)preg_match('#^http(s)?://#', $url);
     }
 
     /** @var DOMDocument */
@@ -269,7 +291,7 @@ class maintenance_static_page {
             if (($rel != 'stylesheet') || ($href == '')) {
                 continue;
             }
-            $filename = $this->save_url_file($href, 'css');
+            $filename = $this->save_url_file($href);
             if (is_null($filename)) {
                 $url = $href; // Skipped, use original URL.
             } else {
@@ -299,7 +321,7 @@ class maintenance_static_page {
             if (($rel != 'shortcut icon') || ($href == '')) {
                 continue;
             }
-            $link->setAttribute('href', $this->generate_file_url($href, 'png')); // Works for most image formats.
+            $link->setAttribute('href', $this->generate_file_url($href)); // Works for most image formats.
         }
     }
 
@@ -314,18 +336,17 @@ class maintenance_static_page {
             if ($src == '') {
                 continue;
             }
-            $link->setAttribute('src', $this->generate_file_url($src, 'png')); // Works for most image formats.
+            $link->setAttribute('src', $this->generate_file_url($src)); // Works for most image formats.
         }
     }
 
     /**
      * Saves the content of the URL into a file, returning the new URL.
      * @param string $url Input URL.
-     * @param string $type Type of file.
      * @return string Output URL.
      */
-    private function generate_file_url($url, $type) {
-        $filename = $this->save_url_file($url, $type);
+    private function generate_file_url($url) {
+        $filename = $this->save_url_file($url);
         if (is_null($filename)) {
             return $url; // Skipped, use original URL.
         }
@@ -344,13 +365,12 @@ class maintenance_static_page {
     /**
      * Saves the content of the URL into a file, returning the local filename.
      * @param string $url Input URL.
-     * @param string $type Type of file.
      * @return string|null Output filename or null if skipped.
      */
-    private function save_url_file($url, $type) {
+    private function save_url_file($url) {
         global $CFG;
 
-        if (!preg_match('#^http(s)?://#', $url)) {
+        if (!self::is_url($url)) {
             debugging('Found a relative url ('.$url.') -- is it using moodle_url()?');
             return null; // Leave hardcoded URLs as it is.
         }
@@ -364,10 +384,12 @@ class maintenance_static_page {
             $url = str_replace($CFG->wwwroot, $CFG->dirroot, $url);
         }
 
-        $contents = self::file_get_contents($url);
-        $filename = sha1($contents).'.'.$type;
+        $data = self::file_get_data($url);
+
+        $mime = trim(base64_encode($data['mime']), '=');
+        $filename = sha1($data['contents']).'.'.$mime;
         $filepath = $this->get_resources_folder().'/'.$filename;
-        file_put_contents($filepath, $contents);
+        file_put_contents($filepath, $data['contents']);
 
         if ($this->preview) {
             $filename = 'preview/'.$filename;

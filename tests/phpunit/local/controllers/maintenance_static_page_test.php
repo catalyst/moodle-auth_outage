@@ -159,6 +159,28 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertFileNotExists($file);
     }
 
+    public function test_createdfile() {
+        global $CFG;
+
+        $link = $this->get_fixture_path('catalyst.png');
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<img src="'.$link.'" /></body></html>';
+        $page = maintenance_static_page::create_from_html($html);
+        $page->set_preview(true);
+        $page->generate();
+        $generated = trim(file_get_contents($page->get_template_file()));
+
+        // This checks if content is correct and mime type is correct from the encoded name.
+        $file = $page->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';
+        self::assertFileExists($file);
+
+        // We can still assert the contents really match, not just the hash.
+        $found = file_get_contents($file);
+        $expected = file_get_contents($CFG->dirroot.'/auth/outage/tests/phpunit/local/controllers/fixtures/catalyst.png');
+        self::assertSame($found, $expected);
+    }
+
     /**
      * Gets a fixture file for this test case.
      * @param $file

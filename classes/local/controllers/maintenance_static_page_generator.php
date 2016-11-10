@@ -116,7 +116,6 @@ class maintenance_static_page_generator {
     private function update_link_stylesheet() {
         $links = $this->dom->getElementsByTagName('link');
 
-        /** @var DOMElement $link */
         foreach ($links as $link) {
             $rel = $link->getAttribute("rel");
             $href = $link->getAttribute("href");
@@ -137,6 +136,7 @@ class maintenance_static_page_generator {
     /**
      * Checks for urls inside filename.
      * @param string $filename
+     * @param string $baseref
      */
     private function update_link_stylesheet_parse($filename, $baseref) {
         global $CFG;
@@ -145,20 +145,20 @@ class maintenance_static_page_generator {
         if (!preg_match_all('#url\([\'"]?([^\'"\)]+)#', $contents, $matches)) {
             return;
         }
-        foreach ($matches[1] as $original_url) {
+        foreach ($matches[1] as $originalurl) {
             // Allow incomplete URLs in CSS, assume it is from moodle root.
-            if (maintenance_static_page_io::is_url($original_url)) {
-                $full_url = $original_url;
-            } else if ($original_url[0] == '/') {
-                $full_url = $CFG->wwwroot.$original_url;
+            if (maintenance_static_page_io::is_url($originalurl)) {
+                $fullurl = $originalurl;
+            } else if ($originalurl[0] == '/') {
+                $fullurl = $CFG->wwwroot.$originalurl;
             } else {
-                $full_url = $baseref.'/'.$original_url;
+                $fullurl = $baseref.'/'.$originalurl;
             }
 
-            $saved = $this->io->save_url_file($full_url);
+            $saved = $this->io->save_url_file($fullurl);
             if (!is_null($saved)) {
-                $final_url = $this->io->get_url_for_file($saved['url']);
-                $contents = str_replace($original_url, $final_url, $contents);
+                $finalurl = $this->io->get_url_for_file($saved['url']);
+                $contents = str_replace($originalurl, $finalurl, $contents);
             }
         }
 
@@ -171,7 +171,6 @@ class maintenance_static_page_generator {
     private function update_link_favicon() {
         $links = $this->dom->getElementsByTagName('link');
 
-        /** @var DOMElement $link */
         foreach ($links as $link) {
             $rel = $link->getAttribute("rel");
             $href = $link->getAttribute("href");
@@ -188,7 +187,6 @@ class maintenance_static_page_generator {
     private function update_images() {
         $links = $this->dom->getElementsByTagName('img');
 
-        /** @var DOMElement $link */
         foreach ($links as $link) {
             $src = $link->getAttribute("src");
             if ($src == '') {

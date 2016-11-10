@@ -27,6 +27,10 @@
  * @var stdClass $CFG
  */
 
+// This file does not use Moodle initialization as a requirement. Supress Warning.
+define('MOODLE_INTERNAL', true);
+defined('MOODLE_INTERNAL') || die();
+
 // File should have at least 3 characters as we will check the extension below.
 if (!isset($_GET['file'])) {
     http_response_code(400);
@@ -50,7 +54,7 @@ header('Pragma: ');
 header('Cache-Control: public, max-age='.$lifetime);
 header('Accept-Ranges: none');
 
-$auth_outage_bootstrap_callback = function () {
+function auth_outage_bootstrap_callback() {
     global $CFG;
 
     // We are not using any external libraries or references in this file (cli maintenance is active).
@@ -68,12 +72,12 @@ $auth_outage_bootstrap_callback = function () {
     }
 
     readfile($file);
-    exit(0);
+    die();
 };
 
 require_once(__DIR__.'/../../config.php');
 
 // We should never reach here if config.php and auth/outage/bootstrap.php intercepted it correctly.
+// If config.php did not execute the callback function we can use the debugging function here.
 debugging('Your config.php is not properly configured for auth/outage plugin. '.
           'Please check the plugin settings for information.');
-exit(1);

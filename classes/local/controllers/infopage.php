@@ -88,6 +88,7 @@ class infopage {
     /**
      * Generates and outputs the HTML for the info page.
      * @uses    redirect
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable) $viewbag is used inside 'require'.
      */
     public function output() {
         global $PAGE, $CFG, $OUTPUT;
@@ -95,11 +96,6 @@ class infopage {
         if (is_null($this->outage)) {
             redirect(new moodle_url('/'));
         }
-
-        $viewbag = [
-            'admin' => is_siteadmin(),
-            'outage' => $this->outage,
-        ];
 
         $PAGE->set_context(context_system::instance());
         $PAGE->set_title($this->outage->get_title());
@@ -110,6 +106,10 @@ class infopage {
         outagelib::inject();
 
         echo $OUTPUT->header();
+        $viewbag = [
+            'admin' => is_siteadmin(),
+            'outage' => $this->outage,
+        ];
         require($CFG->dirroot.'/auth/outage/views/info/content.php');
 
         // Moodle 2.7 did not check for CLI mode, which was fixed later.

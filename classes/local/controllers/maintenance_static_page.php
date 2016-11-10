@@ -58,7 +58,8 @@ class maintenance_static_page {
         } else if (PHPUNIT_TEST) {
             $html = '<html></html>';
         } else {
-            $data = maintenance_static_page_io::file_get_data($CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
+            $data = maintenance_static_page_io::file_get_data(
+                $CFG->wwwroot.'/auth/outage/info.php?auth_outage_hide_warning=1&id='.$outage->id);
             $html = $data['contents'];
         }
 

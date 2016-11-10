@@ -29,6 +29,9 @@
  * @var stdClass $CFG
  */
 
+// This call is required by Moodle, but this script should have been called by config.php anyway.
+require_once(__DIR__.'/../../config.php');
+
 // This file does nothing if running from CLI.
 if (defined('CLI_SCRIPT') && CLI_SCRIPT) {
     return;
@@ -40,8 +43,8 @@ if (!isset($CFG->dataroot)) {
 }
 
 // 1) Check and run the hook.
-if (isset($auth_outage_bootstrap_callback) && is_callable($auth_outage_bootstrap_callback)) {
-    $auth_outage_bootstrap_callback();
+if (is_callable('auth_outage_bootstrap_callback')) {
+    call_user_func('auth_outage_bootstrap_callback');
 }
 
 // 2) Check for allowed IPs during outages.

@@ -45,7 +45,8 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page = maintenance_static_page::create_from_html('<html></html>');
         self::assertSame($CFG->dataroot.'/climaintenance.template.html', $page->get_io()->get_template_file());
         $page->get_io()->set_preview(true);
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html', $page->get_io()->get_template_file());
+        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html',
+            $page->get_io()->get_template_file());
     }
 
     public function test_resourcesfolder() {
@@ -76,22 +77,22 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_updatelinkstylesheet() {
-        $local_css_link = $this->get_fixture_path('simple.css');
-        $external_css_link = 'http://google.com/coolstuff.css';
+        $localcsslink = $this->get_fixture_path('simple.css');
+        $externalcsslink = 'http://google.com/coolstuff.css';
         $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
-                '<body>Content<link rel="stylesheet" href="'.$external_css_link.'"></body></html>';
+                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<body>Content<link rel="stylesheet" href="'.$externalcsslink.'"></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($local_css_link, $generated);
-        self::assertContains($external_css_link, $generated);
+        self::assertNotContains($localcsslink, $generated);
+        self::assertContains($externalcsslink, $generated);
     }
 
     public function test_updatelinkstylesheet_urls() {
-        $local_css_link = $this->get_fixture_path('withurls.css');
+        $localcsslink = $this->get_fixture_path('withurls.css');
         $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
@@ -104,9 +105,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_updatelinkstylesheet_urls_quoted() {
-        $local_css_link = $this->get_fixture_path('withurls-quoted.css');
+        $localcsslink = $this->get_fixture_path('withurls-quoted.css');
         $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
@@ -119,9 +120,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_updatelinkstylesheet_urls_subdir() {
-        $local_css_link = $this->get_fixture_path('subdir/withurls-subdir.css');
+        $localcsslink = $this->get_fixture_path('subdir/withurls-subdir.css');
         $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$local_css_link.'" rel="stylesheet" /><title>Title</title></head>'.
+                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
@@ -134,16 +135,16 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_updateimages() {
-        $local_img_link = $this->get_fixture_path('catalyst.png');
-        $external_img_link = 'http://google.com/coolstyle.css';
+        $localimglink = $this->get_fixture_path('catalyst.png');
+        $externalimglink = 'http://google.com/coolstyle.css';
         $html = "<!DOCTYPE html>\n".
                 '<html><head><title>Title</title></head>'.
-                '<body><img src="'.$local_img_link.'">Content<img src="'.$external_img_link.'" /></body></html>';
+                '<body><img src="'.$localimglink.'">Content<img src="'.$externalimglink.'" /></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($local_img_link, $generated);
-        self::assertContains($external_img_link, $generated);
+        self::assertNotContains($localimglink, $generated);
+        self::assertContains($externalimglink, $generated);
     }
 
     public function test_updatelinkfavicon() {

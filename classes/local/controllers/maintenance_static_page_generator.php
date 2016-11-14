@@ -48,6 +48,9 @@ class maintenance_static_page_generator {
     /** @var maintenance_static_page_io */
     protected $io;
 
+    /** @var int */
+    protected $refreshtime = 300;
+
     /**
      * maintenance_static_page_generator constructor.
      *
@@ -74,6 +77,7 @@ class maintenance_static_page_generator {
             $this->io->create_resources_path();
 
             $this->remove_script_tags();
+            $this->add_meta_refresh();
             $this->update_link_stylesheet();
             $this->update_link_favicon();
             $this->update_images();
@@ -264,5 +268,30 @@ class maintenance_static_page_generator {
             }
         }
         return $matches;
+    }
+
+    private function add_meta_refresh() {
+        $meta = $this->dom->createElement('meta');
+        $meta->setAttribute('http-equiv', 'refresh');
+        $meta->setAttribute('content', $this->refreshtime);
+
+        $head = $this->dom->getElementsByTagName('head')[0];
+        if ($head) {
+            $head->appendChild($meta);
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function get_refresh_time() {
+        return $this->refreshtime;
+    }
+
+    /**
+     * @param int $refreshtime
+     */
+    public function set_refresh_time($refreshtime) {
+        $this->refreshtime = $refreshtime;
     }
 }

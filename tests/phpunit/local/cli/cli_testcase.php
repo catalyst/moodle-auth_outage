@@ -23,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\clibase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -43,6 +42,11 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
      * Always enable the auth outage plugin, resets after test and set no parameters.
      */
     public function setUp() {
+        global $CFG;
+
+        // PHPUnit does not load config.php
+        $CFG->auth_outage_bootstrap_loaded = true;
+
         // Enable auth plugins.
         set_config('auth', 'outage');
         \core\session\manager::gc(); // Remove stale sessions.
@@ -55,6 +59,7 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
 
     /**
      * Mocks the command line parameters.
+     *
      * @param string[] $options Options to use as parameters.
      */
     protected function set_parameters(array $options) {
@@ -65,7 +70,9 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
 
     /**
      * Executes the CLI.
+     *
      * @param clibase $cli CLI to execute.
+     *
      * @return string The output text.
      */
     protected function execute(clibase $cli) {
@@ -81,6 +88,7 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
 
     /**
      * Sets the expected exception as cli_exception with the given error code.
+     *
      * @param int $errorcode Error code.
      */
     protected function set_expected_cli_exception($errorcode) {

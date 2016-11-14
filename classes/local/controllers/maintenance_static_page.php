@@ -42,7 +42,9 @@ defined('MOODLE_INTERNAL') || die();
 class maintenance_static_page {
     /**
      * Creates a page based on the given outage.
+     *
      * @param outage|null $outage
+     *
      * @return maintenance_static_page
      * @throws coding_exception
      */
@@ -63,12 +65,18 @@ class maintenance_static_page {
             $html = $data['contents'];
         }
 
-        return self::create_from_html($html);
+        $page = self::create_from_html($html);
+        if (!is_null($outage)) {
+            $page->set_max_refresh_time($outage->get_duration_planned());
+        }
+        return $page;
     }
 
     /**
      * Creates a page based on the given HTML.
+     *
      * @param string|null $html
+     *
      * @return maintenance_static_page
      * @throws coding_exception
      */
@@ -96,7 +104,9 @@ class maintenance_static_page {
 
     /**
      * maintenance_static_page constructor.
+     *
      * @param DOMDocument|null $dom
+     *
      * @throws coding_exception
      */
     protected function __construct($dom) {
@@ -116,5 +126,16 @@ class maintenance_static_page {
      */
     public function get_io() {
         return $this->generator->get_io();
+    }
+
+    /**
+     * Sets the maximum amount of seconds to auto refresh the static page.
+     * @param int $maxsecs
+     */
+    public function set_max_refresh_time($maxsecs) {
+        $current = $this->generator->get_refresh_time();
+        if ($maxsecs < $current) {
+            $this->generator->set_refresh_time($maxsecs);
+        }
     }
 }

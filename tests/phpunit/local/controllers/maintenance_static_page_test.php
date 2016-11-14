@@ -63,7 +63,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     public function test_createfromhtml() {
         $html = "<!DOCTYPE html>\n<html><head><title>Title</title></head><body>Content</body></html>";
-        self::assertSame($html, $this->generated_page_html($html));
+        $expected = "<!DOCTYPE html>\n<html><head><title>Title</title><meta http-equiv=\"refresh\" content=\"300\">".
+                    "</head><body>Content</body></html>";
+        self::assertSame($expected, $this->generated_page_html($html));
     }
 
     public function test_removescripttags() {
@@ -365,5 +367,31 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
         self::assertContains('removeme', $generated);
         self::assertContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_meta_refresh_5minutes() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
+        set_config('remove_selectors', '#invalidid', 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertContains('<meta http-equiv="refresh" content="300">', $generated);
+    }
+
+    public function test_meta_refresh_maximum_5seconds() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
+        set_config('remove_selectors', '#invalidid', 'auth_outage');
+        $page = maintenance_static_page::create_from_html($html);
+        $page->set_max_refresh_time(5);
+        $page->generate();
+        $generated = trim(file_get_contents($page->get_io()->get_template_file()));
+        return $generated;
+
+        self::assertContains('<meta http-equiv="refresh" content="5">', $generated);
     }
 }

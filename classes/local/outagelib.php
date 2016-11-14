@@ -71,16 +71,6 @@ class outagelib {
                 return;
             }
 
-            // Check if warning bar should be hidden.
-            if (optional_param('auth_outage_hide_warning', false, PARAM_BOOL)) {
-                return;
-            }
-
-            // Used to test the try block in case of errors.
-            if (PHPUNIT_TEST && optional_param('auth_outage_break_code', false, PARAM_INT)) {
-                (new stdClass())->invalidfield;
-            }
-
             // Check for a previewing outage, then for an active outage.
             $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
             $time = time();
@@ -198,6 +188,16 @@ class outagelib {
         // Do not inject into admin/settings.php, see Issue #65.
         if ($_SERVER['SCRIPT_FILENAME'] === $CFG->dirroot.'/admin/settings.php') {
             return false;
+        }
+
+        // Check if warning bar should be hidden.
+        if (optional_param('auth_outage_hide_warning', false, PARAM_BOOL)) {
+            return false;
+        }
+
+        // Used to test the try block in case of errors.
+        if (PHPUNIT_TEST && optional_param('auth_outage_break_code', false, PARAM_INT)) {
+            (new stdClass())->invalidfield; // Triggers an exception.
         }
 
         // Nothing preventing the injection.

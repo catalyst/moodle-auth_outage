@@ -54,6 +54,11 @@ header('Pragma: ');
 header('Cache-Control: public, max-age='.$lifetime);
 header('Accept-Ranges: none');
 
+
+/**
+ * Callback used in bootstrap.
+ * @SupressWarnings(PHPMD)
+ */
 function auth_outage_bootstrap_callback() {
     global $CFG;
 
@@ -72,8 +77,8 @@ function auth_outage_bootstrap_callback() {
     }
 
     readfile($file);
-    die();
-};
+    exit(0);
+}
 
 require_once(__DIR__.'/../../config.php');
 

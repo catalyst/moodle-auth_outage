@@ -38,6 +38,7 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings(public) Allow as many methods as needed.
+ * @SuppressWarnings(methods) Allow as many methods as needed.
  */
 class maintenance_static_page_test extends auth_outage_base_testcase {
     public function test_templatefile() {
@@ -130,7 +131,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/4ea71b83ab326a15d0d784b34fcda702b6a7427d.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/beb44281e23b9d872056bf0230cea34535e8cdea.dGV4dC9wbGFpbg');
 
         // Check for file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');

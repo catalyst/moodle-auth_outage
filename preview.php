@@ -36,6 +36,6 @@ if (is_null($outage)) {
 }
 
 $page = maintenance_static_page::create_from_outage($outage);
-$page->set_preview(true);
+$page->get_io()->set_preview(true);
 $page->generate();
-readfile($page->get_template_file());
+readfile($page->get_io()->get_template_file());

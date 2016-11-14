@@ -25,6 +25,7 @@
 
 namespace auth_outage\local\controllers;
 
+use auth_outage\local\outagelib;
 use coding_exception;
 use DOMDocument;
 use DOMElement;
@@ -49,8 +50,10 @@ class maintenance_static_page_generator {
 
     /**
      * maintenance_static_page_generator constructor.
-     * @param DOMDocument|null $dom
+     *
+     * @param DOMDocument|null           $dom
      * @param maintenance_static_page_io $io
+     *
      * @throws coding_exception
      */
     public function __construct($dom, maintenance_static_page_io $io) {
@@ -74,6 +77,7 @@ class maintenance_static_page_generator {
             $this->update_link_stylesheet();
             $this->update_link_favicon();
             $this->update_images();
+            $this->remove_configured_css_selectors();
 
             $html = $this->dom->saveHTML();
             if (trim($html) == '') {
@@ -93,7 +97,6 @@ class maintenance_static_page_generator {
     }
 
 
-
     /**
      * Remove script tags from DOM.
      */
@@ -104,10 +107,7 @@ class maintenance_static_page_generator {
         foreach ($scripts as $node) {
             $remove[] = $node;
         }
-        // All listed, now remove them.
-        foreach ($remove as $node) {
-            $node->parentNode->removeChild($node);
-        }
+        $this->remove_nodes_from_dom($remove);
     }
 
     /**
@@ -135,6 +135,7 @@ class maintenance_static_page_generator {
 
     /**
      * Checks for urls inside filename.
+     *
      * @param string $filename
      * @param string $baseref
      */
@@ -194,5 +195,74 @@ class maintenance_static_page_generator {
             }
             $link->setAttribute('src', $this->io->generate_file_url($src)); // Works for most image formats.
         }
+    }
+
+    /**
+     * Remove from DOM the CSS selectores defined in the plugin settings.
+     */
+    private function remove_configured_css_selectors() {
+        $selectors = explode("\n", outagelib::get_config()->remove_selectors);
+
+        $remove = [];
+
+        foreach ($selectors as $selector) {
+            // We only support a simple .class or #id -- if support for full selectors must be added
+            // then I suggest checking http://code.google.com/p/phpquery/ on how to implement it.
+            $selector = trim($selector);
+            if ($selector == '') {
+                continue;
+            }
+            $remove = array_merge($remove, $this->fetch_elements_by_selector($selector));
+        }
+
+        $this->remove_nodes_from_dom($remove);
+    }
+
+    /**
+     * Removes the nodes from the DOM.
+     *
+     * @param DOMElement[] $nodes
+     */
+    private function remove_nodes_from_dom(array $nodes) {
+        foreach ($nodes as $node) {
+            $node->parentNode->removeChild($node);
+        }
+    }
+
+    /**
+     * Fetches all elements based on the given selector.
+     *
+     * @param $selector
+     *
+     * @return DOMElement[]
+     */
+    private function fetch_elements_by_selector($selector) {
+        $type = $selector[0];
+        $selector = substr($selector, 1); // Remove '.' or '#'.
+        if ($type == '#') {
+            $element = $this->dom->getElementById($selector);
+            return is_null($element) ? [] : [$element];
+        } else {
+            return $this->fetch_elements_by_class($selector);
+        }
+    }
+
+    /**
+     * Fetch all elements which contains the given class.
+     *
+     * @param $class
+     *
+     * @return DOMElement[]
+     */
+    private function fetch_elements_by_class($class) {
+        $matches = [];
+        $elements = $this->dom->getElementsByTagName('*');
+        foreach ($elements as $element) {
+            $elementclasses = explode(' ', $element->getAttribute('class'));
+            if (in_array($class, $elementclasses)) {
+                $matches[] = $element;
+            }
+        }
+        return $matches;
     }
 }

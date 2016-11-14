@@ -196,6 +196,7 @@ class outagelib_test extends advanced_testcase {
             'default_title',
             'default_warning_duration',
             'allowedips',
+            'remove_selectors',
         ];
         // Set config with values.
         foreach ($keys as $k) {
@@ -221,6 +222,7 @@ class outagelib_test extends advanced_testcase {
             'default_duration',
             'default_title',
             'default_warning_duration',
+            'remove_selectors',
         ];
         $defaults = outagelib::get_config_defaults();
         foreach ($keys as $k) {

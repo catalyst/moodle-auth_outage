@@ -90,11 +90,9 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     // Create 'Allowed IPs' settings.
     $allowedips = outagelib::get_config()->allowedips;
     $description = '';
-
     if (!isset($CFG->auth_outage_check) || !$CFG->auth_outage_check) {
         $description .= $OUTPUT->notification(get_string('allowedipsnoconfig', 'auth_outage'), 'notifyfailure');
     }
-
     if (trim($allowedips) == '') {
         $message = 'allowedipsempty';
         $type = 'notifymessage';
@@ -108,12 +106,19 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 
     $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
-
     $settings->add(new admin_setting_configiplist(
         'auth_outage/allowedips',
         get_string('allowediplist', 'admin'),
         $description,
         $defaults['allowedips']
+    ));
+
+    // Create 'Static Page - Elements to Remove' settings.
+    $settings->add(new admin_setting_configtextarea(
+        'auth_outage/remove_selectors',
+        get_string('removeselectors', 'auth_outage'),
+        get_string('removeselectorsdescription', 'auth_outage'),
+        $defaults['remove_selectors']
     ));
 
     // Create category for Outage.

@@ -174,7 +174,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     /**
      * Generates the maintenance page (not using preview mode).
+     *
      * @param string $html Input HTML.
+     *
      * @return string Output HTML.
      */
     private function generated_page_html($html) {
@@ -228,7 +230,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     /**
      * Gets a fixture file for this test case.
+     *
      * @param $file
+     *
      * @return string
      */
     private function get_fixture_path($file) {
@@ -277,5 +281,89 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     public function test_file_get_data_invalidfilename() {
         $this->set_expected_exception('coding_exception');
         maintenance_static_page_io::file_get_data(200);
+    }
+
+    public function test_remove_css_selector() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<b class="removeme">Goodbye cruel world.</b></body></html>';
+        set_config('remove_selectors', '.removeme', 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertNotContains('removeme', $generated);
+        self::assertNotContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_remove_css_selector_id() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
+        set_config('remove_selectors', '#removeme', 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertNotContains('removeme', $generated);
+        self::assertNotContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_remove_css_selector_with_multiline() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>'.
+                '<b class="deleteme">Goodbye cruel world.</b>'.
+                '<b class="removeme">Goodbye cruel world.</b>'.
+                '</body></html>';
+        set_config('remove_selectors', ".removeme\n.deleteme", 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertNotContains('removeme', $generated);
+        self::assertNotContains('deleteme', $generated);
+        self::assertNotContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_remove_css_selector_needing_trim() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>'.
+                '<b class="deleteme">Goodbye cruel world.</b>'.
+                '<b class="removeme">Goodbye cruel world.</b>'.
+                '</body></html>';
+        set_config('remove_selectors', " .removeme     \n    .deleteme   ", 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertNotContains('removeme', $generated);
+        self::assertNotContains('deleteme', $generated);
+        self::assertNotContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_remove_css_selector_with_empty_line() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>'.
+                '<b class="deleteme">Goodbye cruel world.</b>'.
+                '<b class="removeme">Goodbye cruel world.</b>'.
+                '</body></html>';
+        set_config('remove_selectors', "\n\n.removeme\n\n\n\n.deleteme\n\n", 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertNotContains('removeme', $generated);
+        self::assertNotContains('deleteme', $generated);
+        self::assertNotContains('Goodbye cruel world', $generated);
+    }
+
+    public function test_remove_css_selector_with_invalid_id() {
+        $this->resetAfterTest(true);
+        $html = "<!DOCTYPE html>\n".
+                '<html><head><title>Title</title></head>'.
+                '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
+        set_config('remove_selectors', '#invalidid', 'auth_outage');
+        $generated = $this->generated_page_html($html);
+
+        self::assertContains('removeme', $generated);
+        self::assertContains('Goodbye cruel world', $generated);
     }
 }

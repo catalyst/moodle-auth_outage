@@ -104,7 +104,7 @@ class outagelib {
 
             // There is a previewing or active outage.
             $CFG->additionalhtmltopofbody = renderer::get()->render_warningbar($active, $time, false, $preview).
-                                            $CFG->additionalhtmltopofbody;
+                $CFG->additionalhtmltopofbody;
         } catch (Exception $e) {
             debugging('Exception occured while injecting our code: '.$e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
@@ -137,13 +137,14 @@ class outagelib {
      */
     public static function get_config_defaults() {
         return [
-            'allowedips' => '',
-            'css' => '',
-            'default_autostart' => '0',
-            'default_duration' => (string)(60 * 60),
+            'allowedips'               => '',
+            'css'                      => '',
+            'default_autostart'        => '0',
+            'default_duration'         => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
-            'default_title' => get_string('defaulttitlevalue', 'auth_outage'),
-            'default_description' => get_string('defaultdescriptionvalue', 'auth_outage'),
+            'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),
+            'default_description'      => get_string('defaultdescriptionvalue', 'auth_outage'),
+            'remove_selectors'         => '.usermenu',
         ];
     }
 
@@ -163,6 +164,7 @@ class outagelib {
 
     /**
      * Calls Moodle API - set_maintenance_later() to set when the next outage starts.
+     *
      * @param outage|null $outage Outage or null if no scheduled outage.
      */
     private static function update_maintenance_later($outage) {
@@ -204,9 +206,11 @@ class outagelib {
 
     /**
      * Generates the code to put in sitedata/climaintenance.php when needed.
-     * @param int $starttime Outage start time.
-     * @param int $stoptime Outage stop time.
+     *
+     * @param int    $starttime  Outage start time.
+     * @param int    $stoptime   Outage stop time.
      * @param string $allowedips List of IPs allowed.
+     *
      * @return string
      * @throws invalid_parameter_exception
      */
@@ -255,7 +259,9 @@ EOT;
 
     /**
      * Updates the static info page by (re)creating or deleting it as needed.
+     *
      * @param outage|null $outage Outage or null if no scheduled outage.
+     *
      * @throws coding_exception
      * @throws file_exception
      */

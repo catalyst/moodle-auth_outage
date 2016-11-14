@@ -30,6 +30,8 @@ use auth_outage\output\renderer;
 defined('MOODLE_INTERNAL') || die();
 
 $urlnew = new moodle_url('/auth/outage/edit.php');
+
+echo $viewbag['warning'];
 ?>
 
 <section id="section_planned_outages">

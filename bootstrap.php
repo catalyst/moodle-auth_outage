@@ -54,4 +54,4 @@ if (file_exists($CFG->dataroot.'/climaintenance.php')) {
 }
 
 // 3) Set flag this file was loaded.
-$CFG->auth_outage_check = 1;
+$CFG->auth_outage_bootstrap_loaded = true;

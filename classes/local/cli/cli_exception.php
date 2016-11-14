@@ -74,9 +74,9 @@ class cli_exception extends Exception {
     const ERROR_OUTAGE_CHANGED = 7;
 
     /**
-     * The outage plugin is not enabled.
+     * The outage plugin is not properly configured.
      */
-    const ERROR_PLUGIN_DISABLED = 8;
+    const ERROR_PLUGIN_CONFIGURATION = 8;
 
     /**
      * Moodle maintenance mode is enabled.

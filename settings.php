@@ -89,10 +89,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
 
     // Create 'Allowed IPs' settings.
     $allowedips = outagelib::get_config()->allowedips;
-    $description = '';
-    if (!isset($CFG->auth_outage_check) || !$CFG->auth_outage_check) {
-        $description .= $OUTPUT->notification(get_string('allowedipsnoconfig', 'auth_outage'), 'notifyfailure');
-    }
+    $description = outagelib::generate_plugin_configuration_warning();
     if (trim($allowedips) == '') {
         $message = 'allowedipsempty';
         $type = 'notifymessage';

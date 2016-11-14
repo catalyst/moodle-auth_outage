@@ -81,6 +81,7 @@ enable the `Outage manager` plugin and place it on the top.
 after your `$CFG->dataroot` is set:
 
 ```
+// Insert this after $CFG->dataroot is defined.
 if (file_exists(__DIR__.'/auth/outage/bootstrap.php')) {
     require(__DIR__.'/auth/outage/bootstrap.php');
 }

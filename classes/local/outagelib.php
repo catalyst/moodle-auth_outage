@@ -104,7 +104,7 @@ class outagelib {
 
             // There is a previewing or active outage.
             $CFG->additionalhtmltopofbody = renderer::get()->render_warningbar($active, $time, false, $preview).
-                $CFG->additionalhtmltopofbody;
+                                            $CFG->additionalhtmltopofbody;
         } catch (Exception $e) {
             debugging('Exception occured while injecting our code: '.$e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
@@ -144,7 +144,7 @@ class outagelib {
             'default_warning_duration' => (string)(60 * 60),
             'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description'      => get_string('defaultdescriptionvalue', 'auth_outage'),
-            'remove_selectors'         => '.usermenu',
+            'remove_selectors'         => ".usermenu\n.logininfo\n.homelink",
         ];
     }
 
@@ -289,5 +289,39 @@ EOT;
             }
             file_put_contents($file, $code);
         }
+    }
+
+    /**
+     * Generates a warning message in case the plugin is not active and configured.
+     *
+     * @return string
+     *
+     * @internal stdClass $CFG
+     * @internal bootstrap_renderer $OUTPUT
+     */
+    public static function generate_plugin_configuration_warning() {
+        global $CFG, $OUTPUT;
+
+        $message = [];
+
+        if (!isset($CFG->auth_outage_bootstrap_loaded) || !$CFG->auth_outage_bootstrap_loaded) {
+            $message[] = get_string('configurationwarning', 'auth_outage');
+        }
+
+        if (!is_enabled_auth('outage')) {
+            $message[] = get_string('configurationdisabled', 'auth_outage');
+        }
+
+        if (count($message) == 0) {
+            return '';
+        }
+
+        if (CLI_SCRIPT) {
+            $message = html_to_text(implode("; ", $message));
+        } else {
+            $message = $OUTPUT->notification(implode("<br />", $message), 'notifyfailure');
+        }
+
+        return $message;
     }
 }

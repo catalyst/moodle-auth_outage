@@ -25,6 +25,7 @@
 
 use auth_outage\dml\outagedb;
 use auth_outage\output\renderer;
+use auth_outage\local\outagelib;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -39,7 +40,8 @@ $now = time();
 
 renderer::get()->output_view('manage.php', [
     'unended' => outagedb::get_all_unended($now),
-    'ended' => outagedb::get_all_ended($now),
+    'ended'   => outagedb::get_all_ended($now),
+    'warning' => outagelib::generate_plugin_configuration_warning(),
 ]);
 
 echo $OUTPUT->footer();

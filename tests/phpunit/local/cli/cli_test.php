@@ -103,7 +103,7 @@ class cli_test extends auth_outage_cli_testcase {
         \core\session\manager::gc(); // Remove stale sessions.
         core_plugin_manager::reset_caches();
         // Try to create an CLI object.
-        $this->set_expected_cli_exception(cli_exception::ERROR_PLUGIN_DISABLED);
+        $this->set_expected_cli_exception(cli_exception::ERROR_PLUGIN_CONFIGURATION);
         new create();
     }
 }

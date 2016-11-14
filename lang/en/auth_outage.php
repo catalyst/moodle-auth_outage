@@ -42,6 +42,7 @@ $string['clifinishnotongoing'] = 'Outage is not ongoing.';
 $string['clifinishparamhelp'] = 'shows parameters help.';
 $string['clifinishparamactive'] = 'finishes the currently active outage.';
 $string['clifinishparamoutageid'] = 'the id of the outage to finish.';
+$string['cliinmaintenancemode'] = 'Moodle maintenance mode is on. Use "admin/cli/maintenance.php --disable" to disable it before finishing the outage.';
 $string['cliplugindisabled'] = 'The authentication plugin \'Outage\' is disabled. Please enable it in the site administration it and try again.';
 $string['cliwaitforiterroridxoractive'] = 'You must use --outageid=# or --active parameter but not both.';
 $string['cliwaitforithelp'] = 'Waits until an outage starts.';

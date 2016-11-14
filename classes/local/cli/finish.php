@@ -46,9 +46,9 @@ class finish extends clibase {
     public function generate_options() {
         // Do not provide some defaults, if cloning an outage we need to know which parameters were provided.
         $options = [
-            'help' => false,
+            'help'     => false,
             'outageid' => null,
-            'active' => false,
+            'active'   => false,
         ];
         return $options;
     }
@@ -59,9 +59,9 @@ class finish extends clibase {
      */
     public function generate_shortcuts() {
         return [
-            'h' => 'help',
+            'h'  => 'help',
             'id' => 'outageid',
-            'a' => 'active',
+            'a'  => 'active',
         ];
     }
 
@@ -73,6 +73,12 @@ class finish extends clibase {
         if ($this->options['help']) {
             $this->show_help('finish');
             return;
+        }
+
+        // Cannot run during CLI_MAINTENANCE mode.
+        if (CLI_MAINTENANCE) {
+            throw new cli_exception(get_string('cliinmaintenancemode', 'auth_outage'),
+                cli_exception::ERROR_MAINTENANCE_MODE);
         }
 
         // Requires outageid or active but not both at the same time.

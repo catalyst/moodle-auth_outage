@@ -27,7 +27,7 @@ and testers letting them know what is about to happen and why.
 
 <img alt="Default" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/default.svg" width="520">
 
-<img alt="Manager" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/manager.svg" width="520">
+<img alt="Manager" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/outage.svg" width="520">
 
 Change Log
 ----------

@@ -58,6 +58,10 @@ class forms_test extends auth_outage_base_testcase {
      * Mock some data and check values.
      */
     public function test_edit_valid() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $edit = new edit();
         self::assertFalse($edit->is_cancelled());
@@ -75,6 +79,10 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid warning duration.
      */
     public function test_edit_invalid_warning() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $_POST['warningduration'] = ['number' => '-1', 'timeunit' => '60'];
         $edit = new edit();
@@ -86,6 +94,10 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid outage duration.
      */
     public function test_edit_invalid_duration() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $_POST['outageduration'] = ['number' => '-2', 'timeunit' => '3600'];
         $edit = new edit();
@@ -96,6 +108,10 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid title (empty).
      */
     public function test_edit_invalid_title() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $_POST['title'] = '';
         $edit = new edit();
@@ -106,6 +122,10 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid title (too long).
      */
     public function test_edit_invalid_title_toolong() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $_POST['title'] = 'This is a very long time, it is so long that at some point it should not be valid. '.
                           'With a very long title used in this place we should get a form validation error. '.
@@ -118,6 +138,10 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid format for description.
      */
     public function test_edit_description_invalid_format() {
+        if ($this->skip_because_moodle_is_below_30()) {
+            return;
+        }
+
         $this->mock_edit_post();
         $_POST['description'] = ['text' => 'The <b>description</b>.', 'format' => '2'];
         $edit = new edit();
@@ -131,11 +155,11 @@ class forms_test extends auth_outage_base_testcase {
      */
     public function test_setdata() {
         $outage = new outage([
-            'autostart' => false,
-            'warntime' => time() - 60,
-            'starttime' => time(),
-            'stoptime' => time() + 60,
-            'title' => 'Title',
+            'autostart'   => false,
+            'warntime'    => time() - 60,
+            'starttime'   => time(),
+            'stoptime'    => time() + 60,
+            'title'       => 'Title',
             'description' => 'Description',
         ]);
         $edit = new edit();
@@ -156,15 +180,28 @@ class forms_test extends auth_outage_base_testcase {
      */
     private function mock_edit_post() {
         $_POST = [
-            'id' => '1',
-            'sesskey' => sesskey(),
+            'id'                                => '1',
+            'sesskey'                           => sesskey(),
             '_qf__auth_outage_form_outage_edit' => '1',
-            'warningduration' => ['number' => '1', 'timeunit' => '60'],
-            'starttime' => ['day' => '1', 'month' => '2', 'year' => '2013', 'hour' => '14', 'minute' => '15'],
-            'outageduration' => ['number' => '2', 'timeunit' => '3600'],
-            'title' => 'The title.',
-            'description' => ['text' => 'The <b>description</b>.', 'format' => '1'],
-            'submitbutton' => 'Save changes',
+            'warningduration'                   => ['number' => '1', 'timeunit' => '60'],
+            'starttime'                         => ['day' => '1', 'month' => '2', 'year' => '2013', 'hour' => '14', 'minute' => '15'],
+            'outageduration'                    => ['number' => '2', 'timeunit' => '3600'],
+            'title'                             => 'The title.',
+            'description'                       => ['text' => 'The <b>description</b>.', 'format' => '1'],
+            'submitbutton'                      => 'Save changes',
         ];
+    }
+
+    private function skip_because_moodle_is_below_30() {
+        global $CFG;
+
+        // The bugfix MDL-56250 in only applies to Moodle 30+.
+        // Before that the form validation test is meaningless (results are cached), so skip it.
+        if ($CFG->branch < 30) {
+            $this->markTestSkipped();
+            return true;
+        }
+
+        return false;
     }
 }

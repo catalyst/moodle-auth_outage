@@ -275,7 +275,7 @@ class maintenance_static_page_generator {
         $meta->setAttribute('http-equiv', 'refresh');
         $meta->setAttribute('content', $this->refreshtime);
 
-        $head = $this->dom->getElementsByTagName('head')[0];
+        $head = $this->dom->getElementsByTagName('head')->item(0);
         if ($head) {
             $head->appendChild($meta);
         }

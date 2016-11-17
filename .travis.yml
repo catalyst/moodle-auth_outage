@@ -35,7 +35,6 @@ install:
   - moodle-plugin-ci install
 
 script:
-  - echo "nothing to do"
   - moodle-plugin-ci phplint
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci phpmd

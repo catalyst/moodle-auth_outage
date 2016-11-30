@@ -32,11 +32,6 @@
 // This call is required by Moodle, but this script should have been called by config.php anyway.
 require_once(__DIR__.'/../../config.php');
 
-// This file does nothing if running from CLI.
-if (defined('CLI_SCRIPT') && CLI_SCRIPT) {
-    return;
-}
-
 // We need the CFG->dataroot, if not set yet this script is called too early in config.php file.
 if (!isset($CFG->dataroot)) {
     return;

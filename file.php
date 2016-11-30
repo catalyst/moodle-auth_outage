@@ -64,7 +64,8 @@ function auth_outage_bootstrap_callback() {
 
     // We are not using any external libraries or references in this file (cli maintenance is active).
     // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
-    $resourcedir = $CFG->dataroot.'/auth_outage/climaintenance';
+    $resourcedir = rtrim($CFG->dataroot, '/'); // In case the configuration has a trailing slash.
+    $resourcedir = $resourcedir.'/auth_outage/climaintenance';
 
     // Protect against path traversal attacks.
     $file = $resourcedir.'/'.$_GET['file'];

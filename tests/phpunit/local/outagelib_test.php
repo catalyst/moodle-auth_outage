@@ -30,6 +30,9 @@ use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+require_once($CFG->libdir.'/adminlib.php');
+
 /**
  * outagelib_test test class.
  *
@@ -405,6 +408,92 @@ EOT;
         outagedb::save($outage);
 
         // The method outagelib::prepare_next_outage() should have been called by save().
+        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+            self::assertFileExists($file);
+            unlink($file);
+        }
+    }
+
+    /**
+     * Regression Test - Issue #82: When changing the IP address list it should recreate the maintenance files.
+     */
+    public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        set_config('allowedips', '127.0.0.1', 'auth_outage');
+        outagedb::save($outage);
+
+        // The method outagelib::prepare_next_outage() should have been called by save().
+        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+            self::assertFileExists($file);
+            unlink($file);
+        }
+
+        // Enable outage plugin so settings can be changed.
+        set_config('auth', 'outage');
+        \core\session\manager::gc(); // Remove stale sessions.
+        core_plugin_manager::reset_caches();
+
+        // Change settings.
+        admin_write_settings((object)[
+            's_auth_outage_allowedips' => '127',
+        ]);
+
+        // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
+        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+            self::assertFileExists($file);
+            unlink($file);
+        }
+    }
+
+    /**
+     * Problem detected while solving Issue #82.
+     */
+    public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 200,
+            'starttime' => $now - 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        set_config('allowedips', '127.0.0.1', 'auth_outage');
+        outagedb::save($outage);
+
+        // The method outagelib::prepare_next_outage() should have been called by save().
+        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+            self::assertFileExists($file);
+            unlink($file);
+        }
+
+        // Enable outage plugin so settings can be changed.
+        set_config('auth', 'outage');
+        \core\session\manager::gc(); // Remove stale sessions.
+        core_plugin_manager::reset_caches();
+
+        // Change settings.
+        admin_write_settings((object)[
+            's_auth_outage_remove_selectors' => '.something',
+        ]);
+
+        // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
         foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
             self::assertFileExists($file);
             unlink($file);

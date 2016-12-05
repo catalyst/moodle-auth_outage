@@ -36,6 +36,8 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once(__DIR__.'/../../lib.php');
+
 /**
  * outagelib class.
  *

@@ -103,20 +103,24 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 
     $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
-    $settings->add(new admin_setting_configiplist(
+    $iplist = new admin_setting_configiplist(
         'auth_outage/allowedips',
         get_string('allowediplist', 'admin'),
         $description,
         $defaults['allowedips']
-    ));
+    );
+    $iplist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+    $settings->add($iplist);
 
     // Create 'Static Page - Elements to Remove' settings.
-    $settings->add(new admin_setting_configtextarea(
+    $toremove = new admin_setting_configtextarea(
         'auth_outage/remove_selectors',
         get_string('removeselectors', 'auth_outage'),
         get_string('removeselectorsdescription', 'auth_outage'),
         $defaults['remove_selectors']
-    ));
+    );
+    $toremove->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+    $settings->add($toremove);
 
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));

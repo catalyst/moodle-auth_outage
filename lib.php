@@ -48,3 +48,11 @@ function auth_outage_extend_navigation_user() {
     outagelib::inject();
 }
 
+/**
+ * Used for adminlib::set_updatedcallback which requires a string that resolves to a function.
+ *
+ * Related to: MDL-57264 and MDL-32984
+ */
+function auth_outage_outagelib_prepare_next_outage() {
+    outagelib::prepare_next_outage();
+}

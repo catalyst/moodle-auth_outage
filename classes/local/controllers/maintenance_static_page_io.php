@@ -65,6 +65,8 @@ class maintenance_static_page_io {
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $file);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
             $contents = curl_exec($curl);
             $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
             curl_close($curl);

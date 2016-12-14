@@ -278,7 +278,8 @@ class outagelib_test extends advanced_testcase {
         self::assertEmpty($CFG->additionalhtmltopofbody);
 
         // Pretend we are there...
-        $_SERVER['SCRIPT_FILENAME'] = $CFG->dirroot.'/admin/settings.php';
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
+        $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';
         outagelib::reinject();
 
         self::assertEmpty($CFG->additionalhtmltopofbody);

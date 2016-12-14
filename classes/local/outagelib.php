@@ -187,8 +187,8 @@ class outagelib {
         }
         self::$injectcalled = true;
 
-        // Do not inject into admin/settings.php, see Issue #65.
-        if ($_SERVER['SCRIPT_FILENAME'] === $CFG->dirroot.'/admin/settings.php') {
+        // Do not inject into admin/settings.php.
+        if ($_SERVER['SCRIPT_NAME'] == '/'.$CFG->admin.'/settings.php') {
             return false;
         }
 

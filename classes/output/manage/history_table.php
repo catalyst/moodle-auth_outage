@@ -50,7 +50,7 @@ class history_table extends base_table {
 
         $this->define_headers([
                 get_string('tableheaderwarnbefore', 'auth_outage'),
-                get_string('tableheaderstarttime', 'auth_outage'),
+                get_string('tableheaderstartedtime', 'auth_outage'),
                 get_string('tableheaderdurationplanned', 'auth_outage'),
                 get_string('tableheaderdurationactual', 'auth_outage'),
                 get_string('tableheadertitle', 'auth_outage'),
@@ -71,7 +71,7 @@ class history_table extends base_table {
             $finished = is_null($finished) ? '-' : format_time($finished);
             $this->add_data([
                 format_time($outage->get_warning_duration()),
-                userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
+                self::create_starttime_string($outage->starttime),
                 format_time($outage->get_duration_planned()),
                 $finished,
                 $outage->get_title(),

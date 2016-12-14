@@ -323,7 +323,7 @@ EOT;
         if (CLI_SCRIPT) {
             $message = html_to_text(implode("; ", $message));
         } else {
-            $message = $OUTPUT->notification(implode("<br />", $message), 'notifyfailure');
+            $message = $OUTPUT->notification(implode("<br />", $message), 'notifyerror');
         }
 
         return $message;

@@ -98,7 +98,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         $type = 'notifysuccess';
     } else {
         $message = 'allowedipshasntmyip';
-        $type = 'notifyfailure';
+        $type = 'notifyerror';
     };
     $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 

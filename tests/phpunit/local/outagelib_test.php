@@ -256,9 +256,7 @@ class outagelib_test extends advanced_testcase {
     }
 
     /**
-     * Check if outagelib::inject() does not inject on admin/settings.php
-     *
-     * See Issue #65.
+     * Check if outagelib::inject() does not inject on admin/settings.php?section=additionalhtml
      */
     public function test_inject_settings() {
         global $CFG;
@@ -280,6 +278,7 @@ class outagelib_test extends advanced_testcase {
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
         $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';
+        $_GET['section'] = 'additionalhtml';
         outagelib::reinject();
 
         self::assertEmpty($CFG->additionalhtmltopofbody);
@@ -524,5 +523,34 @@ EOT;
         self::assertFalse(get_config('moodle', 'maintenance_later'));
         // This file should not exist even if the statement above fails as Moodle does not create it immediately but test anyway.
         self::assertFileNotExists($CFG->dataroot.'/climaintenance.html');
+    }
+
+    /**
+     * Regression test for issue #85.
+     */
+    public function test_it_can_inject_in_settings_if_not_additional_html() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart' => true,
+            'warntime' => $now,
+            'starttime' => $now + 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        $outage->id = outagedb::save($outage);
+        self::assertEmpty($CFG->additionalhtmltopofbody);
+
+        // Pretend we are there...
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
+        $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';
+        $_GET['section'] = 'notadditionalhtml';
+        outagelib::reinject();
+
+        self::assertNotEmpty($CFG->additionalhtmltopofbody);
     }
 }

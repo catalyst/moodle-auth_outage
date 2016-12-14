@@ -189,7 +189,9 @@ class outagelib {
 
         // Do not inject into admin/settings.php.
         if ($_SERVER['SCRIPT_NAME'] == '/'.$CFG->admin.'/settings.php') {
-            return false;
+            if (optional_param('section', '', PARAM_RAW) === 'additionalhtml') {
+                return false;
+            }
         }
 
         // Check if warning bar should be hidden.

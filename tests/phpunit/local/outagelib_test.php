@@ -393,19 +393,7 @@ EOT;
     public function test_preparenextoutage_notautostart() {
         global $CFG;
 
-        $this->resetAfterTest(true);
-        self::setAdminUser();
-        $now = time();
-        $outage = new outage([
-            'autostart' => false,
-            'warntime' => $now - 200,
-            'starttime' => $now - 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-        set_config('allowedips', '127.0.0.1', 'auth_outage');
-        outagedb::save($outage);
+        $this->create_outage();
 
         // The method outagelib::prepare_next_outage() should have been called by save().
         foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
@@ -420,30 +408,7 @@ EOT;
     public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates() {
         global $CFG;
 
-        $this->resetAfterTest(true);
-        self::setAdminUser();
-        $now = time();
-        $outage = new outage([
-            'autostart' => false,
-            'warntime' => $now - 200,
-            'starttime' => $now - 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-        set_config('allowedips', '127.0.0.1', 'auth_outage');
-        outagedb::save($outage);
-
-        // The method outagelib::prepare_next_outage() should have been called by save().
-        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
-            self::assertFileExists($file);
-            unlink($file);
-        }
-
-        // Enable outage plugin so settings can be changed.
-        set_config('auth', 'outage');
-        \core\session\manager::gc(); // Remove stale sessions.
-        core_plugin_manager::reset_caches();
+        $this->create_outage();
 
         // Change settings.
         admin_write_settings((object)[
@@ -463,30 +428,7 @@ EOT;
     public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates() {
         global $CFG;
 
-        $this->resetAfterTest(true);
-        self::setAdminUser();
-        $now = time();
-        $outage = new outage([
-            'autostart' => false,
-            'warntime' => $now - 200,
-            'starttime' => $now - 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-        set_config('allowedips', '127.0.0.1', 'auth_outage');
-        outagedb::save($outage);
-
-        // The method outagelib::prepare_next_outage() should have been called by save().
-        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
-            self::assertFileExists($file);
-            unlink($file);
-        }
-
-        // Enable outage plugin so settings can be changed.
-        set_config('auth', 'outage');
-        \core\session\manager::gc(); // Remove stale sessions.
-        core_plugin_manager::reset_caches();
+        $this->create_outage();
 
         // Change settings.
         admin_write_settings((object)[
@@ -552,5 +494,26 @@ EOT;
         outagelib::reinject();
 
         self::assertNotEmpty($CFG->additionalhtmltopofbody);
+    }
+
+    private function create_outage() {
+        $this->resetAfterTest(true);
+        self::setAdminUser();
+        $now = time();
+        $outage = new outage([
+            'autostart'   => false,
+            'warntime'    => $now - 200,
+            'starttime'   => $now - 100,
+            'stoptime'    => $now + 200,
+            'title'       => 'Title',
+            'description' => 'Description',
+        ]);
+        set_config('allowedips', '127.0.0.1', 'auth_outage');
+        outagedb::save($outage);
+
+        // Enable outage plugin so settings can be changed.
+        set_config('auth', 'outage');
+        \core\session\manager::gc(); // Remove stale sessions.
+        core_plugin_manager::reset_caches();
     }
 }

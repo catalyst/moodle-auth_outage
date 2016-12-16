@@ -61,6 +61,7 @@ $string['clioutagecreated'] = 'Outage created, id: {$a->id}';
 $string['clone'] = 'Clone';
 $string['configurationwarning'] = 'The outage plugin is not properly configured, please refer to <a href="https://github.com/catalyst/moodle-auth_outage/blob/master/README.md#installation" target="_blank">README.md</a> for more information.';
 $string['configurationdisabled'] = 'The authentication plugin \'Outage\' is disabled. Please enable it in the site administration it and try again.';
+$string['configurationinaccessiblewwwroot'] = 'Could not access <b>{$a->wwwroot}</b> from the server, creation of outages may fail.';
 $string['datetimeformat'] = '%a %d %h %Y at %I:%M%P %Z';
 $string['defaultlayoutcss'] = 'Layout CSS';
 $string['defaultlayoutcssdescription'] = 'This CSS code can be used to override the Outage Warning Bar CSS.';

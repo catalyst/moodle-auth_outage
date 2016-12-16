@@ -52,6 +52,18 @@ class outagelib {
      */
     private static $injectcalled = false;
 
+    public static function fetch_page($file) {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $file);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        $contents = curl_exec($curl);
+        $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+        curl_close($curl);
+        return compact('contents', 'mime');
+    }
+
     /**
      * Calls inject even if it was already called before.
      */
@@ -154,9 +166,14 @@ class outagelib {
         self::update_maintenance_later($outage);
     }
 
+    private static function check_wwwroot_accessible() {
+        global $CFG;
+        $result = self::fetch_page($CFG->wwwroot);
+        return (!empty($result['contents']));
+    }
+
     /**
      * Calls Moodle API - set_maintenance_later() to set when the next outage starts.
-     *
      * @param outage|null $outage Outage or null if no scheduled outage.
      */
     private static function update_maintenance_later($outage) {
@@ -314,6 +331,10 @@ EOT;
 
         if (!is_enabled_auth('outage')) {
             $message[] = get_string('configurationdisabled', 'auth_outage');
+        }
+
+        if (!self::check_wwwroot_accessible()) {
+            $message[] = get_string('configurationinaccessiblewwwroot', 'auth_outage', ['wwwroot' => $CFG->wwwroot]);
         }
 
         if (count($message) == 0) {

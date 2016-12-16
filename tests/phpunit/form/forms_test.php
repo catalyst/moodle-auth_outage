@@ -58,7 +58,7 @@ class forms_test extends auth_outage_base_testcase {
      * Mock some data and check values.
      */
     public function test_edit_valid() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -79,7 +79,7 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid warning duration.
      */
     public function test_edit_invalid_warning() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -94,7 +94,7 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid outage duration.
      */
     public function test_edit_invalid_duration() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -108,7 +108,7 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid title (empty).
      */
     public function test_edit_invalid_title() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -122,7 +122,7 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid title (too long).
      */
     public function test_edit_invalid_title_toolong() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -138,7 +138,7 @@ class forms_test extends auth_outage_base_testcase {
      * Check invalid format for description.
      */
     public function test_edit_description_invalid_format() {
-        if ($this->skip_because_moodle_is_below_30()) {
+        if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
 
@@ -198,13 +198,13 @@ class forms_test extends auth_outage_base_testcase {
         ];
     }
 
-    private function skip_because_moodle_is_below_30() {
+    private function skip_because_moodle_is_below_30($reason = '') {
         global $CFG;
 
         // The bugfix MDL-56250 in only applies to Moodle 30+.
         // Before that the form validation test is meaningless (results are cached), so skip it.
         if ($CFG->branch < 30) {
-            $this->markTestSkipped();
+            $this->markTestSkipped('Some tests can only run in Moodle 30+. '.$reason);
             return true;
         }
 

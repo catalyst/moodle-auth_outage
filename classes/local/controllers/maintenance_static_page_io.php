@@ -25,6 +25,7 @@
 
 namespace auth_outage\local\controllers;
 
+use auth_outage\local\outagelib;
 use coding_exception;
 use finfo;
 use invalid_parameter_exception;
@@ -62,24 +63,18 @@ class maintenance_static_page_io {
         }
 
         if (self::is_url($file)) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $file);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            $contents = curl_exec($curl);
-            $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-            curl_close($curl);
+            $result = outagelib::fetch_page($file);
         } else {
-            $contents = @file_get_contents($file);
-            $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($contents); // Not perfect, but try guessing it.
+            $result = ['contents' => @file_get_contents($file)];
+            $result['mime'] = (new finfo(FILEINFO_MIME_TYPE))
+                ->buffer($result['contents']); // Not perfect, but try guessing it.
         }
-        if ($contents === false) {
+
+        if ($result['contents'] === false) {
             debugging('Cannot fetch: '.$file);
-            $contents = '';
-            $mime = 'unknown';
+            $result = ['contents' => '', 'mime' => 'unknown'];
         }
-        return ['contents' => $contents, 'mime' => $mime];
+        return $result;
     }
 
     /** @var bool */

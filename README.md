@@ -9,6 +9,7 @@
 * [Screenshots](#screenshots)
 * [Installation](#installation)
 * [How to use](#how-to-use)
+* [Quick Guide](#quick-guide)
 * [Why is it an auth plugin?](#why-it-is-an-auth-plugin)
 * [Feedback and issues](#feedback-and-issues)
 
@@ -105,6 +106,12 @@ Creates a new outage.
        --onlyid             only outputs the new outage id, useful for scripts.
   -b,  --block              blocks until outage starts.
 ```
+
+Quick Guide
+-----------
+
+Please see [QUICKGUIDE.md](QUICKGUIDE.md) for step-by-step examples on
+how to test and use the Outage Manager.
 
 Why it is an auth plugin?
 -------------------------

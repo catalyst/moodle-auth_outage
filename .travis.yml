@@ -5,7 +5,7 @@ notifications:
     recipients:
     - daniel.roperto@catalyst-au.net
 
-sudo: false
+sudo: true
 
 cache:
   directories:

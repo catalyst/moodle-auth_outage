@@ -263,6 +263,9 @@ if (time() >= {{STARTTIME}}) {
         header('Expires: Mon, 20 Aug 1969 09:23:00 GMT');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Accept-Ranges: none');
+        if ((defined('AJAX_SCRIPT') && AJAX_SCRIPT) || (defined('WS_SERVER') && WS_SERVER)) {
+            exit(0);
+        }
         echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
         if (file_exists($CFG->dataroot.'/climaintenance.template.html')) {
             require($CFG->dataroot.'/climaintenance.template.html');

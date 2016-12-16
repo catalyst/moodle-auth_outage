@@ -5,7 +5,6 @@
 # Moodle Outage manager plugin
 
 * [What is this?](#what-is-this)
-* [Change Log](#change-log)
 * [Moodle Requirements](#moodle-requirements)
 * [Screenshots](#screenshots)
 * [Installation](#installation)
@@ -29,10 +28,6 @@ and testers letting them know what is about to happen and why.
 
 <img alt="Manager" src="https://cdn.rawgit.com/catalyst/moodle-auth_outage/master/docs/outage.svg" width="520">
 
-Change Log
-----------
-
-Please see [CHANGELOG.md](CHANGELOG.md)
 
 Moodle Requirements
 -------------------

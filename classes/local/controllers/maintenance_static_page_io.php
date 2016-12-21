@@ -66,8 +66,7 @@ class maintenance_static_page_io {
             $result = outagelib::fetch_page($file);
         } else {
             $result = ['contents' => @file_get_contents($file)];
-            $result['mime'] = (new finfo(FILEINFO_MIME_TYPE))
-                ->buffer($result['contents']); // Not perfect, but try guessing it.
+            $result['mime'] = (new finfo(FILEINFO_MIME_TYPE))->buffer($result['contents']); // Try guessing it.
         }
 
         if ($result['contents'] === false) {

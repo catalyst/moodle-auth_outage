@@ -45,8 +45,7 @@ if (is_callable('auth_outage_bootstrap_callback')) {
 // 2) Check for allowed scripts or IPs during outages.
 $allowed = !file_exists($CFG->dataroot.'/climaintenance.php') // Not in maintenance mode.
            || (defined('ABORT_AFTER_CONFIG') && ABORT_AFTER_CONFIG) // Only config requested.
-           || (defined('CLI_SCRIPT') && CLI_SCRIPT) // Allow CLI scripts.
-;
+           || (defined('CLI_SCRIPT') && CLI_SCRIPT); // Allow CLI scripts.
 if (!$allowed) {
     // Call the climaintenance.php which will check for allowed IPs.
     $CFG->dirroot = dirname(dirname(dirname(__FILE__))); // It is not defined yet but the script below needs it.

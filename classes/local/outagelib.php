@@ -58,6 +58,7 @@ class outagelib {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 5); // Feching local files should be very fast.
         $contents = curl_exec($curl);
         $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         curl_close($curl);

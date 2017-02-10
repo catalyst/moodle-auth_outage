@@ -29,6 +29,10 @@
  */
 use auth_outage\local\outagelib;
 
+// print_object(get_admins());
+
+// get_admins();
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig && is_enabled_auth('outage')) {
@@ -121,6 +125,16 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     );
     $toremove->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
     $settings->add($toremove);
+
+    // Sending emails to admins when outage created.
+    $mailinglist = new admin_setting_configtextarea(
+        'auth_outage/mailinglist',
+        get_string('mailinglist', 'auth_outage'),
+        get_string('mailinglistdesc', 'auth_outage'),
+        $defaults['mailinglist']
+    );
+    $mailinglist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+    $settings->add($mailinglist);
 
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));

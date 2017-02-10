@@ -42,7 +42,42 @@ if ($mform->is_cancelled()) {
     redirect('/auth/outage/manage.php');
 } else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
+
+    require_once($CFG->libdir.'/phpmailer/class.phpmailer.php');
+    require_once($CFG->libdir.'/phpmailer/class.smtp.php');
+    $mailer = new PHPMailer();
+    $mailer->isSMTP();
+
+    $mailinglist = explode(',', $outage->outagemailinglist);
+
+    if ($CFG->smtphosts) {
+        $host = explode(':', $CFG->smtphosts);
+        $hostname = $host[0];
+        $hostport = (int) $host[1];
+        $mailer->Host = $hostname;
+        $mailer->SMTPAuth = true;
+        $mailer->SMTPSecure = $CFG->smtpsecure;
+        $mailer->Port = $hostport;
+        $mailer->Username = $CFG->smtpuser;
+        $mailer->Password = $CFG->smtppass;
+        $mailer->Subject = $outage->title;
+        $mailer->From = $CFG->noreplyaddress;
+        $mailer->FromName = $CFG->wwwroot;
+        $mailer->Priority = 1;
+        $mailer->CharSet = 'UTF-8';
+        $mailer->Encoding = '8bit';
+        $mailer->ContentType = 'text/html; charset=utf-8\r\n';
+        $mailer->WordWrap = 900;
+        foreach ($mailinglist as $emailaddress) {
+            $mailer->AddAddress(trim($emailaddress));
+        }
+        $mailer->isHTML(true);
+        $mailer->Body = $outage->description;
+        $mailer->Send();
+        $mailer->SmtpClose();
+    }
+
+    redirect($CFG->wwwroot . '/auth/outage/manage.php#auth_outage_id_'.$id);
 }
 
 $clone = optional_param('clone', 0, PARAM_INT);
@@ -67,6 +102,7 @@ if ($clone) {
         'stoptime' => $time + $config->default_duration,
         'warntime' => $time - $config->default_warning_duration,
         'title' => $config->default_title,
+        'outagemailinglist' => $config->mailinglist,
         'description' => $config->default_description,
     ]);
     $action = 'outagecreate';

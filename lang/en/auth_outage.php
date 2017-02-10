@@ -143,3 +143,6 @@ $string['title_help'] = 'A short title to for this outage. It will be displayed 
 $string['warningdurationerrorinvalid'] = 'Warning duration must be positive.';
 $string['warningduration'] = 'Warning duration';
 $string['warningduration_help'] = 'How long before the start of the outage should the warning be displayed.';
+$string['mailinglist'] = 'Mailing List';
+$string['mailinglistdesc'] = 'List of all admin emails.';
+$string['mailinglist_help'] = 'List of all people who will receive notice of outage event creation.';

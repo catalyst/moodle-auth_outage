@@ -33,7 +33,7 @@ and testers letting them know what is about to happen and why.
 Moodle Requirements
 -------------------
 
-This plugin will work out-of-the-box with Moodle 3+.
+This plugin will work out-of-the-box with Moodle 3.0 and Moodle 3.1.
 
 If you have an older version of Moodle you can still make it work but you will
 need to manually add one extra plugin, please check:

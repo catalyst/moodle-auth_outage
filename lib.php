@@ -56,3 +56,34 @@ function auth_outage_extend_navigation_user() {
 function auth_outage_outagelib_prepare_next_outage() {
     outagelib::prepare_next_outage();
 }
+
+/**
+ * Used by file.php to fetch a file from sitedata, protecting it from path traversal attacks.
+ *
+ * To keep it minimalist it was not added to the outagelib.php class.
+ *
+ * @param $file string Filename to fetch from sitedata
+ * @return string|null Full path to the sitedata file or null if file is not valid.
+ */
+function auth_outage_get_climaintenance_resource_file($file) {
+    global $CFG;
+
+    // We are not using any external libraries or references in this file (we have not gully loaded config.php yet).
+    // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
+    $resourcedir = rtrim($CFG->dataroot, '/'); // In case the configuration has a trailing slash.
+    $resourcedir = $resourcedir.'/auth_outage/climaintenance';
+
+    // Protect against path traversal attacks.
+    $basename = basename($file);
+    if ($basename !== $file) {
+        // @codingStandardsIgnoreStart
+        if (!PHPUNIT_TEST) {
+            error_log('Possible attempt for Path Traversal Attack (only filename expected): '.$file);
+        }
+        // @codingStandardsIgnoreEnd
+        return null;
+    }
+
+    $realpath = realpath($resourcedir.'/'.$file);
+    return ($realpath == false) ? null : $realpath;
+}

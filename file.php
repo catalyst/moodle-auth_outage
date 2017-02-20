@@ -60,23 +60,16 @@ header('Accept-Ranges: none');
  * @SupressWarnings(PHPMD)
  */
 function auth_outage_bootstrap_callback() {
-    global $CFG;
-
-    // We are not using any external libraries or references in this file (cli maintenance is active).
-    // If you change the path below maybe you need to change maintenance_static_page::get_resources_folder() as well.
-    $resourcedir = rtrim($CFG->dataroot, '/'); // In case the configuration has a trailing slash.
-    $resourcedir = $resourcedir.'/auth_outage/climaintenance';
-
-    // Protect against path traversal attacks.
-    $file = $resourcedir.'/'.$_GET['file'];
-    if (realpath($file) !== $file) {
+    // Not using classes as classloader has not been initialized yet. Keep it minimalist.
+    require_once(__DIR__.'/lib.php');
+    $file = auth_outage_get_climaintenance_resource_file($_GET['file']);
+    if (is_null($file)) {
         // @codingStandardsIgnoreStart
         error_log('Invalid file: '.$_GET['file']);
         // @codingStandardsIgnoreEnd
         http_response_code(404);
-        die('Not found.');
+        die('File not found.');
     }
-
     readfile($file);
     exit(0);
 }

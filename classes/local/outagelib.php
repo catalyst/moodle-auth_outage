@@ -109,6 +109,9 @@ class outagelib {
             }
 
             // There is a previewing or active outage.
+            if (!empty(get_config('auth_outage', 'allowedips'))) {
+                $CFG->alternateloginurl = ''; // Related to issue #105, do not redirect login page if IP blocking is on.
+            }
             $CFG->additionalhtmltopofbody = renderer::get()->render_warningbar($active, $time, false, $preview).
                                             $CFG->additionalhtmltopofbody;
         } catch (Exception $e) {

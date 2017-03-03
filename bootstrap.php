@@ -37,12 +37,36 @@ if (!isset($CFG->dataroot)) {
     return;
 }
 
-// 1) Check and run the hook.
+// 1) Make sure we replace the configurations for behat as we have not ran 'lib/setup.php' yet.
+if (!empty($CFG->behat_wwwroot) or !empty($CFG->behat_dataroot) or !empty($CFG->behat_prefix)) {
+    require_once(__DIR__.'/../../lib/behat/lib.php');
+    behat_update_vars_for_process();
+    if (behat_is_test_site()) {
+        $beforebehatcfg = $CFG;
+        $CFG = clone($CFG);
+        clearstatcache();
+        behat_check_config_vars();
+        behat_clean_init_config();
+        $CFG->wwwroot = $CFG->behat_wwwroot;
+        $CFG->dataroot = $CFG->behat_dataroot;
+        // We should not access database in bootstrap.
+        $CFG->dbtype = null;
+        $CFG->dblibrary = null;
+        $CFG->dbhost = null;
+        $CFG->dbname = null;
+        $CFG->dbuser = null;
+        $CFG->dbpass = null;
+        $CFG->prefix = null;
+        $CFG->dboptions = null;
+    }
+}
+
+// 2) Check and run the hook.
 if (is_callable('auth_outage_bootstrap_callback')) {
     call_user_func('auth_outage_bootstrap_callback');
 }
 
-// 2) Check for allowed scripts or IPs during outages.
+// 3) Check for allowed scripts or IPs during outages.
 $allowed = !file_exists($CFG->dataroot.'/climaintenance.php') // Not in maintenance mode.
            || (defined('ABORT_AFTER_CONFIG') && ABORT_AFTER_CONFIG) // Only config requested.
            || (defined('CLI_SCRIPT') && CLI_SCRIPT); // Allow CLI scripts.
@@ -52,5 +76,10 @@ if (!$allowed) {
     require($CFG->dataroot.'/climaintenance.php'); // This call may terminate the script here or not.
 }
 
-// 3) Set flag this file was loaded.
+// 4) Set flag this file was loaded.
 $CFG->auth_outage_bootstrap_loaded = true;
+
+// 5) Restore behat config as needed (let setup.php execute which is more complex than our quick-check).
+if (isset($beforebehatcfg)) {
+    $CFG = $beforebehatcfg;
+}

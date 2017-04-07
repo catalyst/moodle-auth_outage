@@ -118,6 +118,10 @@ class outage {
      * @var int|null Timestamp of when this outage was last modified.
      */
     public $lastmodified = null;
+    /**
+     * @var string|null Site admin emails
+     */
+    public $outagemailinglist = null;
 
     /**
      * outage constructor.
@@ -253,6 +257,20 @@ class outage {
      */
     public function get_warning_duration() {
         return $this->starttime - $this->warntime;
+    }
+
+    /**
+     * Gets emails from all site admins
+     * @return string site admin emails
+     */
+    public function get_siteadmin_emails() {
+        $admins = get_admins();
+        $emails = array();
+        foreach ($admins as $admin) {
+            $emails[] = $admin->email;
+        }
+        $email = implode(",", $emails);
+        return $email;
     }
 
     /**

@@ -5,8 +5,6 @@ notifications:
     recipients:
     - daniel.roperto@catalyst-au.net
 
-sudo: true
-
 cache:
   directories:
     - $HOME/.composer/cache

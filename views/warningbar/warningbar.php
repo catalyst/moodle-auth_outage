@@ -78,7 +78,7 @@ if (!$viewbag['static']) {
 
 <?php if (!$viewbag['static']): ?>
     <script>
-	document.body.className += ' auth_outage';
+        document.body.className += ' auth_outage';
         <?php
         require(__DIR__.'/warningbar.js');
         $json = json_encode([

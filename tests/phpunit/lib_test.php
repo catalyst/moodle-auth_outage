@@ -68,7 +68,7 @@ class lib_test extends auth_outage_base_testcase {
         $realfile = $realdir.'/example.txt';
         file_put_contents($realfile, 'Outage Unit Test Message');
 
-        // Create a symlink
+        // Create a symlink.
         $symdir = $CFG->dataroot.'/auth_outage/climaintenance';
         if (!symlink($realdir, $symdir)) {
             unlink($realfile);

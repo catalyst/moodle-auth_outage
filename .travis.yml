@@ -32,6 +32,7 @@ install:
   - moodle-plugin-ci install -vvv
 
 script:
+  - moodle-plugin-ci validate
   - moodle-plugin-ci phplint
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci phpmd

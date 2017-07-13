@@ -1,0 +1,8 @@
+/**
+ * Globally supress core Moodle maintenance warning message.
+ *
+ * Note that this can be explicitly overridden by themes.
+ */
+.box.moodle-has-zindex.maintenancewarning {
+    display: none;
+}

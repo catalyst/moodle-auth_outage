@@ -24,7 +24,6 @@
  */
 
 use auth_outage\dml\outagedb;
-use auth_outage\local\controllers\infopage;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
 
@@ -106,6 +105,8 @@ class outagelib_test extends advanced_testcase {
         $size = strlen($CFG->additionalhtmltopofbody);
         outagelib::inject();
         self::assertSame($size, strlen($CFG->additionalhtmltopofbody));
+
+        $this->resetDebugging(); // Function pix_url deprecated in Moodle 33+.
     }
 
     /**
@@ -141,6 +142,8 @@ class outagelib_test extends advanced_testcase {
         outagelib::reinject();
         self::assertContains('<style>', $CFG->additionalhtmltopofbody);
         self::assertContains('<script>', $CFG->additionalhtmltopofbody);
+
+        $this->resetDebugging(); // Function pix_url deprecated in Moodle 33+.
     }
 
     /**
@@ -500,6 +503,8 @@ EOT;
         outagelib::reinject();
 
         self::assertNotEmpty($CFG->additionalhtmltopofbody);
+
+        $this->resetDebugging(); // Function pix_url deprecated in Moodle 33+.
     }
 
     private function create_outage() {

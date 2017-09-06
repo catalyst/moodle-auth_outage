@@ -52,7 +52,6 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
         \core\session\manager::gc(); // Remove stale sessions.
         core_plugin_manager::reset_caches();
 
-        $this->resetAfterTest(true);
         $this->set_parameters([]);
         parent::setUp();
     }

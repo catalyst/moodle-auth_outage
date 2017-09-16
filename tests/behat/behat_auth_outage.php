@@ -47,6 +47,51 @@ class behat_auth_outage extends behat_base {
      */
     private $outage = null;
 
+    /** @var string */
+    private $myip = null;
+
+    /**
+     * @When /^I go to the login page$/
+     */
+    public function i_go_to_the_login_page() {
+        // The function $this->visitPath() is not implemented for MOODLE_30.
+        $this->getSession()->visit($this->locatePath('/login/index.php'));
+    }
+
+    /**
+     * @Given /^I know my IP address$/
+     */
+    public function i_know_my_ip_address() {
+        // The function $this->visitPath() is not implemented for MOODLE_30.
+        $this->getSession()->visit($this->locatePath('/auth/outage/tests/behat/util.php?myip'));
+        $ip = trim($this->getSession()->getPage()->getText());
+        $this->myip = $ip;
+    }
+
+    /**
+     * @Given /^the alternate login URL is set to the fake auth outage page$/
+     */
+    public function the_alternate_login_url_is_set_to_the_fake_auth_outage_page() {
+        set_config('alternateloginurl', '/auth/outage/tests/behat/util.php?login');
+    }
+
+    /**
+     * @Given /^the IP whitelist is empty$/
+     */
+    public function the_ip_whitelist_is_empty() {
+        set_config('allowedips', '', 'auth_outage');
+    }
+
+    /**
+     * @Given /^the IP whitelist is set to my current IP$/
+     */
+    public function the_ip_whitelist_is_set_to_my_current_ip() {
+        if (is_null($this->myip)) {
+            throw new coding_exception('Client IP unknown. Use "Given I know my IP address" first.');
+        }
+        set_config('allowedips', $this->myip, 'auth_outage');
+    }
+
     /**
      * Checks if a authentication plugin is enabled
      * @Given /^the authentication plugin "([^"]*)" is enabled$/

@@ -48,7 +48,7 @@ if (!$viewbag['static']) {
     if (is_siteadmin()) {
         $url = new moodle_url('/auth/outage/finish.php', ['id' => $viewbag['outage']->id]);
         $text = html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/check'),
+                'src' => $OUTPUT->image_url('t/check'),
                 'alt' => get_string('finish', 'auth_outage'),
                 'class' => 'iconsmall',
             ]).' '.get_string('finish', 'auth_outage');

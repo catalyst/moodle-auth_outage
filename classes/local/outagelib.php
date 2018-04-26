@@ -250,7 +250,7 @@ class outagelib {
 
         $code = <<<'EOT'
 <?php
-if (time() >= {{STARTTIME}}) {
+if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
     if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
@@ -278,8 +278,8 @@ if (time() >= {{STARTTIME}}) {
     }
 }
 EOT;
-        $search = ['{{STARTTIME}}', '{{ALLOWEDIPS}}', '{{YOURIP}}'];
-        $replace = [$starttime, $allowedips, getremoteaddr('n/a')];
+        $search = ['{{STARTTIME}}', '{{STOPTIME}}', '{{ALLOWEDIPS}}', '{{YOURIP}}'];
+        $replace = [$starttime, $stoptime, $allowedips, getremoteaddr('n/a')];
         return str_replace($search, $replace, $code);
     }
 

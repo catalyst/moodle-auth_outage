@@ -290,7 +290,7 @@ class outagelib_test extends advanced_testcase {
     public function test_createmaintenancephpcode() {
         $expected = <<<'EOT'
 <?php
-if (time() >= 123) {
+if ((time() >= 123) && (time() < 456)) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
     if (!remoteip_in_list('heyyou
@@ -330,7 +330,7 @@ EOT;
 
         $expected = <<<'EOT'
 <?php
-if (time() >= 123) {
+if ((time() >= 123) && (time() < 456)) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
     if (!remoteip_in_list('127.0.0.1')) {

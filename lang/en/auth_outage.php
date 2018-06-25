@@ -143,3 +143,8 @@ $string['title_help'] = 'A short title to for this outage. It will be displayed 
 $string['warningdurationerrorinvalid'] = 'Warning duration must be positive.';
 $string['warningduration'] = 'Warning duration';
 $string['warningduration_help'] = 'How long before the start of the outage should the warning be displayed.';
+
+/*
+ * Privacy provider (GDPR)
+ */
+$string["privacy:no_data_reason"] = "The 'auth outage' plugins doesn't store any personnel data.";

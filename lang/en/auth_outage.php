@@ -147,4 +147,4 @@ $string['warningduration_help'] = 'How long before the start of the outage shoul
 /*
  * Privacy provider (GDPR)
  */
-$string["privacy:no_data_reason"] = "The 'auth outage' plugins doesn't store any personnel data.";
+$string["privacy:no_data_reason"] = "The Outage authentication plugin does not store any personal data.";

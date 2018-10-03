@@ -11,7 +11,6 @@ Feature: Change the default settings
     Given the authentication plugin "outage" is enabled
     And I am an administrator
 
-
   Scenario Outline: Check if I can save the default settings.
     When I navigate to "Settings" node in "Site administration > Plugins > Authentication > Outage manager"
     And I set the following fields to these values:

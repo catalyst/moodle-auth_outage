@@ -69,10 +69,6 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
 
         parent::setUp();
         $this->resetAfterTest(true);
-
-        // Do not use https.
-        $CFG->wwwroot = 'http://www.example.com/moodle';
-        $CFG->httpswwwroot = $CFG->wwwroot;
     }
 
     public function tearDown() {

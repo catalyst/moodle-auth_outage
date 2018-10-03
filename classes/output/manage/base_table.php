@@ -84,7 +84,7 @@ class base_table extends flexible_table {
         $buttons .= html_writer::link(
             new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/preview'),
+                'src' => $OUTPUT->image_url('t/preview'),
                 'alt' => get_string('view'),
                 'class' => 'iconsmall',
 
@@ -100,7 +100,7 @@ class base_table extends flexible_table {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]),
                 html_writer::empty_tag('img', [
-                    'src' => $OUTPUT->pix_url('t/edit'),
+                    'src' => $OUTPUT->image_url('t/edit'),
                     'alt' => get_string('edit'),
                     'class' => 'iconsmall',
                 ]),
@@ -112,7 +112,7 @@ class base_table extends flexible_table {
         $buttons .= html_writer::link(
             new moodle_url('/auth/outage/edit.php', ['clone' => $outage->id]),
             html_writer::empty_tag('img', [
-                'src' => $OUTPUT->pix_url('t/copy'),
+                'src' => $OUTPUT->image_url('t/copy'),
                 'alt' => get_string('clone', 'auth_outage'),
                 'class' => 'iconsmall',
 
@@ -125,7 +125,7 @@ class base_table extends flexible_table {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/finish.php', ['id' => $outage->id]),
                 html_writer::empty_tag('img', [
-                    'src' => $OUTPUT->pix_url('t/check'),
+                    'src' => $OUTPUT->image_url('t/check'),
                     'alt' => get_string('finish', 'auth_outage'),
                     'class' => 'iconsmall',
                 ]),
@@ -138,7 +138,7 @@ class base_table extends flexible_table {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
                 html_writer::empty_tag('img', [
-                    'src' => $OUTPUT->pix_url('t/delete'),
+                    'src' => $OUTPUT->image_url('t/delete'),
                     'alt' => get_string('delete'),
                     'class' => 'iconsmall',
                 ]),

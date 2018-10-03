@@ -178,14 +178,14 @@ class renderer extends plugin_renderer_base {
         $url = new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']
+            ['src' => $OUTPUT->image_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']
         );
         $linkedit = html_writer::link($url, $img, ['title' => get_string('edit')]);
 
         $url = new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']
+            ['src' => $OUTPUT->image_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']
         );
         $linkdelete = html_writer::link($url, $img, ['title' => get_string('delete')]);
 

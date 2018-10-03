@@ -19,47 +19,51 @@ If you need to make changes here, remember to update your settings inside Moodle
 }
 
 #auth_outage_warningbar_box.auth_outage_warning_period {
-    background: repeating-linear-gradient(
-            -45deg,
-            #ff7c00,
-            #ff7c00 10px,
-            #ff6c00 10px,
-            #ff6c00 20px
+    background:
+        repeating-linear-gradient(
+        -45deg,
+        #ff7c00,
+        #ff7c00 10px,
+        #ff6c00 10px,
+        #ff6c00 20px
     );
     background-color: #ff7c00;
 }
 
 #auth_outage_warningbar_box.auth_outage_imminent_period {
-    background: repeating-linear-gradient(
-            -45deg,
-            #a000a0,
-            #a000a0 10px,
-            #800080 10px,
-            #800080 20px
+    background:
+        repeating-linear-gradient(
+        -45deg,
+        #a000a0,
+        #a000a0 10px,
+        #800080 10px,
+        #800080 20px
     );
     background-color: #800080;
 }
 
 #auth_outage_warningbar_box.auth_outage_ongoing_period {
-    background: repeating-linear-gradient(
-            -45deg,
-            #ee0000,
-            #ee0000 10px,
-            #cc0000 10px,
-            #cc0000 20px
+    background:
+        repeating-linear-gradient(
+        -45deg,
+        #e00,
+        #e00 10px,
+        #c00 10px,
+        #c00 20px
     );
-    background-color: #ee0000;
+    background-color: #e00;
 }
 
 #auth_outage_warningbar_box.auth_outage_finished_period {
-    background: repeating-linear-gradient(
-            -45deg,
-            #00aa00,
-            #00aa00 10px,
-            #009900 10px,
-            #009900 20px
+    background:
+        repeating-linear-gradient(
+        -45deg,
+        #0a0,
+        #0a0 10px,
+        #090 10px,
+        #090 20px
     );
-    background-color: #009900;
+    background-color: #090;
 }
 
 .auth_outage_warningbar_center {

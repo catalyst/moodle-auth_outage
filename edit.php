@@ -34,15 +34,15 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/formslib.php');
 
 admin_externalpage_setup('auth_outage_manage');
-$PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/auth/outage/manage.php'));
 
 $mform = new edit();
 
 if ($mform->is_cancelled()) {
-    redirect('/auth/outage/manage.php');
+    redirect(new moodle_url($CFG->wwwroot . '/auth/outage/manage.php'));
 } else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect('/auth/outage/manage.php#auth_outage_id_'.$id);
+    redirect(new moodle_url($CFG->wwwroot . '/auth/outage/manage.php#auth_outage_id_'.$id));
 }
 
 $clone = optional_param('clone', 0, PARAM_INT);

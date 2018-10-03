@@ -1,10 +1,5 @@
 language: php
 
-notifications:
-  email:
-    recipients:
-    - daniel.roperto@catalyst-au.net
-
 cache:
   directories:
     - $HOME/.composer/cache
@@ -19,9 +14,6 @@ env:
   - DB=pgsql MOODLE_BRANCH=MOODLE_30_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_31_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
-  - DB=pgsql MOODLE_BRANCH=master
-  - DB=mysqli MOODLE_BRANCH=master
 
 matrix:
   include:
@@ -29,9 +21,6 @@ matrix:
       env: DB=pgsql MOODLE_BRANCH=MOODLE_30_STABLE
     - php: 5.5
       env: DB=mysqli MOODLE_BRANCH=MOODLE_30_STABLE
-    - php: 7.1
-      env: DB=pgsql MOODLE_BRANCH=master
-
 
 before_install:
   - phpenv config-rm xdebug.ini

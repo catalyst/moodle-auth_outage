@@ -16,7 +16,6 @@ Feature: Manage outages
     And I log in as "admin"
     And I wait "1" seconds
 
-
   Scenario: Check if I can navigate to management page.
     Given I am on homepage
     When I navigate to "Manage" node in "Site administration > Plugins > Authentication > Outage manager"

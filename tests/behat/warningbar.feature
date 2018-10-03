@@ -10,7 +10,7 @@ Feature: Warning bar
   - ongoing is an outage that has started, but not yet reached the stop time nor is marked as finished.
   - finished is an outage that has explicitly been marked as finished.
   - stopped is an outage that has already ended but not explicitly marked as finished.
-  
+
   Background:
     Given the authentication plugin "outage" is enabled
 

@@ -87,7 +87,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body>Content<link rel="stylesheet" href="'.$externalcsslink.'"></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($localcsslink, $generated);
         self::assertContains($externalcsslink, $generated);
     }
@@ -145,7 +145,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body><img src="'.$localimglink.'">Content<img src="'.$externalimglink.'" /></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($localimglink, $generated);
         self::assertContains($externalimglink, $generated);
     }
@@ -158,7 +158,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = $this->generated_page_html($html);
 
         self::assertNotContains($link, $generated);
-        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
     }
 
     public function test_previewpath() {
@@ -172,7 +172,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
 
         self::assertNotContains($link, $generated);
-        self::assertContains('http://www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
+        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
     }
 
     /**
@@ -256,7 +256,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     public function test_get_url_for_file() {
         $io = new maintenance_static_page_io();
-        self::assertSame('http://www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
+        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
     }
 
     public function test_is_url() {

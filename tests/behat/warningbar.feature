@@ -14,7 +14,7 @@ Feature: Warning bar
   Background:
     Given the authentication plugin "outage" is enabled
 
-  Scenario: This is how an outage should happend without maintenance mode and manual finish.
+  Scenario: This is how an outage should happen without maintenance mode and manual finish.
     Given there is the following outage:
       | warnbefore | startsin | stopsafter |
       | 10         | 20       | 10         |
@@ -24,6 +24,7 @@ Feature: Warning bar
     And I reload the page
     Then I should see "Shutting down in" in the warning bar
     When I wait until the outage starts
+    And I reload the page
     Then I should see "Back online at" in the warning bar
     When I wait until the outage stops
     Then I should see "We are back online!" in the warning bar

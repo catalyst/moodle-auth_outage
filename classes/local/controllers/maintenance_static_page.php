@@ -57,7 +57,7 @@ class maintenance_static_page {
 
         if (is_null($outage)) {
             $html = null;
-        } else if (PHPUNIT_TEST) {
+        } else if (PHPUNIT_TEST || BEHAT_SITE_RUNNING) {
             $html = '<html></html>';
         } else {
             $data = maintenance_static_page_io::file_get_data(

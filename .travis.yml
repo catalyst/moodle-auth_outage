@@ -27,9 +27,9 @@ env:
 
 matrix:
   include:
-    - php: 5.5
+    - php: 5.6
       env: DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
-    - php: 5.5
+    - php: 5.6
       env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
     - php: 7.1
       env: DB=pgsql MOODLE_BRANCH=master
@@ -45,7 +45,7 @@ before_install:
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
 install:
-  - moodle-plugin-ci install -vvv
+  - moodle-plugin-ci install
 
 script:
  - moodle-plugin-ci phplint

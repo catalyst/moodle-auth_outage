@@ -58,8 +58,8 @@ class outagelib {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1); // It is localhost, time to connect is enough.
-        curl_setopt($curl, CURLOPT_TIMEOUT, 5); // It is localhost, time to fetch index is enough.
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5); // It is localhost, time to connect is enough.
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10); // It is localhost, time to fetch index is enough.
         $contents = curl_exec($curl);
         $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         curl_close($curl);

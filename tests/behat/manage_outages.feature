@@ -18,7 +18,7 @@ Feature: Manage outages
 
   Scenario: Check if I can navigate to management page.
     Given I am on homepage
-    When I navigate to "Manage" node in "Site administration > Plugins > Authentication > Outage manager"
+    When I navigate to "Plugins > Authentication > Outage manager > Manage outages" in site administration
     Then I should see "Planned outages"
     And I should see "No outages found." in the "#section_planned_outages" "css_element"
     And I should see "Outage history"

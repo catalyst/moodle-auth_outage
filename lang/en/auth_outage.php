@@ -94,7 +94,7 @@ $string['allowedipshasmyip'] = 'Your IP (<i>{$a->ip}</i>) is in the list and you
 $string['allowedipshasntmyip'] = 'Your IP (<i>{$a->ip}</i>) is not in the list and you will be blocked out during an outage.';
 $string['allowedipsnoconfig'] = 'Your config.php does not have the extra setup to allow blocking via IP.<br />Please refer to our <a href="https://github.com/catalyst/moodle-auth_outage#installation" target="_blank">README.md</a> file for more information.';
 $string['menusettings'] = 'Settings';
-$string['menumanage'] = 'Manage';
+$string['menumanage'] = 'Manage outages';
 $string['messageoutagebackonline'] = 'We are back online!';
 $string['messageoutagebackonlinedescription'] = 'You may resume browsing safely.';
 $string['messageoutageongoing'] = 'Back online at {$a->stop}.';

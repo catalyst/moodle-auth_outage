@@ -12,7 +12,7 @@ Feature: Change the default settings
     And I am an administrator
 
   Scenario Outline: Check if I can save the default settings.
-    When I navigate to "Settings" node in "Site administration > Plugins > Authentication > Outage manager"
+    When I navigate to "Plugins > Authentication > Outage manager > Settings" in site administration
     And I set the following fields to these values:
       | s_auth_outage_default_autostart           | <autostart>   |
       | s_auth_outage_default_warning_duration[v] | <warning>     |

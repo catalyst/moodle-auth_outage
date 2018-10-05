@@ -7,7 +7,7 @@ If you need to make changes here, remember to update your settings inside Moodle
     background-color: red;
     box-sizing: content-box;
     color: white;
-    height: 90px;
+    height: 100px;
     left: 0;
     padding: 0;
     position: fixed;
@@ -99,10 +99,14 @@ a.auth_outage_warningbar_box_finish:hover {
     background-color: black;
 }
 
-.navbar.navbar-fixed-top {
-    top: 90px;
-}
-
 .auth_outage_warningbar_spacer {
     height: 80px;
+}
+
+body.auth_outage #nav-drawer {
+    top: 150px;
+}
+
+body.auth_outage nav.fixed-top.navbar {
+    top: 100px;
 }

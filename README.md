@@ -3,7 +3,7 @@
 </a>
 
 # Moodle Outage manager plugin
-
+* [Version Support](#version-support)
 * [What is this?](#what-is-this)
 * [Moodle Requirements](#moodle-requirements)
 * [Screenshots](#screenshots)
@@ -12,6 +12,11 @@
 * [Quick Guide](#quick-guide)
 * [Why is it an auth plugin?](#why-it-is-an-auth-plugin)
 * [Feedback and issues](#feedback-and-issues)
+
+Version Support
+-------------
+The master branch supports Moodle 3.3 and higher.
+The MOODLE_32_STABLE branch supports Moodle 2.7 -> Moodle 3.2
 
 What is this?
 -------------

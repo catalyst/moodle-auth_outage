@@ -75,7 +75,7 @@ function auth_outage_get_climaintenance_resource_file($file) {
 
     // Protect against path traversal attacks.
     $basename = basename($file);
-    if ($basename !== $file) {
+    if ($basename !== $file && $file !== 'preview/' . $basename) {
         // @codingStandardsIgnoreStart
         if (!PHPUNIT_TEST) {
             error_log('Possible attempt for Path Traversal Attack (only filename expected): '.$file);

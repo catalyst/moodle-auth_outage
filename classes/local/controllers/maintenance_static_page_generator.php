@@ -30,6 +30,7 @@ use coding_exception;
 use DOMDocument;
 use DOMElement;
 use invalid_state_exception;
+use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -179,10 +180,12 @@ class maintenance_static_page_generator {
         foreach ($links as $link) {
             $rel = $link->getAttribute("rel");
             $href = $link->getAttribute("href");
-            if (($rel != 'shortcut icon') || ($href == '')) {
-                continue;
+            if (($rel == 'shortcut icon') && ($href != '')) {
+                if (!maintenance_static_page_io::is_url($href)) {
+                    $href = (string) new moodle_url($href);
+                }
+                $link->setAttribute('href', $this->io->generate_file_url($href)); // Works for most image formats.
             }
-            $link->setAttribute('href', $this->io->generate_file_url($href)); // Works for most image formats.
         }
     }
 
@@ -194,10 +197,12 @@ class maintenance_static_page_generator {
 
         foreach ($links as $link) {
             $src = $link->getAttribute("src");
-            if ($src == '') {
-                continue;
+            if ($src != '') {
+                if (!maintenance_static_page_io::is_url($src)) {
+                    $src = (string) new moodle_url($src);
+                }
+                $link->setAttribute('src', $this->io->generate_file_url($src)); // Works for most image formats.
             }
-            $link->setAttribute('src', $this->io->generate_file_url($src)); // Works for most image formats.
         }
     }
 

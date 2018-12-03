@@ -326,7 +326,7 @@ EOT;
      * @internal bootstrap_renderer $OUTPUT
      */
     public static function generate_plugin_configuration_warning() {
-        global $CFG, $OUTPUT;
+        global $CFG, $OUTPUT, $PAGE;
 
         $message = [];
 
@@ -338,8 +338,10 @@ EOT;
             $message[] = get_string('configurationdisabled', 'auth_outage');
         }
 
-        if (!self::check_wwwroot_accessible()) {
-            $message[] = get_string('configurationinaccessiblewwwroot', 'auth_outage', ['wwwroot' => $CFG->wwwroot]);
+        if ($PAGE->pagetype == "admin-setting-auth_outage" || $PAGE->pagetype == "admin-setting-authsettingoutage") {
+            if (!self::check_wwwroot_accessible()) {
+                $message[] = get_string('configurationinaccessiblewwwroot', 'auth_outage', ['wwwroot' => $CFG->wwwroot]);
+            }
         }
 
         if (count($message) == 0) {

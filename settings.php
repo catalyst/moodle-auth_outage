@@ -32,95 +32,98 @@ use auth_outage\local\outagelib;
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig && is_enabled_auth('outage')) {
-    $defaults = outagelib::get_config_defaults();
-    $settings->visiblename = get_string('menusettings', 'auth_outage');
+    if ($ADMIN->fulltree
+        && ($PAGE->pagetype == "admin-setting-auth_outage" || $PAGE->pagetype =="admin-setting-authsettingoutage")) {
+        $defaults = outagelib::get_config_defaults();
+        $settings->visiblename = get_string('menusettings', 'auth_outage');
 
-    $settings->add(new admin_setting_heading(
-        'defaults',
-        get_string('settingssectiondefaults', 'auth_outage'),
-        get_string('settingssectiondefaultsdescription', 'auth_outage')));
-    $settings->add(new admin_setting_configcheckbox(
-        'auth_outage/default_autostart',
-        get_string('defaultoutageautostart', 'auth_outage'),
-        get_string('defaultoutageautostartdescription', 'auth_outage'),
-        $defaults['default_autostart']
-    ));
-    $settings->add(new admin_setting_configduration(
-        'auth_outage/default_warning_duration',
-        get_string('defaultwarningduration', 'auth_outage'),
-        get_string('defaultwarningdurationdescription', 'auth_outage'),
-        $defaults['default_warning_duration'],
-        60
-    ));
-    $settings->add(new admin_setting_configduration(
-        'auth_outage/default_duration',
-        get_string('defaultoutageduration', 'auth_outage'),
-        get_string('defaultoutagedurationdescription', 'auth_outage'),
-        $defaults['default_duration'],
-        60
-    ));
-    $settings->add(new admin_setting_configtext(
-        'auth_outage/default_title',
-        get_string('defaulttitle', 'auth_outage'),
-        get_string('defaulttitledescription', 'auth_outage'),
-        $defaults['default_title'],
-        PARAM_TEXT
-    ));
-    $settings->add(new admin_setting_configtextarea(
-        'auth_outage/default_description',
-        get_string('defaultdescription', 'auth_outage'),
-        get_string('defaultdescriptiondescription', 'auth_outage'),
-        $defaults['default_description'],
-        PARAM_RAW
-    ));
+        $settings->add(new admin_setting_heading(
+            'defaults',
+            get_string('settingssectiondefaults', 'auth_outage'),
+            get_string('settingssectiondefaultsdescription', 'auth_outage')));
+        $settings->add(new admin_setting_configcheckbox(
+            'auth_outage/default_autostart',
+            get_string('defaultoutageautostart', 'auth_outage'),
+            get_string('defaultoutageautostartdescription', 'auth_outage'),
+            $defaults['default_autostart']
+        ));
+        $settings->add(new admin_setting_configduration(
+            'auth_outage/default_warning_duration',
+            get_string('defaultwarningduration', 'auth_outage'),
+            get_string('defaultwarningdurationdescription', 'auth_outage'),
+            $defaults['default_warning_duration'],
+            60
+        ));
+        $settings->add(new admin_setting_configduration(
+            'auth_outage/default_duration',
+            get_string('defaultoutageduration', 'auth_outage'),
+            get_string('defaultoutagedurationdescription', 'auth_outage'),
+            $defaults['default_duration'],
+            60
+        ));
+        $settings->add(new admin_setting_configtext(
+            'auth_outage/default_title',
+            get_string('defaulttitle', 'auth_outage'),
+            get_string('defaulttitledescription', 'auth_outage'),
+            $defaults['default_title'],
+            PARAM_TEXT
+        ));
+        $settings->add(new admin_setting_configtextarea(
+            'auth_outage/default_description',
+            get_string('defaultdescription', 'auth_outage'),
+            get_string('defaultdescriptiondescription', 'auth_outage'),
+            $defaults['default_description'],
+            PARAM_RAW
+        ));
 
-    $settings->add(new admin_setting_heading(
-        'plugin',
-        get_string('settingssectionplugin', 'auth_outage'),
-        get_string('settingssectionplugindescription', 'auth_outage')));
+        $settings->add(new admin_setting_heading(
+            'plugin',
+            get_string('settingssectionplugin', 'auth_outage'),
+            get_string('settingssectionplugindescription', 'auth_outage')));
 
-    $settings->add(new admin_setting_configtextarea(
-        'auth_outage/css',
-        get_string('defaultlayoutcss', 'auth_outage'),
-        get_string('defaultlayoutcssdescription', 'auth_outage'),
-        $defaults['css'],
-        PARAM_RAW
-    ));
+        $settings->add(new admin_setting_configtextarea(
+            'auth_outage/css',
+            get_string('defaultlayoutcss', 'auth_outage'),
+            get_string('defaultlayoutcssdescription', 'auth_outage'),
+            $defaults['css'],
+            PARAM_RAW
+        ));
 
-    // Create 'Allowed IPs' settings.
-    $allowedips = outagelib::get_config()->allowedips;
-    $description = outagelib::generate_plugin_configuration_warning();
-    if (trim($allowedips) == '') {
-        $message = 'allowedipsempty';
-        $type = 'notifymessage';
-    } else if (remoteip_in_list($allowedips)) {
-        $message = 'allowedipshasmyip';
-        $type = 'notifysuccess';
-    } else {
-        $message = 'allowedipshasntmyip';
-        $type = 'notifyerror';
-    };
-    $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
+        // Create 'Allowed IPs' settings.
+        $allowedips = outagelib::get_config()->allowedips;
+        $description = outagelib::generate_plugin_configuration_warning();
+        if (trim($allowedips) == '') {
+            $message = 'allowedipsempty';
+            $type = 'notifymessage';
+        } else if (remoteip_in_list($allowedips)) {
+            $message = 'allowedipshasmyip';
+            $type = 'notifysuccess';
+        } else {
+            $message = 'allowedipshasntmyip';
+            $type = 'notifyerror';
+        };
+        $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 
-    $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
-    $iplist = new admin_setting_configiplist(
-        'auth_outage/allowedips',
-        get_string('allowediplist', 'admin'),
-        $description,
-        $defaults['allowedips']
-    );
-    $iplist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
-    $settings->add($iplist);
+        $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
+        $iplist = new admin_setting_configiplist(
+            'auth_outage/allowedips',
+            get_string('allowediplist', 'admin'),
+            $description,
+            $defaults['allowedips']
+        );
+        $iplist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+        $settings->add($iplist);
 
-    // Create 'Static Page - Elements to Remove' settings.
-    $toremove = new admin_setting_configtextarea(
-        'auth_outage/remove_selectors',
-        get_string('removeselectors', 'auth_outage'),
-        get_string('removeselectorsdescription', 'auth_outage'),
-        $defaults['remove_selectors']
-    );
-    $toremove->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
-    $settings->add($toremove);
+        // Create 'Static Page - Elements to Remove' settings.
+        $toremove = new admin_setting_configtextarea(
+            'auth_outage/remove_selectors',
+            get_string('removeselectors', 'auth_outage'),
+            get_string('removeselectorsdescription', 'auth_outage'),
+            $defaults['remove_selectors']
+        );
+        $toremove->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+        $settings->add($toremove);
+    }
 
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));

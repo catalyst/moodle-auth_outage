@@ -125,6 +125,15 @@ var authOutageWarningBar = {
         if (seconds < 10) {
             seconds = "0" + seconds;
         }
-        return days + ' day(s) ' + hours + ':' + minutes + ':' + seconds;
+        if (days > 0) {
+            if (days > 1) {
+                days = days + ' days ';
+            } else {
+                days = days + ' day ';
+            }
+        } else {
+            days = '';
+        }
+        return days + hours + ':' + minutes + ':' + seconds;
     }
 };

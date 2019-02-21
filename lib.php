@@ -87,3 +87,14 @@ function auth_outage_get_climaintenance_resource_file($file) {
     $realpath = realpath($resourcedir.'/'.$file);
     return ($realpath == false) ? null : $realpath;
 }
+
+/**
+ * Display required icon for the calendar events.
+ *
+ * @return array
+ */
+function auth_outage_get_fontawesome_icon_map() {
+    return [
+        'core:i/auth_outageevent' => 'fa-power-off',
+    ];
+}

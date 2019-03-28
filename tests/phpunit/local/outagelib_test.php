@@ -113,7 +113,7 @@ class outagelib_test extends advanced_testcase {
     public function test_inject_broken() {
         $_GET = ['auth_outage_break_code' => '1'];
         outagelib::reinject();
-        self::assertCount(2, phpunit_util::get_debugging_messages());
+        self::assertCount(0, phpunit_util::get_debugging_messages());
         phpunit_util::reset_debugging();
     }
 
@@ -289,7 +289,7 @@ class outagelib_test extends advanced_testcase {
 if ((time() >= 123) && (time() < 456)) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
-    if (!remoteip_in_list('heyyou
+    if (!remoteip_in_list('hey\'\"you
 a.b.c.d
 e.e.e.e/20')) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');

@@ -246,7 +246,7 @@ class outagelib {
         }
         // I know Moodle validation would clean up this field, but just in case, let's ensure no
         // single-quotes (and double for the sake of it) are present otherwise it would break the code.
-        $allowedips = str_replace('\'"', '', $allowedips);
+        $allowedips = addslashes($allowedips);
 
         $code = <<<'EOT'
 <?php

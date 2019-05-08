@@ -41,7 +41,7 @@ require_once($CFG->libdir.'/adminlib.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings(public) Allow as many methods as needed.
  */
-class outagelib_test extends advanced_testcase {
+class outagelib_test extends auth_outage_base_testcase {
     /**
      * Check if maintenance message is disabled as needed.
      */

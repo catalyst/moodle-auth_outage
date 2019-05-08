@@ -74,4 +74,9 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
         $CFG->wwwroot = 'http://www.example.com/moodle';
         $CFG->httpswwwroot = $CFG->wwwroot;
     }
+
+    public function tearDown() {
+        global $DB;
+        $DB->delete_records('auth_outage');
+    }
 }

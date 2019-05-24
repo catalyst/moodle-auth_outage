@@ -26,6 +26,7 @@
 namespace auth_outage\output;
 
 use auth_outage\local\outage;
+use auth_outage\local\outagelib;
 use coding_exception;
 use core_user;
 use html_writer;
@@ -196,35 +197,38 @@ class renderer extends plugin_renderer_base {
             $finished = userdate($finished, get_string('datetimeformat', 'auth_outage'));
         }
 
-        return html_writer::div(
+        $start = outagelib::OUTAGE_START;
+        $end = outagelib::OUTAGE_END;
+        $outagehtml = html_writer::div(
             html_writer::tag('blockquote',
-                html_writer::div(html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->id])).
-                html_writer::div(html_writer::tag('i', $outage->get_description())).
-                html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderwarnbefore', 'auth_outage').': ').
-                    format_time($outage->get_warning_duration())
-                ).
-                html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderstarttime', 'auth_outage').': ').
-                    userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'))
-                ).
-                html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderdurationplanned', 'auth_outage').': ').
-                    format_time($outage->get_duration_planned())
-                ).
-                html_writer::div(
-                    html_writer::tag('b', get_string('tableheaderdurationactual', 'auth_outage').': ').
-                    $finished
-                ).
-                html_writer::div(
-                    html_writer::tag('small',
-                        'Created by '.$created.
-                        ', modified by '.$modified.' on '.
-                        userdate($outage->lastmodified, get_string('datetimeformat', 'auth_outage'))
-                    )
-                ).
-                ($buttons ? html_writer::div($linkedit.$linkdelete) : '')
+                             html_writer::div(html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->id])).
+                             html_writer::div(html_writer::tag('i', $outage->get_description())).
+                             html_writer::div(
+                                 html_writer::tag('b', get_string('tableheaderwarnbefore', 'auth_outage').': ').
+                                 format_time($outage->get_warning_duration())
+                             ).
+                             html_writer::div(
+                                 html_writer::tag('b', get_string('tableheaderstarttime', 'auth_outage').': ').
+                                 userdate($outage->starttime, get_string('datetimeformat', 'auth_outage'))
+                             ).
+                             html_writer::div(
+                                 html_writer::tag('b', get_string('tableheaderdurationplanned', 'auth_outage').': ').
+                                 format_time($outage->get_duration_planned())
+                             ).
+                             html_writer::div(
+                                 html_writer::tag('b', get_string('tableheaderdurationactual', 'auth_outage').': ').
+                                 $finished
+                             ).
+                             html_writer::div(
+                                 html_writer::tag('small',
+                                                  'Created by '.$created.
+                                                  ', modified by '.$modified.' on '.
+                                                  userdate($outage->lastmodified, get_string('datetimeformat', 'auth_outage'))
+                                 )
+                             ).
+                             ($buttons ? html_writer::div($linkedit.$linkdelete) : '')
             )
         );
+        return $start . $outagehtml . $end;
     }
 }

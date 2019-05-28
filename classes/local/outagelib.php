@@ -47,6 +47,11 @@ require_once(__DIR__.'/../../lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib {
+
+    const OUTAGE_START = '<!-- OUTAGESTART -->';
+
+    const OUTAGE_END = '<!-- OUTAGEEND -->';
+
     /**
      * @var bool Flags in the injection function was already called.
      */
@@ -86,6 +91,8 @@ class outagelib {
             if (!self::injection_allowed()) {
                 return;
             }
+
+            self::clean_outages();
 
             // Check for a previewing outage, then for an active outage.
             $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
@@ -355,5 +362,27 @@ EOT;
         }
 
         return $message;
+    }
+
+    /**
+     * Checks $CFG->additionalhtmltopofbody for saved outages and removes them.
+     * We should only be temporarily injecting into that variable and not saving them to the database.
+     *
+     * @return string the cleaned content
+     */
+    public static function clean_outages() {
+        global $CFG;
+
+        // Replace the content to clean up pages that do not have the injection.
+        $re = '/' . self::OUTAGE_START . '[\s\S]*' . self::OUTAGE_END . '/m';
+        $replaced = preg_replace($re, '', $CFG->additionalhtmltopofbody);
+
+        // We have removed the outages and any duplicates as it should be injected and not saved to $CFG.
+        if ($CFG->additionalhtmltopofbody != $replaced) {
+            set_config('additionalhtmltopofbody', $replaced);
+            return $replaced;
+        }
+
+        return '';
     }
 }

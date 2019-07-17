@@ -49,8 +49,8 @@ class calendar_test extends advanced_testcase {
      * Creates an outage and checks if its in the calendar.
      */
     public function test_create() {
+        $this->resetAfterTest(true);
         self::setAdminUser();
-        $this->resetAfterTest(false);
 
         $time = time();
         self::$outage = new outage([
@@ -70,8 +70,20 @@ class calendar_test extends advanced_testcase {
      * Updates an outage and checks the calendar.
      */
     public function test_update() {
+        $this->resetAfterTest(true);
         self::setAdminUser();
-        $this->resetAfterTest(false);
+
+        $time = time();
+        self::$outage = new outage([
+            'id' => 1,
+            'autostart' => false,
+            'warntime' => $time - 100,
+            'starttime' => $time,
+            'stoptime' => $time + (2 * 60 * 60),
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        calendar::create(self::$outage);
 
         self::$outage->title = 'New Title';
         calendar::update(self::$outage);
@@ -82,8 +94,22 @@ class calendar_test extends advanced_testcase {
      * Deletes an outage and checks the calendar.
      */
     public function test_delete() {
-        self::setAdminUser();
         $this->resetAfterTest(true);
+        self::setAdminUser();
+
+        $time = time();
+        self::$outage = new outage([
+            'id' => 1,
+            'autostart' => false,
+            'warntime' => $time - 100,
+            'starttime' => $time,
+            'stoptime' => $time + (2 * 60 * 60),
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        calendar::create(self::$outage);
+
+        $this->check_calendar();
 
         calendar::delete(self::$outage->id);
         self::assertNull(calendar::load(self::$outage->id));
@@ -93,8 +119,8 @@ class calendar_test extends advanced_testcase {
      * Try to update a non existing outage.
      */
     public function test_update_notfound() {
-        self::setAdminUser();
         $this->resetAfterTest(true);
+        self::setAdminUser();
 
         $time = time();
         $outage = new outage([
@@ -116,8 +142,9 @@ class calendar_test extends advanced_testcase {
      * Try to delete a non existing outage.
      */
     public function test_delete_notfound() {
-        self::setAdminUser();
         $this->resetAfterTest(true);
+        self::setAdminUser();
+
         calendar::delete(1);
         self::assertCount(1, phpunit_util::get_debugging_messages());
         phpunit_util::reset_debugging();

@@ -57,7 +57,7 @@ class events_test extends advanced_testcase {
     public function test_save() {
         global $DB;
         self::setAdminUser();
-        $this->resetAfterTest(false);
+        $this->resetAfterTest(true);
 
         // Save new outage.
         $now = time();
@@ -90,7 +90,20 @@ class events_test extends advanced_testcase {
         global $DB;
 
         self::setAdminUser();
-        $this->resetAfterTest(false);
+        $this->resetAfterTest(true);
+
+        // Save new outage.
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 60,
+            'starttime' => 60,
+            'stoptime' => 120,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        $outage->id = outagedb::save($outage);
+        self::$outage = $outage;
 
         self::$outage->starttime += 10;
         outagedb::save(self::$outage);
@@ -116,6 +129,19 @@ class events_test extends advanced_testcase {
 
         self::setAdminUser();
         $this->resetAfterTest(true);
+
+        // Save new outage.
+        $now = time();
+        $outage = new outage([
+            'autostart' => false,
+            'warntime' => $now - 60,
+            'starttime' => 60,
+            'stoptime' => 120,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+        $outage->id = outagedb::save($outage);
+        self::$outage = $outage;
 
         outagedb::delete(self::$outage->id);
 

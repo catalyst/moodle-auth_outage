@@ -8,6 +8,7 @@
 * [Moodle Requirements](#moodle-requirements)
 * [Screenshots](#screenshots)
 * [Installation](#installation)
+* [Theme configuration](#theme-configuration)
 * [How to use](#how-to-use)
 * [Quick Guide](#quick-guide)
 * [Why is it an auth plugin?](#why-it-is-an-auth-plugin)
@@ -87,6 +88,20 @@ if (file_exists(__DIR__.'/auth/outage/bootstrap.php')) {
     require(__DIR__.'/auth/outage/bootstrap.php');
 }
 ```
+
+Theme configuration
+-------------------
+
+This plugin must work gracefully with your theme, but every theme can be different so it's impossible to get this right out of the box (other than with the default moodle theme Boost).
+
+There is an admin setting which allows you to add or override and css to fix css issues. Typically these include properly pushing the page down when the outage notification bar is visible, including making this work with fixed headers and when the hamburger menu is open / closed and at different responsive breakpoints.
+
+This can be found at:
+
+`Dashboard / Site administration / Plugins / Authentication / Outage manager / Settings`
+
+
+
 
 How to use
 ----------

@@ -158,6 +158,7 @@ class outagelib {
             'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description'      => get_string('defaultdescriptionvalue', 'auth_outage'),
             'remove_selectors'         => ".usermenu\n.logininfo\n.homelink",
+            'top_margin'               => "150" 
         ];
     }
 

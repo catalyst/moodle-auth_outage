@@ -62,7 +62,15 @@ if (!$viewbag['static']) {
 ?>
     <style>
         <?php
+            $applytopmargin = outagelib::get_config()->top_margin . 'px';
             readfile($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css');
+            echo "body.auth_outage div#page-wrapper div#page {
+                margin-top: $applytopmargin;
+            }
+            body.auth_outage #nav-drawer[data-region='drawer'] {
+                height: calc(100% - $applytopmargin);
+            }";
+            
             echo outagelib::get_config()->css;
         ?>
     </style>

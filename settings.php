@@ -122,6 +122,14 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $toremove->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
     $settings->add($toremove);
 
+    $setmargintop = new admin_setting_configtext(
+        'auth_outage/top_margin',
+        get_string('topmargin', 'auth_outage'),
+        get_string('topmargindescription', 'auth_outage'),
+        $defaults['top_margin']
+    );
+    $settings->add($setmargintop);
+
     // Create category for Outage.
     $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));
     // Add settings page toconfigure defaults.

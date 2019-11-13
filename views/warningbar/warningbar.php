@@ -70,7 +70,6 @@ if (!$viewbag['static']) {
             body.auth_outage #nav-drawer[data-region='drawer'] {
                 height: calc(100% - $applytopmargin);
             }";
-            
             echo outagelib::get_config()->css;
         ?>
     </style>

@@ -119,7 +119,7 @@ Creates a new outage.
   -c,  --clone              clone another outage except for the start time.
   -a,  --autostart          must be Y or N, sets if the outage automatically triggers maintenance mode.
   -w,  --warn               how many seconds before it starts to display a warning.
-  -s,  --start              in how many seconds should this outage start. Required.
+  -s,  --start              in how many seconds should this outage start or unix time to start outage. Required.
   -d,  --duration           how many seconds should the outage last.
   -t,  --title              the title of the outage.
   -e,  --description        the description of the outage.

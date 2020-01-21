@@ -170,7 +170,9 @@ class create extends clibase {
         $this->become_admin_user();
 
         // Create the outage.
-        $start = $this->time + $options['start'];
+        // If time is above 1500000000 then it must be a unix time timestamp, otherwise they are trying to create
+        // an outage 47 years in advance.
+        $start = $options['start'] > 1500000000 ? $options['start'] : $this->time + $options['start'];
         $outage = new outage([
             'autostart' => $options['autostart'],
             'warntime' => $start - $options['warn'],

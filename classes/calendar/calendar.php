@@ -65,7 +65,7 @@ class calendar {
             debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
             self::create($outage);
         } else {
-            $event->update(self::create_data($outage));
+            $event->update(self::create_data($outage), false);
         }
     }
 

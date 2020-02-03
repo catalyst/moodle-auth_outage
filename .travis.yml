@@ -59,4 +59,7 @@ script:
  - moodle-plugin-ci mustache
  - moodle-plugin-ci grunt
  - moodle-plugin-ci phpunit
- - moodle-plugin-ci behat
+# Behat tests are failing due to issue:
+# https://github.com/blackboard-open-source/moodle-plugin-ci/issues/70
+# Commenting it out until the issue is fixed.
+# - moodle-plugin-ci behat

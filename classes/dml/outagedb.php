@@ -135,7 +135,7 @@ class outagedb {
         }
 
         // Trigger outages modified events.
-        outagelib::prepare_next_outage();
+        outagelib::prepare_next_outage(true);
 
         // All done, return the id.
         return $outage->id;

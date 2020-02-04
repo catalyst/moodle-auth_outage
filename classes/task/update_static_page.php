@@ -42,15 +42,18 @@ defined('MOODLE_INTERNAL') || die();
  */
 class update_static_page extends scheduled_task {
     /**
-     * Gets the name of this event.
-     * @return string Name of this event.
+     * Get a descriptive name for this task (shown to admins).
+     *
+     * @return string
+     * @throws \coding_exception
      */
     public function get_name() {
         return get_string('taskupdatestaticpage', 'auth_outage');
     }
 
     /**
-     * Executes the event.
+     * Do the job.
+     * Throw exceptions on errors (the job will be retried).
      */
     public function execute() {
         $outage = outagedb::get_ongoing();

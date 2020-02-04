@@ -42,7 +42,7 @@ if ($mform->is_cancelled()) {
     redirect(new moodle_url('/auth/outage/manage.php'));
 } else if ($outage = $mform->get_data()) {
     $id = outagedb::save($outage);
-    redirect($CFG->wwwroot. '/auth/outage/manage.php#auth_outage_id_'.$id);
+    redirect(new moodle_url('/auth/outage/manage.php'));
 }
 
 $clone = optional_param('clone', 0, PARAM_INT);

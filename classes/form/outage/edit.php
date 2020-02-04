@@ -163,10 +163,16 @@ class edit extends moodleform {
                 $this->_form->addElement('html',
                     $OUTPUT->notification(get_string('warningreenablemaintenancemode', 'auth_outage'), 'notifywarning'));
             }
-
-            $this->add_action_buttons();
         } else {
             throw new coding_exception('$outage must be an outage object.', $outage);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see moodleform::definition_after_data()
+     */
+    public function definition_after_data() {
+        $this->add_action_buttons();
     }
 }

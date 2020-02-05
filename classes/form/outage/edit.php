@@ -82,6 +82,7 @@ class edit extends moodleform {
         $mform->addHelpButton('description', 'description', 'auth_outage');
 
         $mform->addElement('static', 'usagehints', '', get_string('textplaceholdershint', 'auth_outage'));
+        $mform->addElement('static', 'warningreenablemaintenancemode', '');
 
         $this->add_action_buttons();
     }
@@ -146,6 +147,9 @@ class edit extends moodleform {
      * @throws coding_exception
      */
     public function set_data($outage) {
+        global $OUTPUT;
+        $mform = $this->_form;
+
         // Cannot change method signature, check type.
         if ($outage instanceof outage) {
             $this->_form->setDefaults([
@@ -157,6 +161,11 @@ class edit extends moodleform {
                 'title' => $outage->title,
                 'description' => ['text' => $outage->description, 'format' => '1'],
             ]);
+
+            if (!empty($outage->id) && $outage->autostart && $outage->starttime < time() && $outage->stoptime > time()) {
+                $warning = $mform->getElement('warningreenablemaintenancemode');
+                $warning->setValue($OUTPUT->notification(get_string('warningreenablemaintenancemode', 'auth_outage'), 'notifywarning'));
+            }
         } else {
             throw new coding_exception('$outage must be an outage object.', $outage);
         }

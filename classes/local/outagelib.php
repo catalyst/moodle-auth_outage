@@ -163,16 +163,25 @@ class outagelib {
 
     /**
      * Executed when outages are modified (created, updated or deleted).
+     *
+     * @param bool $reenablemaint should we re-enable maintenance mode for ongoing outage
+     * @throws coding_exception
+     * @throws file_exception
      */
-    public static function prepare_next_outage() {
+    public static function prepare_next_outage($reenablemaint = false) {
         // If there is an ongoing outage, prepare it instead.
         $outage = outagedb::get_ongoing();
         if (is_null($outage)) {
             $outage = outagedb::get_next_starting();
+            $ongoingoutage = false;
+        } else {
+            $ongoingoutage = true;
         }
         maintenance_static_page::create_from_outage($outage)->generate();
         self::update_climaintenance_code($outage);
-        self::update_maintenance_later($outage);
+        if (!$ongoingoutage || $reenablemaint || is_null($outage)) {
+            self::update_maintenance_later($outage);
+        }
     }
 
     private static function check_wwwroot_accessible() {

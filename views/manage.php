@@ -26,9 +26,11 @@
 use auth_outage\output\manage\history_table;
 use auth_outage\output\manage\planned_table;
 use auth_outage\output\renderer;
+use auth_outage\dml\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $OUTPUT;
 $urlnew = new moodle_url('/auth/outage/edit.php');
 
 echo $viewbag['warning'];
@@ -47,9 +49,10 @@ echo $viewbag['warning'];
         $table->finish_output();
         ?>
     <?php endif; ?>
-    <input type="button" class="form-submit"
-           value="<?php echo get_string('outagecreate', 'auth_outage'); ?>"
-           onclick="location.href='<?php echo $urlnew; ?>';"/>
+    <?php $outage = outagedb::get_ongoing(); ?>
+    <?php if (is_null($outage)): ?>
+        <?php echo $OUTPUT->single_button($urlnew, get_string('outagecreate', 'auth_outage')); ?>
+    <?php endif; ?>
 </section>
 
 <section id="section_outage_history">

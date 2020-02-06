@@ -148,7 +148,7 @@ class maintenance_static_page_generator {
         global $CFG;
 
         $contents = file_get_contents($filename);
-        if (!preg_match_all('#url\([\'"]?([^\'"\)]+)#', $contents, $matches)) {
+        if (!preg_match_all('#url\([\'"]?(?!data:)([^\'"\)]+)#', $contents, $matches)) {
             return;
         }
         foreach ($matches[1] as $originalurl) {

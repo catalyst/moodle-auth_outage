@@ -156,7 +156,25 @@ class maintenance_static_page_generator {
             if (maintenance_static_page_io::is_url($originalurl)) {
                 $fullurl = $originalurl;
             } else if ($originalurl[0] == '/') {
-                $fullurl = $CFG->wwwroot.$originalurl;
+                if (strpos($CFG->wwwroot, 'http://') === 0) {
+                    $domain = substr($CFG->wwwroot, 7);
+                    if (strpos($domain, '/') > 0) {
+                        $base = substr($domain, 0, strpos($domain, '/'));
+                    } else {
+                        $base = $domain;
+                    }
+                    $fullurl = 'http://'.$base.$originalurl;
+                } else if (strpos($CFG->wwwroot, 'https://') === 0) {
+                    $domain = substr($CFG->wwwroot, 8);
+                    if (strpos($domain, '/') > 0) {
+                        $base = substr($domain, 0, strpos($domain, '/'));
+                    } else {
+                        $base = $domain;
+                    }
+                    $fullurl = 'https://'.$base.$originalurl;
+                } else {
+                    $fullurl = $CFG->wwwroot.$originalurl;
+                }
             } else {
                 $fullurl = $baseref.'/'.$originalurl;
             }

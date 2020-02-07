@@ -101,7 +101,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/622ef6e83acfcb274cdf37bdb3bffa0923f9a7ad.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/d8643101d96b093e642b15544e4d1f7815b5ba55.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
@@ -116,7 +116,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/1d84b6d321fef780237f84834b7316c079221a31.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/9fe2374b03953e1949d54ab750be2d8706891c03.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');

@@ -25,6 +25,7 @@
 
 use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\local\controllers\maintenance_static_page_io;
+use auth_outage\local\controllers\maintenance_static_page_generator;
 use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
@@ -394,5 +395,66 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         return $generated;
 
         self::assertContains('<meta http-equiv="refresh" content="5">', $generated);
+    }
+
+    /**
+     * Data provider for test_get_urls_from_stylesheet
+     * @return array
+     */
+    public function test_get_urls_from_stylesheet_provider() {
+        $provider = array();
+
+        $filecontent = "";
+        $provider[] = array($filecontent, 0);
+
+        $filecontent = "background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)";
+        $provider[] = array($filecontent, 1);
+
+        $filecontent = "background:url('/theme/image.php/_s/boost/core/1581292565/t/expanded')";
+        $provider[] = array($filecontent, 1);
+
+        $filecontent = "src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")";
+        $provider[] = array($filecontent, 1);
+
+        $filecontent = "background-image:url(pix/vline-rtl.gif)";
+        $provider[] = array($filecontent, 1);
+
+        $filecontent = "background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)";
+        $provider[] = array($filecontent, 0);
+
+        $filecontent = "background-image:url('data:image/gif;base64,R0lGODlhYADIAP=')";
+        $provider[] = array($filecontent, 0);
+
+        $filecontent = "background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'".
+            "viewBox=\'0 0 8 8\'%3E%3Cpath fill=\'%23fff\' d=\'M6.564.75l-3.59 2.193z\'/%3E%3C/svg%3E\")";
+        $provider[] = array($filecontent, 0);
+
+        $filecontent = "background-image:url(pix/vline-rtl.gif)".
+            "background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)";
+        $provider[] = array($filecontent, 2);
+
+        $filecontent = "background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)".
+            "src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")";
+        $provider[] = array($filecontent, 1);
+
+        return $provider;
+    }
+
+    /**
+     * Tests get_urls_from_stylesheet() method to get all appropriate URLS from the file.
+     *
+     * @dataProvider test_get_urls_from_stylesheet_provider
+     * @param string $filecontent Content of the file
+     * @param int $count Expected quantity of found URLs
+     * @throws coding_exception
+     */
+    public function test_get_urls_from_stylesheet($filecontent, $count) {
+        $this->resetAfterTest(true);
+        $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
+        $matches = $generator->get_urls_from_stylesheet($filecontent);
+
+        self::assertIsArray($matches);
+        self::assertCount(2, $matches);
+        self::assertCount($count, $matches[1]);
     }
 }

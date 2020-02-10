@@ -402,42 +402,22 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
      * @return array
      */
     public function test_get_urls_from_stylesheet_provider() {
-        $provider = array();
-
-        $filecontent = "";
-        $provider[] = array($filecontent, 0);
-
-        $filecontent = "background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)";
-        $provider[] = array($filecontent, 1);
-
-        $filecontent = "background:url('/theme/image.php/_s/boost/core/1581292565/t/expanded')";
-        $provider[] = array($filecontent, 1);
-
-        $filecontent = "src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")";
-        $provider[] = array($filecontent, 1);
-
-        $filecontent = "background-image:url(pix/vline-rtl.gif)";
-        $provider[] = array($filecontent, 1);
-
-        $filecontent = "background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)";
-        $provider[] = array($filecontent, 0);
-
-        $filecontent = "background-image:url('data:image/gif;base64,R0lGODlhYADIAP=')";
-        $provider[] = array($filecontent, 0);
-
-        $filecontent = "background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'".
-            "viewBox=\'0 0 8 8\'%3E%3Cpath fill=\'%23fff\' d=\'M6.564.75l-3.59 2.193z\'/%3E%3C/svg%3E\")";
-        $provider[] = array($filecontent, 0);
-
-        $filecontent = "background-image:url(pix/vline-rtl.gif)".
-            "background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)";
-        $provider[] = array($filecontent, 2);
-
-        $filecontent = "background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)".
-            "src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")";
-        $provider[] = array($filecontent, 1);
-
-        return $provider;
+        return [
+            // Empty string.
+            ["", 0],
+            // URLs that should be retrieved.
+            ["background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)", 1],
+            ["background:url('/theme/image.php/_s/boost/core/1581292565/t/expanded')", 1],
+            ["src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")", 1],
+            ["background-image:url(pix/vline-rtl.gif)", 1],
+            // URLs that should not be retrieved.
+            ["background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)", 0],
+            ["background-image:url('data:image/gif;base64,R0lGODlhYADIAP=')", 0],
+            ["background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'\")", 0],
+            // Combination of URLs used above.
+            ["background-image:url(pix/vline-rtl.gif) background:url(/theme/image.php/_s/boost/core/158/t/expanded)", 2],
+            ["background-image:url(data:image/gif;base64,R0lG=)src:url(\"/theme/font.php/fontawesome-webfont.eot\")", 1],
+        ];
     }
 
     /**

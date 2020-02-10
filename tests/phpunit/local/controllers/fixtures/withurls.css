@@ -3,5 +3,5 @@ a {
 }
 
 div {
-    background-image: url(/auth/outage/tests/phpunit/local/controllers/fixtures/catalyst.png);
+    background-image: url(/moodle/auth/outage/tests/phpunit/local/controllers/fixtures/catalyst.png);
 }

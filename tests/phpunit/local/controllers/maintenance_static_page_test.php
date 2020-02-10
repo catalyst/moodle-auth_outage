@@ -25,6 +25,7 @@
 
 use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\local\controllers\maintenance_static_page_io;
+use auth_outage\local\controllers\maintenance_static_page_generator;
 use auth_outage\task\update_static_page;
 
 defined('MOODLE_INTERNAL') || die();
@@ -101,7 +102,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/622ef6e83acfcb274cdf37bdb3bffa0923f9a7ad.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/d8643101d96b093e642b15544e4d1f7815b5ba55.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
@@ -116,7 +117,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/1d84b6d321fef780237f84834b7316c079221a31.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/9fe2374b03953e1949d54ab750be2d8706891c03.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
@@ -394,5 +395,46 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         return $generated;
 
         self::assertContains('<meta http-equiv="refresh" content="5">', $generated);
+    }
+
+    /**
+     * Data provider for test_get_urls_from_stylesheet
+     * @return array
+     */
+    public function test_get_urls_from_stylesheet_provider() {
+        return [
+            // Empty string.
+            ["", 0],
+            // URLs that should be retrieved.
+            ["background:url(/theme/image.php/_s/boost/core/1581292565/t/expanded)", 1],
+            ["background:url('/theme/image.php/_s/boost/core/1581292565/t/expanded')", 1],
+            ["src:url(\"/theme/font.php/boost/core/1581292565/fontawesome-webfont.eot?#iefix&v=4.7.0\")", 1],
+            ["background-image:url(pix/vline-rtl.gif)", 1],
+            // URLs that should not be retrieved.
+            ["background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)", 0],
+            ["background-image:url('data:image/gif;base64,R0lGODlhYADIAP=')", 0],
+            ["background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'\")", 0],
+            // Combination of URLs used above.
+            ["background-image:url(pix/vline-rtl.gif) background:url(/theme/image.php/_s/boost/core/158/t/expanded)", 2],
+            ["background-image:url(data:image/gif;base64,R0lG=)src:url(\"/theme/font.php/fontawesome-webfont.eot\")", 1],
+        ];
+    }
+
+    /**
+     * Tests get_urls_from_stylesheet() method to get all appropriate URLS from the file.
+     *
+     * @dataProvider test_get_urls_from_stylesheet_provider
+     * @param string $filecontent Content of the file
+     * @param int $count Expected quantity of found URLs
+     * @throws coding_exception
+     */
+    public function test_get_urls_from_stylesheet($filecontent, $count) {
+        $this->resetAfterTest(true);
+        $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
+        $matches = $generator->get_urls_from_stylesheet($filecontent);
+
+        self::assertInternalType('array', $matches);
+        self::assertCount(2, $matches);
+        self::assertCount($count, $matches[1]);
     }
 }

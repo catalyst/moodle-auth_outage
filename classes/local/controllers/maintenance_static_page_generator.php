@@ -139,6 +139,17 @@ class maintenance_static_page_generator {
     }
 
     /**
+     * Retrieves all URLs from file content using regular expressions.
+     *
+     * @param string $contents Content of the file
+     * @return array Array of all matches in multi-dimensional array
+     */
+    public function get_urls_from_stylesheet($contents) {
+        preg_match_all('#url\([\'"]?(?!data:)([^\'"\)]+)#', $contents, $matches);
+        return $matches;
+    }
+
+    /**
      * Checks for urls inside filename.
      *
      * @param string $filename
@@ -148,15 +159,15 @@ class maintenance_static_page_generator {
         global $CFG;
 
         $contents = file_get_contents($filename);
-        if (!preg_match_all('#url\([\'"]?([^\'"\)]+)#', $contents, $matches)) {
-            return;
-        }
+        $matches = $this->get_urls_from_stylesheet($contents);
+
         foreach ($matches[1] as $originalurl) {
             // Allow incomplete URLs in CSS, assume it is from moodle root.
             if (maintenance_static_page_io::is_url($originalurl)) {
                 $fullurl = $originalurl;
             } else if ($originalurl[0] == '/') {
-                $fullurl = $CFG->wwwroot.$originalurl;
+                $rooturl = parse_url($CFG->wwwroot);
+                $fullurl = $rooturl['scheme'].'://'.$rooturl['host'].$originalurl;
             } else {
                 $fullurl = $baseref.'/'.$originalurl;
             }

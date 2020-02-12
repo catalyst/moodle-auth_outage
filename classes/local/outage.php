@@ -281,7 +281,17 @@ class outage {
      */
     private function adjust_field_types() {
         // Adjust int fields.
-        $fs = ['createdby', 'id', 'lastmodified', 'modifiedby', 'starttime', 'stoptime', 'warntime', 'finished'];
+        $fs = [
+            'id',
+            'starttime',
+            'stoptime',
+            'warntime',
+            'finished',
+            'createdby',
+            'lastmodified',
+            'modifiedby',
+        ];
+
         foreach ($fs as $f) {
             $this->$f = ($this->$f === null) ? null : (int)$this->$f;
         }

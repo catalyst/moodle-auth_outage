@@ -130,9 +130,6 @@ class outagedb {
             // Create calendar entry.
             calendar::create($outage);
         } else {
-            // Remove the createdby field so it does not get updated.
-            unset($outage->createdby);
-            $DB->update_record('auth_outage', $outage);
 
             $other = (array) $outage;
             $other['title'] = $outage->get_title();
@@ -140,8 +137,13 @@ class outagedb {
                 'objectid' => $outage->id,
                 'other' => $other,
             ]);
+
             $event->add_record_snapshot('auth_outage', (object)(array) $outage);
             $event->trigger();
+
+            // Remove the createdby field so it does not get updated.
+            unset($outage->createdby);
+            $DB->update_record('auth_outage', $outage);
 
             // Update calendar entry.
             calendar::update($outage);

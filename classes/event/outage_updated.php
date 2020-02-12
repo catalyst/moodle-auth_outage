@@ -45,8 +45,7 @@ class outage_updated extends base {
      * @return string
      */
     public function get_description() {
-        return "The user with the id '{$this->userid}' updated the outage title '{$this->other['title']}' ".
-               "with id '{$this->other['id']}'.";
+        return "The user with the id '{$this->userid}' updated outage {$this->other['id']} '{$this->other['title']}'";
     }
 
     /**
@@ -54,7 +53,7 @@ class outage_updated extends base {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/auth/outage/list.php');
+        return new moodle_url('/auth/outage/edit.php', ['edit' => $this->other['id']]);
     }
 
     /**

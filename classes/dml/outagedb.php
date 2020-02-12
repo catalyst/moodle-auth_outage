@@ -117,19 +117,32 @@ class outagedb {
             $outage->createdby = $USER->id;
             // Then create it, log it and adjust its id.
             $outage->id = $DB->insert_record('auth_outage', $outage, true);
-            outage_created::create(
-                ['objectid' => $outage->id, 'other' => (array)$outage]
-            )->trigger();
+
+            $other = (array) $outage;
+            $other['title'] = $outage->get_title();
+            $event = outage_created::create([
+                'objectid' => $outage->id,
+                'other' => $other,
+            ]);
+            $event->add_record_snapshot('auth_outage', (object)(array) $outage);
+            $event->trigger();
+
             // Create calendar entry.
             calendar::create($outage);
         } else {
             // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
             $DB->update_record('auth_outage', $outage);
-            // Log it.
-            outage_updated::create(
-                ['objectid' => $outage->id, 'other' => (array)$outage]
-            )->trigger();
+
+            $other = (array) $outage;
+            $other['title'] = $outage->get_title();
+            $event = outage_updated::create([
+                'objectid' => $outage->id,
+                'other' => $other,
+            ]);
+            $event->add_record_snapshot('auth_outage', (object)(array) $outage);
+            $event->trigger();
+
             // Update calendar entry.
             calendar::update($outage);
         }
@@ -156,7 +169,16 @@ class outagedb {
 
         // Log it.
         $previous = $DB->get_record('auth_outage', ['id' => $id], '*', MUST_EXIST);
-        $event = outage_deleted::create(['objectid' => $id, 'other' => (array)$previous]);
+
+        $outage = new outage($previous);
+
+        $other = (array) $outage;
+        $other['title'] = $outage->get_title();
+        $event = outage_deleted::create([
+            'objectid' => $id,
+            'other' => $other,
+        ]);
+
         $event->add_record_snapshot('auth_outage', $previous);
         $event->trigger();
 

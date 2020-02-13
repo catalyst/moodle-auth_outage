@@ -147,5 +147,6 @@ abstract class clibase {
             $long = '--'.$long;
             printf("  %-4s %-20s %s\n", $short, $long, $text);
         }
+        printf("\n%s\n\n", get_string('cli'.$cliname.'examples', 'auth_outage'));
     }
 }

@@ -200,7 +200,7 @@ class create extends clibase {
     private function clone_defaults() {
         $id = $this->options['clone'];
         if (!is_number($id) || ($id <= 0)) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'clone']),
+            throw new cli_exception(get_string('clierrorinvalidvaluenotid', 'auth_outage', ['param' => 'clone']),
                 cli_exception::ERROR_PARAMETER_INVALID);
         }
 
@@ -245,12 +245,12 @@ class create extends clibase {
      */
     private function merge_options_check_parameters_int_nonnegative($option, $param) {
         if (!is_number($option)) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+            throw new cli_exception(get_string('clierrorinvalidvaluenotnumber', 'auth_outage', ['param' => $param]),
                 cli_exception::ERROR_PARAMETER_INVALID);
         }
         $option = (int)$option;
         if ($option < 0) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+            throw new cli_exception(get_string('clierrorinvalidvaluenegativenumber', 'auth_outage', ['param' => $param]),
                 cli_exception::ERROR_PARAMETER_INVALID);
         }
         return $option;
@@ -265,12 +265,12 @@ class create extends clibase {
      */
     private function merge_options_check_parameters_string_nonempty($option, $param) {
         if (!is_string($option)) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+            throw new cli_exception(get_string('clierrorinvalidvaluenotstring', 'auth_outage', ['param' => $param]),
                 cli_exception::ERROR_PARAMETER_INVALID);
         }
         $option = trim($option);
         if (strlen($option) == 0) {
-            throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+            throw new cli_exception(get_string('clierrorinvalidvalueemptystring', 'auth_outage', ['param' => $param]),
                 cli_exception::ERROR_PARAMETER_INVALID);
         }
         return $option;
@@ -298,7 +298,7 @@ class create extends clibase {
             }
         }
 
-        throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => $param]),
+        throw new cli_exception(get_string('clierrorinvalidvaluenotbool', 'auth_outage', ['param' => $param]),
             cli_exception::ERROR_PARAMETER_INVALID);
     }
 }

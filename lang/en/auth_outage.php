@@ -88,6 +88,9 @@ $string['defaultdescriptiondescription'] = 'Default warning message for outages.
 $string['defaultdescriptionvalue'] = 'There is an scheduled maintenance from {{start}} to {{stop}} and our system will not be available during that time.';
 $string['description'] = 'Public Description';
 $string['description_help'] = 'A full description of the outage, publicly visible by all users.';
+$string['eventoutagecreated'] = 'Outage scheduled';
+$string['eventoutagedeleted'] = 'Outage cancelled';
+$string['eventoutageupdated'] = 'Outage updated';
 $string['finish'] = 'Finish';
 $string['info15secondsbefore'] = '15 seconds before';
 $string['infoendofoutage'] = 'end of outage';
@@ -108,6 +111,45 @@ $string['messageoutagebackonline'] = 'We are back online!';
 $string['messageoutagebackonlinedescription'] = 'You may resume browsing safely.';
 $string['messageoutageongoing'] = 'Back online at {$a->stop}.';
 $string['messageoutagewarning'] = 'Shutting down in {{countdown}}';
+$string['messageprovider:updatenotify'] = 'Changes to planned outages';
+$string['messagesubject'] = '[{$a->site_shortname}] {$a->event_name} #{$a->outage_id}: {$a->outage_start}';
+$string['messagetext'] = '{$a->event_name}
+
+{$a->site_fullname} ({$a->site_wwwroot})
+
+{$a->event_link}
+
+ID: {$a->outage_id}
+NAME: {$a->outage_title}
+START: {$a->outage_start}
+DURATION: {$a->outage_duration}
+DESCRIPTION:
+{$a->outage_desc}
+
+--
+
+To unsubscribe visit:
+{$a->prefs_link}';
+$string['messagehtml'] = '
+<h3>{$a->event_name}</h3>
+
+<p>{$a->site_fullname} (<a href="{$a->site_wwwroot}">{$a->site_wwwroot}</a>)</p>
+
+<p><a href="{$a->event_link}">{$a->event_link}</a></p>
+
+<h4>Name:</h4>
+<p>{$a->outage_title}</p>
+<h4>Start:</h4>
+<p>{$a->outage_start}</p>
+<h4>Duration:</h4>
+<p>{$a->outage_duration}</p>
+<h4>Description:</h4>
+<p>{$a->outage_desc}</p>
+
+<hr>
+<p>To unsubscribe visit:<br>
+<a href="{$a->prefs_link}">{$a->prefs_link}</a></p>
+';
 $string['na'] = 'n/a';
 $string['notfound'] = 'No outages found.';
 $string['outageedit'] = 'Edit outage';

@@ -15,20 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information.
+ * Defines message providers for outage
  *
- * @package     auth_outage
- * @author      Marcus Boon <marcus@catalyst-au.net>
- * @author      Brendan Heywood <brendan@catalyst-au.net>
- * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
- * @copyright   2016 Catalyst IT
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    auth_outage
+ * @copyright  2020 Brendan Heywood <brendan@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = "auth_outage";
-$plugin->version = 2020021500;                  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = 2020021500;                  // Human-readable release information.
-$plugin->requires = 2017051500;                 // Requires 3.3 and higher.
-$plugin->maturity = MATURITY_STABLE;            // Suitable for PRODUCTION environments!
+$messageproviders = [
+    'updatenotify' => [
+        'capability'  => 'auth/outage:updatenotify',
+    ]
+];
+

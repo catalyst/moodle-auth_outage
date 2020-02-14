@@ -39,13 +39,23 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outage_created extends base {
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('eventoutagecreated', 'auth_outage');
+    }
+
     /**
      * Returns non-localised event description with id's for admin use only.
      *
      * @return string
      */
     public function get_description() {
-        return "The user with the id '{$this->userid}' created outage {$this->other['id']} '{$this->other['title']}'";
+        return "The user with the id '{$this->userid}' scheduled outage {$this->other['id']} '{$this->other['title']}'";
     }
 
     /**

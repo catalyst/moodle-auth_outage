@@ -39,6 +39,14 @@ If you have an older version of Moodle you can still make it work but you will
 need to manually add one extra plugin, please check:
 * https://github.com/catalyst/moodle-local_outage
 
+Branches
+--------
+| Moodle version     | Branch      | PHP  |
+| ----------------- | ----------- | ---- |
+| Moodle 2.7 to 3.2 | MOODLE_32_STABLE | 5.5+ |
+| Totara up to 10 | TOTARA_10 | 5.5+ |
+| Moodle 3.3+ | master | 7.0+ |
+| Totara 11+ | master | 7.0+ |
 
 Screenshots
 -----------

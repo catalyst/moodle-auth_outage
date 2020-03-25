@@ -81,7 +81,10 @@ $string['defaultoutagedurationdescription'] = 'Default duration (in minutes) of 
 $string['defaultwarningduration'] = 'Warning duration';
 $string['defaultwarningdurationdescription'] = 'Default warning time (in minutes) for outages.';
 $string['defaulttime'] = 'Default time';
-$string['defaulttimedescription'] = 'The default time for the next outage. This is expressed in cron notation, eg to say that a regular outage window is any thursday at 7pm you would set this to: <pre>0 19 * * 4</pre>';
+$string['defaulttimedescription'] = 'The default time for the next outage. This is expressed in either natural language or a cron notation. eg to say that a regular outage window is any Thursday at 7pm either of these work:
+ <pre>0 19 * * 4
+next Thursday 7pm</pre>
+See also <a target=_blank href="https://en.wikipedia.org/wiki/Cron#CRON_expression">Cron expressions</a> and <a target=_blank href="https://www.php.net/manual/en/datetime.formats.relative.php">Relative dates</a>';
 $string['defaulttitle'] = 'Title';
 $string['defaulttitledescription'] = 'Default title for outages. Use {{start}} and {{stop}} placeholders as required.';
 $string['defaulttitlevalue'] = 'System down from {{start}} for {{duration}}';

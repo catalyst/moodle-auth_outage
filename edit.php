@@ -65,6 +65,9 @@ if ($clone) {
     $default = $config->default_time;
     if ($default) {
 
+        // First try natural language parsing.
+        $time = strtotime($default);
+
         // Lean on the Task API to convert the cron syntax to
         // the next valid outage date and time.
         $parts = explode(' ', $default);

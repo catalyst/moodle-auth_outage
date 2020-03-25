@@ -61,6 +61,24 @@ if ($clone) {
 } else {
     $config = outagelib::get_config();
     $time = time();
+
+    $default = $config->default_time;
+    if ($default) {
+
+        // Lean on the Task API to convert the cron syntax to
+        // the next valid outage date and time.
+        $parts = explode(' ', $default);
+        if (count($parts) == 5) {
+            $task = new \core\task\calendar_cron_task();
+            $task->set_minute($parts[0]);
+            $task->set_hour($parts[1]);
+            $task->set_day($parts[2]);
+            $task->set_month($parts[3]);
+            $task->set_day_of_week($parts[4]);
+            $time = $task->get_next_scheduled_time();
+        }
+    }
+
     $outage = new outage([
         'autostart' => $config->default_autostart,
         'starttime' => $time,

@@ -152,6 +152,7 @@ class outagelib {
         return [
             'allowedips'               => '',
             'css'                      => '',
+            'default_time'             => '',
             'default_autostart'        => '0',
             'default_duration'         => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),

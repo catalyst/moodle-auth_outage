@@ -125,6 +125,7 @@ $string['outagefinish'] = 'Finish outage';
 $string['outagefinishwarning'] = 'You are about to mark this outage as finished. The system will be immediately back online.';
 $string['outageslistfuture'] = 'Planned outages';
 $string['outageslistpast'] = 'Outage history';
+$string['outage:updatenotify'] = '';
 $string['pluginname'] = 'Outage manager';
 $string['removeselectors'] = 'Remove selectors';
 $string['removeselectorsdescription'] = 'CSS selectors to remove when rendering a static themed maintenance page. One selector per line.';

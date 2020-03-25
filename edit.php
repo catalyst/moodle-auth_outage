@@ -47,6 +47,7 @@ if ($mform->is_cancelled()) {
 
 $clone = optional_param('clone', 0, PARAM_INT);
 $edit = optional_param('edit', 0, PARAM_INT);
+$time = optional_param('starttime', 0, PARAM_INT);
 if ($clone && $edit) {
     throw new invalid_parameter_exception('Cannot provide both clone and edit ids.');
 }
@@ -60,26 +61,8 @@ if ($clone) {
     $action = 'outageedit';
 } else {
     $config = outagelib::get_config();
-    $time = time();
-
-    $default = $config->default_time;
-    if ($default) {
-
-        // First try natural language parsing.
-        $time = strtotime($default);
-
-        // Lean on the Task API to convert the cron syntax to
-        // the next valid outage date and time.
-        $parts = explode(' ', $default);
-        if (count($parts) == 5) {
-            $task = new \core\task\calendar_cron_task();
-            $task->set_minute($parts[0]);
-            $task->set_hour($parts[1]);
-            $task->set_day($parts[2]);
-            $task->set_month($parts[3]);
-            $task->set_day_of_week($parts[4]);
-            $time = $task->get_next_scheduled_time();
-        }
+    if (empty($time)) {
+        $time = outagelib::get_next_window();
     }
 
     $outage = new outage([

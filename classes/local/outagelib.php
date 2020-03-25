@@ -80,6 +80,40 @@ class outagelib {
     }
 
     /**
+     * Given a time, usually now, when is the next outage window?
+     */
+    public static function get_next_window($time = null) {
+
+        $config = self::get_config();
+
+        if (!$time) {
+            $time = time();
+        }
+
+        $default = $config->default_time;
+        if ($default) {
+
+            // First try natural language parsing.
+            $time = strtotime($default, $time);
+
+            // Lean on the Task API to convert the cron syntax to
+            // the next valid outage date and time.
+            $parts = explode(' ', $default);
+            if (count($parts) == 5) {
+                $task = new \core\task\calendar_cron_task();
+                $task->set_minute($parts[0]);
+                $task->set_hour($parts[1]);
+                $task->set_day($parts[2]);
+                $task->set_month($parts[3]);
+                $task->set_day_of_week($parts[4]);
+                $time = $task->get_next_scheduled_time();
+            }
+        }
+        return $time;
+    }
+
+
+    /**
      * Will check for ongoing or warning outages and will attach the message bar as required.
      */
     public static function inject() {

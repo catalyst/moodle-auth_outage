@@ -270,7 +270,9 @@ class outagelib {
 if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
-    require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
+    if (file_exists($CFG->dirroot.'/lib/classes/ip_utils.php')) {
+        require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
+    }
     if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
         header('Status: 503 Moodle under maintenance');

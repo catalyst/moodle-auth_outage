@@ -106,4 +106,14 @@ class infopagecontroller_test extends auth_outage_base_testcase {
         $output = $info->get_output();
         self::assertContains('auth_outage_info', $output);
     }
+
+    /**
+     * Tests the constructor enables SVG support.
+     */
+    public function test_svgicons_is_true() {
+        global $CFG;
+        $CFG->svgicons = false;
+        new infopage();
+        self::assertTrue($CFG->svgicons);
+    }
 }

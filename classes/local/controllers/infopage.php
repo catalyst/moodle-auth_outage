@@ -53,6 +53,11 @@ class infopage {
      * @param array $params Parameters to use or null to get from Moodle API (request).
      */
     public function __construct(array $params = null) {
+        global $CFG;
+        // Enable SVG support here to make sure all SVG files
+        // used in the current theme are served properly.
+        $CFG->svgicons = true;
+
         if (is_null($params)) {
             $params = [
                 'id' => optional_param('id', null, PARAM_INT),

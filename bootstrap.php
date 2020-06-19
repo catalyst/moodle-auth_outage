@@ -71,7 +71,7 @@ if (!empty($_SERVER['REQUEST_URI'])) {
     $rooturl = parse_url($CFG->wwwroot);
     $path = '';
     if (array_key_exists('path', $rooturl) && !empty($rooturl['path'])) {
-        $path = $root['url'];
+        $path = $rooturl['url'];
     }
     $url = $path.'/auth/outage/info.php';
     $outageinfo = strpos($_SERVER['REQUEST_URI'], $url) === 0 ? true : false;

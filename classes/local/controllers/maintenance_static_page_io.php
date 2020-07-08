@@ -213,7 +213,7 @@ class maintenance_static_page_io {
     /**
      * Saves the content of the URL into a file, returning the local filename.
      * @param string $url Input URL.
-     * @return string|null Output filename or null if skipped.
+     * @return array|null Output an array with the filename and url or null if skipped.
      */
     public function save_url_file($url) {
         global $CFG;

@@ -128,7 +128,7 @@ class maintenance_static_page_generator {
                 continue;
             }
             $saved = $this->io->save_url_file($href);
-            if (is_null($saved['url'])) {
+            if (empty($saved['url'])) {
                 $url = $href; // Skipped, use original URL.
             } else {
                 $this->update_link_stylesheet_parse($saved['file'], dirname($href));

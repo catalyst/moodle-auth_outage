@@ -1,5 +1,5 @@
 <a href="https://travis-ci.org/catalyst/moodle-auth_outage">
-<img src="https://travis-ci.org/catalyst/moodle-auth_outage.svg?branch=master">
+<img src="https://travis-ci.org/catalyst/moodle-auth_outage.svg?branch=MOODLE_32_STABLE">
 </a>
 
 # Moodle Outage manager plugin

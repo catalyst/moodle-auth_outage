@@ -31,6 +31,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use auth_outage\dml\outagedb;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,5 +71,13 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
 
         parent::setUp();
         $this->resetAfterTest(true);
+    }
+
+    public function tearDown() {
+        global $DB;
+
+        foreach (outagedb::get_all() as $i => $outage) {
+            $DB->delete_records('auth_outage', ['id' => $outage->id]);
+        }
     }
 }

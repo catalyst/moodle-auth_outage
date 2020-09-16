@@ -29,6 +29,7 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\output\renderer;
 use coding_exception;
+use curl;
 use Exception;
 use file_exception;
 use invalid_parameter_exception;
@@ -58,16 +59,14 @@ class outagelib {
     private static $injectcalled = false;
 
     public static function fetch_page($file) {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $file);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5); // It is localhost, time to connect is enough.
-        curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-        $contents = curl_exec($curl);
-        $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-        curl_close($curl);
+        $curl = new curl();
+        $contents = $curl->get($file);
+        $info = $curl->get_info();
+        if (!empty($info['content_type'])) {
+            $mime = $info['content_type'];
+        } else {
+            $mime = '';
+        }
         return compact('contents', 'mime');
     }
 

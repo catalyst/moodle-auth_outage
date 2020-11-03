@@ -27,6 +27,7 @@ use auth_outage\output\manage\history_table;
 use auth_outage\output\manage\planned_table;
 use auth_outage\output\renderer;
 use auth_outage\dml\outagedb;
+use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -49,10 +50,23 @@ echo $viewbag['warning'];
         $table->finish_output();
         ?>
     <?php endif; ?>
-    <?php $outage = outagedb::get_ongoing(); ?>
-    <?php if (is_null($outage)): ?>
-        <?php echo $OUTPUT->single_button($urlnew, get_string('outagecreate', 'auth_outage')); ?>
-    <?php endif; ?>
+    <?php
+    $outage = outagedb::get_ongoing();
+    if (is_null($outage)) :
+        $config = outagelib::get_config();
+        $default = $config->default_time;
+        $max = $default ? 3 : 1;
+        $next = time();
+        for ($c = 0; $c < $max; $c++) {
+            echo '<p>';
+            $next = outagelib::get_next_window($next);
+            $urlnew->param('starttime', $next);
+            echo $OUTPUT->single_button($urlnew, get_string('outagecreate', 'auth_outage'));
+            if ($default) {
+                echo ' ' . userdate( $next, get_string('datetimeformat', 'auth_outage'));
+            }
+        }
+    endif; ?>
 </section>
 
 <section id="section_outage_history">

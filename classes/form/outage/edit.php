@@ -164,7 +164,8 @@ class edit extends moodleform {
 
             if (!empty($outage->id) && $outage->autostart && $outage->starttime < time() && $outage->stoptime > time()) {
                 $warning = $mform->getElement('warningreenablemaintenancemode');
-                $warning->setValue($OUTPUT->notification(get_string('warningreenablemaintenancemode', 'auth_outage'), 'notifywarning'));
+                $warning->setValue($OUTPUT->notification(get_string('warningreenablemaintenancemode', 'auth_outage'),
+                    'notifywarning'));
             }
         } else {
             throw new coding_exception('$outage must be an outage object.', $outage);

@@ -29,6 +29,7 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\output\renderer;
 use coding_exception;
+use curl;
 use Exception;
 use file_exception;
 use invalid_parameter_exception;
@@ -58,16 +59,14 @@ class outagelib {
     private static $injectcalled = false;
 
     public static function fetch_page($file) {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $file);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5); // It is localhost, time to connect is enough.
-        curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-        $contents = curl_exec($curl);
-        $mime = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-        curl_close($curl);
+        $curl = new curl();
+        $contents = $curl->get($file);
+        $info = $curl->get_info();
+        if (!empty($info['content_type'])) {
+            $mime = $info['content_type'];
+        } else {
+            $mime = '';
+        }
         return compact('contents', 'mime');
     }
 
@@ -78,6 +77,26 @@ class outagelib {
         self::$injectcalled = false;
         self::inject();
     }
+
+    /**
+     * Given a time, usually now, when is the next outage window?
+     */
+    public static function get_next_window($time = null) {
+
+        $config = self::get_config();
+
+        if (!$time) {
+            $time = time();
+        }
+
+        $default = $config->default_time;
+        if ($default) {
+            // First try natural language parsing.
+            $time = strtotime($default, $time);
+        }
+        return $time;
+    }
+
 
     /**
      * Will check for ongoing or warning outages and will attach the message bar as required.
@@ -152,6 +171,7 @@ class outagelib {
         return [
             'allowedips'               => '',
             'css'                      => '',
+            'default_time'             => '',
             'default_autostart'        => '0',
             'default_duration'         => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
@@ -269,6 +289,9 @@ class outagelib {
 if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
+    if (file_exists($CFG->dirroot.'/lib/classes/ip_utils.php')) {
+        require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
+    }
     if (!remoteip_in_list('{{ALLOWEDIPS}}')) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
         header('Status: 503 Moodle under maintenance');

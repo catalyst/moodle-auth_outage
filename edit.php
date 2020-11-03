@@ -47,6 +47,7 @@ if ($mform->is_cancelled()) {
 
 $clone = optional_param('clone', 0, PARAM_INT);
 $edit = optional_param('edit', 0, PARAM_INT);
+$time = optional_param('starttime', 0, PARAM_INT);
 if ($clone && $edit) {
     throw new invalid_parameter_exception('Cannot provide both clone and edit ids.');
 }
@@ -60,7 +61,10 @@ if ($clone) {
     $action = 'outageedit';
 } else {
     $config = outagelib::get_config();
-    $time = time();
+    if (empty($time)) {
+        $time = outagelib::get_next_window();
+    }
+
     $outage = new outage([
         'autostart' => $config->default_autostart,
         'starttime' => $time,

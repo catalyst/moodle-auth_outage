@@ -60,6 +60,13 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         60
     ));
     $settings->add(new admin_setting_configtext(
+        'auth_outage/default_time',
+        get_string('defaulttime', 'auth_outage'),
+        get_string('defaulttimedescription', 'auth_outage'),
+        '',
+        PARAM_TEXT
+    ));
+    $settings->add(new admin_setting_configtext(
         'auth_outage/default_title',
         get_string('defaulttitle', 'auth_outage'),
         get_string('defaulttitledescription', 'auth_outage'),

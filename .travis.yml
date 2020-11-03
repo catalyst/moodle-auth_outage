@@ -2,14 +2,15 @@ language: php
 
 sudo: true
 
+services:
+  - mysql
+
 addons:
   firefox: "47.0.1"
-  postgresql: "9.4"
+  postgresql: "9.6"
   apt:
     packages:
     - openjdk-8-jre
-
-dist: trusty
 
 cache:
   directories:
@@ -20,39 +21,36 @@ php:
  - 7.2
 
 env:
-  - DB=pgsql MOODLE_BRANCH=master
-  - DB=mysqli MOODLE_BRANCH=master
-  - DB=pgsql MOODLE_BRANCH=MOODLE_38_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_37_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_36_STABLE
+  - DB=pgsql  MOODLE_BRANCH=MOODLE_36_STABLE NODEJS=8
+  - DB=mysqli MOODLE_BRANCH=MOODLE_36_STABLE NODEJS=8
+  - DB=pgsql  MOODLE_BRANCH=MOODLE_37_STABLE
+  - DB=pgsql  MOODLE_BRANCH=MOODLE_38_STABLE
+  - DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
+  - DB=mysqli MOODLE_BRANCH=MOODLE_39_STABLE
 
 matrix:
   include:
-    - php: 7.1
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
-    - php: 7.1
+    - php: 5.6
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_33_STABLE NODEJS=8
+    - php: 7.0
       env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
-    - php: 7.0
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
-    - php: 7.0
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
-    - php: 5.6
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
-    - php: 5.6
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE NODEJS=8
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.4
+      env: DB=pgsql MOODLE_BRANCH=master
 
 before_install:
   - export MOODLE_VERSION=$(echo "$MOODLE_BRANCH" | cut -d'_' -f 2)
-  - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.2" ] && [ $DB == "pgsql" ] && [[ "$MOODLE_VERSION" -gt 38 || "$MOODLE_VERSION" == "master" ]] ; then
-      sudo /etc/init.d/postgresql stop;
-      sudo /etc/init.d/postgresql start 9.5;
-    fi
   - phpenv config-rm xdebug.ini
-  - nvm install 8.9
-  - nvm use 8.9
+  - if [ "$NODEJS" = 8 ]; then
+      nvm install 8.9;
+      nvm use 8.9;
+    else
+      nvm install 14.0.0;
+      nvm use 14.0.0;
+    fi
   - cd ../..
   - composer selfupdate
   - composer create-project -n --no-dev --prefer-dist blackboard-open-source/moodle-plugin-ci ci ^2

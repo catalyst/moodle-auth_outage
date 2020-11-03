@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__.'/../base_testcase.php');
 
 /**
  * outagelib_test test class.
@@ -41,7 +42,7 @@ require_once($CFG->libdir.'/adminlib.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @SuppressWarnings(public) Allow as many methods as needed.
  */
-class outagelib_test extends advanced_testcase {
+class outagelib_test extends auth_outage_base_testcase {
     /**
      * Check if maintenance message is disabled as needed.
      */
@@ -289,6 +290,9 @@ class outagelib_test extends advanced_testcase {
 if ((time() >= 123) && (time() < 456)) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
+    if (file_exists($CFG->dirroot.'/lib/classes/ip_utils.php')) {
+        require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
+    }
     if (!remoteip_in_list('hey\'\"you
 a.b.c.d
 e.e.e.e/20')) {
@@ -330,6 +334,9 @@ EOT;
 if ((time() >= 123) && (time() < 456)) {
     define('MOODLE_INTERNAL', true);
     require_once($CFG->dirroot.'/lib/moodlelib.php');
+    if (file_exists($CFG->dirroot.'/lib/classes/ip_utils.php')) {
+        require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
+    }
     if (!remoteip_in_list('127.0.0.1')) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 503 Moodle under maintenance');
         header('Status: 503 Moodle under maintenance');

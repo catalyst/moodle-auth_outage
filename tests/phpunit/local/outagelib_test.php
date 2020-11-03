@@ -82,7 +82,7 @@ class outagelib_test extends auth_outage_base_testcase {
      * Check outagelib::inject() works as expected.
      */
     public function test_inject() {
-        global $CFG;
+        global $OUTPUT;
 
         $this->resetAfterTest(true);
         self::setAdminUser();
@@ -96,16 +96,15 @@ class outagelib_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
         $outage->id = outagedb::save($outage);
-        self::assertEmpty($CFG->additionalhtmltopofbody);
 
-        outagelib::reinject();
-        self::assertContains('<style>', $CFG->additionalhtmltopofbody);
-        self::assertContains('<script>', $CFG->additionalhtmltopofbody);
+        outagelib::reset_injectcalled();
+        $header1 = outagelib::get_inject_code();
+        self::assertContains('<style>', $header1);
+        self::assertContains('<script>', $header1);
 
-        // Should not inject more than once with the inject() function.
-        $size = strlen($CFG->additionalhtmltopofbody);
-        outagelib::inject();
-        self::assertSame($size, strlen($CFG->additionalhtmltopofbody));
+        // Should not inject more than once.
+        $size = strlen($OUTPUT->standard_top_of_body_html());
+        self::assertSame($size, strlen($OUTPUT->standard_top_of_body_html()));
     }
 
     /**
@@ -113,7 +112,8 @@ class outagelib_test extends auth_outage_base_testcase {
      */
     public function test_inject_broken() {
         $_GET = ['auth_outage_break_code' => '1'];
-        outagelib::reinject();
+        outagelib::reset_injectcalled();
+        $header = outagelib::get_inject_code();
         self::assertCount(2, phpunit_util::get_debugging_messages());
         phpunit_util::reset_debugging();
     }
@@ -135,12 +135,13 @@ class outagelib_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
         $outage->id = outagedb::save($outage);
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+
         $_GET = ['auth_outage_preview' => (string)$outage->id];
 
-        outagelib::reinject();
-        self::assertContains('<style>', $CFG->additionalhtmltopofbody);
-        self::assertContains('<script>', $CFG->additionalhtmltopofbody);
+        outagelib::reset_injectcalled();
+        $header = outagelib::get_inject_code();
+        self::assertContains('<style>', $header);
+        self::assertContains('<script>', $header);
     }
 
     /**
@@ -148,11 +149,12 @@ class outagelib_test extends auth_outage_base_testcase {
      */
     public function test_inject_preview_notfound() {
         global $CFG;
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+
         $_GET = ['auth_outage_preview' => '1'];
         // Should not throw exception or halt anything, silently ignore it.
-        outagelib::reinject();
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+        outagelib::reset_injectcalled();
+        $header = outagelib::get_inject_code();
+        self::assertEmpty($header);
     }
 
     /**
@@ -172,18 +174,20 @@ class outagelib_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
         $outage->id = outagedb::save($outage);
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+
         $_GET = ['auth_outage_preview' => (string)$outage->id, 'auth_outage_delta' => '500'];
-        outagelib::reinject();
+        outagelib::reset_injectcalled();
+        $header = outagelib::get_inject_code();
         // Still empty, delta is too high (outage ended).
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+        self::assertEmpty($header);
     }
 
     /**
      * Test injection without active outage.
      */
     public function test_inject_noactive() {
-        outagelib::reinject();
+        outagelib::reset_injectcalled();
+        outagelib::get_inject_code();
     }
 
     /**
@@ -273,15 +277,15 @@ class outagelib_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
         $outage->id = outagedb::save($outage);
-        self::assertEmpty($CFG->additionalhtmltopofbody);
 
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
         $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';
         $_GET['section'] = 'additionalhtml';
-        outagelib::reinject();
+        outagelib::reset_injectcalled();
+        $header = outagelib::get_inject_code();
 
-        self::assertEmpty($CFG->additionalhtmltopofbody);
+        self::assertEmpty($header);
     }
 
     public function test_createmaintenancephpcode() {
@@ -499,15 +503,15 @@ EOT;
             'description' => 'Description',
         ]);
         $outage->id = outagedb::save($outage);
-        self::assertEmpty($CFG->additionalhtmltopofbody);
 
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
         $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';
         $_GET['section'] = 'notadditionalhtml';
-        outagelib::reinject();
+        outagelib::reset_injectcalled();
 
-        self::assertNotEmpty($CFG->additionalhtmltopofbody);
+        $header = outagelib::get_inject_code();
+        self::assertNotEmpty($header);
     }
 
     private function create_outage() {

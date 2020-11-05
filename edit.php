@@ -34,6 +34,7 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/formslib.php');
 
 admin_externalpage_setup('auth_outage_manage');
+$output = $PAGE->get_renderer('auth_outage');
 $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
 
 $mform = new edit();
@@ -83,7 +84,7 @@ if ($outage == null) {
 $mform->set_data($outage);
 
 $PAGE->navbar->add(get_string($action.'crumb', 'auth_outage'));
-echo $OUTPUT->header();
-echo renderer::get()->rendersubtitle($action);
+echo $output->header();
+echo $output->rendersubtitle($action);
 $mform->display();
-echo $OUTPUT->footer();
+echo $output->footer();

@@ -31,14 +31,15 @@ use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
-global $OUTPUT;
+global $PAGE;
+$output = $PAGE->get_renderer('auth_outage');
 $urlnew = new moodle_url('/auth/outage/edit.php');
 
 echo $viewbag['warning'];
 ?>
 
 <section id="section_planned_outages">
-    <?php echo renderer::get()->rendersubtitle('outageslistfuture'); ?>
+    <?php echo $output->rendersubtitle('outageslistfuture'); ?>
     <?php if (empty($viewbag['unended'])): ?>
         <p>
             <small><?php echo get_string('notfound', 'auth_outage'); ?></small>
@@ -61,7 +62,7 @@ echo $viewbag['warning'];
             echo '<p>';
             $next = outagelib::get_next_window($next);
             $urlnew->param('starttime', $next);
-            echo $OUTPUT->single_button($urlnew, get_string('outagecreate', 'auth_outage'));
+            echo $output->single_button($urlnew, get_string('outagecreate', 'auth_outage'));
             if ($default) {
                 echo ' ' . userdate( $next, get_string('datetimeformat', 'auth_outage'));
             }
@@ -70,7 +71,7 @@ echo $viewbag['warning'];
 </section>
 
 <section id="section_outage_history">
-    <?php echo renderer::get()->rendersubtitle('outageslistpast'); ?>
+    <?php echo $output->rendersubtitle('outageslistpast'); ?>
     <?php if (empty($viewbag['ended'])): ?>
         <p>
             <small><?php echo get_string('notfound', 'auth_outage'); ?></small>

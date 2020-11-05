@@ -71,11 +71,10 @@ class outagelib {
     }
 
     /**
-     * Calls inject even if it was already called before.
+     * Resets inject called to allow the code to be regenerated.
      */
-    public static function reinject() {
+    public static function reset_injectcalled() {
         self::$injectcalled = false;
-        self::inject();
     }
 
     /**
@@ -99,19 +98,17 @@ class outagelib {
 
 
     /**
-     * Will check for ongoing or warning outages and will attach the message bar as required.
+     * Will check for ongoing or warning outages and will return the message bar as required.
+     *
+     * @return string|void CSS and HTML for the warning bar if it should be displayed
      */
-    public static function inject() {
-        global $CFG;
-
+    public static function get_inject_code() {
         // Ensure we do not kill the whole website in case of an error.
         try {
             // Check if we should inject the code.
             if (!self::injection_allowed()) {
                 return;
             }
-
-            self::clean_outages();
 
             // Check for a previewing outage, then for an active outage.
             $previewid = optional_param('auth_outage_preview', null, PARAM_INT);
@@ -135,8 +132,7 @@ class outagelib {
             }
 
             // There is a previewing or active outage.
-            $CFG->additionalhtmltopofbody = renderer::get()->render_warningbar($active, $time, false, $preview).
-                                            $CFG->additionalhtmltopofbody;
+            return renderer::get()->render_warningbar($active, $time, false, $preview);
         } catch (Exception $e) {
             debugging('Exception occured while injecting our code: '.$e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
@@ -395,27 +391,5 @@ EOT;
         }
 
         return $message;
-    }
-
-    /**
-     * Checks $CFG->additionalhtmltopofbody for saved outages and removes them.
-     * We should only be temporarily injecting into that variable and not saving them to the database.
-     *
-     * @return string the cleaned content
-     */
-    public static function clean_outages() {
-        global $CFG;
-
-        // Replace the content to clean up pages that do not have the injection.
-        $re = '/' . self::OUTAGE_START . '[\s\S]*' . self::OUTAGE_END . '/m';
-        $replaced = preg_replace($re, '', $CFG->additionalhtmltopofbody);
-
-        // We have removed the outages and any duplicates as it should be injected and not saved to $CFG.
-        if ($CFG->additionalhtmltopofbody != $replaced) {
-            set_config('additionalhtmltopofbody', $replaced);
-            return $replaced;
-        }
-
-        return '';
     }
 }

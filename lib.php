@@ -28,27 +28,6 @@ use auth_outage\local\outagelib;
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Used in Moodle 30+ when a user is logged on.
- */
-function auth_outage_extend_navigation_user_settings() {
-    outagelib::inject();
-}
-
-/**
- * Used in Moodle 30+ on the frontpage.
- */
-function auth_outage_extend_navigation_frontpage() {
-    outagelib::inject();
-}
-
-/**
- * Used in Moodle 31+ when a user is logged on.
- */
-function auth_outage_extend_navigation_user() {
-    outagelib::inject();
-}
-
-/**
  * Used for adminlib::set_updatedcallback which requires a string that resolves to a function.
  *
  * Related to: MDL-57264 and MDL-32984
@@ -97,4 +76,14 @@ function auth_outage_get_fontawesome_icon_map() {
     return [
         'core:i/auth_outageevent' => 'fa-power-off',
     ];
+}
+
+/**
+ * Inject the warning bar into the page if there is currently an outage.
+ *
+ * @return string|void
+ */
+function auth_outage_before_standard_top_of_body_html() {
+    // Get code to inject.
+    return outagelib::get_inject_code();
 }

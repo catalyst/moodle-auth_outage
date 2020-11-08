@@ -103,6 +103,7 @@ class outagelib {
      * @return string|void CSS and HTML for the warning bar if it should be displayed
      */
     public static function get_inject_code() {
+        global $PAGE;
         // Ensure we do not kill the whole website in case of an error.
         try {
             // Check if we should inject the code.
@@ -132,7 +133,8 @@ class outagelib {
             }
 
             // There is a previewing or active outage.
-            return renderer::get()->render_warningbar($active, $time, false, $preview);
+            $renderer = $PAGE->get_renderer('auth_outage');
+            return $renderer->render_warningbar($active, $time, false, $preview);
         } catch (Exception $e) {
             debugging('Exception occured while injecting our code: '.$e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);

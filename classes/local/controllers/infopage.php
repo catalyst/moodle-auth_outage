@@ -108,7 +108,7 @@ class infopage {
         $PAGE->set_url(new moodle_url('/auth/outage/info.php'));
 
         // No hooks injecting into this page, do it manually.
-        outagelib::inject();
+        echo outagelib::get_inject_code();
 
         echo $OUTPUT->header();
         $viewbag = [

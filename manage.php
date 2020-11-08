@@ -32,16 +32,17 @@ require_once($CFG->libdir.'/adminlib.php');
 
 admin_externalpage_setup('auth_outage_manage');
 $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
+$output = $PAGE->get_renderer('auth_outage');
 
-echo $OUTPUT->header();
+echo $output->header();
 
 // Give it a consistent time so all outages are listed. Useful when debugging.
 $now = time();
 
-renderer::get()->output_view('manage.php', [
+$output->output_view('manage.php', [
     'unended' => outagedb::get_all_unended($now),
     'ended'   => outagedb::get_all_ended($now),
     'warning' => outagelib::generate_plugin_configuration_warning(),
 ]);
 
-echo $OUTPUT->footer();
+echo $output->footer();

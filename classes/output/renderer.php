@@ -45,15 +45,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class renderer extends plugin_renderer_base {
     /**
-     * Returns the outage renderer.
-     * @return renderer The outage renderer.
-     */
-    public static function get() {
-        global $PAGE;
-        return $PAGE->get_renderer('auth_outage');
-    }
-
-    /**
      * Outputs the view in a separate scope to avoid conflicts with variable names.
      * @param string $view View PHP file.
      * @param mixed[] $viewbag Values to be used in the view.
@@ -154,8 +145,6 @@ class renderer extends plugin_renderer_base {
      * @return string The formatted HTML.
      */
     private function renderoutage(outage $outage, $buttons) {
-        global $OUTPUT;
-
         if ($outage->createdby == 0) {
             $created = get_string('na', 'auth_outage');
         } else {
@@ -179,14 +168,14 @@ class renderer extends plugin_renderer_base {
         $url = new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->image_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']
+            ['src' => $this->output->image_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall']
         );
         $linkedit = html_writer::link($url, $img, ['title' => get_string('edit')]);
 
         $url = new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]);
         $img = html_writer::empty_tag(
             'img',
-            ['src' => $OUTPUT->image_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']
+            ['src' => $this->output->image_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall']
         );
         $linkdelete = html_writer::link($url, $img, ['title' => get_string('delete')]);
 

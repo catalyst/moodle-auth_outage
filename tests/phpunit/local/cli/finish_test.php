@@ -72,8 +72,8 @@ class finish_test extends auth_outage_cli_testcase {
         $this->set_parameters(['--help']);
         $cli = new finish();
         $text = $this->execute($cli);
-        self::assertContains('Finishes', $text);
-        self::assertContains('--help', $text);
+        self::assertStringContainsString('Finishes', $text);
+        self::assertStringContainsString('--help', $text);
     }
 
     /**

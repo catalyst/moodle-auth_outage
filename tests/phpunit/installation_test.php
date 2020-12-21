@@ -71,7 +71,7 @@ class installation_test extends auth_outage_base_testcase {
         $progress = new progress_trace_buffer(new text_progress_trace(), false);
         core_plugin_manager::instance()->uninstall_plugin('auth_outage', $progress);
         $progress->finished();
-        self::assertContains('++ Success ++', $progress->get_buffer());
+        self::assertStringContainsString('++ Success ++', $progress->get_buffer());
 
         // Check ...
         self::assertSame(0, $DB->count_records_select('event', "eventtype = 'auth_outage'", null),

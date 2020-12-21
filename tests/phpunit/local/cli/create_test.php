@@ -120,8 +120,8 @@ class create_test extends auth_outage_cli_testcase {
         $this->set_parameters(['--help']);
         $cli = new create();
         $output = $this->execute($cli);
-        self::assertContains('Creates', $output);
-        self::assertContains('--help', $output);
+        self::assertStringContainsString('Creates', $output);
+        self::assertStringContainsString('--help', $output);
     }
 
     /**
@@ -157,7 +157,7 @@ class create_test extends auth_outage_cli_testcase {
         $cli = new create();
         $cli->set_referencetime($now);
         $text = $this->execute($cli);
-        self::assertContains('created', $text);
+        self::assertStringContainsString('created', $text);
         // Check creted outage.
         list(, $id) = explode(':', $text);
         $id = (int)$id;
@@ -221,7 +221,7 @@ class create_test extends auth_outage_cli_testcase {
             'description' => 'Default Description',
         ]);
         $text = $this->execute($cli);
-        self::assertContains('created', $text);
+        self::assertStringContainsString('created', $text);
         // Check creted outage.
         list(, $id) = explode(':', $text);
         $id = (int)$id;
@@ -299,8 +299,8 @@ class create_test extends auth_outage_cli_testcase {
         $cli = new create();
         $cli->set_referencetime($now);
         $text = $this->execute($cli);
-        self::assertContains('created', $text);
-        self::assertContains('started', $text);
+        self::assertStringContainsString('created', $text);
+        self::assertStringContainsString('started', $text);
     }
 
     /**

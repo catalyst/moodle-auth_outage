@@ -82,8 +82,8 @@ class cli_test extends auth_outage_cli_testcase {
         $this->set_parameters(['-h']);
         $cli = new create();
         $output = $this->execute($cli);
-        self::assertContains('-h', $output);
-        self::assertContains('--help', $output);
+        self::assertStringContainsString('-h', $output);
+        self::assertStringContainsString('--help', $output);
     }
 
     /**

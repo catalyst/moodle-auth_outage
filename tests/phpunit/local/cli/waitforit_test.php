@@ -79,8 +79,8 @@ class waitforit_test extends auth_outage_cli_testcase {
         $this->set_parameters(['--help']);
         $cli = new waitforit();
         $text = $this->execute($cli);
-        self::assertContains('Waits', $text);
-        self::assertContains('--help', $text);
+        self::assertStringContainsString('Waits', $text);
+        self::assertStringContainsString('--help', $text);
     }
 
     /**
@@ -152,9 +152,9 @@ class waitforit_test extends auth_outage_cli_testcase {
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $output = $this->execute($cli);
-        self::assertContains('Verbose mode', $output);
-        self::assertContains('starting in 1 sec', $output);
-        self::assertContains('started', $output);
+        self::assertStringContainsString('Verbose mode', $output);
+        self::assertStringContainsString('starting in 1 sec', $output);
+        self::assertStringContainsString('started', $output);
     }
 
     /**
@@ -179,11 +179,11 @@ class waitforit_test extends auth_outage_cli_testcase {
             return $now;
         });
         $output = $this->execute($cli);
-        self::assertContains("starting in 45", $output);
-        self::assertContains("sleep 30 second", $output);
-        self::assertContains("starting in 15", $output);
-        self::assertContains("sleep 15 second", $output);
-        self::assertContains("started!", $output);
+        self::assertStringContainsString("starting in 45", $output);
+        self::assertStringContainsString("sleep 30 second", $output);
+        self::assertStringContainsString("starting in 15", $output);
+        self::assertStringContainsString("sleep 15 second", $output);
+        self::assertStringContainsString("started!", $output);
     }
 
     /**

@@ -104,7 +104,7 @@ class infopagecontroller_test extends auth_outage_base_testcase {
         ]);
         $info = new infopage(['outage' => $outage]);
         $output = $info->get_output();
-        self::assertContains('auth_outage_info', $output);
+        self::assertStringContainsString('auth_outage_info', $output);
     }
 
     /**

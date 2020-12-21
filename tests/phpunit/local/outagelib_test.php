@@ -99,8 +99,8 @@ class outagelib_test extends auth_outage_base_testcase {
 
         outagelib::reset_injectcalled();
         $header1 = outagelib::get_inject_code();
-        self::assertContains('<style>', $header1);
-        self::assertContains('<script>', $header1);
+        self::assertStringContainsString('<style>', $header1);
+        self::assertStringContainsString('<script>', $header1);
 
         // Should not inject more than once.
         $size = strlen($OUTPUT->standard_top_of_body_html());
@@ -140,8 +140,8 @@ class outagelib_test extends auth_outage_base_testcase {
 
         outagelib::reset_injectcalled();
         $header = outagelib::get_inject_code();
-        self::assertContains('<style>', $header);
-        self::assertContains('<script>', $header);
+        self::assertStringContainsString('<style>', $header);
+        self::assertStringContainsString('<script>', $header);
     }
 
     /**

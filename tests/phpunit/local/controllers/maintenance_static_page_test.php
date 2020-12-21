@@ -88,9 +88,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body>Content<link rel="stylesheet" href="'.$externalcsslink.'"></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($localcsslink, $generated);
-        self::assertContains($externalcsslink, $generated);
+        self::assertStringContainsString($externalcsslink, $generated);
     }
 
     public function test_updatelinkstylesheet_urls() {
@@ -146,9 +146,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body><img src="'.$localimglink.'">Content<img src="'.$externalimglink.'" /></body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
         self::assertNotContains($localimglink, $generated);
-        self::assertContains($externalimglink, $generated);
+        self::assertStringContainsString($externalimglink, $generated);
     }
 
     public function test_updatelinkfavicon() {
@@ -159,7 +159,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = $this->generated_page_html($html);
 
         self::assertNotContains($link, $generated);
-        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=', $generated);
+        self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
     }
 
     public function test_previewpath() {
@@ -173,7 +173,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
 
         self::assertNotContains($link, $generated);
-        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
+        self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
     }
 
     /**
@@ -257,7 +257,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
 
     public function test_get_url_for_file() {
         $io = new maintenance_static_page_io();
-        self::assertContains('www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
+        self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
     }
 
     public function test_is_url() {
@@ -367,8 +367,8 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', '#invalidid', 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('removeme', $generated);
-        self::assertContains('Goodbye cruel world', $generated);
+        self::assertStringContainsString('removeme', $generated);
+        self::assertStringContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_meta_refresh_5minutes() {
@@ -379,7 +379,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', '#invalidid', 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertContains('<meta http-equiv="refresh" content="300">', $generated);
+        self::assertStringContainsString('<meta http-equiv="refresh" content="300">', $generated);
     }
 
     public function test_meta_refresh_maximum_5seconds() {
@@ -394,7 +394,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
         return $generated;
 
-        self::assertContains('<meta http-equiv="refresh" content="5">', $generated);
+        self::assertStringContainsString('<meta http-equiv="refresh" content="5">', $generated);
     }
 
     /**

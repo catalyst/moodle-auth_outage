@@ -77,7 +77,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         maintenance_static_page::create_from_html($html)->generate();
 
         $generated = $this->generated_page_html($html);
-        self::assertNotContains('<script', $generated);
+        self::assertStringNotContainsString('<script', $generated);
     }
 
     public function test_updatelinkstylesheet() {
@@ -89,7 +89,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = $this->generated_page_html($html);
 
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($localcsslink, $generated);
+        self::assertStringNotContainsString($localcsslink, $generated);
         self::assertStringContainsString($externalcsslink, $generated);
     }
 
@@ -147,7 +147,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generated = $this->generated_page_html($html);
 
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
-        self::assertNotContains($localimglink, $generated);
+        self::assertStringNotContainsString($localimglink, $generated);
         self::assertStringContainsString($externalimglink, $generated);
     }
 
@@ -158,7 +158,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
                 '<body>Content</body></html>';
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains($link, $generated);
+        self::assertStringNotContainsString($link, $generated);
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
     }
 
@@ -172,7 +172,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->generate();
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
 
-        self::assertNotContains($link, $generated);
+        self::assertStringNotContainsString($link, $generated);
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=preview%2F', $generated);
     }
 
@@ -295,8 +295,8 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', '.removeme', 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains('removeme', $generated);
-        self::assertNotContains('Goodbye cruel world', $generated);
+        self::assertStringNotContainsString('removeme', $generated);
+        self::assertStringNotContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_remove_css_selector_id() {
@@ -307,8 +307,8 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', '#removeme', 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains('removeme', $generated);
-        self::assertNotContains('Goodbye cruel world', $generated);
+        self::assertStringNotContainsString('removeme', $generated);
+        self::assertStringNotContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_remove_css_selector_with_multiline() {
@@ -322,9 +322,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', ".removeme\n.deleteme", 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains('removeme', $generated);
-        self::assertNotContains('deleteme', $generated);
-        self::assertNotContains('Goodbye cruel world', $generated);
+        self::assertStringNotContainsString('removeme', $generated);
+        self::assertStringNotContainsString('deleteme', $generated);
+        self::assertStringNotContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_remove_css_selector_needing_trim() {
@@ -338,9 +338,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', " .removeme     \n    .deleteme   ", 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains('removeme', $generated);
-        self::assertNotContains('deleteme', $generated);
-        self::assertNotContains('Goodbye cruel world', $generated);
+        self::assertStringNotContainsString('removeme', $generated);
+        self::assertStringNotContainsString('deleteme', $generated);
+        self::assertStringNotContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_remove_css_selector_with_empty_line() {
@@ -354,9 +354,9 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         set_config('remove_selectors', "\n\n.removeme\n\n\n\n.deleteme\n\n", 'auth_outage');
         $generated = $this->generated_page_html($html);
 
-        self::assertNotContains('removeme', $generated);
-        self::assertNotContains('deleteme', $generated);
-        self::assertNotContains('Goodbye cruel world', $generated);
+        self::assertStringNotContainsString('removeme', $generated);
+        self::assertStringNotContainsString('deleteme', $generated);
+        self::assertStringNotContainsString('Goodbye cruel world', $generated);
     }
 
     public function test_remove_css_selector_with_invalid_id() {

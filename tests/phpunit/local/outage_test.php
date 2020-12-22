@@ -280,11 +280,11 @@ class outage_test extends auth_outage_base_testcase {
             'description' => 'Description {{start}} {{stop}} {{duration}}',
         ]);
         $title = $outage->get_title();
-        self::assertNotContains('{', $title);
-        self::assertNotContains('}', $title);
+        self::assertStringNotContainsString('{', $title);
+        self::assertStringNotContainsString('}', $title);
         $description = $outage->get_description();
-        self::assertNotContains('{', $description);
-        self::assertNotContains('}', $description);
+        self::assertStringNotContainsString('{', $description);
+        self::assertStringNotContainsString('}', $description);
     }
 
     /**

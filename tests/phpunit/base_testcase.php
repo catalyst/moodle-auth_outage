@@ -66,14 +66,14 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
         }
     }
 
-    public function setUp() {
+    public function setUp() : void {
         global $CFG;
 
         parent::setUp();
         $this->resetAfterTest(true);
     }
 
-    public function tearDown() {
+    public function tearDown() : void {
         global $DB;
 
         foreach (outagedb::get_all() as $i => $outage) {

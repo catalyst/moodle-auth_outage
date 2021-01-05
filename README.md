@@ -48,6 +48,8 @@ Branches
 | Totara up to 10 | TOTARA_10 | 5.5+ |
 | Moodle 3.3+ | master | 7.0+ |
 | Totara 11+ | master | 7.0+ |
+| Moodle 3.10+ | MOODLE_310_STABLE | 7.2+ |
+| Totara 13+ | MOODLE_310_STABLE | 7.2+ |
 
 Screenshots
 -----------
@@ -70,7 +72,7 @@ Moodle plugin directory, or you can use git to clone it into your source:
      `git clone git@github.com:catalyst/moodle-auth_outage.git auth/outage`
 
     Or install via the Moodle plugin directory:
-    
+
      https://moodle.org/plugins/auth_outage
 
 2. Then run the Moodle upgrade
@@ -139,7 +141,7 @@ how to test and use the Outage Manager.
 Why it is an auth plugin?
 -------------------------
 
-One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges. 
+One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges.
 
 
 Feedback and issues

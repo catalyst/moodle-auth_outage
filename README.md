@@ -41,12 +41,14 @@ need to manually add one extra plugin, please check:
 
 Branches
 --------
-| Moodle version     | Branch      | PHP  |
-| ----------------- | ----------- | ---- |
-| Moodle 2.7 to 3.2 | MOODLE_32_STABLE | 5.5+ |
-| Totara up to 10 | TOTARA_10 | 5.5+ |
-| Moodle 3.3+ | master | 7.0+ |
-| Totara 11+ | master | 7.0+ |
+| Moodle version     | Branch    | PHP  |
+| ------------------ | ----------| ---- |
+| Moodle 2.7 to 3.2  | VERSION1  | 5.5+ |
+| Totara up to 10    | TOTARA_10 | 5.5+ |
+| Moodle 3.3 to 3.9  | VERSION2  | 7.0+ |
+| Totara 11 to 12    | VERSION2  | 7.0+ |
+| Moodle 3.10        | VERSION3  | 7.2+ |
+| Totara 13+         | VERSION3  | 7.2+ |
 
 Screenshots
 -----------
@@ -124,7 +126,7 @@ how to test and use the Outage Manager.
 Why it is an auth plugin?
 -------------------------
 
-One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges. 
+One of the graduated stages this plugin introduces is a 'tester only' mode which disables login for most normal users. This is conceptually similar to the maintenance mode but enables testers to login and confirm the state after an upgrade without needing full admin privileges.
 
 
 Feedback and issues

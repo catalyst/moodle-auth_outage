@@ -46,8 +46,10 @@ Branches
 | ----------------- | ----------- | ---- |
 | Moodle 2.7 to 3.2 | MOODLE_32_STABLE | 5.5+ |
 | Totara up to 10 | TOTARA_10 | 5.5+ |
-| Moodle 3.3+ | master | 7.0+ |
-| Totara 11+ | master | 7.0+ |
+| Moodle 3.3 to 3.9 | MOODLE_39_STABLE | 7.0+ |
+| Totara 11 to 12 | MOODLE_39_STABLE | 7.0+ |
+| Moodle 3.10 | master | 7.2+ |
+| Totara 13+ | master | 7.2+ |
 
 Screenshots
 -----------

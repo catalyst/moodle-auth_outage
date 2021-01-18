@@ -260,11 +260,22 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertContains('www.example.com/moodle/auth/outage/file.php?file=img.png', $io->get_url_for_file('img.png'));
     }
 
-    public function test_is_url() {
-        self::assertTrue(maintenance_static_page_io::is_url('http://catalyst.net.nz'));
-        self::assertTrue(maintenance_static_page_io::is_url('https://www.catalyst-au.net/'));
-        self::assertFalse(maintenance_static_page_io::is_url('/homepage'));
-        self::assertFalse(maintenance_static_page_io::is_url('file://homepage'));
+    public function is_url_dataprovider() {
+        return [
+            [true, 'http://catalyst.net.nz'],
+            [true, 'https://www.catalyst-au.net/'],
+            [false, '/homepage'],
+            [false, 'file://homepage'],
+            [true, '//catalyst-au.net/img/test.jpg'],
+            [false, '://www.catalyst-au.net/img/test.jpg']
+        ];
+    }
+
+    /**
+     * @dataProvider is_url_dataprovider
+     */
+    public function test_is_url($result, $url) {
+        self::assertEquals($result, maintenance_static_page_io::is_url($url));
     }
 
     public function test_file_get_data() {

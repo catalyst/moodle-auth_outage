@@ -44,11 +44,13 @@ defined('MOODLE_INTERNAL') || die();
 class maintenance_static_page_io {
     /**
      * Checks if the given string starts with "http://" or "https://".
+     * Also checks for "//" at the start of image, which setting_file_url still uses.
+     *
      * @param $url
      * @return bool
      */
     public static function is_url($url) {
-        return (bool)preg_match('#^http(s)?://#', $url);
+        return ((bool) preg_match('#^http(s)?://#', $url) || (bool) preg_match('#^//#', $url));
     }
 
     /**

@@ -25,6 +25,9 @@
 
 use auth_outage\dml\outagedb;
 
+define('NO_MOODLE_COOKIES', true);
+header('Cache-Control: public, max-age=10,s-maxage=10');
+
 require_once(__DIR__.'/../../config.php');
 
 $active = outagedb::get_active();

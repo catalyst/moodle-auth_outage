@@ -60,7 +60,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     }
 
     public function test_createfromoutage() {
-        // How to fetch a page from PHPUnit environment?
+        self::markTestSkipped("How to fetch a page from PHPUnit environment?");
     }
 
     public function test_createfromhtml() {
@@ -403,7 +403,6 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $page->set_max_refresh_time(5);
         $page->generate();
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
-        return $generated;
 
         self::assertContains('<meta http-equiv="refresh" content="5">', $generated);
     }
@@ -412,7 +411,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
      * Data provider for test_get_urls_from_stylesheet
      * @return array
      */
-    public function test_get_urls_from_stylesheet_provider() {
+    public function get_urls_from_stylesheet_provider() {
         return [
             // Empty string.
             ["", 0],
@@ -434,7 +433,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
     /**
      * Tests get_urls_from_stylesheet() method to get all appropriate URLS from the file.
      *
-     * @dataProvider test_get_urls_from_stylesheet_provider
+     * @dataProvider get_urls_from_stylesheet_provider
      * @param string $filecontent Content of the file
      * @param int $count Expected quantity of found URLs
      * @throws coding_exception

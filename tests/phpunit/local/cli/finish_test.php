@@ -121,10 +121,16 @@ class finish_test extends auth_outage_cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
+        $outage = outagedb::get_by_id($id);
+        self::assertNull($outage->finished, "outage should not be finished");
+
         $this->set_parameters(['-id='.$id]);
         $cli = new finish();
         $cli->set_referencetime($now);
         $this->execute($cli);
+
+        $outage = outagedb::get_by_id($id);
+        self::assertNotNull($outage->finished, "outage should be finished");
     }
 
     /**

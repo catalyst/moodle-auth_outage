@@ -103,6 +103,15 @@ abstract class clibase {
     }
 
     /**
+     * Gets the reference time for creating outages.
+     */
+    public function get_referencetime()
+    {
+        return $this->time;
+    }
+
+
+    /**
      * Generates all options (parameters) available for the CLI command.
      * @return mixed[] Options.
      */

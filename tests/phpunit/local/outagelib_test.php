@@ -187,7 +187,8 @@ class outagelib_test extends auth_outage_base_testcase {
      */
     public function test_inject_noactive() {
         outagelib::reset_injectcalled();
-        outagelib::get_inject_code();
+        $code = outagelib::get_inject_code();
+        self::assertNull($code);
     }
 
     /**

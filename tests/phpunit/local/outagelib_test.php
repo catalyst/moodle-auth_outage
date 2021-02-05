@@ -98,13 +98,16 @@ class outagelib_test extends auth_outage_base_testcase {
         $outage->id = outagedb::save($outage);
 
         outagelib::reset_injectcalled();
-        $header1 = outagelib::get_inject_code();
+        // Get full header to avoid interactions with other single inject plugins.
+        $header1 = $OUTPUT->standard_top_of_body_html();
         self::assertContains('<style>', $header1);
         self::assertContains('<script>', $header1);
 
         // Should not inject more than once.
         $size = strlen($OUTPUT->standard_top_of_body_html());
         self::assertSame($size, strlen($OUTPUT->standard_top_of_body_html()));
+        // Check styles aren't reinjected.
+        self::assertNotContains('<style>', $OUTPUT->standard_top_of_body_html());
     }
 
     /**

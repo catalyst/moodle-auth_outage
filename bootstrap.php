@@ -79,7 +79,8 @@ if (!empty($_SERVER['REQUEST_URI'])) {
 $allowed = !file_exists($CFG->dataroot.'/climaintenance.php') // Not in maintenance mode.
            || (defined('ABORT_AFTER_CONFIG') && ABORT_AFTER_CONFIG) // Only config requested.
            || (defined('CLI_SCRIPT') && CLI_SCRIPT) // Allow CLI scripts.
-           || $outageinfo; // Allow outage info requests.
+           || $outageinfo // Allow outage info requests.
+           || (defined('NO_AUTH_OUTAGE') && NO_AUTH_OUTAGE); // Allow any page should not be blocked by maintenance mode.
 if (!$allowed) {
     // Call the climaintenance.php which will check for allowed IPs.
     $CFG->dirroot = dirname(dirname(dirname(__FILE__))); // It is not defined yet but the script below needs it.

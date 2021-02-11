@@ -27,6 +27,7 @@ use auth_outage\dml\outagedb;
 
 define('NO_MOODLE_COOKIES', true);
 header('Cache-Control: public, max-age=10,s-maxage=10');
+define('NO_AUTH_OUTAGE', true);
 
 require_once(__DIR__.'/../../config.php');
 

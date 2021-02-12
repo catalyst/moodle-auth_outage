@@ -83,6 +83,7 @@ class maintenance_static_page_generator {
             $this->update_link_favicon();
             $this->update_images();
             $this->remove_configured_css_selectors();
+            $this->update_inline_background_images();
 
             $html = $this->dom->saveHTML();
             if (trim($html) == '') {
@@ -213,6 +214,23 @@ class maintenance_static_page_generator {
                     $src = (string) new moodle_url($src);
                 }
                 $link->setAttribute('src', $this->io->generate_file_url($src)); // Works for most image formats.
+            }
+        }
+    }
+
+    /**
+     * Fetch and fixes all inline background images.
+     */
+    private function update_inline_background_images() {
+        $xpath = new \DOMXPath($this->dom);
+        $elements = $xpath->query("//*[@style]");
+
+        foreach ($elements as $element) {
+            $style = $element->getAttribute("style");
+            preg_match('/(?<=background-image)\s*:\s*url\s*\(\s*(\S+)\s*\);/', $style, $matches);
+            if (isset($matches[1])) {
+                $updated = preg_replace("/(?<=background-image)\s*:\s*url\s*\(\s*(\S+)\s*\);/", ': url(' . $this->io->generate_file_url($matches[1]) . '); ', $style);
+                $element->setAttribute('style', $updated);
             }
         }
     }

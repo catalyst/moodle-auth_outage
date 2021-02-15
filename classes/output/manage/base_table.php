@@ -48,6 +48,10 @@ class base_table extends flexible_table {
      */
     private static $autoid = 0;
 
+    /**
+     * Creates start time string.
+     * @param string $starttime start time
+     */
     protected static function create_starttime_string($starttime) {
         $absolute = userdate($starttime, get_string('datetimeformat', 'auth_outage'));
         $relative = $starttime - time();

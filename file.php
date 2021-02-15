@@ -57,7 +57,6 @@ header('Accept-Ranges: none');
 
 /**
  * Callback used in bootstrap.
- * @SupressWarnings(PHPMD)
  */
 function auth_outage_bootstrap_callback() {
     // Not using classes as classloader has not been initialized yet. Keep it minimalist.

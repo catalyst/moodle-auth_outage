@@ -122,6 +122,7 @@ class maintenance_static_page {
     }
 
     /**
+     * Gets generator io.
      * @return maintenance_static_page_io
      */
     public function get_io() {

@@ -42,7 +42,6 @@ defined('MOODLE_INTERNAL') || die();
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings(public) Allow as many methods as needed.
  */
 abstract class auth_outage_base_testcase extends advanced_testcase {
     /**
@@ -66,6 +65,9 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * Setup testcase.
+     */
     public function setUp() {
         global $CFG;
 
@@ -73,6 +75,9 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
     }
 
+    /**
+     * Tear down to restore the original DB reference.
+     */
     public function tearDown() {
         global $DB;
 

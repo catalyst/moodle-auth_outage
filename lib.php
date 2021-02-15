@@ -41,7 +41,7 @@ function auth_outage_outagelib_prepare_next_outage() {
  *
  * To keep it minimalist it was not added to the outagelib.php class.
  *
- * @param $file string Filename to fetch from sitedata
+ * @param string $file Filename to fetch from sitedata
  * @return string|null Full path to the sitedata file or null if file is not valid.
  */
 function auth_outage_get_climaintenance_resource_file($file) {

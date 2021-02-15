@@ -95,6 +95,7 @@ class maintenance_static_page_generator {
     }
 
     /**
+     * Gets maintenance_static_page_io.
      * @return maintenance_static_page_io
      */
     public function get_io() {
@@ -252,7 +253,7 @@ class maintenance_static_page_generator {
     /**
      * Fetches all elements based on the given selector.
      *
-     * @param $selector
+     * @param string $selector element selector
      *
      * @return DOMElement[]
      */
@@ -270,7 +271,7 @@ class maintenance_static_page_generator {
     /**
      * Fetch all elements which contains the given class.
      *
-     * @param $class
+     * @param string $class element class
      *
      * @return DOMElement[]
      */
@@ -286,6 +287,9 @@ class maintenance_static_page_generator {
         return $matches;
     }
 
+    /**
+     * Adds meta refresh to head element.
+     */
     private function add_meta_refresh() {
         $meta = $this->dom->createElement('meta');
         $meta->setAttribute('http-equiv', 'refresh');
@@ -298,6 +302,7 @@ class maintenance_static_page_generator {
     }
 
     /**
+     * Gets refresh time.
      * @return int
      */
     public function get_refresh_time() {
@@ -305,6 +310,7 @@ class maintenance_static_page_generator {
     }
 
     /**
+     * Sets refresh time.
      * @param int $refreshtime
      */
     public function set_refresh_time($refreshtime) {

@@ -93,7 +93,6 @@ class infopage {
     /**
      * Generates and outputs the HTML for the info page.
      * @uses    redirect
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable) $viewbag is used inside 'require'.
      */
     public function output() {
         global $PAGE, $CFG, $OUTPUT;

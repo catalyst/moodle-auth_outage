@@ -39,7 +39,6 @@ require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings(public) Allow as many methods as needed.
  */
 class behat_auth_outage extends behat_base {
     /**
@@ -155,6 +154,7 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Check if an specific action is not visible.
      * @Then /^I should see an empty settings text area "([^"]*)"$/
      * @param string $name
      */
@@ -163,6 +163,7 @@ class behat_auth_outage extends behat_base {
     }
 
     /**
+     * Check if an specific action is not visible.
      * @When /^I go to the "Outage Settings" page$/
      */
     public function i_go_to_the_outage_settings_page() {

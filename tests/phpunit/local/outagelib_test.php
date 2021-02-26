@@ -40,7 +40,6 @@ require_once(__DIR__.'/../base_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @SuppressWarnings(public) Allow as many methods as needed.
  */
 class outagelib_test extends auth_outage_base_testcase {
     /**
@@ -291,6 +290,9 @@ class outagelib_test extends auth_outage_base_testcase {
         self::assertEmpty($header);
     }
 
+    /**
+     * Test create maintenance php code
+     */
     public function test_createmaintenancephpcode() {
         $expected = <<<'EOT'
 <?php
@@ -332,6 +334,9 @@ EOT;
         self::assertSame($expected, $found);
     }
 
+    /**
+     * Test create maintenance php code without age
+     */
     public function test_createmaintenancephpcode_withoutage() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -383,6 +388,9 @@ EOT;
         self::assertSame($found, $expected);
     }
 
+    /**
+     * Test create maintenance php code without IPs
+     */
     public function test_createmaintenancephpcode_withoutips() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -399,6 +407,9 @@ EOT;
         self::assertFileNotExists($file);
     }
 
+    /**
+     * Test create maintenance php code without outage
+     */
     public function test_createmaintenancephpcode_withoutoutage() {
         global $CFG;
         $file = $CFG->dataroot.'/climaintenance.php';
@@ -517,6 +528,9 @@ EOT;
         self::assertNotEmpty($header);
     }
 
+    /**
+     * Creates outage for tests.
+     */
     private function create_outage() {
         $this->resetAfterTest(true);
         self::setAdminUser();

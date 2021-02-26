@@ -198,6 +198,10 @@ class forms_test extends auth_outage_base_testcase {
         ];
     }
 
+    /**
+     * Skip tests for moodle below 30.
+     * @param string $reason reason to be filled
+     */
     private function skip_because_moodle_is_below_30($reason = '') {
         global $CFG;
 

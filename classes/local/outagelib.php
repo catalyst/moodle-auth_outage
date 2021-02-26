@@ -49,8 +49,10 @@ require_once(__DIR__.'/../../lib.php');
  */
 class outagelib {
 
+    /** Outage start. */
     const OUTAGE_START = '<!-- OUTAGESTART -->';
 
+    /** Outage end. */
     const OUTAGE_END = '<!-- OUTAGEEND -->';
 
     /**
@@ -58,6 +60,10 @@ class outagelib {
      */
     private static $injectcalled = false;
 
+    /**
+     * Fetches page.
+     * @param string $file file to be fetched
+     */
     public static function fetch_page($file) {
         $curl = new curl();
         $contents = $curl->get($file);
@@ -79,6 +85,7 @@ class outagelib {
 
     /**
      * Given a time, usually now, when is the next outage window?
+     * @param int $time time for next window
      */
     public static function get_next_window($time = null) {
 
@@ -202,6 +209,9 @@ class outagelib {
         }
     }
 
+    /**
+     * Checks if wwwroot accessible.
+     */
     private static function check_wwwroot_accessible() {
         global $CFG;
         $result = self::fetch_page($CFG->wwwroot);
@@ -359,9 +369,6 @@ EOT;
      * Generates a warning message in case the plugin is not active and configured.
      *
      * @return string
-     *
-     * @internal stdClass $CFG
-     * @internal bootstrap_renderer $OUTPUT
      */
     public static function generate_plugin_configuration_warning() {
         global $CFG, $OUTPUT, $PAGE;

@@ -31,7 +31,6 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool result
  * @throws moodle_exception
  */
-
 function xmldb_auth_outage_uninstall() {
     global $DB;
 

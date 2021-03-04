@@ -66,6 +66,13 @@ class renderer extends plugin_renderer_base {
      * @return string The rendered view code.
      */
     public function render_view($view, $viewbag = []) {
+
+        // Do not render if the request are from some layouts.
+        $excludelayout = ['embedded', 'popup', 'secure', 'maintenance'];
+        if (in_array($this->page->pagelayout, $excludelayout)) {
+            return '';
+        }
+
         ob_start();
         $this->output_view($view, $viewbag);
         $html = ob_get_contents();

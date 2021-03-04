@@ -322,7 +322,7 @@ class behat_auth_outage extends behat_base {
         }
         if ($seconds >= 0) {
             $seconds++; // Give one extra second for things to happen.
-            $this->getSession()->wait($seconds * 1000, false);
+            $this->getSession()->wait($seconds * 1000);
         }
     }
 

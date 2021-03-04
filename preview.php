@@ -28,7 +28,9 @@
 use auth_outage\dml\outagedb;
 use auth_outage\local\controllers\maintenance_static_page;
 
+// @codingStandardsIgnoreStart
 require_once(__DIR__.'/../../config.php');
+// @codingStandardsIgnoreEnd
 $id = optional_param('id', null, PARAM_INT);
 $outage = is_null($id) ? outagedb::get_next_starting() : outagedb::get_by_id($id);
 if (is_null($outage)) {

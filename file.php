@@ -73,7 +73,9 @@ function auth_outage_bootstrap_callback() {
     exit(0);
 }
 
+// @codingStandardsIgnoreStart
 require_once(__DIR__.'/../../config.php');
+// @codingStandardsIgnoreEnd
 
 // We should never reach here if config.php and auth/outage/bootstrap.php intercepted it correctly.
 // If config.php did not execute the callback function we can use the debugging function here.

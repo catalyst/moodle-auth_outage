@@ -30,7 +30,9 @@
  */
 
 // This call is required by Moodle, but this script should have been called by config.php anyway.
+// @codingStandardsIgnoreStart
 require_once(__DIR__.'/../../config.php');
+// @codingStandardsIgnoreEnd
 
 // We need the CFG->dataroot, if not set yet this script is called too early in config.php file.
 if (!isset($CFG->dataroot)) {

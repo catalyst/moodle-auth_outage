@@ -25,7 +25,9 @@
 
 use auth_outage\local\controllers\infopage;
 
+// @codingStandardsIgnoreStart
 require_once(__DIR__.'/../../config.php');
+// @codingStandardsIgnoreEnd
 
 $info = new infopage();
 $info->output();

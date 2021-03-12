@@ -40,7 +40,7 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
     /**
      * Always enable the auth outage plugin, resets after test and set no parameters.
      */
-    public function setUp() {
+    public function setUp(): void {
         global $CFG;
 
         // PHPUnit does not load config.php file.

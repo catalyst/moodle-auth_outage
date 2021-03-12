@@ -68,7 +68,7 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
     /**
      * Setup testcase.
      */
-    public function setUp() {
+    public function setUp(): void {
         global $CFG;
 
         parent::setUp();

@@ -78,7 +78,7 @@ class outagedb_test extends auth_outage_base_testcase {
     /**
      * Ensure DB tests run as admin.
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->setAdminUser();
     }

@@ -78,7 +78,7 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
     /**
      * Tear down to restore the original DB reference.
      */
-    public function tearDown() {
+    public function tearDown(): void {
         global $DB;
 
         foreach (outagedb::get_all() as $i => $outage) {

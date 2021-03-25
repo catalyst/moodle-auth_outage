@@ -74,8 +74,6 @@ if (!$viewbag['static']) {
         </div>
     </div>
 
-    <div class="auth_outage_warningbar_spacer">&nbsp;</div>
-
 <?php if (!$viewbag['static']): ?>
     <script>
         document.body.className += ' auth_outage';

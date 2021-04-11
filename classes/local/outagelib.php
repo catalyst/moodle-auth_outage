@@ -65,6 +65,9 @@ class outagelib {
      * @param string $file file to be fetched
      */
     public static function fetch_page($file) {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
+
         $curl = new curl();
         $contents = $curl->get($file);
         $info = $curl->get_info();

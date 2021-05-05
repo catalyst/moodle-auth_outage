@@ -40,9 +40,9 @@ jobs:
         database: ['pgsql', 'mariadb']
         moodle-branch: ['MOODLE_35_STABLE']
         node: ['14.15.1']
-        php: ['7.2', '7.3']
+        php: ['7.1']
         include:
-          - {moodle-branch: 'MOODLE_35_STABLE', php: '7.1', node: '14.15.1', database: 'mariadb'}
+          - {moodle-branch: 'MOODLE_38_STABLE', php: '7.1', node: '14.15.1', database: 'mariadb'}
           - {moodle-branch: 'MOODLE_38_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
 
     steps:

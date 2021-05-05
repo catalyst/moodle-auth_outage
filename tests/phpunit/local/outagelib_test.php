@@ -106,7 +106,7 @@ class outagelib_test extends auth_outage_base_testcase {
         $size = strlen($OUTPUT->standard_top_of_body_html());
         self::assertSame($size, strlen($OUTPUT->standard_top_of_body_html()));
         // Check styles aren't reinjected.
-        self::assertNotContains('<style>', $OUTPUT->standard_top_of_body_html());
+        self::assertStringNotContainsString('<style>', $OUTPUT->standard_top_of_body_html());
     }
 
     /**

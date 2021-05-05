@@ -529,7 +529,7 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
         $matches = $generator->get_urls_from_stylesheet($filecontent);
 
-        self::assertInternalType('array', $matches);
+        self::assertIsArray($matches);
         self::assertCount(2, $matches);
         self::assertCount($count, $matches[1]);
     }

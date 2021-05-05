@@ -38,16 +38,12 @@ jobs:
       fail-fast: false
       matrix:
         database: ['pgsql', 'mariadb']
-        moodle-branch: ['MOODLE_39_STABLE']
+        moodle-branch: ['MOODLE_35_STABLE']
         node: ['14.15.1']
         php: ['7.2', '7.3']
         include:
           - {moodle-branch: 'MOODLE_35_STABLE', php: '7.1', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_35_STABLE', php: '7.2', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.4', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_39_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
-          - {moodle-branch: 'MOODLE_310_STABLE', php: '7.4', node: '14.15.1', database: 'mariadb'}
-          - {moodle-branch: 'MOODLE_311_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
+          - {moodle-branch: 'MOODLE_38_STABLE', php: '7.4', node: '14.15.1', database: 'pgsql'}
 
     steps:
       - name: Check out repository code

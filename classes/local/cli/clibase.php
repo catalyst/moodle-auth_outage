@@ -106,18 +106,18 @@ abstract class clibase {
      * Generates all options (parameters) available for the CLI command.
      * @return mixed[] Options.
      */
-    public abstract function generate_options();
+    abstract public function generate_options();
 
     /**
      * Generate all short forms for the available options.
      * @return string[] Short form options.
      */
-    public abstract function generate_shortcuts();
+    abstract public function generate_shortcuts();
 
     /**
      * Executes the CLI script.
      */
-    public abstract function execute();
+    abstract public function execute();
 
     /**
      * Change session to admin user.

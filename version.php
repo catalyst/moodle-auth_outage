@@ -32,3 +32,4 @@ $plugin->version = 2021032500;                  // The current plugin version (D
 $plugin->release = 2021032500;                  // Human-readable release information.
 $plugin->requires = 2017051500;                 // Requires 3.3 and higher.
 $plugin->maturity = MATURITY_STABLE;            // Suitable for PRODUCTION environments!
+$plugin->incompatible = 40;

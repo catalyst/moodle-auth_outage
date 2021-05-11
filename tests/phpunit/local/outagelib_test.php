@@ -443,9 +443,7 @@ EOT;
         $this->create_outage();
 
         // Change settings.
-        admin_write_settings((object)[
-            's_auth_outage_allowedips' => '127',
-        ]);
+        set_config('s_auth_outage_allowedips', '127', 'auth_outage');
 
         // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
         foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
@@ -463,9 +461,7 @@ EOT;
         $this->create_outage();
 
         // Change settings.
-        admin_write_settings((object)[
-            's_auth_outage_remove_selectors' => '.something',
-        ]);
+        set_config('s_auth_outage_remove_selectors', '.something', 'auth_outage');
 
         // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
         foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {

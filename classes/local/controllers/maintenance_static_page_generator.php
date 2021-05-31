@@ -43,6 +43,15 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_static_page_generator {
+    /** PATTERN
+     * The pattern should match the attribute values that
+     * go as 'url(xxxxx)', but make sure 'url(data:xxxxx)' is not
+     * rewritten. Must be case insensitive to match 'URL(xxxxx)'.
+     * It should be possible to specify other background attributes as
+     * 'background: color url(xxxxx) no-repeat'.
+     */
+    protected const PATTERN = '/url\s*\(\s*[\'"]?(?![\'"]?data:)([^\s\'"]+)[\'"]?\s*\)/i';
+
     /** @var DOMDocument */
     protected $dom;
 
@@ -83,6 +92,7 @@ class maintenance_static_page_generator {
             $this->update_link_favicon();
             $this->update_images();
             $this->remove_configured_css_selectors();
+            $this->update_inline_background_images();
 
             $html = $this->dom->saveHTML();
             if (trim($html) == '') {
@@ -151,6 +161,18 @@ class maintenance_static_page_generator {
     }
 
     /**
+     * Retrieves a URL from inline style using regular expressions.
+     *
+     * @param string $style Content of the style attribute
+     * @return array Array containing match
+     */
+    public function get_url_from_inline_style($style) {
+        preg_match(self::PATTERN, $style, $match);
+        return $match;
+    }
+
+
+    /**
      * Checks for urls inside filename.
      *
      * @param string $filename
@@ -214,6 +236,31 @@ class maintenance_static_page_generator {
                     $src = (string) new moodle_url($src);
                 }
                 $link->setAttribute('src', $this->io->generate_file_url($src)); // Works for most image formats.
+            }
+        }
+    }
+
+    /**
+     * Fetch and fixes all inline background images.
+     */
+    private function update_inline_background_images() {
+        global $CFG;
+        $xpath = new \DOMXPath($this->dom);
+        $elements = $xpath->query("//*[@style]");
+
+        foreach ($elements as $element) {
+            $style = $element->getAttribute("style");
+            $matches = $this->get_url_from_inline_style($style);
+            if (isset($matches[1])) {
+                // Allow incomplete URLs in style, assume it is from moodle root.
+                if (maintenance_static_page_io::is_url($matches[1])) {
+                    $fullurl = $matches[1];
+                } else {
+                    $fullurl = (string) new moodle_url($matches[1]);
+                }
+                $newurl = $this->io->generate_file_url($fullurl);
+                $updated = preg_replace(self::PATTERN, ' url('.$newurl.') ', $style);
+                $element->setAttribute('style', $updated);
             }
         }
     }

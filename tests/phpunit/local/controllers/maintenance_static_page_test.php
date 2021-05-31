@@ -193,6 +193,60 @@ class maintenance_static_page_test extends auth_outage_base_testcase {
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
     }
 
+
+    /**
+     * Data provider for test_update_inline_background_images
+     * @return array
+     */
+    public function test_update_inline_background_images_provider() {
+        return [
+            // Empty string.
+            ["", false],
+            // URLs that should be retrieved.
+            ["color: #FF00FF; background: lightblue url(/pluginfile.php/1/theme_custom/banner/251298630/0001.png) no-repeat", true],
+            ["background: lightblue url(https://www.example.com/moodle/pluginfile.php/1/theme_custom/banner/251298630/0001.png) no-repeat", true],
+            ["background:url('https://www.example.com/moodle/pluginfile.php/1/theme_custom/banner/251298630/0001.png')", true],
+            ["background-image : url( /pix/help.png);", true],
+            ["background-image: url ('/pix/help.png')", true],
+            // URLs that should not be retrieved.
+            ["background-image:url(data:image/gif;base64,R0lGODlhYADIAP=)", false],
+            ["background-image:url('data:image/gif;base64,R0lGODlhYADIAP=')", false]
+        ];
+    }
+
+    /**
+     * Tests update_inline_background_images() method to update the background images.
+     *
+     * @dataProvider test_update_inline_background_images_provider
+     * @param string $stylecontent Content of the style to test
+     * @param bool $rewrite Flag if URL should be rewritten
+     * @throws coding_exception
+     */
+    public function test_update_inline_background_images($stylecontent, $rewrite) {
+        global $CFG;
+        $this->resetAfterTest(true);
+        $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
+
+        $html = '<!DOCTYPE html>\n'.
+            '<html><head><title>Title</title></head>'.
+            '<body><div style="'.$stylecontent.'">Content</div></body></html>';
+
+        // Temporarily disable debugging to prevent errors because file does not exist
+        $debuglevel = $CFG->debug;
+        $CFG->debug = '';
+        $generated = $this->generated_page_html($html);
+        // Restore debugging level
+        $CFG->debug = $debuglevel;
+        $matches = $generator->get_url_from_inline_style($stylecontent);
+        if ($rewrite) {
+            self::assertStringNotContainsString($matches[1], $generated);
+            self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
+            self::assertIsArray($matches);
+        } else {
+            self::assertStringContainsString($stylecontent, $generated);
+        }
+    }
+
      /**
       * Test update preview path to file.php style link.
       */

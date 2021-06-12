@@ -38,6 +38,16 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outage_deleted extends base {
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('eventoutagedeleted', 'auth_outage');
+    }
+
     /**
      * Returns non-localised event description with id's for admin use only.
      *

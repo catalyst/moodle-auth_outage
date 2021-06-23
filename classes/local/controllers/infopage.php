@@ -97,7 +97,7 @@ class infopage {
     public function output() {
         global $PAGE, $CFG, $OUTPUT;
 
-        if (is_null($this->outage)) {
+        if (is_null($this->outage) || !has_capability('auth/outage:viewinfo', context_system::instance())) {
             redirect(new moodle_url('/'));
         }
 

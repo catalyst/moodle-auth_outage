@@ -112,6 +112,7 @@ $string['messageoutageongoing'] = 'Back online at {$a->stop}.';
 $string['messageoutagewarning'] = 'Shutting down in {{countdown}}';
 $string['na'] = 'n/a';
 $string['notfound'] = 'No outages found.';
+$string['outage:viewinfo'] = 'View outage info';
 $string['outageedit'] = 'Edit outage';
 $string['outageeditcrumb'] = 'Edit';
 $string['outageclone'] = 'Clone outage';

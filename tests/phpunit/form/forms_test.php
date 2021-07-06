@@ -39,7 +39,7 @@ require_once(__DIR__.'/../base_testcase.php');
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class forms_test extends auth_outage_base_testcase {
+class auth_outage_forms_test extends auth_outage_base_testcase {
     /**
      * Create a delete form.
      */

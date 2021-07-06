@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright       Catalyst IT
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class calendar_test extends advanced_testcase {
+class auth_outage_calendar_test extends advanced_testcase {
     /**
      * @var outage|null The calendar entry owner.
      */

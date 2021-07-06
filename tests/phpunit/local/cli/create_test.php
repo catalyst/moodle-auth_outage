@@ -39,7 +39,7 @@ require_once(__DIR__.'/cli_testcase.php');
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_test extends auth_outage_cli_testcase {
+class auth_outage_create_test extends auth_outage_cli_testcase {
     /**
      * Tests without any arguments.
      */

@@ -27,6 +27,7 @@ namespace auth_outage\local\controllers;
 
 use auth_outage\local\outagelib;
 use coding_exception;
+use core_php_time_limit;
 use DOMDocument;
 use DOMElement;
 use invalid_state_exception;
@@ -84,6 +85,10 @@ class maintenance_static_page_generator {
         $this->io->cleanup();
 
         if (!is_null($this->dom)) {
+
+            // This can take a while to process using repeated curls.
+            core_php_time_limit::raise();
+
             $this->io->create_resources_path();
 
             $this->remove_script_tags();
@@ -246,7 +251,7 @@ class maintenance_static_page_generator {
     private function update_inline_background_images() {
         global $CFG;
         $xpath = new \DOMXPath($this->dom);
-        $elements = $xpath->query("//*[@style]");
+        $elements = $xpath->query("//*[contains(@style,'background')]");
 
         foreach ($elements as $element) {
             $style = $element->getAttribute("style");

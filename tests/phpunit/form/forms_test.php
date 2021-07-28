@@ -44,14 +44,16 @@ class auth_outage_forms_test extends auth_outage_base_testcase {
      * Create a delete form.
      */
     public function test_delete() {
-        new delete();
+        $form = new delete();
+        self::assertNotNull($form);
     }
 
     /**
      * Create a finish form.
      */
     public function test_finish() {
-        new finish();
+        $form = new finish();
+        self::assertNotNull($form);
     }
 
     /**
@@ -164,6 +166,7 @@ class auth_outage_forms_test extends auth_outage_base_testcase {
         ]);
         $edit = new edit();
         $edit->set_data($outage);
+        self::assertTrue(true, "set_data did not return any error");
     }
 
     /**

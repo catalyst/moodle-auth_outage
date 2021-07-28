@@ -42,7 +42,8 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor.
      */
     public function test_constructor() {
-        new infopage();
+        $infopage = new infopage();
+        self::assertNotNull($infopage);
     }
 
     /**
@@ -50,7 +51,8 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      */
     public function test_constructor_withparams() {
         $_GET = ['id' => 1, 'static' => 'true'];
-        new infopage();
+        $infopage = new infopage();
+        self::assertNotNull($infopage);
     }
 
     /**

@@ -60,8 +60,12 @@ class auth_outage_cli_test extends auth_outage_cli_testcase {
      */
     public function test_setreferencetime() {
         $cli = new create(['start' => 0]);
+
         $cli->set_referencetime(1);
+        self::assertEquals(1, $cli->get_referencetime());
+
         $cli->set_referencetime(60 * 60 * 24 * 7);
+        self::assertEquals(604800, $cli->get_referencetime());
     }
 
     /**

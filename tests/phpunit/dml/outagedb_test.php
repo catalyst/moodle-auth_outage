@@ -94,6 +94,8 @@ class auth_outage_outagedb_test extends auth_outage_base_testcase {
         $outage = $this->createoutage(2);
         $outage->id = $id;
         outagedb::save($outage);
+        // Ensure an id was given.
+        self::assertNotEquals(0, $id);
     }
 
     /**

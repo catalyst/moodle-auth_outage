@@ -32,6 +32,7 @@
  */
 
 use auth_outage\dml\outagedb;
+use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -63,6 +64,37 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
                 $this->expectExceptionCode($code);
             }
         }
+    }
+
+    /**
+     * Revoke permission to see info page.
+     */
+    protected function revoke_info_page_permissions() {
+        global $DB;
+
+        $guestrole = $DB->get_record('role', array('shortname' => 'guest'));
+        role_change_permission($guestrole->id, context_system::instance(), 'auth/outage:viewinfo', CAP_PREVENT);
+
+        $this->setGuestUser();
+    }
+
+    /**
+     * Get an outage object.
+     *
+     * @return \auth_outage\local\outage
+     */
+    protected function get_dummy_outage() {
+        $now = time();
+
+        return new outage([
+            'id' => 1,
+            'autostart' => false,
+            'warntime' => $now - 100,
+            'starttime' => $now + 100,
+            'stoptime' => $now + 200,
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
     }
 
     /**

@@ -42,6 +42,8 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor.
      */
     public function test_constructor() {
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
         new infopage();
     }
 
@@ -49,6 +51,8 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor with given parameters.
      */
     public function test_constructor_withparams() {
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
         $_GET = ['id' => 1, 'static' => 'true'];
         new infopage();
     }
@@ -57,16 +61,10 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor with different id and outage id.
      */
     public function test_constructor_idmismatch() {
-        $outage = new outage([
-            'id' => 1,
-            'autostart' => false,
-            'warntime' => time() - 60,
-            'starttime' => time(),
-            'stoptime' => time() + 60,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-        $this->set_expected_exception('coding_exception');
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        $outage = $this->get_dummy_outage();
+        $this->set_expected_exception('coding_exception', 'Provided id and outage->id do not match. (2/1)');
         new infopage(['id' => 2, 'outage' => $outage]);
     }
 
@@ -74,34 +72,80 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      * Tests the constructor with an invalid outage.
      */
     public function test_constructor_invalidoutage() {
-        $this->set_expected_exception('coding_exception');
-        new infopage(['outage' => 'My outage']);
-    }
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
-    /**
-     * We should have an exception because CLI cannot redirect.
-     */
-    public function test_output_nonstatic_nooutage() {
-        $info = new infopage(['static' => false]);
-        $this->set_expected_exception('moodle_exception');
-        $info->output();
+        $this->set_expected_exception('coding_exception', 'Provided outage is not a valid outage object. (My outage)');
+        new infopage(['outage' => 'My outage']);
     }
 
     /**
      * Checks the output of the info page.
      */
     public function test_output() {
-        $now = time();
-        $outage = new outage([
-            'id' => 1,
-            'autostart' => false,
-            'warntime' => $now - 100,
-            'starttime' => $now + 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        $outage = $this->get_dummy_outage();
+
         $info = new infopage(['outage' => $outage]);
+        $output = $info->get_output();
+        self::assertStringContainsString('auth_outage_info', $output);
+    }
+
+    /**
+     * Checks the output of the info page.
+     */
+    public function test_output_without_permission() {
+        $this->revoke_info_page_permissions();
+        $this->assertFalse(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        $outage = $this->get_dummy_outage();
+        $info = new infopage(['outage' => $outage]);
+
+        $this->set_expected_exception('moodle_exception', 'Unsupported redirect detected, script execution terminated');
+        $output = $info->get_output();
+    }
+
+    /**
+     * Checks the output of the info page.
+     */
+    public function test_output_without_permission_but_static() {
+        $this->revoke_info_page_permissions();
+        $this->assertFalse(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        $outage = $this->get_dummy_outage();
+        $info = new infopage(['outage' => $outage, 'static' => true]);
+
+        $output = $info->get_output();
+        self::assertStringContainsString('auth_outage_info', $output);
+    }
+
+    /**
+     * Checks the output of the info page.
+     */
+    public function test_output_with_forcelogin() {
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        set_config('forcelogin', true);
+
+        $outage = $this->get_dummy_outage();
+        $info = new infopage(['outage' => $outage]);
+
+        $this->set_expected_exception('moodle_exception', 'Unsupported redirect detected, script execution terminated');
+        $info->get_output();
+    }
+
+    /**
+     * Checks the output of the info page.
+     */
+    public function test_output_with_forcelogin_if_static() {
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
+        set_config('forcelogin', true);
+
+        $outage = $this->get_dummy_outage();
+
+        $info = new infopage(['outage' => $outage, 'static' => true]);
+
         $output = $info->get_output();
         self::assertStringContainsString('auth_outage_info', $output);
     }
@@ -111,6 +155,9 @@ class auth_outage_infopagecontroller_test extends auth_outage_base_testcase {
      */
     public function test_svgicons_is_true() {
         global $CFG;
+
+        $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
+
         $CFG->svgicons = false;
         new infopage();
         self::assertTrue($CFG->svgicons);

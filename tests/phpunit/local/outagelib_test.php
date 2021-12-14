@@ -62,8 +62,8 @@ class outagelib_test extends auth_outage_base_testcase {
         set_config('maintenance_message', 'A message.');
         outagedb::save($outage);
         self::assertFalse((bool)get_config('moodle', 'maintenance_message'));
-        self::assertCount(2, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(2, \core_phpunit\internal_util::get_debugging_messages());
+        \core_phpunit\internal_util::reset_debugging();
     }
 
     /**
@@ -116,8 +116,8 @@ class outagelib_test extends auth_outage_base_testcase {
         $_GET = ['auth_outage_break_code' => '1'];
         outagelib::reset_injectcalled();
         $header = outagelib::get_inject_code();
-        self::assertCount(2, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(2, \core_phpunit\internal_util::get_debugging_messages());
+        \core_phpunit\internal_util::reset_debugging();
     }
 
     /**

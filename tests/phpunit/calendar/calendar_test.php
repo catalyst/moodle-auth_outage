@@ -134,8 +134,8 @@ class calendar_test extends advanced_testcase {
         ]);
 
         calendar::update($outage);
-        self::assertCount(1, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(1, \core_phpunit\internal_util::get_debugging_messages());
+        \core_phpunit\internal_util::reset_debugging();
     }
 
     /**
@@ -146,8 +146,8 @@ class calendar_test extends advanced_testcase {
         self::setAdminUser();
 
         calendar::delete(1);
-        self::assertCount(1, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(1, \core_phpunit\internal_util::get_debugging_messages());
+        \core_phpunit\internal_util::reset_debugging();
     }
 
     /**

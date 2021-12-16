@@ -34,8 +34,6 @@
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * auth_outage_base_testcase class.
  *

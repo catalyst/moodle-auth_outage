@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = "auth_outage";
-$plugin->version = 2021062300;                  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = 2021062300;                  // Human-readable release information.
+$plugin->version = 2022011200;                  // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = 2022011200;                  // Human-readable release information.
 $plugin->requires = 2017111309;                 // 2017111309 = T13, but this really requires 3.9 and higher.
 $plugin->maturity = MATURITY_STABLE;            // Suitable for PRODUCTION environments!

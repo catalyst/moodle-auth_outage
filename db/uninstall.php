@@ -24,8 +24,6 @@
  */
 use auth_outage\local\controllers\maintenance_static_page;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Auth Outage plugin uninstall code.
  * @return bool result

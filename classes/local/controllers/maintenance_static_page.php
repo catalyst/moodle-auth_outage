@@ -29,8 +29,6 @@ use auth_outage\local\outage;
 use coding_exception;
 use DOMDocument;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * maintenance_static_page class.
  *

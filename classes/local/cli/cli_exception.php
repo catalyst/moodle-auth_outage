@@ -27,8 +27,6 @@ namespace auth_outage\local\cli;
 
 use Exception;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * cli_exception class.
  *

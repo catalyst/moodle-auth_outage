@@ -31,8 +31,6 @@ use finfo;
 use invalid_parameter_exception;
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * maintenance_static_page_io class.
  *

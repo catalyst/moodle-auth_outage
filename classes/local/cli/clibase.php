@@ -29,8 +29,6 @@ use auth_outage\local\outagelib;
 use coding_exception;
 use core\session\manager;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * clibase class.
  *

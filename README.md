@@ -1,7 +1,4 @@
-<a href="https://travis-ci.org/catalyst/moodle-auth_outage">
-<img src="https://travis-ci.org/catalyst/moodle-auth_outage.svg?branch=master">
-</a>
-
+![Build Status](https://github.com/catalyst/moodle-auth_outage/actions/workflows/ci.yml/badge.svg?branch=MOODLE_38_STABLE)(https://github.com/catalyst/moodle-auth_outage/actions)
 # Moodle Outage manager plugin
 * [Version Support](#version-support)
 * [What is this?](#what-is-this)

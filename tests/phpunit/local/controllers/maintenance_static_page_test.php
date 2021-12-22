@@ -401,8 +401,8 @@ class auth_outage_maintenance_static_page_test extends auth_outage_base_testcase
         $found = maintenance_static_page_io::file_get_data(__DIR__.'/fixtures/invalidfile');
         self::assertSame('', $found['contents']);
         self::assertSame('unknown', $found['mime']);
-        self::assertCount(1, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(1, $this->getDebuggingMessages());
+        $this->resetDebugging();
     }
 
     /**

@@ -427,8 +427,8 @@ class auth_outage_outagedb_test extends auth_outage_base_testcase {
     public function test_finish_now_notfound() {
         $this->resetAfterTest(true);
         outagedb::finish(1);
-        self::assertCount(1, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(1, $this->getDebuggingMessages());
+        $this->resetDebugging();
     }
 
     /**
@@ -449,8 +449,8 @@ class auth_outage_outagedb_test extends auth_outage_base_testcase {
         self::assertTrue(!$outage->is_ongoing($time));
 
         outagedb::finish($id, $time);
-        self::assertCount(1, phpunit_util::get_debugging_messages());
-        phpunit_util::reset_debugging();
+        self::assertCount(1, $this->getDebuggingMessages());
+        $this->resetDebugging();
     }
 
     /**

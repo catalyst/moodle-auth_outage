@@ -33,8 +33,6 @@ use DOMElement;
 use invalid_state_exception;
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * maintenance_static_page_generator class.
  *

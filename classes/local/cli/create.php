@@ -29,8 +29,6 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 use coding_exception;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * create class.
  *

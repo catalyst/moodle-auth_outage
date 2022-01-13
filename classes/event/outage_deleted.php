@@ -27,8 +27,6 @@ namespace auth_outage\event;
 use core\event\base;
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * outage_deleted class.
  *

@@ -26,8 +26,6 @@
 use auth_outage\calendar\calendar;
 use auth_outage\local\outage;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * calendar_test test class.
  *

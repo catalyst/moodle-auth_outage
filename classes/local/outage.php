@@ -28,8 +28,6 @@ namespace auth_outage\local;
 use coding_exception;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * outage class.
  *

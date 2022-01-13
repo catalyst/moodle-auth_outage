@@ -23,8 +23,6 @@
 
 namespace auth_outage\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_privacy\local\legacy_polyfill;
 
 /**

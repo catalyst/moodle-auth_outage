@@ -25,8 +25,6 @@
 
 use auth_outage\local\outagelib;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Used for adminlib::set_updatedcallback which requires a string that resolves to a function.
  *

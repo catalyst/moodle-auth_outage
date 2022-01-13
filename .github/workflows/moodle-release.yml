@@ -1,0 +1,20 @@
+#
+# Whenever version.php is changed, add the latest version
+# to the Moodle Plugins directory at https://moodle.org/plugins
+#
+name: Releasing in the Plugins directory
+
+on:
+  push:
+    branches:
+      - MOODLE_32_STABLE
+    paths:
+      - 'version.php'
+
+jobs:
+  workflow_group_27_to_32_release:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-27-to-32-release.yml@main
+    with:
+      plugin_name: auth_enrolkey
+    secrets:
+      moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}

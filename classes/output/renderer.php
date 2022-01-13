@@ -33,8 +33,6 @@ use html_writer;
 use moodle_url;
 use plugin_renderer_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * auth_outage_renderer class.
  *

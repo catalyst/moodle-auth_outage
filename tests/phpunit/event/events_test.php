@@ -26,8 +26,6 @@
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * events_test tests class.
  *

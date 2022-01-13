@@ -29,8 +29,6 @@ use auth_outage\local\controllers\infopage;
 use auth_outage\local\outagelib;
 use core\task\scheduled_task;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * update_static_page class.
  *

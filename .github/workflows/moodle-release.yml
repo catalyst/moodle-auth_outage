@@ -2,7 +2,7 @@
 # Whenever version.php is changed, add the latest version
 # to the Moodle Plugins directory at https://moodle.org/plugins
 #
-name: Releasing in the Plugins directory
+name: MOODLE_38_STABLE - Releasing in the Plugins directory
 
 on:
   push:

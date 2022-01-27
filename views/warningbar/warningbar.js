@@ -56,6 +56,8 @@ var authOutageWarningBar = {
     },
 
     tickOngoing: function() {
+        const MINSECS = 60;
+
         if (this.finished) {
             return;
         }
@@ -78,8 +80,8 @@ var authOutageWarningBar = {
         xmlhttp.open("GET", this.checkfinishedurl, true);
         xmlhttp.send();
 
-        // Check if site is back online every 5 minutes with some random margin.
-        var sleepSeconds = 4 * 60 + Math.random() * 120;
+        // Checking if the site is back online every 4-6 minutes.
+        var sleepSeconds = 4 * MINSECS + (2 * MINSECS * Math.random());
 
         setTimeout(function() {
             $this.tickOngoing();

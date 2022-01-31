@@ -41,5 +41,8 @@ function xmldb_auth_outage_uninstall() {
     // Remove 'maintenance later' which could have been set for the next outage.
     unset_config('maintenance_later');
 
+    // Remove 'start warning period'.
+    unset_config('auth_outage_startwarningperiod');
+
     return true;
 }

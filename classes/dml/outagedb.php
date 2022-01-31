@@ -152,6 +152,9 @@ class outagedb {
         // Trigger outages modified events.
         outagelib::prepare_next_outage(true);
 
+        // Unset current value so that new warning period can be set.
+        unset_config('auth_outage_startwarningperiod');
+
         // All done, return the id.
         return $outage->id;
     }
@@ -190,6 +193,43 @@ class outagedb {
 
         // Trigger events.
         outagelib::prepare_next_outage();
+
+        // Unset current value so that new warning period can be set.
+        unset_config('auth_outage_startwarningperiod');
+    }
+
+    /**
+     * Get current active outage or next outage.
+     *
+     * @param $time time to filter stop time, warn time
+     * @param $currentoutage true if we need current outage, false will return next outage
+     * @return outage or null
+     * @throws \dml_exception
+     */
+    private static function get_outage_based_on_warn_time($time, $currentoutage = true) {
+        global $DB;
+        $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
+        if ($currentoutage) {
+            // Current active outage.
+            $select = "(warntime <= :datetime1 AND (${select}))";
+        } else {
+            // Next active outage.
+            $select = "(warntime > :datetime1 AND (${select}))";
+        }
+        $data = $DB->get_records_select(
+            'auth_outage',
+            $select,
+            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
+            'starttime ASC, stoptime DESC, title ASC',
+            '*',
+            0,
+            1
+        );
+        if (count($data) > 0) {
+            return array_shift($data);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -202,8 +242,6 @@ class outagedb {
      * @throws coding_exception
      */
     public static function get_active($time = null) {
-        global $DB;
-
         if ($time === null) {
             $time = time();
         }
@@ -211,21 +249,30 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
-        $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
-        $select = "(warntime <= :datetime1 AND (${select}))"; // Full select part.
-        $data = $DB->get_records_select(
-            'auth_outage',
-            $select,
-            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
-            'starttime ASC, stoptime DESC, title ASC',
-            '*',
-            0,
-            1
-        );
+        $startwarningperiod = get_config('moodle', 'auth_outage_startwarningperiod');
 
-        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
-        // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new outage(array_shift($data));
+        // Get active outage.
+        if (!$startwarningperiod || ($startwarningperiod > 0 && $startwarningperiod <= $time)) {
+            $currentoutage = self::get_outage_based_on_warn_time($time);
+            if (!is_null($currentoutage)) {
+                set_config('auth_outage_startwarningperiod', $currentoutage->warntime);
+                return new outage($currentoutage);
+            } else {
+                // No active outage, update starting time of next warning period.
+                $nextoutage = self::get_outage_based_on_warn_time($time, false);
+                if (!is_null($nextoutage)) {
+                    set_config('auth_outage_startwarningperiod', $nextoutage->warntime);
+                } else {
+                    // There is no next outage.
+                    // This value is unset upon saving new outage/modified existing outage and deleting outage.
+                    set_config('auth_outage_startwarningperiod', -1);
+                }
+                return null;
+            }
+        } else {
+            // Haven't reach next warning period or there is no next outage.
+            return null;
+        }
     }
 
     /**

@@ -98,7 +98,7 @@ class calendar {
             'userid' => 0,
             'modulename' => '',
             'instance' => $outage->id,
-            'eventtype' => 'auth_outage',
+            'eventtype' => 'site',
             'timestart' => $outage->starttime,
             'visible' => true,
             'timeduration' => $outage->get_duration_planned(),

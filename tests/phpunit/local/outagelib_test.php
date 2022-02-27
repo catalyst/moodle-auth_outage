@@ -404,7 +404,12 @@ EOT;
 
         touch($file);
         outagelib::update_climaintenance_code($outage);
-        self::assertFileNotExists($file);
+        // Backwards compatibility with older PHPUnit - use old assertFile method.
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            self::assertFileDoesNotExist($file);
+        } else {
+            self::assertFileNotExists($file);
+        }
     }
 
     /**
@@ -416,7 +421,12 @@ EOT;
 
         touch($file);
         outagelib::update_climaintenance_code(null);
-        self::assertFileNotExists($file);
+        // Backwards compatibility with older PHPUnit - use old assertFile method.
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            self::assertFileDoesNotExist($file);
+        } else {
+            self::assertFileNotExists($file);
+        }
     }
 
     /**
@@ -492,7 +502,12 @@ EOT;
         // The method outagelib::prepare_next_outage() should have been called by save().
         self::assertFalse(get_config('moodle', 'maintenance_later'));
         // This file should not exist even if the statement above fails as Moodle does not create it immediately but test anyway.
-        self::assertFileNotExists($CFG->dataroot.'/climaintenance.html');
+        // Backwards compatibility with older PHPUnit - use old assertFile method.
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            self::assertFileDoesNotExist($CFG->dataroot.'/climaintenance.html');
+        } else {
+            self::assertFileNotExists($CFG->dataroot.'/climaintenance.html');
+        }
     }
 
     /**

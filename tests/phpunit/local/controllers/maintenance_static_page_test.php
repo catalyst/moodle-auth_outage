@@ -297,7 +297,12 @@ class auth_outage_maintenance_static_page_test extends auth_outage_base_testcase
         touch($file);
         self::assertFileExists($file);
         maintenance_static_page::create_from_outage(null)->generate();
-        self::assertFileNotExists($file);
+        // Backwards compatibility with older PHPUnit - use old assertFile method.
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            self::assertFileDoesNotExist($file);
+        } else {
+            self::assertFileNotExists($file);
+        }
     }
 
     /**

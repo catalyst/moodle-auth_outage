@@ -1,9 +1,9 @@
-name: Run all tests for Moodle 33 to 38
+name: ci
 
 on: [push, pull_request]
 
 jobs:
-  workflow_group_33_to_38__ci:
+  test:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-33-to-38-ci.yml@main
     with:
       disable_behat: true

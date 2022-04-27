@@ -158,6 +158,10 @@ $string['warningduration'] = 'Warning duration';
 $string['warningduration_help'] = 'How long before the start of the outage should the warning be displayed.';
 $string['warningreenablemaintenancemode'] = 'Please note that saving this outage will re-enable maintenance mode.<br />Untick "Auto start maintenance mode" if you want to prevent this.';
 
+$string['builtinallowediplist'] = 'Builtin Allowed IP List';
+$string['builtinallowediplist_desc'] = 'Allowed IP list defined via configuration';
+$string['ips_combine'] = 'The IPs listed above will be combined with the IPs listed below.';
+
 /*
  * Privacy provider (GDPR)
  */

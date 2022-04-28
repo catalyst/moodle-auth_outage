@@ -216,6 +216,10 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
         foreach ($keys as $k) {
             self::assertSame($config->$k, $k.'_value', 'auth_outage');
         }
+
+        set_config('allowedips_forced', 'allowedips_forced_value', 'auth_outage');
+        $config = outagelib::get_config();
+        self::assertSame($config->allowedips, "allowedips_value\nallowedips_forced_value", 'auth_outage');
     }
 
     /**
@@ -336,8 +340,10 @@ EOT;
 
     /**
      * Test create maintenance php code without age
+     *
+     * @dataProvider test_createmaintenancephpcode_withoutage_provider
      */
-    public function test_createmaintenancephpcode_withoutage() {
+    public function test_createmaintenancephpcode_withoutage($configkey) {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -380,12 +386,16 @@ EOT;
             'stoptime' => 456,
         ]);
         $file = $CFG->dataroot.'/climaintenance.php';
-        set_config('allowedips', '127.0.0.1', 'auth_outage');
+        set_config($configkey, '127.0.0.1', 'auth_outage');
 
         outagelib::update_climaintenance_code($outage);
         self::assertFileExists($file);
         $found = file_get_contents($file);
         self::assertSame($found, $expected);
+    }
+
+    public function test_createmaintenancephpcode_withoutage_provider(): array {
+        return [['allowedips'], ['allowedips_forced']];
     }
 
     /**
@@ -401,6 +411,7 @@ EOT;
         ]);
         $file = $CFG->dataroot.'/climaintenance.php';
         set_config('allowedips', '', 'auth_outage');
+        set_config('allowedips_forced', '', 'auth_outage');
 
         touch($file);
         outagelib::update_climaintenance_code($outage);

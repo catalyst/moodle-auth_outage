@@ -110,6 +110,8 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
     $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 
     $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
+    $description .= '<p>'.get_string('ips_combine', 'auth_outage').'</p>';
+
     $iplist = new admin_setting_configiplist(
         'auth_outage/allowedips',
         get_string('allowediplist', 'admin'),
@@ -117,6 +119,14 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         $defaults['allowedips']
     );
     $iplist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
+    $settings->add($iplist);
+
+    $iplist = new admin_setting_configiplist(
+        'auth_outage/allowedips_forced',
+        get_string('builtinallowediplist', 'auth_outage'),
+        get_string('builtinallowediplist_desc', 'auth_outage'),
+        ''
+    );
     $settings->add($iplist);
 
     // Create 'Static Page - Elements to Remove' settings.

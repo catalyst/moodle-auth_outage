@@ -168,7 +168,12 @@ class outagelib {
             }
         }
 
-        return (object)array_merge(self::get_config_defaults(), $config);
+        $config = array_merge(self::get_config_defaults(), $config);
+        // Combine allowed IPs config values together.
+        if (isset($config['allowedips_forced'])) {
+            $config['allowedips'] = trim($config['allowedips'] . "\n" . $config['allowedips_forced']);
+        }
+        return (object)$config;
     }
 
     /**

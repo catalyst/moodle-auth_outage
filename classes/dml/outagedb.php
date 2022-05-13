@@ -34,6 +34,7 @@ use auth_outage\event\outage_deleted;
 use auth_outage\event\outage_updated;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
+use auth_outage\dml\outagecache;
 use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -149,6 +150,9 @@ class outagedb {
             calendar::update($outage);
         }
 
+        // Set the next starting outage to cache after an outage is saved in db.
+        outagecache::set_active_outage_cache(self::get_next_starting());
+
         // Trigger outages modified events.
         outagelib::prepare_next_outage(true);
 
@@ -188,6 +192,9 @@ class outagedb {
         $DB->delete_records('auth_outage', ['id' => $id]);
         calendar::delete($id);
 
+        // Set the next starting outage to cache after an outage is deleted in db.
+        outagecache::set_active_outage_cache(self::get_next_starting());
+
         // Trigger events.
         outagelib::prepare_next_outage();
     }
@@ -211,21 +218,9 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
-        $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
-        $select = "(warntime <= :datetime1 AND (${select}))"; // Full select part.
-        $data = $DB->get_records_select(
-            'auth_outage',
-            $select,
-            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
-            'starttime ASC, stoptime DESC, title ASC',
-            '*',
-            0,
-            1
-        );
-
-        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
-        // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new outage(array_shift($data));
+        $outage_cache = outagecache::get_active_outage_cache();
+        return $outage_cache && $outage_cache->warntime <= $time && $outage_cache->stoptime >= $time
+        ? new outage($outage_cache) : null;
     }
 
     /**
@@ -318,6 +313,9 @@ class outagedb {
         }
 
         $outage->finished = $time;
+
+        outagecache::delete_ongoing_outage_cache();
+
         self::save($outage);
     }
 
@@ -399,6 +397,13 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
+        // If there is an onging outage in cache, return the outage.
+        $outage_cache = outagecache::get_ongoing_outage_cache();
+        if ($outage_cache) {
+            return $outage_cache->starttime <= $time && $outage_cache->stoptime >= $time
+            ? new outage($outage_cache) : null;
+        }
+
         $data = $DB->get_records_select(
             'auth_outage',
             'starttime <= :datetime1 AND :datetime2 <= stoptime AND finished IS NULL',
@@ -411,6 +416,12 @@ class outagedb {
 
         // Not using $DB->get_record_select instead because there is no 'limit' parameter.
         // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new outage(array_shift($data));
+        if (count($data)) {
+            $outage = new outage(array_shift($data));
+            outagecache::set_ongoing_outage_cache($outage);
+            return $outage;
+        }
+
+        return null;
     }
 }

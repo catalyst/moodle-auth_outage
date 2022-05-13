@@ -165,3 +165,13 @@ $string['warningreenablemaintenancemode'] = 'Please note that saving this outage
  * Privacy provider (GDPR)
  */
 $string["privacy:no_data_reason"] = "The Outage authentication plugin does not store any personal data.";
+
+/*
+ * Active outage cache definition.
+ */
+$string['cachedef_cache_active_outage_data'] = 'Cache active outage.';
+
+/*
+ * Ongoing outage cache definition.
+ */
+$string['cachedef_cache_ongoing_outage_data'] = 'Cache onging outage.';

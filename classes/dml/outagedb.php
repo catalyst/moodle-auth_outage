@@ -218,9 +218,9 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
-        $outage_cache = outagecache::get_active_outage_cache();
-        return $outage_cache && $outage_cache->warntime <= $time && $outage_cache->stoptime >= $time
-        ? new outage($outage_cache) : null;
+        $outagecache = outagecache::get_active_outage_cache();
+        return $outagecache && $outagecache->warntime <= $time && $outagecache->stoptime >= $time
+        ? new outage($outagecache) : null;
     }
 
     /**
@@ -398,10 +398,10 @@ class outagedb {
         }
 
         // If there is an onging outage in cache, return the outage.
-        $outage_cache = outagecache::get_ongoing_outage_cache();
-        if ($outage_cache) {
-            return $outage_cache->starttime <= $time && $outage_cache->stoptime >= $time
-            ? new outage($outage_cache) : null;
+        $outagecache = outagecache::get_ongoing_outage_cache();
+        if ($outagecache) {
+            return $outagecache->starttime <= $time && $outagecache->stoptime >= $time
+            ? new outage($outagecache) : null;
         }
 
         $data = $DB->get_records_select(

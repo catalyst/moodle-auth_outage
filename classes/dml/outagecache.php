@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/calendar/lib.php');
  * @copyright  2022 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class outagecache{
+class outagecache {
     /**
      * Private constructor, use static methods instead.
      */
@@ -40,11 +40,11 @@ class outagecache{
     /**
      * Set active outage cache.
      *
-     * @param outage|null $next_outage Next outage to save, null for not setting outage.
+     * @param outage|null $nextoutage Next outage to save, null for not setting outage.
      */
-    public static function set_active_outage_cache($next_outage = null) {
+    public static function set_active_outage_cache($nextoutage = null) {
         $cache = \cache::make('auth_outage', 'cache_active_outage_data');
-        $cache->set('cache_active_outage_data', $next_outage);
+        $cache->set('cache_active_outage_data', $nextoutage);
     }
 
     /**
@@ -60,11 +60,11 @@ class outagecache{
     /**
      * Set onging outage cache.
      *
-     * @param outage|null $onging_outage Onging outage to save, null for not setting outage.
+     * @param outage|null $ongingoutage Onging outage to save, null for not setting outage.
      */
-    public static function set_ongoing_outage_cache($onging_outage = null) {
+    public static function set_ongoing_outage_cache($ongingoutage = null) {
         $cache = \cache::make('auth_outage', 'cache_ongoing_outage_data');
-        $cache->set('cache_ongoing_outage_data', $onging_outage);
+        $cache->set('cache_ongoing_outage_data', $ongingoutage);
     }
 
     /**

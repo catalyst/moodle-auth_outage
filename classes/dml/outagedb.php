@@ -151,7 +151,7 @@ class outagedb {
         }
 
         // Set the next starting outage to cache after an outage is saved in db.
-        outagecache::set_active_outage_cache(self::get_next_starting());
+        outagecache::set_active_outage_cache(self::get_ongoing() ?? self::get_next_starting());
 
         // Trigger outages modified events.
         outagelib::prepare_next_outage(true);
@@ -193,7 +193,7 @@ class outagedb {
         calendar::delete($id);
 
         // Set the next starting outage to cache after an outage is deleted in db.
-        outagecache::set_active_outage_cache(self::get_next_starting());
+        outagecache::set_active_outage_cache(self::get_ongoing() ?? self::get_next_starting());
 
         // Trigger events.
         outagelib::prepare_next_outage();

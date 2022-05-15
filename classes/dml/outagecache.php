@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 namespace auth_outage\dml;
 
 defined('MOODLE_INTERNAL') || die();
@@ -42,7 +40,7 @@ class outagecache{
     /**
      * Set active outage cache.
      *
-     * @param outage|null $next_outage Next outage to save.
+     * @param outage|null $next_outage Next outage to save, null for not setting outage.
      */
     public static function set_active_outage_cache($next_outage = null) {
         $cache = \cache::make('auth_outage', 'cache_active_outage_data');
@@ -51,6 +49,8 @@ class outagecache{
 
     /**
      * Get active outage cache.
+     *
+     * @return outage|null Return the outage or null if cache not setted.
      */
     public static function get_active_outage_cache() {
         $cache = \cache::make('auth_outage', 'cache_active_outage_data');
@@ -60,7 +60,7 @@ class outagecache{
     /**
      * Set onging outage cache.
      *
-     * @param outage|null $next_outage Onging outage to save.
+     * @param outage|null $onging_outage Onging outage to save, null for not setting outage.
      */
     public static function set_ongoing_outage_cache($onging_outage = null) {
         $cache = \cache::make('auth_outage', 'cache_ongoing_outage_data');
@@ -69,6 +69,8 @@ class outagecache{
 
     /**
      * Get onging outage cache.
+     *
+     * @return outage|null Return the outage or null if cache not setted.
      */
     public static function get_ongoing_outage_cache() {
         $cache = \cache::make('auth_outage', 'cache_ongoing_outage_data');

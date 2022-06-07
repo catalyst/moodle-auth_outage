@@ -80,8 +80,17 @@ var authOutageWarningBar = {
         xmlhttp.open("GET", this.checkfinishedurl, true);
         xmlhttp.send();
 
-        // Checking if the site is back online every 4-6 minutes.
-        var sleepSeconds = 4 * MINSECS + (2 * MINSECS * Math.random());
+        // Date now and client time is in milliseconds while server time is in seconds.
+        var estimatedServerTime = this.servertime + ((Date.now() - this.clienttime) / 1000);
+        var sleepSeconds = this.stops - estimatedServerTime; // How long to sleep until it stops.
+
+        if (sleepSeconds <= MINSECS) {
+            // Checking every 5 seconds.
+            sleepSeconds = 5;
+        } else {
+            // Checking if the site is back online every 4-6 minutes.
+            sleepSeconds = 4 * MINSECS + (2 * MINSECS * Math.random());
+        }
 
         setTimeout(function() {
             $this.tickOngoing();

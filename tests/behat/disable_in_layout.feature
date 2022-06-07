@@ -22,8 +22,7 @@ Feature: Disable warning bar in embedded layout
       | Name | ipsumFile |
     And I upload "h5p/tests/fixtures/ipsums.h5p" file to "Select files" filemanager
     And I press "Save and return to course"
-    And I follow "PageName1"
-    And I navigate to "Edit settings" in current page administration
+    And I am on the PageName1 "page activity editing" page
     And I click on "Insert H5P" "button" in the "#fitem_id_page" "css_element"
     And I click on "Browse repositories..." "button" in the "Insert H5P" "dialogue"
     And I click on "Server files" "link" in the ".fp-repo-area" "css_element"

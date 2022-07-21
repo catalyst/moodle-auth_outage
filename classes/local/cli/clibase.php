@@ -122,7 +122,7 @@ abstract class clibase {
      */
     protected function become_admin_user() {
         global $DB;
-        $user = $DB->get_record('user', ['id' => 2]);
+        $user = get_admin();
         unset($user->description);
         unset($user->access);
         unset($user->preference);

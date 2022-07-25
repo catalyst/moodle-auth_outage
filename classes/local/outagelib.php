@@ -210,6 +210,10 @@ class outagelib {
         } else {
             $ongoingoutage = true;
         }
+
+        // Set json formatted outage string to cache.
+        set_config('auth_outage_active_outage', (string)$outage);
+
         maintenance_static_page::create_from_outage($outage)->generate();
         self::update_climaintenance_code($outage);
         if (!$ongoingoutage || $reenablemaint || is_null($outage)) {

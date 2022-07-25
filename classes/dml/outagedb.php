@@ -211,21 +211,20 @@ class outagedb {
             throw new coding_exception('$time must be null or a positive int.', $time);
         }
 
-        $select = ':datetime2 <= stoptime AND (finished IS NULL OR :datetime3 <= finished)'; // End condition.
-        $select = "(warntime <= :datetime1 AND (${select}))"; // Full select part.
-        $data = $DB->get_records_select(
-            'auth_outage',
-            $select,
-            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
-            'starttime ASC, stoptime DESC, title ASC',
-            '*',
-            0,
-            1
-        );
+        // Get cached outage, or null.
+        $outageinfo = get_config('moodle', 'auth_outage_active_outage');
 
-        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
-        // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new outage(array_shift($data));
+        if (!$outageinfo) {
+            return null;
+        } else {
+            $outagecache = new outage(json_decode($outageinfo));
+        }
+
+        if ($outagecache && $outagecache->warntime <= $time && $outagecache->stoptime >= $time
+            && (!$outagecache->finished || $outagecache->finished >= $time)) {
+            return  $outagecache;
+        }
+        return null;
     }
 
     /**

@@ -297,4 +297,12 @@ class outage {
         // Adjust bool fields.
         $this->autostart = ($this->autostart === null) ? null : (bool)$this->autostart;
     }
+
+    /**
+     * Return json encoded outage.
+     * @return string Json string.
+     */
+    public function __toString() {
+        return json_encode(get_object_vars($this));
+    }
 }

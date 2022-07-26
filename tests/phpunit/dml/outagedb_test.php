@@ -244,6 +244,15 @@ class auth_outage_outagedb_test extends auth_outage_base_testcase {
         $activeid = self::saveoutage(false, $now, -2, 1, 2, 'An outage in warning period.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
 
+        $activeid = self::saveoutage(false, $now, -2, 0, 2, 'An outage starts now.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
+
+        self::saveoutage(false, $now, -2, 0, -1, 'Invalid outage.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
+
+        self::saveoutage(false, $now, -2, 0, 0, 'Invalid outage.');
+        self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');
+
         self::saveoutage(false, $now, -1, 2, 3,
             'Another outage in warning period, but ignored as it starts after the previous one.');
         self::assertSame($activeid, outagedb::get_active($now)->id, 'Wrong active outage picked.');

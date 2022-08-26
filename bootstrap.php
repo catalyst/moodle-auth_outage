@@ -31,7 +31,7 @@
 
 // This call is required by Moodle, but this script should have been called by config.php anyway.
 // @codingStandardsIgnoreStart
-require_once(__DIR__.'/../../config.php');
+require_once(__DIR__.'/../../../config.php');
 // @codingStandardsIgnoreEnd
 
 // We need the CFG->dataroot, if not set yet this script is called too early in config.php file.
@@ -42,13 +42,13 @@ if (!isset($CFG->dataroot)) {
 // 1) Make sure we replace the configurations for behat as we have not ran 'lib/setup.php' yet.
 if (!empty($CFG->behat_wwwroot) or !empty($CFG->behat_dataroot) or !empty($CFG->behat_prefix)) {
     require_once(__DIR__.'/../../lib/behat/lib.php');
-    behat_update_vars_for_process();
-    if (behat_is_test_site()) {
+    behat_update_vars_for_process($CFG);
+    if (behat_is_test_site($CFG)) {
         $beforebehatcfg = $CFG;
         $CFG = clone($CFG);
         clearstatcache();
-        behat_check_config_vars();
-        behat_clean_init_config();
+        behat_check_config_vars($CFG);
+        behat_clean_init_config($CFG);
         $CFG->wwwroot = $CFG->behat_wwwroot;
         $CFG->dataroot = $CFG->behat_dataroot;
         // We should not access database in bootstrap.

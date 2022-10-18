@@ -21,6 +21,12 @@ If you need to make changes here, remember to update your settings inside Moodle
     z-index: 9999;
 }
 
+#auth_outage_warningbar_box .auth_outage_warningbar_center {
+    /* fix to prevent existing theme hacks to fix issue */
+    margin-top: 0;
+    position: static;
+}
+
 #auth_outage_warningbar_box.auth_outage_warning_period {
     background:
         repeating-linear-gradient(

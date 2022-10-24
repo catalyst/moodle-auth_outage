@@ -100,6 +100,48 @@ This can be found at:
 
 
 
+Custom Theme Additional SCSS
+-------------------
+
+Custom themes generally do not have the same `$navbar-height` variable set to 80px (MOODLE), therefore custom themes will not calculate the change in navbar height with page elements that calculate the navbar total height. 
+
+Add the following SCSS For Moodle 3.11+
+
+```
+body.auth_outage {
+    #page-wrapper {
+        #nav-drawer {
+            top: $navbar-height + 100px;
+            height: calc(100% - (#{$navbar-height} + 100px));
+        }
+        #page {
+            margin-top: $navbar-height + 100px;
+        }
+    }
+    [data-region=right-hand-drawer].drawer {
+        top: $navbar-height + 100px;
+        height: calc(100% - (#{$navbar-height} + 100px));
+    } 
+}
+```
+
+Totara is a little different with version 13+ and no variables are used to set the `totaraNav` height 
+
+Add the following CSS For Totara 13+
+
+```
+.totaraNav {
+    margin-top: 100px;
+}
+.local_envbar .totaraNav {
+    margin-top: 50px;
+}
+body.auth_outage #page {
+    margin-top: 0;
+}
+```
+
+
 
 How to use
 ----------

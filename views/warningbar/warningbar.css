@@ -12,10 +12,19 @@ If you need to make changes here, remember to update your settings inside Moodle
     padding: 0;
     position: fixed;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     top: 0;
     transition: background 3s ease-out;
     width: 100%;
     z-index: 9999;
+}
+
+#auth_outage_warningbar_box .auth_outage_warningbar_center {
+    /* fix to prevent existing theme hacks to fix issue */
+    margin-top: 0;
+    position: static;
 }
 
 #auth_outage_warningbar_box.auth_outage_warning_period {
@@ -66,16 +75,10 @@ If you need to make changes here, remember to update your settings inside Moodle
     background-color: #090;
 }
 
-.auth_outage_warningbar_center {
-    margin-top: -35px;
-    position: relative;
-    top: 50%;
-}
-
 #auth_outage_warningbar_message {
     font-size: 200%;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 0;
 }
 
 a.auth_outage_warningbar_box_title {
@@ -87,6 +90,7 @@ a.auth_outage_warningbar_box_finish {
     border: 1px solid black;
     border-radius: 5px;
     color: darkgray;
+    white-space: nowrap;
     font-weight: bold;
     margin-left: 10px;
     padding-left: 5px;
@@ -125,4 +129,10 @@ body.auth_outage .layout.fullscreen {
 
 body.auth_outage .modal-dialog {
     margin: calc(150px + 1.75rem) auto;
+}
+
+@media (max-width: 767px) {
+    #auth_outage_warningbar_message {
+        font-size: 120%;
+    }
 }

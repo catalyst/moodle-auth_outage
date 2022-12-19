@@ -246,6 +246,7 @@ class outagelib {
                 unset_config('maintenance_message');
             }
             set_config('maintenance_later', $outage->starttime);
+            self::maintenance_config_log($outage);
         }
     }
 
@@ -413,5 +414,22 @@ EOT;
         }
 
         return $message;
+    }
+
+    /**
+     * Logging for maintenance mode configuration.
+     *
+     * @param outage|null $outage Outage or null if no scheduled outage.
+     */
+    private static function maintenance_config_log(outage $outage) {
+        // Not output logging info in php unit test.
+        if (PHPUNIT_TEST) return;
+
+        mtrace(get_string('logformaintmodeconfig', 'auth_outage'));
+        $timezone = ' (Timezone ' . \core_date::get_server_timezone_object()->getName() . ')';
+        mtrace('... updated at ' . date('H:i:s'));
+        $time = date("Y-m-d H:i:s", $outage->starttime);
+        mtrace("... enable maintenance mode at $time $timezone");
+        mtrace(get_string('logformaintmodeconfigcomplete', 'auth_outage'));
     }
 }

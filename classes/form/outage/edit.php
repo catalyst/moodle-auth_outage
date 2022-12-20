@@ -147,7 +147,7 @@ class edit extends moodleform {
      * @throws coding_exception
      */
     public function set_data($outage) {
-        global $OUTPUT;
+        global $OUTPUT, $CFG;
         $mform = $this->_form;
 
         // Cannot change method signature, check type.
@@ -161,6 +161,15 @@ class edit extends moodleform {
                 'title' => $outage->title,
                 'description' => ['text' => $outage->description, 'format' => '1'],
             ]);
+
+            // If the default_autostart is configured in config, then force autostart to be the default value.
+            if (array_key_exists('auth_outage', $CFG->forced_plugin_settings)
+                && array_key_exists('default_autostart', $CFG->forced_plugin_settings['auth_outage'])){
+                $this->_form->setDefaults([
+                    'autostart' => $CFG->forced_plugin_settings['auth_outage']['default_autostart']
+                ]);
+                $mform->freeze('autostart');
+            }
 
             if (!empty($outage->id) && $outage->autostart && $outage->starttime < time() && $outage->stoptime > time()) {
                 $warning = $mform->getElement('warningreenablemaintenancemode');

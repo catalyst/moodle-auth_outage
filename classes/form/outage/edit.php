@@ -164,7 +164,7 @@ class edit extends moodleform {
 
             // If the default_autostart is configured in config, then force autostart to be the default value.
             if (array_key_exists('auth_outage', $CFG->forced_plugin_settings)
-                && array_key_exists('default_autostart', $CFG->forced_plugin_settings['auth_outage'])){
+                && array_key_exists('default_autostart', $CFG->forced_plugin_settings['auth_outage'])) {
                 $this->_form->setDefaults([
                     'autostart' => $CFG->forced_plugin_settings['auth_outage']['default_autostart']
                 ]);

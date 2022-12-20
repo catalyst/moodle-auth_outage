@@ -360,6 +360,7 @@ EOT;
     /**
      * Test create maintenance php code without age
      *
+     * @param string $configkey The key of the config.
      * @dataProvider test_createmaintenancephpcode_withoutage_provider
      */
     public function test_createmaintenancephpcode_withoutage($configkey) {

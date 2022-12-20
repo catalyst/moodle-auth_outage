@@ -59,6 +59,9 @@ Basic Usage
 
     _Anyone who tries to use Moodle now will receive a maintenance message._
 
+    **Note:** If the outage starts with the option `Auto start maintenance mode` checked, the maint mode won't exit automatically.
+    It will need to be disabled through command line.
+
 1) Perform the maintenance activities.
 
     At this point it is safe to perform the required maintenance as no one can use the system, not even admins.

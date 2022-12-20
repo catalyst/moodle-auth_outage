@@ -159,8 +159,8 @@ class auth_outage_create_test extends auth_outage_cli_testcase {
         $text = $this->execute($cli);
         self::assertStringContainsString('created', $text);
         // Check creted outage.
-        list(, $id) = explode(':', $text);
-        $id = (int)$id;
+        $clioutput = explode(':', $text);
+        $id = (int)end($clioutput);
         $outage = outagedb::get_by_id($id);
         self::assertSame($now, $outage->starttime);
         self::assertSame(10, $outage->get_warning_duration());
@@ -223,8 +223,8 @@ class auth_outage_create_test extends auth_outage_cli_testcase {
         $text = $this->execute($cli);
         self::assertStringContainsString('created', $text);
         // Check creted outage.
-        list(, $id) = explode(':', $text);
-        $id = (int)$id;
+        $clioutput = explode(':', $text);
+        $id = (int)end($clioutput);
         $outage = outagedb::get_by_id($id);
         self::assertSame($now + 50, $outage->starttime, 'Wrong starttime.');
         self::assertSame($outage->starttime - 100, $outage->warntime, 'Wrong warntime.');

@@ -422,9 +422,6 @@ EOT;
      * @param outage|null $outage Outage or null if no scheduled outage.
      */
     private static function maintenance_config_log(outage $outage) {
-        // Not output logging info in php unit test.
-        if (PHPUNIT_TEST) return;
-
         mtrace(get_string('logformaintmodeconfig', 'auth_outage'));
         $timezone = ' (Timezone ' . \core_date::get_server_timezone_object()->getName() . ')';
         mtrace('... updated at ' . date('H:i:s'));

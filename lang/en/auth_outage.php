@@ -107,6 +107,8 @@ $string['allowedipsempty'] = 'When the allowed IPs list is empty we will not blo
 $string['allowedipshasmyip'] = 'Your IP (<i>{$a->ip}</i>) is in the list and you will not be blocked out during an Outage.';
 $string['allowedipshasntmyip'] = 'Your IP (<i>{$a->ip}</i>) is not in the list and you will be blocked out during an outage.';
 $string['allowedipsnoconfig'] = 'Your config.php does not have the extra setup to allow blocking via IP.<br />Please refer to our <a href="https://github.com/catalyst/moodle-auth_outage#installation" target="_blank">README.md</a> file for more information.';
+$string['logformaintmodeconfig'] = 'Update maintenance mode configuration.';
+$string['logformaintmodeconfigcomplete'] = 'Updating maintenance mode configuration complete.';
 $string['menusettings'] = 'Settings';
 $string['menumanage'] = 'Manage outages';
 $string['messageoutagebackonline'] = 'We are back online!';

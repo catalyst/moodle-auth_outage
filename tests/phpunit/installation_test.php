@@ -63,7 +63,11 @@ class auth_outage_installation_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         \auth_outage\dml\outagedb::save($outage);
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
         self::assertSame(1, $DB->count_records_select('event', "eventtype = 'auth_outage'", null));
 
         // Uninstall plugin.

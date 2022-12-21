@@ -60,7 +60,11 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
         ]);
 
         set_config('maintenance_message', 'A message.');
+        ob_start();
         outagedb::save($outage);
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
         self::assertFalse((bool)get_config('moodle', 'maintenance_message'));
         self::assertCount(2, $this->getDebuggingMessages());
         $this->resetDebugging();
@@ -94,7 +98,11 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         $outage->id = outagedb::save($outage);
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         outagelib::reset_injectcalled();
         // Get full header to avoid interactions with other single inject plugins.
@@ -136,7 +144,11 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         $outage->id = outagedb::save($outage);
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         $_GET = ['auth_outage_preview' => (string)$outage->id];
 
@@ -175,8 +187,11 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         $outage->id = outagedb::save($outage);
-
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
         $_GET = ['auth_outage_preview' => (string)$outage->id, 'auth_outage_delta' => '500'];
         outagelib::reset_injectcalled();
         $header = outagelib::get_inject_code();
@@ -282,7 +297,11 @@ class auth_outage_outagelib_test extends auth_outage_base_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         $outage->id = outagedb::save($outage);
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
@@ -341,6 +360,7 @@ EOT;
     /**
      * Test create maintenance php code without age
      *
+     * @param string $configkey The key of the config.
      * @dataProvider test_createmaintenancephpcode_withoutage_provider
      */
     public function test_createmaintenancephpcode_withoutage($configkey) {
@@ -538,8 +558,11 @@ EOT;
             'title' => 'Title',
             'description' => 'Description',
         ]);
+        ob_start();
         $outage->id = outagedb::save($outage);
-
+        $text = trim(ob_get_contents());
+        ob_end_clean();
+        self::assertStringContainsString('Update maintenance mode configuration', $text);
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
         $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';

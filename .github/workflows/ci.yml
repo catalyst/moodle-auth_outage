@@ -1,9 +1,10 @@
+# .github/workflows/ci.yml
 name: ci
 
 on: [push, pull_request]
 
 jobs:
-  test:
-    uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-39-plus-ci.yml@main
+  ci:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
     with:
       disable_behat: true

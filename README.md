@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/catalyst/moodle-auth_outage/workflows/Run%20all%20tests%20for%20Moodle%2039+/badge.svg)](https://github.com/catalyst/moodle-auth_outage/actions)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle-auth_outage/ci.yml?branch=MOODLE_39_STABLE)
 
 # Moodle Outage manager plugin
 * [Version Support](#version-support)

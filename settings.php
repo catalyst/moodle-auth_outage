@@ -26,25 +26,30 @@
  * @var admin_settingpage $settings
  * @var bootstrap_renderer $OUTPUT
  * @var admin_root $ADMIN
+ * @var moodle_page $PAGE
  */
 use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die;
 
-if ($hassiteconfig && is_enabled_auth('outage')) {
+if ($hassiteconfig) {
     $defaults = outagelib::get_config_defaults();
     $settings->visiblename = get_string('menusettings', 'auth_outage');
+    $description = outagelib::generate_plugin_configuration_warning();
 
     $settings->add(new admin_setting_heading(
         'defaults',
         get_string('settingssectiondefaults', 'auth_outage'),
-        get_string('settingssectiondefaultsdescription', 'auth_outage')));
+        get_string('settingssectiondefaultsdescription', 'auth_outage') . $description
+    ));
+
     $settings->add(new admin_setting_configcheckbox(
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),
         get_string('defaultoutageautostartdescription', 'auth_outage'),
         $defaults['default_autostart']
     ));
+
     $settings->add(new admin_setting_configduration(
         'auth_outage/default_warning_duration',
         get_string('defaultwarningduration', 'auth_outage'),
@@ -96,21 +101,22 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
 
     // Create 'Allowed IPs' settings.
     $allowedips = outagelib::get_config()->allowedips;
-    $description = outagelib::generate_plugin_configuration_warning();
     if (trim($allowedips) == '') {
         $message = 'allowedipsempty';
         $type = 'notifymessage';
-    } else if (remoteip_in_list($allowedips)) {
-        $message = 'allowedipshasmyip';
-        $type = 'notifysuccess';
     } else {
-        $message = 'allowedipshasntmyip';
-        $type = 'notifyerror';
+        if (remoteip_in_list($allowedips)) {
+            $message = 'allowedipshasmyip';
+            $type = 'notifysuccess';
+        } else {
+            $message = 'allowedipshasntmyip';
+            $type = 'notifyerror';
+        }
     };
-    $description .= $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
+    $description = $OUTPUT->notification(get_string($message, 'auth_outage', ['ip' => getremoteaddr()]), $type);
 
-    $description .= '<p>'.get_string('ipblockersyntax', 'admin').'</p>';
-    $description .= '<p>'.get_string('ips_combine', 'auth_outage').'</p>';
+    $description .= '<p>' . get_string('ipblockersyntax', 'admin') . '</p>';
+    $description .= '<p>' . get_string('ips_combine', 'auth_outage') . '</p>';
 
     $iplist = new admin_setting_configiplist(
         'auth_outage/allowedips',
@@ -150,7 +156,7 @@ if ($hassiteconfig && is_enabled_auth('outage')) {
         new admin_externalpage(
             'auth_outage_manage',
             get_string('menumanage', 'auth_outage'),
-            new moodle_url($CFG->wwwroot.'/auth/outage/manage.php')
+            new moodle_url($CFG->wwwroot . '/auth/outage/manage.php')
         )
     );
 }

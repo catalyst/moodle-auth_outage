@@ -129,7 +129,7 @@ class waitforit extends clibase {
             return;
         }
 
-        $time = strftime('%F %T %Z');
+        $time = \totara_core\strftime::format('%F %T %Z');
         printf("[%s] %s\n", $time, $message);
     }
 

@@ -129,7 +129,7 @@ class waitforit extends clibase {
             return;
         }
 
-        $time = strftime('%F %T %Z');
+        $time = \core_date::strftime('%F %T %Z');
         printf("[%s] %s\n", $time, $message);
     }
 

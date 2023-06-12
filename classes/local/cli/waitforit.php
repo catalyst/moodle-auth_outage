@@ -129,7 +129,7 @@ class waitforit extends clibase {
             return;
         }
 
-        $time = strftime('%F %T %Z');
+        $time = date('Y-m-d H:i:s T', time());
         printf("[%s] %s\n", $time, $message);
     }
 

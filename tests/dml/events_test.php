@@ -23,7 +23,8 @@
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\dml\outagedb;
+namespace auth_outage\dml;
+
 use auth_outage\local\outage;
 
 /**
@@ -36,8 +37,9 @@ use auth_outage\local\outage;
  * @author          Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright       Catalyst IT
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers          \auth_outage\dml\outagedb
  */
-class auth_outage_events_test extends advanced_testcase {
+class events_test extends \advanced_testcase {
     /**
      * @var outage|null Outage used in the tests.
      */

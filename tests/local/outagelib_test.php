@@ -23,12 +23,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace auth_outage\local;
+
 use auth_outage\dml\outagedb;
-use auth_outage\local\outage;
-use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 require_once($CFG->libdir.'/adminlib.php');
 require_once(__DIR__.'/../base_testcase.php');
@@ -40,8 +39,9 @@ require_once(__DIR__.'/../base_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\local\outagelib
  */
-class auth_outage_outagelib_test extends auth_outage_base_testcase {
+class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if maintenance message is disabled as needed.
      */
@@ -594,6 +594,6 @@ EOT;
         // Enable outage plugin so settings can be changed.
         set_config('auth', 'outage');
         \core\session\manager::gc(); // Remove stale sessions.
-        core_plugin_manager::reset_caches();
+        \core_plugin_manager::reset_caches();
     }
 }

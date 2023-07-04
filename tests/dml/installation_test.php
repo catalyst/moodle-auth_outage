@@ -25,10 +25,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace auth_outage\dml;
+
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/base_testcase.php');
+require_once(__DIR__.'/../base_testcase.php');
 
 /**
  * installation_test test class.
@@ -39,8 +41,9 @@ require_once(__DIR__.'/base_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\dml\outagedb
  */
-class auth_outage_installation_test extends auth_outage_base_testcase {
+class installation_test extends \auth_outage\base_testcase {
     /**
      * Checks if plugin cleans up data after uninstall.
      *
@@ -64,7 +67,7 @@ class auth_outage_installation_test extends auth_outage_base_testcase {
             'description' => 'Description',
         ]);
         ob_start();
-        \auth_outage\dml\outagedb::save($outage);
+        outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
         self::assertStringContainsString('Update maintenance mode configuration', $text);
@@ -72,8 +75,8 @@ class auth_outage_installation_test extends auth_outage_base_testcase {
 
         // Uninstall plugin.
         require_once($CFG->libdir.'/adminlib.php');
-        $progress = new progress_trace_buffer(new text_progress_trace(), false);
-        core_plugin_manager::instance()->uninstall_plugin('auth_outage', $progress);
+        $progress = new \progress_trace_buffer(new \text_progress_trace(), false);
+        \core_plugin_manager::instance()->uninstall_plugin('auth_outage', $progress);
         $progress->finished();
         self::assertStringContainsString('++ Success ++', $progress->get_buffer());
 

@@ -30,6 +30,7 @@ use auth_outage\local\outage;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
+defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
 
 /**

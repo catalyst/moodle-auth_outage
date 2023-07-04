@@ -1,0 +1,7 @@
+a {
+    font-size: 200%;
+}
+
+div {
+    background-image: url(/moodle/auth/outage/tests/local/controllers/fixtures/catalyst.png);
+}

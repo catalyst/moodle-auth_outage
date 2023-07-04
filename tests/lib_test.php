@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace auth_outage;
+
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/base_testcase.php');
-require_once(__DIR__.'/../../lib.php');
+require_once(__DIR__.'/../lib.php');
 
 /**
  * tests for lib.php
@@ -34,8 +36,9 @@ require_once(__DIR__.'/../../lib.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2017 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     ::auth_outage_get_climaintenance_resource_file
  */
-class auth_outage_lib_test extends auth_outage_base_testcase {
+class lib_test extends base_testcase {
     /**
      * Test this plugin gets climaintenance resource file.
      */

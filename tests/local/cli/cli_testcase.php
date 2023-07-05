@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * auth_outage_cli_testcase class.
+ * cli_testcase class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
@@ -23,20 +23,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\local\cli\clibase;
+namespace auth_outage\local\cli;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../../base_testcase.php');
 
 /**
- * auth_outage_cli_testcase class.
+ * cli_testcase class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
+abstract class cli_testcase extends \auth_outage\base_testcase {
     /**
      * Always enable the auth outage plugin, resets after test and set no parameters.
      */
@@ -49,7 +49,7 @@ abstract class auth_outage_cli_testcase extends auth_outage_base_testcase {
         // Enable auth plugins.
         set_config('auth', 'outage');
         \core\session\manager::gc(); // Remove stale sessions.
-        core_plugin_manager::reset_caches();
+        \core_plugin_manager::reset_caches();
 
         $this->set_parameters([]);
         parent::setUp();

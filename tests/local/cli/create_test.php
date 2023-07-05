@@ -23,9 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace auth_outage\local\cli;
+
 use auth_outage\dml\outagedb;
-use auth_outage\local\cli\cli_exception;
-use auth_outage\local\cli\create;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,8 +38,9 @@ require_once(__DIR__.'/cli_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers      \auth_outage\local\cli\create
  */
-class auth_outage_create_test extends auth_outage_cli_testcase {
+class create_test extends cli_testcase {
     /**
      * Tests without any arguments.
      */

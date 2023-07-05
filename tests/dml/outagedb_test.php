@@ -23,7 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\dml\outagedb;
+namespace auth_outage\dml;
+
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
@@ -36,8 +37,9 @@ require_once(__DIR__.'/../base_testcase.php');
  * @author      Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright   2016 Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\dml\outagedb
  */
-class auth_outage_outagedb_test extends auth_outage_base_testcase {
+class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Creates an array of ids in from the given outages array.
      * @param outage[] $outages An array of outages.

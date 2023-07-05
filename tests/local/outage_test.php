@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use auth_outage\local\outage;
+namespace auth_outage\local;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../base_testcase.php');
@@ -35,8 +35,9 @@ require_once(__DIR__.'/../base_testcase.php');
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \auth_outage\local\outage
  */
-class auth_outage_outage_test extends auth_outage_base_testcase {
+class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests the constructor.
      */
@@ -54,7 +55,7 @@ class auth_outage_outage_test extends auth_outage_base_testcase {
      * Tests the constructor, giving data as an object.
      */
     public function test_constructor_object() {
-        $obj = new stdClass();
+        $obj = new \stdClass();
         $obj->id = 1;
         $obj->autostart = true;
         $obj->warntime = 2;

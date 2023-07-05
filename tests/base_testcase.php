@@ -31,18 +31,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace auth_outage;
+
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
 /**
- * auth_outage_base_testcase class.
+ * base_testcase class.
  *
  * @package    auth_outage
  * @author     Daniel Thee Roperto <daniel.roperto@catalyst-au.net>
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class auth_outage_base_testcase extends advanced_testcase {
+abstract class base_testcase extends \advanced_testcase {
     /**
      * Checks PHPUnit version and calls the functions accordingly.
      * @param string $exception Expected exception class.
@@ -71,7 +73,7 @@ abstract class auth_outage_base_testcase extends advanced_testcase {
         global $DB;
 
         $guestrole = $DB->get_record('role', array('shortname' => 'guest'));
-        role_change_permission($guestrole->id, context_system::instance(), 'auth/outage:viewinfo', CAP_PREVENT);
+        role_change_permission($guestrole->id, \context_system::instance(), 'auth/outage:viewinfo', CAP_PREVENT);
 
         $this->setGuestUser();
     }

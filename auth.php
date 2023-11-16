@@ -66,6 +66,9 @@ class auth_plugin_outage extends auth_plugin_base {
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function supports_mfa(): bool {
         return true;
     }

@@ -65,4 +65,8 @@ class auth_plugin_outage extends auth_plugin_base {
     public function user_login($username, $password) {
         return false;
     }
+
+    public static function supports_mfa(): bool {
+        return true;
+    }
 }

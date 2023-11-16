@@ -65,4 +65,13 @@ class auth_plugin_outage extends auth_plugin_base {
     public function user_login($username, $password) {
         return false;
     }
+
+    /**
+     * Returns true if the plugin supports the new login flow for MFA.
+     *
+     * @return bool True
+     */
+    public static function supports_mfa(): bool {
+        return true;
+    }
 }

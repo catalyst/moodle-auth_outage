@@ -66,17 +66,6 @@ function auth_outage_get_climaintenance_resource_file($file) {
 }
 
 /**
- * Display required icon for the calendar events.
- *
- * @return array
- */
-function auth_outage_get_fontawesome_icon_map() {
-    return [
-        'core:i/auth_outageevent' => 'fa-power-off',
-    ];
-}
-
-/**
  * Inject the warning bar into the page if there is currently an outage.
  *
  * @return string|void

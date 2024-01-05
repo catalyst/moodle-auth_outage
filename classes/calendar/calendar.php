@@ -98,6 +98,7 @@ class calendar {
             'userid' => 0,
             'modulename' => '',
             'instance' => $outage->id,
+            'component' => 'auth_outage',
             'eventtype' => 'auth_outage',
             'timestart' => $outage->starttime,
             'visible' => true,

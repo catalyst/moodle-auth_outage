@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $callbacks = [
     [
         'hook' => \core\hook\output\before_standard_top_of_body_html_generation::class,
-        'callback' => [\auth_outage\hook_callbacks::class, 'before_standard_top_of_body_html_generation'],
+        'callback' => '\auth_outage\hook_callbacks::before_standard_top_of_body_html_generation',
         'priority' => 0,
     ],
 ];

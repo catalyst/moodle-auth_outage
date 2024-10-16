@@ -58,7 +58,7 @@ class planned_table extends base_table {
     public function show_data(array $outages) {
         foreach ($outages as $outage) {
             $title = html_writer::link(
-                new moodle_url('/auth/outage/edit.php', ['id' => $outage->id]),
+                new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]),
                 $outage->get_title(),
                 ['title' => get_string('edit')]
             );

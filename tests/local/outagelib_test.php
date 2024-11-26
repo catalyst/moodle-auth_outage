@@ -323,8 +323,9 @@ if ((time() >= 123) && (time() < 456)) {
     }
     // Put access key as a cookie if given. This stops the need to put it as a url param on every request.
     $urlaccesskey = optional_param('accesskey', null, PARAM_TEXT);
+    $isphpunit = defined('PHPUNIT_TEST');
 
-    if (!empty($urlaccesskey)) {
+    if (!empty($urlaccesskey) && !$isphpunit) {
         setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', true, false);
     }
 
@@ -336,7 +337,6 @@ a.b.c.d
 e.e.e.e/20');
     $accesskeyblocked = $useraccesskey != '12345';
     $allowed = (true && !$accesskeyblocked) || (true && !$ipblocked);
-    $isphpunit = defined('PHPUNIT_TEST');
 
     if (!$allowed) {
         if (!$isphpunit) {
@@ -404,8 +404,9 @@ if ((time() >= 123) && (time() < 456)) {
     }
     // Put access key as a cookie if given. This stops the need to put it as a url param on every request.
     $urlaccesskey = optional_param('accesskey', null, PARAM_TEXT);
+    $isphpunit = defined('PHPUNIT_TEST');
 
-    if (!empty($urlaccesskey)) {
+    if (!empty($urlaccesskey) && !$isphpunit) {
         setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', true, false);
     }
 
@@ -415,7 +416,6 @@ if ((time() >= 123) && (time() < 456)) {
     $ipblocked = !remoteip_in_list('127.0.0.1');
     $accesskeyblocked = $useraccesskey != '5678';
     $allowed = (true && !$accesskeyblocked) || (true && !$ipblocked);
-    $isphpunit = defined('PHPUNIT_TEST');
 
     if (!$allowed) {
         if (!$isphpunit) {

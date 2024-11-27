@@ -311,8 +311,9 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     }
     // Put access key as a cookie if given. This stops the need to put it as a url param on every request.
     $urlaccesskey = optional_param('accesskey', null, PARAM_TEXT);
+    $isphpunit = defined('PHPUNIT_TEST');
 
-    if (!empty($urlaccesskey)) {
+    if (!empty($urlaccesskey) && !$isphpunit) {
         setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', {{COOKIESECURE}}, {{COOKIEHTTPONLY}});
     }
 
@@ -322,7 +323,6 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     $ipblocked = !remoteip_in_list('{{ALLOWEDIPS}}');
     $accesskeyblocked = $useraccesskey != '{{ACCESSKEY}}';
     $allowed = ({{USEACCESSKEY}} && !$accesskeyblocked) || ({{USEALLOWEDIPS}} && !$ipblocked);
-    $isphpunit = defined('PHPUNIT_TEST');
 
     if (!$allowed) {
         if (!$isphpunit) {

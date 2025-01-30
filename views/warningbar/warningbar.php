@@ -47,18 +47,15 @@ if (!$viewbag['static']) {
         ['target' => '_blank', 'class' => 'auth_outage_warningbar_box_title']
     );
     if (is_siteadmin()) {
-        $url = new moodle_url('/auth/outage/finish.php', ['id' => $viewbag['outage']->id]);
-        $text = html_writer::empty_tag('img', [
-                'src' => $OUTPUT->image_url('t/check'),
-                'alt' => get_string('finish', 'auth_outage'),
-                'class' => 'iconsmall',
-                'style' => 'width: 1rem; height: 1rem;',
-            ]).' '.get_string('finish', 'auth_outage');
-        $attr = [
-            'title' => get_string('finish', 'auth_outage'),
-            'class' => 'auth_outage_warningbar_box_finish',
-        ];
-        $title .= ' '.html_writer::span(html_writer::link($url, $text, $attr), '', ['id' => 'auth_outage_warningbar_button']);
+        $link = html_writer::link(
+            new moodle_url('/auth/outage/finish.php', ['id' => $viewbag['outage']->id]),
+            $OUTPUT->pix_icon('t/check', get_string('finish', 'auth_outage'), 'moodle', array('class' => 'iconsmall')) . get_string('finish', 'auth_outage'),
+            [
+                'title' => get_string('finish', 'auth_outage'),
+                'class' => 'auth_outage_warningbar_box_finish',
+            ]
+        );
+        $title .= ' '.html_writer::span($link, '', ['id' => 'auth_outage_warningbar_button']);
     }
 }
 ?>

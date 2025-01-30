@@ -52,7 +52,6 @@ if (!$viewbag['static']) {
                 'src' => $OUTPUT->image_url('t/check'),
                 'alt' => get_string('finish', 'auth_outage'),
                 'class' => 'iconsmall',
-                'style' => 'width: 1rem; height: 1rem;',
             ]).' '.get_string('finish', 'auth_outage');
         $attr = [
             'title' => get_string('finish', 'auth_outage'),

@@ -81,7 +81,7 @@ class base_table extends flexible_table {
                 'src' => $OUTPUT->image_url('t/preview'),
                 'alt' => get_string('view'),
                 'class' => 'iconsmall',
-                'style' => 'width: 1.5rem; height: 1.5rem;',
+
             ]),
             [
                 'title' => get_string('view'),
@@ -97,7 +97,6 @@ class base_table extends flexible_table {
                     'src' => $OUTPUT->image_url('t/edit'),
                     'alt' => get_string('edit'),
                     'class' => 'iconsmall',
-                    'style' => 'width: 1.5rem; height: 1.5rem;',
                 ]),
                 ['title' => get_string('edit')]
             );
@@ -110,7 +109,6 @@ class base_table extends flexible_table {
                 'src' => $OUTPUT->image_url('t/copy'),
                 'alt' => get_string('clone', 'auth_outage'),
                 'class' => 'iconsmall',
-                'style' => 'width: 1.5rem; height: 1.5rem;',
 
             ]),
             ['title' => get_string('clone', 'auth_outage')]
@@ -124,7 +122,6 @@ class base_table extends flexible_table {
                     'src' => $OUTPUT->image_url('t/check'),
                     'alt' => get_string('finish', 'auth_outage'),
                     'class' => 'iconsmall',
-                    'style' => 'width: 1.5rem; height: 1.5rem;',
                 ]),
                 ['title' => get_string('finish', 'auth_outage')]
             );
@@ -138,7 +135,6 @@ class base_table extends flexible_table {
                     'src' => $OUTPUT->image_url('t/delete'),
                     'alt' => get_string('delete'),
                     'class' => 'iconsmall',
-                    'style' => 'width: 1.5rem; height: 1.5rem;',
                 ]),
                 ['title' => get_string('delete')]
             );

@@ -39,7 +39,7 @@ use auth_outage\local\outage;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\dml\outagedb
  */
-class events_test extends \advanced_testcase {
+class events_test extends \core_phpunit\testcase {
     /**
      * @var outage|null Outage used in the tests.
      */

@@ -39,7 +39,7 @@ use auth_outage\local\outage;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\calendar\calendar
  */
-class calendar_test extends \advanced_testcase {
+class calendar_test extends \core_phpunit\testcase {
     /**
      * @var outage|null The calendar entry owner.
      */

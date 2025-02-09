@@ -35,7 +35,7 @@ use auth_outage\local\outage;
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_testcase extends \advanced_testcase {
+abstract class base_testcase extends \core_phpunit\testcase {
     /**
      * Checks PHPUnit version and calls the functions accordingly.
      * @param string $exception Expected exception class.

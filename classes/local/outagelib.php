@@ -57,7 +57,7 @@ class outagelib {
         global $CFG;
         require_once($CFG->libdir . '/filelib.php');
 
-        $curl = new curl();
+        $curl = new curl(['ignoresecurity' => true]);
         $contents = $curl->get($file);
         $info = $curl->get_info();
         if (!empty($info['content_type'])) {

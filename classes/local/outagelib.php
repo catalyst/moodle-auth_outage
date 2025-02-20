@@ -266,7 +266,9 @@ class outagelib {
 
         // Used to test the try block in case of errors.
         if (PHPUNIT_TEST && optional_param('auth_outage_break_code', false, PARAM_INT)) {
-            (new stdClass())->invalidfield; // Triggers an exception.
+            if (!isset($emptyvar)) {
+                throw new coding_exception('Empty variable "emptyvar" is empty');
+            }
         }
 
         // Nothing preventing the injection.

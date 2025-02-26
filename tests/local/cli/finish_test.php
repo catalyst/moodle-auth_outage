@@ -40,7 +40,7 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\finish
  */
-class finish_test extends cli_testcase {
+class cli_finish_test extends cli_testcase {
 
     public function tearDown(): void {
         parent::tearDown();

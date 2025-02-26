@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * cli_testcase class.
@@ -34,7 +34,7 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class cli_testcase extends \auth_outage\base_testcase {
+abstract class cli_testcase extends base_testcase {
 
     public function tearDown(): void {
         parent::tearDown();

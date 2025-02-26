@@ -17,7 +17,7 @@
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * outage_test test class.
@@ -28,7 +28,7 @@ require_once(__DIR__.'/../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\outage
  */
-class outage_test extends \auth_outage\base_testcase {
+class outage_test extends base_testcase {
 
     public function tearDown(): void {
         parent::tearDown();

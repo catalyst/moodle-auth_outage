@@ -40,6 +40,11 @@ require_once(__DIR__.'/../base_testcase.php');
  * @covers     \auth_outage\dml\outagedb
  */
 class outagedb_test extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Creates an array of ids in from the given outages array.
      * @param outage[] $outages An array of outages.

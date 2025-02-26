@@ -33,6 +33,11 @@ require_once(__DIR__.'/../base_testcase.php');
  * @covers     \auth_outage\local\outagelib
  */
 class outagelib_test extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Check if maintenance message is disabled as needed.
      */

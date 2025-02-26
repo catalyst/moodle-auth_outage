@@ -38,6 +38,11 @@ require_once(__DIR__.'/cli_testcase.php');
  * @covers      \auth_outage\local\cli\create
  */
 class cli_test extends cli_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests providing an unknown parameter.
      */

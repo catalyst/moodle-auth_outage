@@ -44,6 +44,11 @@ require_once(__DIR__.'/../base_testcase.php');
  * @covers     \auth_outage\dml\outagedb
  */
 class installation_test extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Checks if plugin cleans up data after uninstall.
      *

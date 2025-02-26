@@ -41,6 +41,11 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @covers     \auth_outage\local\controllers\infopage
  */
 class infopage_test extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests the constructor.
      */

@@ -37,6 +37,11 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class cli_testcase extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Always enable the auth outage plugin, resets after test and set no parameters.
      */

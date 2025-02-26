@@ -40,6 +40,11 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @covers      \auth_outage\form\outage\edit
  */
 class forms_test extends \auth_outage\base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Create a delete form.
      */

@@ -41,6 +41,11 @@ require_once(__DIR__.'/cli_testcase.php');
  * @covers      \auth_outage\local\cli\waitforit
  */
 class waitforit_test extends cli_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests the constructor.
      */

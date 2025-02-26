@@ -23,9 +23,8 @@
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\dml;
-
 use auth_outage\local\outage;
+use auth_outage\dml\outagedb;
 
 /**
  * events_test tests class.

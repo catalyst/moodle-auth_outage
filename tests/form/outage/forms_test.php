@@ -23,9 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\form\outage;
-
 use auth_outage\local\outage;
+use auth_outage\form\outage\delete;
+use auth_outage\form\outage\finish;
+use auth_outage\form\outage\edit;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../../base_testcase.php');

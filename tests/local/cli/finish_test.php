@@ -23,10 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\cli;
-
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
+use auth_outage\local\cli\finish;
+use auth_outage\local\cli\cli_exception;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');

@@ -23,9 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\controllers;
-
 use auth_outage\task\update_static_page;
+use auth_outage\local\controllers\maintenance_static_page;
+use auth_outage\local\controllers\maintenance_static_page_io;
+use auth_outage\local\controllers\maintenance_static_page_generator;
 use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();

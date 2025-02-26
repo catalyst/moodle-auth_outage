@@ -23,9 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\controllers;
-
 use auth_outage\local\outage;
+use auth_outage\local\controllers\infopage;
 use context_system;
 
 defined('MOODLE_INTERNAL') || die();

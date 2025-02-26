@@ -23,8 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\cli;
-
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../../base_testcase.php');
 
@@ -78,7 +76,7 @@ abstract class cli_testcase extends \auth_outage\base_testcase {
      *
      * @return string The output text.
      */
-    protected function execute(clibase $cli) {
+    protected function execute(mixed $cli) {
         ob_start();
         try {
             $cli->execute();

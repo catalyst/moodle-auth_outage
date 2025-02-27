@@ -69,6 +69,11 @@ function auth_outage_bootstrap_callback() {
         http_response_code(404);
         die('File not found.');
     }
+
+    // Ensure there is nothing in the output buffer.
+    // otherwise the file will not be read correctly.
+    ob_clean();
+
     readfile($file);
     exit(0);
 }

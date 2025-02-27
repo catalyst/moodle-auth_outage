@@ -23,10 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\cli;
-
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
+use auth_outage\local\cli\waitforit;
+use auth_outage\local\cli\cli_exception;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
@@ -40,7 +40,12 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\waitforit
  */
-class waitforit_test extends cli_testcase {
+class cli_waitforit_test extends cli_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests the constructor.
      */

@@ -23,13 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\controllers;
-
 use auth_outage\task\update_static_page;
+use auth_outage\local\controllers\maintenance_static_page;
+use auth_outage\local\controllers\maintenance_static_page_io;
+use auth_outage\local\controllers\maintenance_static_page_generator;
 use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * maintenance_static_page_test class.
@@ -40,7 +41,12 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\controllers\maintenance_static_page_generator
  */
-class maintenance_static_page_test extends \auth_outage\base_testcase {
+class controllers_maintenance_static_page_test extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Test template file.
      */
@@ -122,7 +128,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/53365950336b070c0b26ca50e7d0dad962c364e6.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/b09bd4b66cc3964d5fc5978752fc554f5666daa3.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
@@ -140,7 +146,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/e0b34925c1f939c247a4b50d6bf08c76088def39.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder().'/2ec04228cc8bb37782f511aaeb01ee553cc884a4.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
         self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
@@ -338,7 +344,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * @return string
      */
     private function get_fixture_path_location($file) {
-        return (string)new \moodle_url('/auth/outage/tests/local/controllers/fixtures/'.$file);
+        return (string)new \moodle_url('/auth/outage/tests/fixtures/'.$file);
     }
 
     /**

@@ -23,10 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\cli;
-
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * cli_testcase class.
@@ -36,7 +34,12 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class cli_testcase extends \auth_outage\base_testcase {
+abstract class cli_testcase extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Always enable the auth outage plugin, resets after test and set no parameters.
      */
@@ -73,7 +76,7 @@ abstract class cli_testcase extends \auth_outage\base_testcase {
      *
      * @return string The output text.
      */
-    protected function execute(clibase $cli) {
+    protected function execute(mixed $cli) {
         ob_start();
         try {
             $cli->execute();

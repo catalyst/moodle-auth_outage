@@ -23,9 +23,8 @@
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\calendar;
-
 use auth_outage\local\outage;
+use auth_outage\calendar\calendar;
 
 /**
  * calendar_test test class.

@@ -23,9 +23,8 @@
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\dml;
-
 use auth_outage\local\outage;
+use auth_outage\dml\outagedb;
 
 /**
  * events_test tests class.
@@ -39,7 +38,7 @@ use auth_outage\local\outage;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\dml\outagedb
  */
-class events_test extends \core_phpunit\testcase {
+class dml_events_test extends \core_phpunit\testcase {
     /**
      * @var outage|null Outage used in the tests.
      */

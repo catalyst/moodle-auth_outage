@@ -23,7 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\cli;
+use auth_outage\local\cli\cli_exception;
+use auth_outage\local\cli\create;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/cli_testcase.php');
@@ -38,6 +39,11 @@ require_once(__DIR__.'/cli_testcase.php');
  * @covers      \auth_outage\local\cli\create
  */
 class cli_test extends cli_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests providing an unknown parameter.
      */

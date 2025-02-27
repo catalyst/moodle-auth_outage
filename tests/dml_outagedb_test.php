@@ -23,12 +23,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\dml;
-
 use auth_outage\local\outage;
+use auth_outage\dml\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * outagedb_test tests class.
@@ -39,7 +38,12 @@ require_once(__DIR__.'/../base_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\dml\outagedb
  */
-class outagedb_test extends \auth_outage\base_testcase {
+class dml_outagedb_test extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Creates an array of ids in from the given outages array.
      * @param outage[] $outages An array of outages.

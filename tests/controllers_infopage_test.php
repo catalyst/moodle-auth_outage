@@ -23,13 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\local\controllers;
-
 use auth_outage\local\outage;
+use auth_outage\local\controllers\infopage;
 use context_system;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * Tests performed on infopage controller class and update_static_page task class.
@@ -40,7 +39,12 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\controllers\infopage
  */
-class infopage_test extends \auth_outage\base_testcase {
+class controllers_infopage_test extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests the constructor.
      */

@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
-
 use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 

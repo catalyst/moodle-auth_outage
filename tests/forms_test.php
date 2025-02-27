@@ -23,12 +23,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace auth_outage\form\outage;
-
 use auth_outage\local\outage;
+use auth_outage\form\outage\delete;
+use auth_outage\form\outage\finish;
+use auth_outage\form\outage\edit;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * forms_test test class.
@@ -39,7 +40,12 @@ require_once(__DIR__.'/../../base_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\form\outage\edit
  */
-class forms_test extends \auth_outage\base_testcase {
+class forms_test extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Create a delete form.
      */

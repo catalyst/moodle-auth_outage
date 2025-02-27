@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage\local;
+use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../base_testcase.php');
+require_once(__DIR__.'/base_testcase.php');
 
 /**
  * outage_test test class.
@@ -28,7 +28,12 @@ require_once(__DIR__.'/../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\outage
  */
-class outage_test extends \auth_outage\base_testcase {
+class outage_test extends base_testcase {
+
+    public function tearDown(): void {
+        parent::tearDown();
+    }
+
     /**
      * Tests the constructor.
      */

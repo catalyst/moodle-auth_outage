@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace auth_outage;
-
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/base_testcase.php');
 require_once(__DIR__.'/../lib.php');
@@ -29,7 +27,7 @@ require_once(__DIR__.'/../lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     ::auth_outage_get_climaintenance_resource_file
  */
-class lib_test extends base_testcase {
+class lib_test extends \core_phpunit\testcase {
     /**
      * Test this plugin gets climaintenance resource file.
      */

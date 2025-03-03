@@ -747,7 +747,7 @@ EOT;
      *
      * We need this because we modify the request headers,
      * see https://github.com/sebastianbergmann/phpunit/issues/720#issuecomment-10421092
-     * @runInSeparateProcess
+     * @runClassInSeparateProcess
      */
     public function test_evaluation_maintenancepage(?string $allowedips, ?string $iptouse, ?string $accesskey,
         ?string $accesskeytouse, array $expectedoutputs) {

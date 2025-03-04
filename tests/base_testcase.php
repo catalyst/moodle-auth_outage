@@ -105,5 +105,6 @@ abstract class base_testcase extends \core_phpunit\testcase {
         foreach (outagedb::get_all() as $i => $outage) {
             $DB->delete_records('auth_outage', ['id' => $outage->id]);
         }
+        parent::tearDown();
     }
 }

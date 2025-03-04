@@ -25,7 +25,6 @@
 
 use auth_outage\local\outage;
 use auth_outage\local\controllers\infopage;
-use context_system;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/base_testcase.php');

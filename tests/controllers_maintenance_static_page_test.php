@@ -27,7 +27,6 @@ use auth_outage\task\update_static_page;
 use auth_outage\local\controllers\maintenance_static_page;
 use auth_outage\local\controllers\maintenance_static_page_io;
 use auth_outage\local\controllers\maintenance_static_page_generator;
-use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/base_testcase.php');

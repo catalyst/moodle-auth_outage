@@ -35,6 +35,13 @@ class hook_callbacks {
      * @param before_standard_top_of_body_html_generation $hook
      */
     public static function before_standard_top_of_body_html_generation(before_standard_top_of_body_html_generation $hook): void {
+        global $CFG;
+
+        if (during_initial_install() || isset($CFG->upgraderunning)) {
+            // Do nothing during installation or upgrade.
+            return;
+        }
+
         // Get code to inject.
         $hook->add_html(outagelib::get_inject_code());
     }

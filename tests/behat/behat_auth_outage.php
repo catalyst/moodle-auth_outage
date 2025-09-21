@@ -30,7 +30,7 @@ use auth_outage\local\outage;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
-require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
+require_once(__DIR__.'/../../../../public/lib/behat/behat_base.php');
 
 /**
  * Steps definitions related to auth_outage.

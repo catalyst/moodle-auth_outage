@@ -45,6 +45,7 @@ Moodle supported branches
 | Version     |  Branch           | PHP  |
 | ------------------ |  ---------------- | ---- |
 | Moodle 3.9+        |  MOODLE_39_STABLE | 7.2+ |
+| Moodle 5.1         |  MOODLE_501_STABLE | 8.2 |
 
 Totara supported branches
 --------

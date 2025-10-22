@@ -359,11 +359,11 @@ e.e.e.e/20');
         }
 
         if (true && $ipblocked) {
-            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            echo '<!-- auth_outage blocked your ip: '.getremoteaddr('n/a').' -->';
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- Blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
         }
 
         if (!$isphpunit) {
@@ -438,11 +438,11 @@ if ((time() >= 123) && (time() < 456)) {
         }
 
         if (true && $ipblocked) {
-            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            echo '<!-- auth_outage blocked your ip: '.getremoteaddr('n/a').' -->';
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- Blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
         }
 
         if (!$isphpunit) {
@@ -663,8 +663,8 @@ EOT;
      * @return array
      */
     public static function evaluation_maintenancepage_provider(): array {
-        $blockedipout = '<!-- Blocked by ip, your ip:';
-        $blockedaccesskeyout = '<!-- Blocked by missing or incorrect access key, access key given:';
+        $blockedipout = '<!-- auth_outage blocked your ip:';
+        $blockedaccesskeyout = '<!-- auth_outage blocked by missing or incorrect access key, access key given:';
 
         return [
             // IP set up, access key not set up.

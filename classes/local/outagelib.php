@@ -345,11 +345,11 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
         }
 
         if ({{USEALLOWEDIPS}} && $ipblocked) {
-            echo '<!-- Blocked by ip, your ip: '.getremoteaddr('n/a').' -->';
+            echo '<!-- auth_outage blocked your ip: '.getremoteaddr('n/a').' -->';
         }
 
         if ({{USEACCESSKEY}} && $accesskeyblocked) {
-            echo '<!-- Blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
         }
 
         if (!$isphpunit) {

@@ -49,6 +49,19 @@ if ($mform->is_cancelled()) {
 $clone = optional_param('clone', 0, PARAM_INT);
 $edit = optional_param('edit', 0, PARAM_INT);
 $start = optional_param_array('starttime', [], PARAM_INT);
+if (!empty($start['year']) && !empty($start['month']) && !empty($start['day'])) {
+    $hour = $start['hour'] ?? 0;
+    $minute = $start['minute'] ?? 0;
+    $time = make_timestamp(
+        (int) $start['year'],
+        (int) $start['month'],
+        (int) $start['day'],
+        (int) $hour,
+        (int) $minute
+    );
+} else {
+    $time = 0;
+}
 if ($clone && $edit) {
     throw new invalid_parameter_exception('Cannot provide both clone and edit ids.');
 }

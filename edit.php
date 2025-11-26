@@ -48,7 +48,7 @@ if ($mform->is_cancelled()) {
 
 $clone = optional_param('clone', 0, PARAM_INT);
 $edit = optional_param('edit', 0, PARAM_INT);
-$time = optional_param('starttime', 0, PARAM_INT);
+$start = optional_param_array('starttime', [], PARAM_INT);
 if ($clone && $edit) {
     throw new invalid_parameter_exception('Cannot provide both clone and edit ids.');
 }

@@ -30,7 +30,9 @@
  * @var stdClass $CFG
  */
 
-define('MOODLE_INTERNAL', true);
+if (!defined('MOODLE_INTERNAL')) {
+    define('MOODLE_INTERNAL', true);
+}
 defined('MOODLE_INTERNAL') || die();  // Make sniffer happy.
 //
 // We need the CFG->dataroot, if not set yet this script is called too early in config.php file.

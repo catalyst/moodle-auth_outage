@@ -38,13 +38,15 @@ class planned_table extends base_table {
     public function __construct() {
         parent::__construct();
 
-        $this->define_columns(['warning', 'starts', 'duration', 'title', 'actions']);
+        $this->define_columns(['warning', 'starts', 'duration', 'title', 'created', 'modified', 'actions']);
 
         $this->define_headers([
             get_string('tableheaderwarnbefore', 'auth_outage'),
             get_string('tableheaderstarttime', 'auth_outage'),
             get_string('tableheaderduration', 'auth_outage'),
             get_string('tableheadertitle', 'auth_outage'),
+            get_string('tableheadercreatedby', 'auth_outage'),
+            get_string('tableheadermodifiedby', 'auth_outage'),
             get_string('actions'),
         ]);
 
@@ -68,6 +70,8 @@ class planned_table extends base_table {
                 self::create_starttime_string($outage->starttime),
                 format_time($outage->get_duration_planned()),
                 $title,
+                $this->format_created($outage),
+                $this->format_modified($outage),
                 $this->create_data_buttons($outage, true),
             ]);
         }

@@ -83,6 +83,16 @@ if ($hassiteconfig) {
         $defaults['default_title'],
         PARAM_TEXT
     ));
+    $settings->add(
+        new admin_setting_configtext(
+            'auth_outage/default_metadata',
+            get_string('defaultmetadata', 'auth_outage'),
+            get_string('defaultmetadatadescription', 'auth_outage'),
+            '',
+            PARAM_TEXT
+        )
+    );
+
     $settings->add(new admin_setting_configtextarea(
         'auth_outage/default_description',
         get_string('defaultdescription', 'auth_outage'),

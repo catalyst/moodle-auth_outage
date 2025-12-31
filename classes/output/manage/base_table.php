@@ -65,6 +65,41 @@ class base_table extends flexible_table {
     }
 
     /**
+     * Displays a user by their fullname with a link to a profile.
+     * @param int $userid
+     * @return string HTML link to user profile
+     */
+    private function format_user(int $userid): string {
+        if ($userid == 0 || !$user = \core_user::get_user($userid)) {
+            return get_string('na', 'auth_outage');
+        }
+        $url = new moodle_url('/user/profile.php', ['id' => $userid]);
+        return html_writer::link($url, fullname($user));
+    }
+
+    /**
+     * Formats created by column.
+     * @param outage $outage
+     * @return string The user who created the outage.
+     */
+    protected function format_created(outage $outage): string {
+        return $this->format_user($outage->createdby);
+    }
+
+    /**
+     * Formats modified by column.
+     * @param outage $outage
+     * @return string The user who last modiifed the outage and the last modified time.
+     */
+    protected function format_modified(outage $outage): string {
+        $timestamp = html_writer::div(
+            userdate($outage->lastmodified, get_string('datetimeformat', 'auth_outage')),
+            'small text-muted'
+        );
+        return $this->format_user($outage->modifiedby) . $timestamp;
+    }
+
+    /**
      * Create the action buttons HTML code for a specific outage.
      * @param outage $outage The outage to generate the buttons.
      * @param bool $editdelete If it should display the edit and delete button.

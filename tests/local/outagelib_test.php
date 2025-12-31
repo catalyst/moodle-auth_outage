@@ -352,6 +352,11 @@ e.e.e.e/20');
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Accept-Ranges: none');
             header('X-Moodle-Maintenance: manager');
+            if (!empty('testmeta')) {
+                header('X-Outage-Metadata: ' . 'testmeta');
+            }
+            header('X-Outage-StartTime: ' . '123');
+            header('X-Outage-EndTime: ' . '456');
         }
 
         if (!$isphpunit && ((defined('AJAX_SCRIPT') && AJAX_SCRIPT) || (defined('WS_SERVER') && WS_SERVER))) {
@@ -377,7 +382,7 @@ e.e.e.e/20');
     }
 }
 EOT;
-        $found = outagelib::create_climaintenancephp_code(123, 456, "hey'\"you\na.b.c.d\ne.e.e.e/20", '12345');
+        $found = outagelib::create_climaintenancephp_code(123, 456, "hey'\"you\na.b.c.d\ne.e.e.e/20", '12345', 'testmeta');
         self::assertSame($expected, $found);
     }
 
@@ -431,6 +436,11 @@ if ((time() >= 123) && (time() < 456)) {
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Accept-Ranges: none');
             header('X-Moodle-Maintenance: manager');
+            if (!empty(NULL)) {
+                header('X-Outage-Metadata: ' . NULL);
+            }
+            header('X-Outage-StartTime: ' . '123');
+            header('X-Outage-EndTime: ' . '456');
         }
 
         if (!$isphpunit && ((defined('AJAX_SCRIPT') && AJAX_SCRIPT) || (defined('WS_SERVER') && WS_SERVER))) {

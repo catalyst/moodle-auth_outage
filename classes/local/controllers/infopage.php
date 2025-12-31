@@ -109,6 +109,13 @@ class infopage {
         // No hooks injecting into this page, do it manually.
         echo outagelib::get_inject_code();
 
+        // Inject metadata into the header before output.
+        if (!empty($this->outage->metadata)) {
+            header('X-Outage-Metadata: ' . $this->outage->metadata);
+            header('X-Outage-StartTime: ' . $this->outage->starttime);
+            header('X-Outage-EndTime: ' . $this->outage->stoptime);
+        }
+
         echo $OUTPUT->header();
         $viewbag = [
             'admin' => is_siteadmin(),

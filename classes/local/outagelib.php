@@ -174,7 +174,7 @@ class outagelib {
             'allowedips'               => '',
             'css'                      => '',
             'default_time'             => '',
-            'default_autostart'        => '0',
+            'default_autostart'        => 'off',
             'default_duration'         => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
             'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),

@@ -29,9 +29,16 @@
  * @param int $oldversion the version we are upgrading from
  * @return bool result
  */
+
+
+use auth_outage\local\outage;
+
 function xmldb_auth_outage_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
+    $auto_start_on = outage::AUTO_START_ON;
+    $auto_start_off = outage::AUTO_START_OFF;
+    $auto_start_forceoff = outage::AUTO_START_FORCEOFF;
 
     if ($oldversion < 2016092200) {
         // Define field autostart to be added to auth_outage.
@@ -60,6 +67,27 @@ function xmldb_auth_outage_upgrade($oldversion) {
 
         // Outage savepoint reached.
         upgrade_plugin_savepoint(true, 2024081900, 'auth', 'outage');
+    }
+
+    if ($oldversion < 2024081901) {
+
+       $current_config = get_config('auth_outage', 'default_autostart');
+
+       if ($current_config === '0') {
+            // Mapping to default off.
+           set_config('default_autostart', $auto_start_off, 'auth_outage');
+
+       } else if ($current_config === '1') {
+           // Mapping to default on.
+           set_config('default_autostart', $auto_start_on, 'auth_outage');  
+       } else {
+           // Mapping to force off.
+           set_config('default_autostart', $auto_start_forceoff, 'auth_outage');
+       }
+
+       // Outage savepoint reached.
+       upgrade_plugin_savepoint(true, 2024081901, 'auth', 'outage');
+
     }
 
     return true;

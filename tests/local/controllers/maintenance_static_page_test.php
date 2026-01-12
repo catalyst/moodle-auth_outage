@@ -29,7 +29,7 @@ use auth_outage\task\update_static_page;
 use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__ . '/../../base_testcase.php');
 
 /**
  * maintenance_static_page_test class.
@@ -47,10 +47,12 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     public function test_templatefile() {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
-        self::assertSame($CFG->dataroot.'/climaintenance.template.html', $page->get_io()->get_template_file());
+        self::assertSame($CFG->dataroot . '/climaintenance.template.html', $page->get_io()->get_template_file());
         $page->get_io()->set_preview(true);
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview/climaintenance.html',
-            $page->get_io()->get_template_file());
+        self::assertSame(
+            $CFG->dataroot . '/auth_outage/climaintenance/preview/climaintenance.html',
+            $page->get_io()->get_template_file()
+        );
     }
 
     /**
@@ -59,9 +61,9 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     public function test_resourcesfolder() {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance', $page->get_io()->get_resources_folder());
+        self::assertSame($CFG->dataroot . '/auth_outage/climaintenance', $page->get_io()->get_resources_folder());
         $page->get_io()->set_preview(true);
-        self::assertSame($CFG->dataroot.'/auth_outage/climaintenance/preview', $page->get_io()->get_resources_folder());
+        self::assertSame($CFG->dataroot . '/auth_outage/climaintenance/preview', $page->get_io()->get_resources_folder());
     }
 
     /**
@@ -76,7 +78,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_createfromhtml() {
         $html = "<!DOCTYPE html>\n<html><head><title>Title</title></head><body>Content</body></html>";
-        $expected = "<!DOCTYPE html>\n<html><head><title>Title</title><meta http-equiv=\"refresh\" content=\"300\">".
+        $expected = "<!DOCTYPE html>\n<html><head><title>Title</title><meta http-equiv=\"refresh\" content=\"300\">" .
                     "</head><body>Content</body></html>";
         self::assertSame($expected, $this->generated_page_html($html));
     }
@@ -85,8 +87,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * Test remove script tags.
      */
     public function test_removescripttags() {
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><script type="text/javascript" src="http://xyz"></script><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><script type="text/javascript" src="http://xyz"></script><title>Title</title></head>' .
                 '<body>Content<script> a < 5; x > 3</script></body></html>';
         maintenance_static_page::create_from_html($html)->generate();
 
@@ -100,9 +102,9 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     public function test_updatelinkstylesheet() {
         $localcsslink = $this->get_fixture_path_location('simple.css');
         $externalcsslink = 'http://google.com/coolstuff.css';
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
-                '<body>Content<link rel="stylesheet" href="'.$externalcsslink.'"></body></html>';
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
+                '<body>Content<link rel="stylesheet" href="' . $externalcsslink . '"></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
@@ -115,17 +117,19 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_updatelinkstylesheet_urls() {
         $localcsslink = $this->get_fixture_path_location('withurls.css');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/53365950336b070c0b26ca50e7d0dad962c364e6.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder() .
+        '/53365950336b070c0b26ca50e7d0dad962c364e6.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+        self::assertFileExists($page->get_io()->get_resources_folder() .
+        '/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
     }
 
     /**
@@ -133,17 +137,19 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_updatelinkstylesheet_urls_quoted() {
         $localcsslink = $this->get_fixture_path_location('withurls-quoted.css');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/e0b34925c1f939c247a4b50d6bf08c76088def39.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder()
+        . '/e0b34925c1f939c247a4b50d6bf08c76088def39.dGV4dC9wbGFpbg');
 
         // Check for catalyst.png file referenced in url(..) of css.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
+        self::assertFileExists($page->get_io()->get_resources_folder()
+        . '/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n');
     }
 
     /**
@@ -151,17 +157,19 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_updatelinkstylesheet_urls_subdir() {
         $localcsslink = $this->get_fixture_path_location('subdir/withurls-subdir.css');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><link href="'.$localcsslink.'" rel="stylesheet" /><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
 
         // Check for css file.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/beb44281e23b9d872056bf0230cea34535e8cdea.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder() .
+        '/beb44281e23b9d872056bf0230cea34535e8cdea.dGV4dC9wbGFpbg');
 
         // Check for file referenced in url(..) of css.
-        self::assertFileExists($page->get_io()->get_resources_folder().'/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');
+        self::assertFileExists($page->get_io()->get_resources_folder() .
+        '/a02a8a442fa82d5205ffb24722d9df7f35161f56.dGV4dC9wbGFpbg');
     }
 
      /**
@@ -170,9 +178,9 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     public function test_updateimages() {
         $localimglink = $this->get_fixture_path_location('catalyst.png');
         $externalimglink = 'http://google.com/coolstyle.css';
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
-                '<body><img src="'.$localimglink.'">Content<img src="'.$externalimglink.'" /></body></html>';
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
+                '<body><img src="' . $localimglink . '">Content<img src="' . $externalimglink . '" /></body></html>';
         $generated = $this->generated_page_html($html);
 
         self::assertStringContainsString('www.example.com/moodle/auth/outage/file.php?file=', $generated);
@@ -185,8 +193,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
       */
     public function test_updatelinkfavicon() {
         $link = $this->get_fixture_path_location('catalyst.png');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title><link rel="shortcut icon" href="' . $link . '""></head>' .
                 '<body>Content</body></html>';
         $generated = $this->generated_page_html($html);
 
@@ -229,9 +237,9 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
         $this->resetAfterTest(true);
         $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
 
-        $html = '<!DOCTYPE html>\n'.
-            '<html><head><title>Title</title></head>'.
-            '<body><div style="'.$stylecontent.'">Content</div></body></html>';
+        $html = '<!DOCTYPE html>\n' .
+            '<html><head><title>Title</title></head>' .
+            '<body><div style="' . $stylecontent . '">Content</div></body></html>';
 
         // Temporarily disable debugging to prevent errors because file does not exist.
         $debuglevel = $CFG->debug;
@@ -254,8 +262,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
       */
     public function test_previewpath() {
         $link = $this->get_fixture_path_location('catalyst.png');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title><link rel="shortcut icon" href="'.$link.'""></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title><link rel="shortcut icon" href="' . $link . '""></head>' .
                 '<body>Content</body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->get_io()->set_preview(true);
@@ -295,7 +303,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_updatestaticpage_hasfile() {
         global $CFG;
-        $file = $CFG->dataroot.'/climaintenance.template.html';
+        $file = $CFG->dataroot . '/climaintenance.template.html';
         touch($file);
         self::assertFileExists($file);
         maintenance_static_page::create_from_outage(null)->generate();
@@ -314,19 +322,19 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
         global $CFG;
 
         $link = $this->get_fixture_path_location('catalyst.png');
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
-                '<body>Content<img src="'.$link.'" /></body></html>';
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
+                '<body>Content<img src="' . $link . '" /></body></html>';
         $page = maintenance_static_page::create_from_html($html);
         $page->generate();
 
         // This checks if content is correct and mime type is correct from the encoded name.
-        $file = $page->get_io()->get_resources_folder().'/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';
+        $file = $page->get_io()->get_resources_folder() . '/ff7f7f87a26a908fc72930eaefb6b57306361d16.aW1hZ2UvcG5n';
         self::assertFileExists($file);
 
         // We can still assert the contents really match, not just the hash.
         $found = file_get_contents($file);
-        $expected = file_get_contents(__DIR__.'/fixtures/catalyst.png');
+        $expected = file_get_contents(__DIR__ . '/fixtures/catalyst.png');
         self::assertSame($found, $expected);
     }
 
@@ -338,7 +346,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * @return string
      */
     private function get_fixture_path_location($file) {
-        return (string)new \moodle_url('/auth/outage/tests/local/controllers/fixtures/'.$file);
+        return (string)new \moodle_url('/auth/outage/tests/local/controllers/fixtures/' . $file);
     }
 
     /**
@@ -398,7 +406,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * Test file get_data.
      */
     public function test_file_get_data() {
-        $file = __DIR__.'/fixtures/catalyst.png';
+        $file = __DIR__ . '/fixtures/catalyst.png';
         $found = maintenance_static_page_io::file_get_data($file);
         self::assertSame(file_get_contents($file), $found['contents']);
         self::assertSame('image/png', $found['mime']);
@@ -408,7 +416,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * Test invalid file get_data.
      */
     public function test_file_get_data_invalidfile() {
-        $found = maintenance_static_page_io::file_get_data(__DIR__.'/fixtures/invalidfile');
+        $found = maintenance_static_page_io::file_get_data(__DIR__ . '/fixtures/invalidfile');
         self::assertSame('', $found['contents']);
         self::assertSame('unknown', $found['mime']);
         self::assertCount(1, $this->getDebuggingMessages());
@@ -444,7 +452,9 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
         self::assertSame(0, $curl->get_errno());
         if ($CFG->branch >= 403) {
             self::assertDebuggingCalled(
-                "Blocked $testhtml: The URL is blocked. [user {$USER->id}]", DEBUG_NONE);
+                "Blocked $testhtml: The URL is blocked. [user {$USER->id}]",
+                DEBUG_NONE
+            );
         }
 
         // Test file_get_data does return the page and isn't blocked by security.
@@ -459,8 +469,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
                 '<body>Content<b class="removeme">Goodbye cruel world.</b></body></html>';
         set_config('remove_selectors', '.removeme', 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -474,8 +484,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector_id() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
                 '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
         set_config('remove_selectors', '#removeme', 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -489,11 +499,11 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector_with_multiline() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
-                '<body>'.
-                '<b class="deleteme">Goodbye cruel world.</b>'.
-                '<b class="removeme">Goodbye cruel world.</b>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
+                '<body>' .
+                '<b class="deleteme">Goodbye cruel world.</b>' .
+                '<b class="removeme">Goodbye cruel world.</b>' .
                 '</body></html>';
         set_config('remove_selectors', ".removeme\n.deleteme", 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -508,11 +518,11 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector_needing_trim() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
-                '<body>'.
-                '<b class="deleteme">Goodbye cruel world.</b>'.
-                '<b class="removeme">Goodbye cruel world.</b>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
+                '<body>' .
+                '<b class="deleteme">Goodbye cruel world.</b>' .
+                '<b class="removeme">Goodbye cruel world.</b>' .
                 '</body></html>';
         set_config('remove_selectors', " .removeme     \n    .deleteme   ", 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -527,11 +537,11 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector_with_empty_line() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
-                '<body>'.
-                '<b class="deleteme">Goodbye cruel world.</b>'.
-                '<b class="removeme">Goodbye cruel world.</b>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
+                '<body>' .
+                '<b class="deleteme">Goodbye cruel world.</b>' .
+                '<b class="removeme">Goodbye cruel world.</b>' .
                 '</body></html>';
         set_config('remove_selectors', "\n\n.removeme\n\n\n\n.deleteme\n\n", 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -546,8 +556,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_remove_css_selector_with_invalid_id() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
                 '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
         set_config('remove_selectors', '#invalidid', 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -561,8 +571,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_meta_refresh_5minutes() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
                 '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
         set_config('remove_selectors', '#invalidid', 'auth_outage');
         $generated = $this->generated_page_html($html);
@@ -575,8 +585,8 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      */
     public function test_meta_refresh_maximum_5seconds() {
         $this->resetAfterTest(true);
-        $html = "<!DOCTYPE html>\n".
-                '<html><head><title>Title</title></head>'.
+        $html = "<!DOCTYPE html>\n" .
+                '<html><head><title>Title</title></head>' .
                 '<body>Content<b id="removeme">Goodbye cruel world.</b></body></html>';
         set_config('remove_selectors', '#invalidid', 'auth_outage');
         $page = maintenance_static_page::create_from_html($html);

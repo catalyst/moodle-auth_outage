@@ -29,7 +29,7 @@ use auth_outage\local\outage;
 use context_system;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__ . '/../../base_testcase.php');
 
 /**
  * Tests performed on infopage controller class and update_static_page task class.

@@ -29,9 +29,9 @@ use auth_outage\local\outage;
 use auth_outage\local\outagelib;
 use auth_outage\output\renderer;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 admin_externalpage_setup('auth_outage_manage');
 $output = $PAGE->get_renderer('auth_outage');
@@ -100,7 +100,7 @@ if ($outage == null) {
 
 $mform->set_data($outage);
 
-$PAGE->navbar->add(get_string($action.'crumb', 'auth_outage'));
+$PAGE->navbar->add(get_string($action . 'crumb', 'auth_outage'));
 echo $output->header();
 echo $output->rendersubtitle($action);
 $mform->display();

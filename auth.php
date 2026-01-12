@@ -32,7 +32,7 @@ use auth_outage\local\outagelib;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/authlib.php');
+require_once($CFG->libdir . '/authlib.php');
 
 /**
  * auth_plugin_outage class.

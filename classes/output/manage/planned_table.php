@@ -21,7 +21,7 @@ use html_writer;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/tablelib.php');
+require_once($CFG->libdir . '/tablelib.php');
 
 /**
  * planned_table class.

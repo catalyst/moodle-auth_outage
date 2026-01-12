@@ -28,7 +28,7 @@ namespace auth_outage\form\outage;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__ . '/../../base_testcase.php');
 
 /**
  * forms_test test class.
@@ -127,8 +127,8 @@ class forms_test extends \auth_outage\base_testcase {
         }
 
         $this->mock_edit_post();
-        $_POST['title'] = 'This is a very long time, it is so long that at some point it should not be valid. '.
-                          'With a very long title used in this place we should get a form validation error. '.
+        $_POST['title'] = 'This is a very long time, it is so long that at some point it should not be valid. ' .
+                          'With a very long title used in this place we should get a form validation error. ' .
                           'Do you think this title is long enough?';
         $edit = new edit();
         self::assertNull($edit->get_data());
@@ -208,7 +208,7 @@ class forms_test extends \auth_outage\base_testcase {
         // The bugfix MDL-56250 in only applies to Moodle 30+.
         // Before that the form validation test is meaningless (results are cached), so skip it.
         if ($CFG->branch < 30) {
-            $this->markTestSkipped('Some tests can only run in Moodle 30+. '.$reason);
+            $this->markTestSkipped('Some tests can only run in Moodle 30+. ' . $reason);
             return true;
         }
 

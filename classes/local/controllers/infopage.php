@@ -114,7 +114,7 @@ class infopage {
             'admin' => is_siteadmin(),
             'outage' => $this->outage,
         ];
-        require($CFG->dirroot.'/auth/outage/views/info/content.php');
+        require($CFG->dirroot . '/auth/outage/views/info/content.php');
 
         // Moodle 2.7 did not check for CLI mode, which was fixed later.
         if (!($CFG->branch == '27' && CLI_SCRIPT)) {
@@ -133,7 +133,7 @@ class infopage {
         }
 
         if (!is_null($params['id']) && !is_null($params['outage']) && ($params['id'] !== $params['outage']->id)) {
-            throw new coding_exception('Provided id and outage->id do not match.', $params['id'].'/'.$params['outage']->id);
+            throw new coding_exception('Provided id and outage->id do not match.', $params['id'] . '/' . $params['outage']->id);
         }
 
         if (is_null($params['id']) && is_null($params['outage'])) {

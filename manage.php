@@ -27,8 +27,8 @@ use auth_outage\dml\outagedb;
 use auth_outage\output\renderer;
 use auth_outage\local\outagelib;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('auth_outage_manage');
 $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));

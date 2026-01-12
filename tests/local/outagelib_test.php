@@ -20,8 +20,8 @@ use auth_outage\dml\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->libdir.'/adminlib.php');
-require_once(__DIR__.'/../base_testcase.php');
+require_once($CFG->libdir . '/adminlib.php');
+require_once(__DIR__ . '/../base_testcase.php');
 
 /**
  * outagelib_test test class.
@@ -215,12 +215,12 @@ class outagelib_test extends \auth_outage\base_testcase {
         ];
         // Set config with values.
         foreach ($keys as $k) {
-            set_config($k, $k.'_value', 'auth_outage');
+            set_config($k, $k . '_value', 'auth_outage');
         }
         // Ensure it is not using any defaults.
         $config = outagelib::get_config();
         foreach ($keys as $k) {
-            self::assertSame($config->$k, $k.'_value', 'auth_outage');
+            self::assertSame($config->$k, $k . '_value', 'auth_outage');
         }
 
         set_config('allowedips_forced', 'allowedips_forced_value', 'auth_outage');
@@ -461,7 +461,7 @@ EOT;
             'stoptime' => 456,
             'accesskey' => '5678',
         ]);
-        $file = $CFG->dataroot.'/climaintenance.php';
+        $file = $CFG->dataroot . '/climaintenance.php';
         set_config($configkey, '127.0.0.1', 'auth_outage');
 
         outagelib::update_climaintenance_code($outage);
@@ -490,7 +490,7 @@ EOT;
             'stoptime' => 456,
             'accesskey' => null,
         ]);
-        $file = $CFG->dataroot.'/climaintenance.php';
+        $file = $CFG->dataroot . '/climaintenance.php';
         set_config('allowedips', '', 'auth_outage');
         set_config('allowedips_forced', '', 'auth_outage');
 
@@ -509,7 +509,7 @@ EOT;
      */
     public function test_createmaintenancephpcode_withoutoutage() {
         global $CFG;
-        $file = $CFG->dataroot.'/climaintenance.php';
+        $file = $CFG->dataroot . '/climaintenance.php';
 
         touch($file);
         outagelib::update_climaintenance_code(null);
@@ -530,7 +530,7 @@ EOT;
         $this->create_outage();
 
         // The method outagelib::prepare_next_outage() should have been called by save().
-        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+        foreach ([$CFG->dataroot . '/climaintenance.template.html', $CFG->dataroot . '/climaintenance.php'] as $file) {
             self::assertFileExists($file);
             unlink($file);
         }
@@ -548,7 +548,7 @@ EOT;
         set_config('s_auth_outage_allowedips', '127', 'auth_outage');
 
         // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
-        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+        foreach ([$CFG->dataroot . '/climaintenance.template.html', $CFG->dataroot . '/climaintenance.php'] as $file) {
             self::assertFileExists($file);
             unlink($file);
         }
@@ -566,7 +566,7 @@ EOT;
         set_config('s_auth_outage_remove_selectors', '.something', 'auth_outage');
 
         // The method outagelib::prepare_next_outage() should have been called from admin_write_settings().
-        foreach ([$CFG->dataroot.'/climaintenance.template.html', $CFG->dataroot.'/climaintenance.php'] as $file) {
+        foreach ([$CFG->dataroot . '/climaintenance.template.html', $CFG->dataroot . '/climaintenance.php'] as $file) {
             self::assertFileExists($file);
             unlink($file);
         }
@@ -596,9 +596,9 @@ EOT;
         // This file should not exist even if the statement above fails as Moodle does not create it immediately but test anyway.
         // Backwards compatibility with older PHPUnit - use old assertFile method.
         if (method_exists($this, 'assertFileDoesNotExist')) {
-            self::assertFileDoesNotExist($CFG->dataroot.'/climaintenance.html');
+            self::assertFileDoesNotExist($CFG->dataroot . '/climaintenance.html');
         } else {
-            self::assertFileNotExists($CFG->dataroot.'/climaintenance.html');
+            self::assertFileNotExists($CFG->dataroot . '/climaintenance.html');
         }
     }
 
@@ -744,8 +744,13 @@ EOT;
      * see https://github.com/sebastianbergmann/phpunit/issues/720#issuecomment-10421092
      * @runInSeparateProcess
      */
-    public function test_evaluation_maintenancepage(?string $allowedips, ?string $iptouse, ?string $accesskey,
-        ?string $accesskeytouse, array $expectedoutputs) {
+    public function test_evaluation_maintenancepage(
+        ?string $allowedips,
+        ?string $iptouse,
+        ?string $accesskey,
+        ?string $accesskeytouse,
+        array $expectedoutputs
+    ) {
 
         global $CFG, $_SERVER, $_GET;
 
@@ -766,7 +771,7 @@ EOT;
             set_config('allowedips', $allowedips, 'auth_outage');
         }
         // Ensure if the file exists we clean it (e.g. from a previous test run).
-        $file = $CFG->dataroot.'/climaintenance.php';
+        $file = $CFG->dataroot . '/climaintenance.php';
         if (file_exists($file)) {
             unlink($file);
         }

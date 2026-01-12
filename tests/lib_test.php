@@ -17,8 +17,8 @@
 namespace auth_outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/base_testcase.php');
-require_once(__DIR__.'/../lib.php');
+require_once(__DIR__ . '/base_testcase.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * tests for lib.php
@@ -35,11 +35,11 @@ class lib_test extends base_testcase {
      */
     public function test_auth_outage_get_climaintenance_resource_file_resolves_a_file() {
         global $CFG;
-        $dir = $CFG->dataroot.'/auth_outage/climaintenance';
+        $dir = $CFG->dataroot . '/auth_outage/climaintenance';
         mkdir($dir, 0777, true);
 
         // Create a file.
-        $expected = $dir.'/example.txt';
+        $expected = $dir . '/example.txt';
         file_put_contents($expected, 'Outage Unit Test Message');
 
         // Get that file.
@@ -59,13 +59,13 @@ class lib_test extends base_testcase {
         global $CFG;
 
         // Create a file.
-        $realdir = $CFG->dataroot.'/auth_outage/climaintenance_real';
+        $realdir = $CFG->dataroot . '/auth_outage/climaintenance_real';
         mkdir($realdir, 0777, true);
-        $realfile = $realdir.'/example.txt';
+        $realfile = $realdir . '/example.txt';
         file_put_contents($realfile, 'Outage Unit Test Message');
 
         // Create a symlink.
-        $symdir = $CFG->dataroot.'/auth_outage/climaintenance';
+        $symdir = $CFG->dataroot . '/auth_outage/climaintenance';
         if (!symlink($realdir, $symdir)) {
             unlink($realfile);
             rmdir($realdir);
@@ -90,15 +90,15 @@ class lib_test extends base_testcase {
     public function test_auth_outage_get_climaintenance_resource_file_prevent_path_traversal() {
         global $CFG;
 
-        $dir = $CFG->dataroot.'/auth_outage/climaintenance';
+        $dir = $CFG->dataroot . '/auth_outage/climaintenance';
         mkdir($dir, 0777, true);
 
         // Create a file.
-        $expected = $dir.'/example.txt';
+        $expected = $dir . '/example.txt';
         file_put_contents($expected, 'Outage Unit Test Message');
 
         // Create a sensitive file.
-        $sensitivefile = $CFG->dataroot.'/auth_outage/nuclear_silo_passwords.txt';
+        $sensitivefile = $CFG->dataroot . '/auth_outage/nuclear_silo_passwords.txt';
         file_put_contents($sensitivefile, 'The password to launch the ICBM: 123456');
 
         // Path Traversal Attack.

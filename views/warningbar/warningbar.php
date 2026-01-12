@@ -49,19 +49,25 @@ if (!$viewbag['static']) {
     if (is_siteadmin()) {
         $link = html_writer::link(
             new moodle_url('/auth/outage/finish.php', ['id' => $viewbag['outage']->id]),
-            $OUTPUT->pix_icon('t/check', get_string('finish', 'auth_outage'), 'moodle', array('class' => 'iconsmall')) . get_string('finish', 'auth_outage'),
+            $OUTPUT->pix_icon(
+                't/check',
+                get_string('finish', 'auth_outage'),
+                'moodle',
+                ['class' => 'iconsmall']
+            )
+                    . get_string('finish', 'auth_outage'),
             [
-                'title' => get_string('finish', 'auth_outage'),
-                'class' => 'auth_outage_warningbar_box_finish',
-            ]
+                    'title' => get_string('finish', 'auth_outage'),
+                    'class' => 'auth_outage_warningbar_box_finish',
+                    ]
         );
-        $title .= ' '.html_writer::span($link, '', ['id' => 'auth_outage_warningbar_button']);
+        $title .= ' ' . html_writer::span($link, '', ['id' => 'auth_outage_warningbar_button']);
     }
 }
 ?>
     <style>
         <?php
-            readfile($CFG->dirroot.'/auth/outage/views/warningbar/warningbar.css');
+            readfile($CFG->dirroot . '/auth/outage/views/warningbar/warningbar.css');
             echo outagelib::get_config()->css;
         ?>
     </style>
@@ -73,11 +79,11 @@ if (!$viewbag['static']) {
         </div>
     </div>
 
-<?php if (!$viewbag['static']): ?>
+<?php if (!$viewbag['static']) : ?>
     <script>
         document.body.className += ' auth_outage';
         <?php
-        require(__DIR__.'/warningbar.js');
+        require(__DIR__ . '/warningbar.js');
         $json = json_encode([
             'countdown' => $countdown,
             'ongoing' => $ongoing,
@@ -89,7 +95,7 @@ if (!$viewbag['static']) {
             'preview' => $viewbag['preview'],
             'checkfinishedurl' => (string)(new moodle_url('/auth/outage/checkfinished.php')),
         ]);
-        echo 'authOutageWarningBar.init('.$json.');';
+        echo 'authOutageWarningBar.init(' . $json . ');';
         ?>
     </script>
 <?php endif;

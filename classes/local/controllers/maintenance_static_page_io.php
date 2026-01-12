@@ -61,7 +61,7 @@ class maintenance_static_page_io {
         }
 
         if ($result['contents'] === false) {
-            debugging('Cannot fetch: '.$file);
+            debugging('Cannot fetch: ' . $file);
             $result = ['contents' => '', 'mime' => 'unknown'];
         }
         return $result;
@@ -85,9 +85,9 @@ class maintenance_static_page_io {
     public function get_template_file() {
         global $CFG;
         if ($this->preview) {
-            return $this->get_resources_folder().'/climaintenance.html';
+            return $this->get_resources_folder() . '/climaintenance.html';
         } else {
-            return $CFG->dataroot.'/climaintenance.template.html';
+            return $CFG->dataroot . '/climaintenance.template.html';
         }
     }
 
@@ -102,10 +102,10 @@ class maintenance_static_page_io {
         global $CFG;
 
         // If you change the path, also change file auth/outage/bootstrap.php as it does not use this reference.
-        $dir = $CFG->dataroot.'/auth_outage/climaintenance';
+        $dir = $CFG->dataroot . '/auth_outage/climaintenance';
 
         if ($this->preview) {
-            $dir = $dir.'/preview';
+            $dir = $dir . '/preview';
         }
         return $dir;
     }
@@ -155,18 +155,18 @@ class maintenance_static_page_io {
         $dir = realpath($dir);
         $safedir = $this->get_resources_folder();
         if (substr($dir, 0, strlen($safedir)) !== $safedir) {
-            throw new invalid_parameter_exception('Unsafe to delete: '.$dir);
+            throw new invalid_parameter_exception('Unsafe to delete: ' . $dir);
         }
 
         if (!is_dir($dir)) {
-            throw new coding_exception('Not a directory: '.$dir);
+            throw new coding_exception('Not a directory: ' . $dir);
         }
         $files = scandir($dir);
         foreach ($files as $file) {
             if (($file == '.') || ($file == '..')) {
                 continue;
             }
-            $file = $dir.'/'.$file;
+            $file = $dir . '/' . $file;
             if (is_file($file)) {
                 unlink($file);
                 continue;
@@ -175,7 +175,7 @@ class maintenance_static_page_io {
                 $this->delete_directory_recursively($file);
                 continue;
             }
-            throw new coding_exception('Not a file or directory: '.$file);
+            throw new coding_exception('Not a file or directory: ' . $file);
         }
         rmdir($dir);
     }
@@ -211,7 +211,7 @@ class maintenance_static_page_io {
         global $CFG;
 
         if (!self::is_url($url)) {
-            debugging('Found a relative url ('.$url.') -- is it using moodle_url()?');
+            debugging('Found a relative url (' . $url . ') -- is it using moodle_url()?');
             return null; // Leave hardcoded URLs as it is.
         }
 
@@ -227,12 +227,12 @@ class maintenance_static_page_io {
         $data = self::file_get_data($url);
 
         $mime = trim(base64_encode($data['mime']), '=');
-        $url = sha1($data['contents']).'.'.$mime;
-        $filepath = $this->get_resources_folder().'/'.$url;
+        $url = sha1($data['contents']) . '.' . $mime;
+        $filepath = $this->get_resources_folder() . '/' . $url;
         file_put_contents($filepath, $data['contents']);
 
         if ($this->preview) {
-            $url = 'preview/'.$url;
+            $url = 'preview/' . $url;
         }
 
         return ['file' => $filepath, 'url' => $url];

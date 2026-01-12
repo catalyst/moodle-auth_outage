@@ -27,9 +27,9 @@ use auth_outage\dml\outagedb;
 use auth_outage\form\outage\delete;
 use auth_outage\output\renderer;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 admin_externalpage_setup('auth_outage_manage');
 $PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
@@ -46,7 +46,7 @@ if ($mform->is_cancelled()) {
 $id = required_param('id', PARAM_INT);
 $outage = outagedb::get_by_id($id);
 if ($outage == null) {
-    throw new invalid_parameter_exception('Outage #'.$id.' not found.');
+    throw new invalid_parameter_exception('Outage #' . $id . ' not found.');
 }
 
 $dataid = new stdClass();

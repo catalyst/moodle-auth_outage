@@ -26,7 +26,7 @@
 namespace auth_outage\local\cli;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../base_testcase.php');
+require_once(__DIR__ . '/../../base_testcase.php');
 
 /**
  * cli_testcase class.

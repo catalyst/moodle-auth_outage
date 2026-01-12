@@ -19,7 +19,7 @@ namespace auth_outage\output\manage;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/tablelib.php');
+require_once($CFG->libdir . '/tablelib.php');
 
 /**
  * history_table class.
@@ -45,8 +45,7 @@ class history_table extends base_table {
                 get_string('tableheaderdurationactual', 'auth_outage'),
                 get_string('tableheadertitle', 'auth_outage'),
                 get_string('actions'),
-            ]
-        );
+            ]);
 
         $this->setup();
     }

@@ -28,7 +28,6 @@ use core\hook\output\before_standard_top_of_body_html_generation;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_callbacks {
-
     /**
      * Inject the warning bar into the page if there is currently an outage.
      *

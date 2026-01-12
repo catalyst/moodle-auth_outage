@@ -41,15 +41,17 @@ defined('MOODLE_INTERNAL') || die();
     </div>
     <div class="auth_outage_info_description"><?php echo $viewbag['outage']->get_description(); ?></div>
 
-    <?php if ($viewbag['admin']): ?>
+    <?php if ($viewbag['admin']) : ?>
         <?php
         $adminlinks = [];
-        foreach ([
+        foreach (
+            [
             'startofwarning' => -$viewbag['outage']->get_warning_duration(),
             '15secondsbefore' => -15,
             'start' => 0,
             'endofoutage' => $viewbag['outage']->get_duration_planned() - 1,
-        ] as $title => $delta) {
+            ] as $title => $delta
+        ) {
             $adminlinks[] = html_writer::link(
                 new moodle_url(
                     '/auth/outage/info.php',
@@ -59,7 +61,7 @@ defined('MOODLE_INTERNAL') || die();
                         'auth_outage_delta' => $delta,
                     ]
                 ),
-                get_string('info'.$title, 'auth_outage')
+                get_string('info' . $title, 'auth_outage')
             );
         }
         $adminlinks[] = html_writer::link(

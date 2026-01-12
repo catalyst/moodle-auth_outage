@@ -28,8 +28,8 @@ use auth_outage\local\cli\create;
 use auth_outage\local\outagelib;
 
 define('CLI_SCRIPT', true);
-require_once(__DIR__.'/../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
 
 try {
     $cli = new create();

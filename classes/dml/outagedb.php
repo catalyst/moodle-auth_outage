@@ -26,7 +26,7 @@ use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/calendar/lib.php');
+require_once($CFG->dirroot . '/calendar/lib.php');
 
 /**
  * outagedb class.
@@ -118,7 +118,6 @@ class outagedb {
             // Create calendar entry.
             calendar::create($outage);
         } else {
-
             $other = (array) $outage;
             $other['title'] = $outage->get_title();
             $event = outage_updated::create([
@@ -208,8 +207,10 @@ class outagedb {
             $outagecache = new outage(json_decode($outageinfo));
         }
 
-        if ($outagecache && $outagecache->warntime <= $time && $outagecache->stoptime >= $time
-            && (!$outagecache->finished || $outagecache->finished >= $time)) {
+        if (
+            $outagecache && $outagecache->warntime <= $time && $outagecache->stoptime >= $time
+            && (!$outagecache->finished || $outagecache->finished >= $time)
+        ) {
             return  $outagecache;
         }
         return null;
@@ -238,7 +239,8 @@ class outagedb {
             ':datetime1 < stoptime AND (finished IS NULL OR :datetime2 < finished)',
             ['datetime1' => $time, 'datetime2' => $time],
             'starttime ASC, stoptime DESC, title ASC',
-            '*');
+            '*'
+        );
         foreach ($rs as $r) {
             $outages[] = new outage($r);
         }
@@ -270,7 +272,8 @@ class outagedb {
             'NOT (:datetime1 < stoptime AND (finished IS NULL OR :datetime2 < finished))',
             ['datetime1' => $time, 'datetime2' => $time],
             'stoptime DESC, starttime DESC, title ASC',
-            '*');
+            '*'
+        );
         foreach ($rs as $r) {
             $outages[] = new outage($r);
         }
@@ -295,12 +298,12 @@ class outagedb {
 
         $outage = self::get_by_id($id);
         if (is_null($outage)) {
-            debugging('Cannot finish outage #'.$id.': outage not found.');
+            debugging('Cannot finish outage #' . $id . ': outage not found.');
             return;
         }
 
         if (!$outage->is_ongoing($time)) {
-            debugging('Cannot finish outage #'.$id.': outage not ongoing.');
+            debugging('Cannot finish outage #' . $id . ': outage not ongoing.');
             return;
         }
 

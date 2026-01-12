@@ -46,7 +46,7 @@ abstract class clibase {
      */
     public function __construct(?array $options = null) {
         global $CFG;
-        require_once($CFG->libdir.'/clilib.php');
+        require_once($CFG->libdir . '/clilib.php');
 
         $warning = outagelib::generate_plugin_configuration_warning();
         if ($warning) {
@@ -57,11 +57,13 @@ abstract class clibase {
 
         if (is_null($options)) {
             // Using Moodle CLI API to read the parameters.
-            list($options, $unrecognized) = cli_get_params($this->generate_options(), $this->generate_shortcuts());
+            [$options, $unrecognized] = cli_get_params($this->generate_options(), $this->generate_shortcuts());
             if ($unrecognized) {
                 $unrecognized = implode("\n  ", $unrecognized);
-                throw new cli_exception(get_string('cliunknowoption', 'admin', $unrecognized),
-                    cli_exception::ERROR_PARAMETER_UNKNOWN);
+                throw new cli_exception(
+                    get_string('cliunknowoption', 'admin', $unrecognized),
+                    cli_exception::ERROR_PARAMETER_UNKNOWN
+                );
             }
         } else {
             // If not using Moodle CLI API to read parameters, ensure all keys exist.
@@ -129,13 +131,13 @@ abstract class clibase {
         $options = $this->generate_options();
         $shorts = array_flip($this->generate_shortcuts());
 
-        printf("%s\n\n", get_string('cli'.$cliname.'help', 'auth_outage'));
+        printf("%s\n\n", get_string('cli' . $cliname . 'help', 'auth_outage'));
         foreach (array_keys($options) as $long) {
-            $text = get_string('cli'.$cliname.'param'.$long, 'auth_outage');
-            $short = isset($shorts[$long]) ? ('-'.$shorts[$long].',') : '';
-            $long = '--'.$long;
+            $text = get_string('cli' . $cliname . 'param' . $long, 'auth_outage');
+            $short = isset($shorts[$long]) ? ('-' . $shorts[$long] . ',') : '';
+            $long = '--' . $long;
             printf("  %-4s %-20s %s\n", $short, $long, $text);
         }
-        printf("\n%s\n\n", get_string('cli'.$cliname.'examples', 'auth_outage'));
+        printf("\n%s\n\n", get_string('cli' . $cliname . 'examples', 'auth_outage'));
     }
 }

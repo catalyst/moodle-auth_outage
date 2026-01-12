@@ -29,7 +29,7 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/cli_testcase.php');
+require_once(__DIR__ . '/cli_testcase.php');
 
 /**
  * create_test test class.
@@ -255,7 +255,7 @@ class create_test extends cli_testcase {
         $this->set_parameters([
             '--onlyid',
             '--start=60',
-            '--clone='.$id,
+            '--clone=' . $id,
         ]);
         $cli = new create();
         $cli->set_referencetime($now);

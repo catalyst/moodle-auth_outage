@@ -27,8 +27,8 @@ use auth_outage\local\cli\cli_exception;
 use auth_outage\local\cli\finish;
 
 define('CLI_SCRIPT', true);
-require_once(__DIR__.'/../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
 
 try {
     $cli = new finish();
@@ -36,4 +36,3 @@ try {
 } catch (cli_exception $e) {
     cli_error($e->getMessage());
 }
-

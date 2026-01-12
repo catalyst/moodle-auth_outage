@@ -48,7 +48,6 @@ function xmldb_auth_outage_upgrade($oldversion) {
     }
 
     if ($oldversion < 2024081900) {
-
         // Define field accesskey to be added to auth_outage.
         $table = new xmldb_table('auth_outage');
         $field = new xmldb_field('accesskey', XMLDB_TYPE_CHAR, '16', null, null, null, null, 'finished');

@@ -22,7 +22,7 @@ use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * edit class.
@@ -64,7 +64,7 @@ class edit extends moodleform {
             'text',
             'title',
             get_string('title', 'auth_outage'),
-            'maxlength="'.self::TITLE_MAX_CHARS.'" size="60"'
+            'maxlength="' . self::TITLE_MAX_CHARS . '" size="60"'
         );
         $mform->setType('title', PARAM_TEXT);
         $mform->addHelpButton('title', 'title', 'auth_outage');
@@ -75,8 +75,13 @@ class edit extends moodleform {
         $mform->addElement('static', 'usagehints', '', get_string('textplaceholdershint', 'auth_outage'));
         $mform->addElement('static', 'warningreenablemaintenancemode', '');
 
-        $mform->addElement('advcheckbox', 'useaccesskey', get_string('useaccesskey', 'auth_outage'),
-            get_string('useaccesskey:desc', 'auth_outage'), 0);
+        $mform->addElement(
+            'advcheckbox',
+            'useaccesskey',
+            get_string('useaccesskey', 'auth_outage'),
+            get_string('useaccesskey:desc', 'auth_outage'),
+            0
+        );
 
         $mform->addElement('text', 'accesskey', get_string('accesskey', 'auth_outage'));
         $mform->setType('accesskey', PARAM_TEXT);
@@ -125,7 +130,7 @@ class edit extends moodleform {
             return null;
         }
         if ($data->description['format'] != '1') {
-            debugging('Not implemented for format '.$data->description['format'], DEBUG_DEVELOPER);
+            debugging('Not implemented for format ' . $data->description['format'], DEBUG_DEVELOPER);
             return null;
         }
         $outagedata = [
@@ -165,8 +170,10 @@ class edit extends moodleform {
             ]);
 
             // If the default_autostart is configured in config, then force autostart to be the default value.
-            if (array_key_exists('auth_outage', $CFG->forced_plugin_settings)
-                && array_key_exists('default_autostart', $CFG->forced_plugin_settings['auth_outage'])) {
+            if (
+                array_key_exists('auth_outage', $CFG->forced_plugin_settings)
+                && array_key_exists('default_autostart', $CFG->forced_plugin_settings['auth_outage'])
+            ) {
                 $this->_form->setDefaults([
                     'autostart' => $CFG->forced_plugin_settings['auth_outage']['default_autostart'],
                 ]);
@@ -175,8 +182,10 @@ class edit extends moodleform {
 
             if (!empty($outage->id) && $outage->autostart && $outage->starttime < time() && $outage->stoptime > time()) {
                 $warning = $mform->getElement('warningreenablemaintenancemode');
-                $warning->setValue($OUTPUT->notification(get_string('warningreenablemaintenancemode', 'auth_outage'),
-                    'notifywarning'));
+                $warning->setValue($OUTPUT->notification(
+                    get_string('warningreenablemaintenancemode', 'auth_outage'),
+                    'notifywarning'
+                ));
             }
         } else {
             throw new coding_exception('$outage must be an outage object.', $outage);

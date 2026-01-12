@@ -17,7 +17,7 @@
 namespace auth_outage\local;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../base_testcase.php');
+require_once(__DIR__ . '/../base_testcase.php');
 
 /**
  * outage_test test class.

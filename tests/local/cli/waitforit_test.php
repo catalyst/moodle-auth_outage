@@ -29,7 +29,7 @@ use auth_outage\dml\outagedb;
 use auth_outage\local\outage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/cli_testcase.php');
+require_once(__DIR__ . '/cli_testcase.php');
 
 /**
  * waitforit_test test class.
@@ -127,7 +127,7 @@ class waitforit_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id='.$id]);
+        $this->set_parameters(['-id=' . $id]);
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_INVALID);

@@ -1,4 +1,4 @@
-[![ci](https://github.com/catalyst/moodle-auth_outage/actions/workflows/ci.yml/badge.svg?branch=MOODLE_39_STABLE)](https://github.com/catalyst/moodle-auth_outage/actions/workflows/ci.yml?branch=MOODLE_39_STABLE)
+[![ci](https://github.com/catalyst/moodle-auth_outage/actions/workflows/ci.yml/badge.svg?branch=MOODLE_501_STABLE)](https://github.com/catalyst/moodle-auth_outage/actions/workflows/ci.yml?branch=MOODLE_501_STABLE)
 
 # Moodle Outage manager plugin
 - [Moodle Outage manager plugin](#moodle-outage-manager-plugin)
@@ -42,10 +42,10 @@ need to manually add one extra plugin, please check:
 
 Moodle supported branches
 --------
-| Version     |  Branch           | PHP  |
-| ------------------ |  ---------------- | ---- |
-| Moodle 3.9+        |  MOODLE_39_STABLE | 7.2+ |
-| Moodle 5.1         |  MOODLE_501_STABLE | 8.2 |
+| Version      | Branch              | PHP  |
+|--------------|---------------------|------|
+| Moodle 5.1   | MOODLE_501_STABLE   | 8.2  |
+| Moodle 3.9+  | MOODLE_39_STABLE    | 7.2+ |
 
 Totara supported branches
 --------

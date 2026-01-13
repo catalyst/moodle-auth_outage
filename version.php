@@ -33,3 +33,4 @@ $plugin->release = 2024081900;                  // Human-readable release inform
 $plugin->requires = 2017111309;                 // 2017111309 = T13, but this really requires 3.9 and higher.
 $plugin->maturity = MATURITY_STABLE;            // Suitable for PRODUCTION environments!
 $plugin->supported = [39, 405];                 // A range of branch numbers of supported moodle versions.
+$plugin->incompatible = 501;

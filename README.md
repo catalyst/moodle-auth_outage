@@ -42,9 +42,9 @@ need to manually add one extra plugin, please check:
 
 Moodle supported branches
 --------
-| Version     |  Branch           | PHP  |
-| ------------------ |  ---------------- | ---- |
-| Moodle 3.9+        |  MOODLE_39_STABLE | 7.2+ |
+| Version     | Branch            | PHP  |
+|-------------|-------------------|------|
+| Moodle 3.9+ | MOODLE_39_STABLE  | 7.2+ |
 
 Totara supported branches
 --------

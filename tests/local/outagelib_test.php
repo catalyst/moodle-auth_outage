@@ -32,11 +32,11 @@ require_once(__DIR__ . '/../base_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\outagelib
  */
-class outagelib_test extends \auth_outage\base_testcase {
+final class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if maintenance message is disabled as needed.
      */
-    public function test_maintenancemessage() {
+    public function test_maintenancemessage(): void {
         $this->resetAfterTest(true);
         static::setAdminUser();
 
@@ -64,7 +64,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if maintenance later is removed if no outage set.
      */
-    public function test_maintenancelater_nonext() {
+    public function test_maintenancelater_nonext(): void {
         $this->resetAfterTest(true);
         set_config('maintenance_later', time() + (60 * 60 * 24 * 7)); // In 1 week.
         self::assertNotEmpty(get_config('moodle', 'maintenance_later'));
@@ -75,7 +75,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check outagelib::inject() works as expected.
      */
-    public function test_inject() {
+    public function test_inject(): void {
         global $OUTPUT;
 
         $this->resetAfterTest(true);
@@ -111,7 +111,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check outagelib::inject() will not break the page if something goes wrong.
      */
-    public function test_inject_broken() {
+    public function test_inject_broken(): void {
         $_GET = ['auth_outage_break_code' => '1'];
         outagelib::reset_injectcalled();
         $header = outagelib::get_inject_code();
@@ -122,7 +122,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if injection works with preview.
      */
-    public function test_inject_preview() {
+    public function test_inject_preview(): void {
         global $CFG;
         $this->resetAfterTest(true);
         self::setAdminUser();
@@ -152,7 +152,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if injection works with invalid preview without stopping the page.
      */
-    public function test_inject_preview_notfound() {
+    public function test_inject_preview_notfound(): void {
         global $CFG;
 
         $_GET = ['auth_outage_preview' => '1'];
@@ -165,7 +165,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Test injection with preview and delta.
      */
-    public function test_inject_preview_withdelta() {
+    public function test_inject_preview_withdelta(): void {
         global $CFG;
         $this->resetAfterTest(true);
         self::setAdminUser();
@@ -193,7 +193,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Test injection without active outage.
      */
-    public function test_inject_noactive() {
+    public function test_inject_noactive(): void {
         outagelib::reset_injectcalled();
         outagelib::get_inject_code();
     }
@@ -201,7 +201,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if get config works without getting defaults.
      */
-    public function test_get_config() {
+    public function test_get_config(): void {
         $this->resetAfterTest(true);
         $keys = [
             'css',
@@ -231,7 +231,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check that config has key.
      */
-    public function test_config_keys() {
+    public function test_config_keys(): void {
         $this->resetAfterTest(true);
         $keys = [
             'allowedips',
@@ -252,7 +252,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if get config works getting defaults when needed.
      */
-    public function test_get_config_invalid() {
+    public function test_get_config_invalid(): void {
         $this->resetAfterTest(true);
         // Set config with invalid values.
         set_config('allowedips', " \n", 'auth_outage');
@@ -274,7 +274,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Check if outagelib::inject() does not inject on admin/settings.php?section=additionalhtml
      */
-    public function test_inject_settings() {
+    public function test_inject_settings(): void {
         global $CFG;
 
         $this->resetAfterTest(true);
@@ -307,7 +307,7 @@ class outagelib_test extends \auth_outage\base_testcase {
     /**
      * Test create maintenance php code
      */
-    public function test_createmaintenancephpcode() {
+    public function test_createmaintenancephpcode(): void {
         global $CFG;
         $CFG->cookiehttponly = false;
 
@@ -387,7 +387,7 @@ EOT;
      * @param string $configkey The key of the config.
      * @dataProvider createmaintenancephpcode_withoutage_provider
      */
-    public function test_createmaintenancephpcode_withoutage($configkey) {
+    public function test_createmaintenancephpcode_withoutage($configkey): void {
         global $CFG;
         $this->resetAfterTest(true);
         $CFG->cookiehttponly = false;
@@ -481,7 +481,7 @@ EOT;
     /**
      * Test create maintenance php code without IPs or accesskey
      */
-    public function test_createmaintenancephpcode_withoutips_or_accesskey() {
+    public function test_createmaintenancephpcode_withoutips_or_accesskey(): void {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -507,7 +507,7 @@ EOT;
     /**
      * Test create maintenance php code without outage
      */
-    public function test_createmaintenancephpcode_withoutoutage() {
+    public function test_createmaintenancephpcode_withoutoutage(): void {
         global $CFG;
         $file = $CFG->dataroot . '/climaintenance.php';
 
@@ -524,7 +524,7 @@ EOT;
     /**
      * Related to Issue #70: Creating ongoing outage does not trigger maintenance file creation.
      */
-    public function test_preparenextoutage_notautostart() {
+    public function test_preparenextoutage_notautostart(): void {
         global $CFG;
 
         $this->create_outage();
@@ -539,7 +539,7 @@ EOT;
     /**
      * Regression Test - Issue #82: When changing the IP address list it should recreate the maintenance files.
      */
-    public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates() {
+    public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates(): void {
         global $CFG;
 
         $this->create_outage();
@@ -557,7 +557,7 @@ EOT;
     /**
      * Problem detected while solving Issue #82.
      */
-    public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates() {
+    public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates(): void {
         global $CFG;
 
         $this->create_outage();
@@ -575,7 +575,7 @@ EOT;
     /**
      * Related to Issue #72: IP Block still triggers cli maintenance mode even without autostart.
      */
-    public function test_preparenextoutage_noautostarttrigger() {
+    public function test_preparenextoutage_noautostarttrigger(): void {
         global $CFG;
 
         $this->resetAfterTest(true);
@@ -605,7 +605,7 @@ EOT;
     /**
      * Regression test for issue #85.
      */
-    public function test_it_can_inject_in_settings_if_not_additional_html() {
+    public function test_it_can_inject_in_settings_if_not_additional_html(): void {
         global $CFG;
 
         $this->resetAfterTest(true);
@@ -750,7 +750,7 @@ EOT;
         ?string $accesskey,
         ?string $accesskeytouse,
         array $expectedoutputs
-    ) {
+    ): void {
 
         global $CFG, $_SERVER, $_GET;
 

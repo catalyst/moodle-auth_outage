@@ -39,7 +39,7 @@ require_once(__DIR__ . '/../base_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\dml\outagedb
  */
-class outagedb_test extends \auth_outage\base_testcase {
+final class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Creates an array of ids in from the given outages array.
      * @param outage[] $outages An array of outages.
@@ -88,7 +88,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Make sure we can save and update.
      */
-    public function test_save() {
+    public function test_save(): void {
         $this->resetAfterTest(true);
         // Save new outage.
         $id = outagedb::save($this->createoutage(1));
@@ -101,7 +101,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Create a few outages, fetch them and check if fields match.
      */
-    public function test_saved_fields() {
+    public function test_saved_fields(): void {
         $this->resetAfterTest(true);
         for ($i = 0; $i < 4; $i++) {
             $expected = $this->createoutage($i);
@@ -119,7 +119,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Make sure we can get existing entries and null if not found.
      */
-    public function test_getbyid() {
+    public function test_getbyid(): void {
         $this->resetAfterTest(true);
         // Create something.
         $id = outagedb::save($this->createoutage(1));
@@ -136,7 +136,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Make sure we can delete stuff.
      */
-    public function test_delete() {
+    public function test_delete(): void {
         $this->resetAfterTest(true);
         // Create something.
         $id = outagedb::save($this->createoutage(1));
@@ -149,7 +149,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Make sure we can finish outages.
      */
-    public function test_finish() {
+    public function test_finish(): void {
         $now = time();
         $this->resetAfterTest(true);
         // Create it.
@@ -169,7 +169,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Make sure getall brings all entries.
      */
-    public function test_getall() {
+    public function test_getall(): void {
         $this->resetAfterTest(true);
         $amount = 10;
         // Should start empty.
@@ -186,7 +186,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Perform some tests on the data itself, checking values after inserted and updated.
      */
-    public function test_basiccrud() {
+    public function test_basiccrud(): void {
         $this->resetAfterTest(true);
 
         // Create some outages.
@@ -228,7 +228,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_active() method.
      */
-    public function test_getactive() {
+    public function test_getactive(): void {
         $this->resetAfterTest(true);
 
         // Have a consistent time for now (no seconds variation), helps debugging.
@@ -288,7 +288,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_all_unended() method.
      */
-    public function test_getallunended() {
+    public function test_getallunended(): void {
         $this->resetAfterTest(true);
 
         // Have a consistent time for now (no seconds variation), helps debugging.
@@ -363,7 +363,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_all_ended() method.
      */
-    public function test_getallended() {
+    public function test_getallended(): void {
         $this->resetAfterTest(true);
 
         // Have a consistent time for now (no seconds variation), helps debugging.
@@ -413,7 +413,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_by_id() with an invalid parameter.
      */
-    public function test_getbyid_invalid() {
+    public function test_getbyid_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_by_id(-1);
@@ -422,7 +422,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::delete() with an invalid parameter.
      */
-    public function test_delete_invalid() {
+    public function test_delete_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::delete(-1);
@@ -431,7 +431,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_active() with an invalid parameter.
      */
-    public function test_getactive_invalid() {
+    public function test_getactive_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_active(-1);
@@ -440,7 +440,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_all_unended() with an invalid parameter.
      */
-    public function test_getallunended_invalid() {
+    public function test_getallunended_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_all_unended(-1);
@@ -449,7 +449,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Checks we can execute outagedb::get_all_unended() without parameters (now).
      */
-    public function test_getallunended_now() {
+    public function test_getallunended_now(): void {
         $this->resetAfterTest(true);
         self::assertEmpty(outagedb::get_all_unended());
     }
@@ -457,7 +457,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_all_ended() with an invalid parameter.
      */
-    public function test_getallended_invalid() {
+    public function test_getallended_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_all_ended(-1);
@@ -466,7 +466,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Checks we can execute outagedb::test_getallended_now() without parameters (now).
      */
-    public function test_getallended_now() {
+    public function test_getallended_now(): void {
         $this->resetAfterTest(true);
         self::assertEmpty(outagedb::get_all_ended());
     }
@@ -474,7 +474,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::finish() with an invalid parameter.
      */
-    public function test_finish_invalid() {
+    public function test_finish_invalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::finish(1, -1);
@@ -483,7 +483,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::finish() with a non existing outage.
      */
-    public function test_finish_now_notfound() {
+    public function test_finish_now_notfound(): void {
         $this->resetAfterTest(true);
         outagedb::finish(1);
         self::assertCount(1, $this->getDebuggingMessages());
@@ -493,7 +493,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Try to finish not ongoing outages.
      */
-    public function test_finish_notongoing() {
+    public function test_finish_notongoing(): void {
         $this->resetAfterTest(true);
         $time = time();
         $outage = new outage([
@@ -515,7 +515,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_next_starting() with an invalid parameter.
      */
-    public function test_getnextstartinginvalid() {
+    public function test_getnextstartinginvalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_next_starting(-1);
@@ -524,7 +524,7 @@ class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Tests the outagedb::get_next_autostarting() with an invalid parameter.
      */
-    public function test_getnextautostartinginvalid() {
+    public function test_getnextautostartinginvalid(): void {
         $this->resetAfterTest(true);
         $this->set_expected_exception('coding_exception');
         outagedb::get_next_autostarting(-1);

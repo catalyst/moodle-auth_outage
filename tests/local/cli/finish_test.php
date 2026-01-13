@@ -40,11 +40,11 @@ require_once(__DIR__ . '/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\finish
  */
-class finish_test extends cli_testcase {
+final class finish_test extends cli_testcase {
     /**
      * Tests the constructor.
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         $cli = new finish();
         self::assertNotNull($cli);
     }
@@ -52,7 +52,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests the generated options and shortcuts.
      */
-    public function test_options() {
+    public function test_options(): void {
         $cli = new finish();
 
         $options = $cli->generate_options();
@@ -69,7 +69,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests the help.
      */
-    public function test_help() {
+    public function test_help(): void {
         $this->set_parameters(['--help']);
         $cli = new finish();
         $text = $this->execute($cli);
@@ -80,7 +80,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests if running without arguments.
      */
-    public function test_noarguments() {
+    public function test_noarguments(): void {
         $cli = new finish();
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_MISSING);
         $this->execute($cli);
@@ -89,7 +89,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests finishing an already ended outage.
      */
-    public function test_endedoutage() {
+    public function test_endedoutage(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
@@ -110,7 +110,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests finishing an outage.
      */
-    public function test_finish() {
+    public function test_finish(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
@@ -130,7 +130,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests finishing an active outage when it does not exists.
      */
-    public function test_activenotfound() {
+    public function test_activenotfound(): void {
         self::setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
@@ -141,7 +141,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests providing an invalid outage id.
      */
-    public function test_invalidid() {
+    public function test_invalidid(): void {
         self::setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
@@ -152,7 +152,7 @@ class finish_test extends cli_testcase {
     /**
      * Tests when the outage is not found.
      */
-    public function test_idnotfound() {
+    public function test_idnotfound(): void {
         self::setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();

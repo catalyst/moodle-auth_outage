@@ -29,11 +29,11 @@ require_once(__DIR__ . '/../lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     ::auth_outage_get_climaintenance_resource_file
  */
-class lib_test extends base_testcase {
+final class lib_test extends base_testcase {
     /**
      * Test this plugin gets climaintenance resource file.
      */
-    public function test_auth_outage_get_climaintenance_resource_file_resolves_a_file() {
+    public function test_auth_outage_get_climaintenance_resource_file_resolves_a_file(): void {
         global $CFG;
         $dir = $CFG->dataroot . '/auth_outage/climaintenance';
         mkdir($dir, 0777, true);
@@ -55,7 +55,7 @@ class lib_test extends base_testcase {
     /**
      * Regression test for issue #104.
      */
-    public function test_auth_outage_get_climaintenance_resource_file_resolves_a_file_with_symlink() {
+    public function test_auth_outage_get_climaintenance_resource_file_resolves_a_file_with_symlink(): void {
         global $CFG;
 
         // Create a file.
@@ -87,7 +87,7 @@ class lib_test extends base_testcase {
     /**
      * Test this plugin gets climaintenance resource file and prevents path traversal attack.
      */
-    public function test_auth_outage_get_climaintenance_resource_file_prevent_path_traversal() {
+    public function test_auth_outage_get_climaintenance_resource_file_prevent_path_traversal(): void {
         global $CFG;
 
         $dir = $CFG->dataroot . '/auth_outage/climaintenance';

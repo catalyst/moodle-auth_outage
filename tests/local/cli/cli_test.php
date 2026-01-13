@@ -37,11 +37,11 @@ require_once(__DIR__ . '/cli_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\create
  */
-class cli_test extends cli_testcase {
+final class cli_test extends cli_testcase {
     /**
      * Tests providing an unknown parameter.
      */
-    public function test_invalidargumentparam() {
+    public function test_invalidargumentparam(): void {
         $this->set_parameters(['--aninvalidparameter']);
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_UNKNOWN);
         new create();
@@ -50,7 +50,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests providing another unknow parameter (without --).
      */
-    public function test_invalidargumentgiven() {
+    public function test_invalidargumentgiven(): void {
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_UNKNOWN);
         new create(['anotherinvalidparameter']);
     }
@@ -58,7 +58,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests setting reference times.
      */
-    public function test_setreferencetime() {
+    public function test_setreferencetime(): void {
         $cli = new create(['start' => 0]);
         $cli->set_referencetime(1);
         $cli->set_referencetime(60 * 60 * 24 * 7);
@@ -67,7 +67,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests setting an invalid reference time.
      */
-    public function test_setreferencetime_invalid() {
+    public function test_setreferencetime_invalid(): void {
         $this->set_parameters(['--start=60']);
         $cli = new create();
         $this->set_expected_exception('coding_exception');
@@ -77,7 +77,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests the help.
      */
-    public function test_help() {
+    public function test_help(): void {
         $this->set_parameters(['-h']);
         $cli = new create();
         $output = $this->execute($cli);
@@ -88,7 +88,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests the cli_exception.
      */
-    public function test_exception() {
+    public function test_exception(): void {
         $this->set_expected_cli_exception(cli_exception::ERROR_UNDEFINED);
         throw new cli_exception('An CLI exception.');
     }
@@ -96,7 +96,7 @@ class cli_test extends cli_testcase {
     /**
      * Tests with the auth_outage plugin disabled.
      */
-    public function test_authdisabled() {
+    public function test_authdisabled(): void {
         // Disable all auth plugins.
         set_config('auth', '');
         \core\session\manager::gc(); // Remove stale sessions.

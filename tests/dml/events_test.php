@@ -39,7 +39,7 @@ use auth_outage\local\outage;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\dml\outagedb
  */
-class events_test extends \advanced_testcase {
+final class events_test extends \advanced_testcase {
     /**
      * @var outage|null Outage used in the tests.
      */
@@ -54,7 +54,7 @@ class events_test extends \advanced_testcase {
      * Saves an outage and check if the event was created.
      * @return array With the outage id and the event id.
      */
-    public function test_save() {
+    public function test_save(): void {
         global $DB;
         self::setAdminUser();
         $this->resetAfterTest(true);
@@ -86,7 +86,7 @@ class events_test extends \advanced_testcase {
     /**
      * Updates an outage and checks if the event was updated.
      */
-    public function test_update() {
+    public function test_update(): void {
         global $DB;
 
         self::setAdminUser();
@@ -124,7 +124,7 @@ class events_test extends \advanced_testcase {
     /**
      * Deletes an outage and checks if the event was deleted.
      */
-    public function test_delete() {
+    public function test_delete(): void {
         global $DB;
 
         self::setAdminUser();

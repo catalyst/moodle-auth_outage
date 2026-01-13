@@ -28,11 +28,11 @@ require_once(__DIR__ . '/../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\outage
  */
-class outage_test extends \auth_outage\base_testcase {
+final class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests the constructor.
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         $outage = new outage();
         // Very important, this should never change.
         self::assertNull($outage->id, 'New empty outage can never have an id set.');
@@ -45,7 +45,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests the constructor, giving data as an object.
      */
-    public function test_constructor_object() {
+    public function test_constructor_object(): void {
         $obj = new \stdClass();
         $obj->id = 1;
         $obj->autostart = true;
@@ -69,7 +69,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests the constructor with invalid data.
      */
-    public function test_constructor_invalid() {
+    public function test_constructor_invalid(): void {
         $this->set_expected_exception('coding_exception');
         new outage('My outage');
     }
@@ -77,7 +77,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests getting the stage considering the current time (now).
      */
-    public function test_getstage_now() {
+    public function test_getstage_now(): void {
         $now = time();
         // Make sure it is in the past.
         $outage = new outage([
@@ -93,7 +93,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests getting the stage providing an invalid time reference.
      */
-    public function test_getstage_invalidtime() {
+    public function test_getstage_invalidtime(): void {
         $outage = new outage();
         $this->set_expected_exception('coding_exception');
         $outage->get_stage(-1);
@@ -102,7 +102,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests is_ongoing() with different outage stages.
      */
-    public function test_isongoing() {
+    public function test_isongoing(): void {
         $now = time();
 
         // In the past.
@@ -139,7 +139,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests is_active() with different outage stages.
      */
-    public function test_isactive() {
+    public function test_isactive(): void {
         $now = time();
 
         // In the past.
@@ -186,7 +186,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests different outage stages.
      */
-    public function test_stages() {
+    public function test_stages(): void {
         $now = time();
 
         $outage = new outage([
@@ -261,7 +261,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests if getting title and description replaces the placeholders.
      */
-    public function test_gettitle_getdescription() {
+    public function test_gettitle_getdescription(): void {
         $now = time();
         $outage = new outage([
             'warntime' => $now - 50,
@@ -282,7 +282,7 @@ class outage_test extends \auth_outage\base_testcase {
     /**
      * Tests getting the durations.
      */
-    public function test_getdurations() {
+    public function test_getdurations(): void {
         $outage = new outage(['starttime' => 1000]);
         self::assertNull($outage->get_duration_actual());
 

@@ -39,25 +39,25 @@ require_once(__DIR__ . '/../../base_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\form\outage\edit
  */
-class forms_test extends \auth_outage\base_testcase {
+final class forms_test extends \auth_outage\base_testcase {
     /**
      * Create a delete form.
      */
-    public function test_delete() {
+    public function test_delete(): void {
         new delete();
     }
 
     /**
      * Create a finish form.
      */
-    public function test_finish() {
+    public function test_finish(): void {
         new finish();
     }
 
     /**
      * Mock some data and check values.
      */
-    public function test_edit_valid() {
+    public function test_edit_valid(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -78,7 +78,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check invalid warning duration.
      */
-    public function test_edit_invalid_warning() {
+    public function test_edit_invalid_warning(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -93,7 +93,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check invalid outage duration.
      */
-    public function test_edit_invalid_duration() {
+    public function test_edit_invalid_duration(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -107,7 +107,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check invalid title (empty).
      */
-    public function test_edit_invalid_title() {
+    public function test_edit_invalid_title(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -121,7 +121,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check invalid title (too long).
      */
-    public function test_edit_invalid_title_toolong() {
+    public function test_edit_invalid_title_toolong(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -137,7 +137,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check invalid format for description.
      */
-    public function test_edit_description_invalid_format() {
+    public function test_edit_description_invalid_format(): void {
         if ($this->skip_because_moodle_is_below_30('Moodle POST mocking was fixed in Moodle 30.')) {
             return;
         }
@@ -153,7 +153,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check if set data works properly.
      */
-    public function test_setdata() {
+    public function test_setdata(): void {
         $outage = new outage([
             'autostart'   => false,
             'warntime'    => time() - 60,
@@ -169,7 +169,7 @@ class forms_test extends \auth_outage\base_testcase {
     /**
      * Check edit::set_data() with invalid parameter.
      */
-    public function test_setdata_invalid() {
+    public function test_setdata_invalid(): void {
         $edit = new edit();
         $this->set_expected_exception('coding_exception');
         $edit->set_data(null);

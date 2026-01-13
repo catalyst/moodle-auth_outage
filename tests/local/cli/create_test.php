@@ -40,11 +40,11 @@ require_once(__DIR__ . '/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\create
  */
-class create_test extends cli_testcase {
+final class create_test extends cli_testcase {
     /**
      * Tests without any arguments.
      */
-    public function test_noarguments() {
+    public function test_noarguments(): void {
         $cli = new create();
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_MISSING);
         $this->execute($cli);
@@ -53,7 +53,7 @@ class create_test extends cli_testcase {
     /**
      * Tests when the start time is not a valid number.
      */
-    public function test_invalidparam_notanumber() {
+    public function test_invalidparam_notanumber(): void {
         $cli = new create(['start' => 'some day']);
         $cli->set_defaults([
             'warn' => 50,
@@ -69,7 +69,7 @@ class create_test extends cli_testcase {
     /**
      * Tests when providing a negative start time.
      */
-    public function test_invalidparam_negative() {
+    public function test_invalidparam_negative(): void {
         $cli = new create(['start' => -1]);
         $cli->set_defaults([
             'warn' => 50,
@@ -85,7 +85,7 @@ class create_test extends cli_testcase {
     /**
      * Tests providing an empty title.
      */
-    public function test_invalidparam_emptystring() {
+    public function test_invalidparam_emptystring(): void {
         $cli = new create(['start' => 0, 'title' => '']);
         $cli->set_defaults([
             'warn' => 50,
@@ -101,7 +101,7 @@ class create_test extends cli_testcase {
     /**
      * Tests if not providing the title (it will be send as true).
      */
-    public function test_invalidparam_notastring() {
+    public function test_invalidparam_notastring(): void {
         $cli = new create(['start' => 0, 'title' => true]);
         $cli->set_defaults([
             'warn' => 50,
@@ -117,7 +117,7 @@ class create_test extends cli_testcase {
     /**
      * Tests the help.
      */
-    public function test_help() {
+    public function test_help(): void {
         $this->set_parameters(['--help']);
         $cli = new create();
         $output = $this->execute($cli);
@@ -128,7 +128,7 @@ class create_test extends cli_testcase {
     /**
      * Tests the options and shortcuts.
      */
-    public function test_options() {
+    public function test_options(): void {
         $cli = new create();
 
         $options = $cli->generate_options();
@@ -145,7 +145,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating with all given options.
      */
-    public function test_create_withoptions() {
+    public function test_create_withoptions(): void {
         $this->set_parameters([
             '--autostart=true',
             '--warn=10',
@@ -174,7 +174,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating with the onlyid parameter.
      */
-    public function test_create_onlyid() {
+    public function test_create_onlyid(): void {
         $this->set_parameters([
             '--onlyid',
             '--autostart=N',
@@ -205,7 +205,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating using some default values.
      */
-    public function test_create_withdefaults() {
+    public function test_create_withdefaults(): void {
         $this->set_parameters([
             '--warn=100',
             '--start=50',
@@ -238,7 +238,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating with clone.
      */
-    public function test_create_withclone() {
+    public function test_create_withclone(): void {
         self::setAdminUser();
         $now = time();
         // Create the outage to clone.
@@ -272,7 +272,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating with an invalid clone id.
      */
-    public function test_create_withclone_invalid() {
+    public function test_create_withclone_invalid(): void {
         $this->set_parameters([
             '--start=60',
             '--clone=-1',
@@ -285,7 +285,7 @@ class create_test extends cli_testcase {
     /**
      * Tests creating with the block flag.
      */
-    public function test_create_withblock() {
+    public function test_create_withblock(): void {
         // Not an extensive test in the blocking API, cliwaitforit tests should cover them deeper.
         $this->set_parameters([
             '--autostart=N',
@@ -307,7 +307,7 @@ class create_test extends cli_testcase {
     /**
      * Tests providing an invalid option as default.
      */
-    public function test_setdefaults_extra() {
+    public function test_setdefaults_extra(): void {
         $cli = new create([]);
         $this->set_expected_exception('coding_exception');
         $cli->set_defaults(['aninvalidparameter' => 'value']);
@@ -316,7 +316,7 @@ class create_test extends cli_testcase {
     /**
      * Tests with an invalud autostart bool value.
      */
-    public function test_invalid_bool() {
+    public function test_invalid_bool(): void {
         $this->set_parameters([
             '--autostart=maybe',
             '--warn=60',

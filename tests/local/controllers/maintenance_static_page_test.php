@@ -40,11 +40,11 @@ require_once(__DIR__ . '/../../base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\controllers\maintenance_static_page_generator
  */
-class maintenance_static_page_test extends \auth_outage\base_testcase {
+final class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test template file.
      */
-    public function test_templatefile() {
+    public function test_templatefile(): void {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
         self::assertSame($CFG->dataroot . '/climaintenance.template.html', $page->get_io()->get_template_file());
@@ -58,7 +58,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test resources folder.
      */
-    public function test_resourcesfolder() {
+    public function test_resourcesfolder(): void {
         global $CFG;
         $page = maintenance_static_page::create_from_html('<html></html>');
         self::assertSame($CFG->dataroot . '/auth_outage/climaintenance', $page->get_io()->get_resources_folder());
@@ -69,14 +69,14 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test create from outage.
      */
-    public function test_createfromoutage() {
+    public function test_createfromoutage(): void {
         // How to fetch a page from PHPUnit environment?
     }
 
     /**
      * Test create from HTML.
      */
-    public function test_createfromhtml() {
+    public function test_createfromhtml(): void {
         $html = "<!DOCTYPE html>\n<html><head><title>Title</title></head><body>Content</body></html>";
         $expected = "<!DOCTYPE html>\n<html><head><title>Title</title><meta http-equiv=\"refresh\" content=\"300\">" .
                     "</head><body>Content</body></html>";
@@ -86,7 +86,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove script tags.
      */
-    public function test_removescripttags() {
+    public function test_removescripttags(): void {
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><script type="text/javascript" src="http://xyz"></script><title>Title</title></head>' .
                 '<body>Content<script> a < 5; x > 3</script></body></html>';
@@ -99,7 +99,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove script tags.
      */
-    public function test_updatelinkstylesheet() {
+    public function test_updatelinkstylesheet(): void {
         $localcsslink = $this->get_fixture_path_location('simple.css');
         $externalcsslink = 'http://google.com/coolstuff.css';
         $html = "<!DOCTYPE html>\n" .
@@ -115,7 +115,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test update link style sheet urls.
      */
-    public function test_updatelinkstylesheet_urls() {
+    public function test_updatelinkstylesheet_urls(): void {
         $localcsslink = $this->get_fixture_path_location('withurls.css');
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
@@ -135,7 +135,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test update link style sheet urls quoted.
      */
-    public function test_updatelinkstylesheet_urls_quoted() {
+    public function test_updatelinkstylesheet_urls_quoted(): void {
         $localcsslink = $this->get_fixture_path_location('withurls-quoted.css');
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
@@ -155,7 +155,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test update link style sheet urls with sub dir.
      */
-    public function test_updatelinkstylesheet_urls_subdir() {
+    public function test_updatelinkstylesheet_urls_subdir(): void {
         $localcsslink = $this->get_fixture_path_location('subdir/withurls-subdir.css');
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><link href="' . $localcsslink . '" rel="stylesheet" /><title>Title</title></head>' .
@@ -175,7 +175,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      /**
       * Test update images to file.php style link.
       */
-    public function test_updateimages() {
+    public function test_updateimages(): void {
         $localimglink = $this->get_fixture_path_location('catalyst.png');
         $externalimglink = 'http://google.com/coolstyle.css';
         $html = "<!DOCTYPE html>\n" .
@@ -191,7 +191,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      /**
       * Test update favicon to file.php style link.
       */
-    public function test_updatelinkfavicon() {
+    public function test_updatelinkfavicon(): void {
         $link = $this->get_fixture_path_location('catalyst.png');
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title><link rel="shortcut icon" href="' . $link . '""></head>' .
@@ -232,7 +232,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * @param bool $rewrite Flag if URL should be rewritten
      * @throws coding_exception
      */
-    public function test_update_inline_background_images($stylecontent, $rewrite) {
+    public function test_update_inline_background_images($stylecontent, $rewrite): void {
         global $CFG;
         $this->resetAfterTest(true);
         $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
@@ -260,7 +260,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      /**
       * Test update preview path to file.php style link.
       */
-    public function test_previewpath() {
+    public function test_previewpath(): void {
         $link = $this->get_fixture_path_location('catalyst.png');
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title><link rel="shortcut icon" href="' . $link . '""></head>' .
@@ -291,7 +291,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Checks if we can create and execute a task to update outage pages.
      */
-    public function test_tasks() {
+    public function test_tasks(): void {
         $this->resetAfterTest(true);
         $task = new update_static_page();
         self::assertNotEmpty($task->get_name());
@@ -301,7 +301,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Tests updating the static page when there is no outage but the file existed before.
      */
-    public function test_updatestaticpage_hasfile() {
+    public function test_updatestaticpage_hasfile(): void {
         global $CFG;
         $file = $CFG->dataroot . '/climaintenance.template.html';
         touch($file);
@@ -318,7 +318,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Tests created file.
      */
-    public function test_createdfile() {
+    public function test_createdfile(): void {
         global $CFG;
 
         $link = $this->get_fixture_path_location('catalyst.png');
@@ -352,7 +352,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test saving empty string for template file.
      */
-    public function test_invalid_string_saving_template_empty() {
+    public function test_invalid_string_saving_template_empty(): void {
         $io = new maintenance_static_page_io();
         $this->set_expected_exception('coding_exception');
         $io->save_template_file('');
@@ -361,7 +361,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test saving non string for template file.
      */
-    public function test_invalid_string_saving_template_nostring() {
+    public function test_invalid_string_saving_template_nostring(): void {
         $io = new maintenance_static_page_io();
         $this->set_expected_exception('coding_exception');
         $io->save_template_file(50);
@@ -370,7 +370,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test get url for file.
      */
-    public function test_get_url_for_file() {
+    public function test_get_url_for_file(): void {
         $io = new maintenance_static_page_io();
         self::assertStringContainsString(
             'www.example.com/moodle/auth/outage/file.php?file=img.png',
@@ -398,14 +398,14 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * @param string $result expected result
      * @param string $url url to be checked
      */
-    public function test_is_url($result, $url) {
+    public function test_is_url($result, $url): void {
         self::assertEquals($result, maintenance_static_page_io::is_url($url));
     }
 
     /**
      * Test file get_data.
      */
-    public function test_file_get_data() {
+    public function test_file_get_data(): void {
         $file = __DIR__ . '/fixtures/catalyst.png';
         $found = maintenance_static_page_io::file_get_data($file);
         self::assertSame(file_get_contents($file), $found['contents']);
@@ -415,7 +415,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test invalid file get_data.
      */
-    public function test_file_get_data_invalidfile() {
+    public function test_file_get_data_invalidfile(): void {
         $found = maintenance_static_page_io::file_get_data(__DIR__ . '/fixtures/invalidfile');
         self::assertSame('', $found['contents']);
         self::assertSame('unknown', $found['mime']);
@@ -426,7 +426,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test invalid file get_data.
      */
-    public function test_file_get_data_invalidfilename() {
+    public function test_file_get_data_invalidfilename(): void {
         $this->set_expected_exception('coding_exception');
         maintenance_static_page_io::file_get_data(200);
     }
@@ -436,7 +436,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * We will use an external URL to test passing ignoresecurity inside of file_get_data works,
      * ideally in real code we should only be calling file_get_data with internal URLs.
      */
-    public function test_file_get_data_curlsecurityblockedhosts() {
+    public function test_file_get_data_curlsecurityblockedhosts(): void {
         global $CFG, $USER;
 
         $testhtml = $this->getExternalTestFileUrl('/test.html');
@@ -467,7 +467,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector.
      */
-    public function test_remove_css_selector() {
+    public function test_remove_css_selector(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -482,7 +482,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector id.
      */
-    public function test_remove_css_selector_id() {
+    public function test_remove_css_selector_id(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -497,7 +497,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector with multi lines.
      */
-    public function test_remove_css_selector_with_multiline() {
+    public function test_remove_css_selector_with_multiline(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -516,7 +516,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector needs trim.
      */
-    public function test_remove_css_selector_needing_trim() {
+    public function test_remove_css_selector_needing_trim(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -535,7 +535,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector with empty line.
      */
-    public function test_remove_css_selector_with_empty_line() {
+    public function test_remove_css_selector_with_empty_line(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -554,7 +554,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test remove css selector with invalid id.
      */
-    public function test_remove_css_selector_with_invalid_id() {
+    public function test_remove_css_selector_with_invalid_id(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -569,7 +569,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test meta refresh 5 minutes.
      */
-    public function test_meta_refresh_5minutes() {
+    public function test_meta_refresh_5minutes(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -629,7 +629,7 @@ class maintenance_static_page_test extends \auth_outage\base_testcase {
      * @param int $count Expected quantity of found URLs
      * @throws coding_exception
      */
-    public function test_get_urls_from_stylesheet($filecontent, $count) {
+    public function test_get_urls_from_stylesheet($filecontent, $count): void {
         $this->resetAfterTest(true);
         $generator = new maintenance_static_page_generator(new DOMDocument(), new maintenance_static_page_io());
         $matches = $generator->get_urls_from_stylesheet($filecontent);

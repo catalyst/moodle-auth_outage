@@ -10,3 +10,4 @@ jobs:
       moodle_org_token: ${{ secrets.MOODLE_ORG_TOKEN }}
     with:
       disable_behat: true
+      internal_workflow_branch: ci-individual-jobs

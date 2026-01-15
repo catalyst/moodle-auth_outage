@@ -48,8 +48,11 @@ class edit extends moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('checkbox', 'autostart', get_string('autostart', 'auth_outage'));
-        $mform->addHelpButton('autostart', 'autostart', 'auth_outage');
+
+        if (get_config('auth_outage', 'default_autostart') !== '2') {
+            $mform->addElement('checkbox', 'autostart', get_string('autostart', 'auth_outage'));
+            $mform->addHelpButton('autostart', 'autostart', 'auth_outage');
+        }
 
         $mform->addElement('duration', 'warningduration', get_string('warningduration', 'auth_outage'));
         $mform->addHelpButton('warningduration', 'warningduration', 'auth_outage');

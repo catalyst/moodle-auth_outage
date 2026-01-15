@@ -47,11 +47,11 @@ if ($hassiteconfig) {
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),
         get_string('defaultoutageautostartdescription', 'auth_outage'),
-        'off',
+        '0',
         [
             '0' => get_string('autostartoff', 'auth_outage'),
             '1' => get_string('autostarton', 'auth_outage'),
-            '2' => get_string('forceoff', 'auth_outage'),
+            '2' => get_string('autostartforcedoff', 'auth_outage'),
         ]
     ));
 

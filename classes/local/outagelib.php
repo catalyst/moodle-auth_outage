@@ -223,7 +223,7 @@ class outagelib {
      * @param outage|null $outage Outage or null if no scheduled outage.
      */
     private static function update_maintenance_later($outage) {
-        if (is_null($outage) || !$outage->autostart) {
+        if (is_null($outage) || !$outage->autostart || get_config('default_autostart', 'auth_outage') === '2') {
             unset_config('maintenance_later');
         } else {
             $message = get_config('moodle', 'maintenance_message');

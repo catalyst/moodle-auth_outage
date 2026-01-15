@@ -34,6 +34,7 @@ $string['autostart'] = 'Auto start maintenance mode.';
 $string['autostart_help'] = 'If selected, when the outage starts it will automatically turn on Moodle maintenance mode.';
 $string['autostartoff'] = 'Default off';
 $string['autostarton'] = 'Default on';
+$string['autostartforcedoff'] = 'Force off';
 $string['builtinallowediplist'] = 'Builtin Allowed IP List';
 $string['builtinallowediplist_desc'] = 'A second allowed IP list which makes it easier to have some IPs forced in config.php and others editable in the UI';
 $string['clicreateexamples'] = "Create an outage starting in 10 seconds\n\n> php create.php -s=10";
@@ -101,7 +102,6 @@ $string['defaultwarningdurationdescription'] = 'Default warning time (in minutes
 $string['description'] = 'Public Description';
 $string['description_help'] = 'A full description of the outage, publicly visible by all users.';
 $string['finish'] = 'Finish';
-$string['forceoff'] = 'Force off';
 $string['info15secondsbefore'] = '15 seconds before';
 $string['infoendofoutage'] = 'end of outage';
 $string['infofrom'] = 'From:';

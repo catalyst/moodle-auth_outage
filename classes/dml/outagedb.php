@@ -100,6 +100,11 @@ class outagedb {
         $outage->modifiedby = $USER->id;
         $outage->lastmodified = time();
 
+        // Setting autostart to false if the default autostart is configured to "Force off".
+        if (get_config('default_autostart', 'auth_outage') === '2') {
+            $outage->autostart = 0;
+        }
+
         if ($outage->id === null) {
             // If new outage, set its creator.
             $outage->createdby = $USER->id;

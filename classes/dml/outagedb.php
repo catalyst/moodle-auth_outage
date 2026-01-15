@@ -105,7 +105,6 @@ class outagedb {
             $outage->autostart = 0;
         }
 
-
         if ($outage->id === null) {
             // If new outage, set its creator.
             $outage->createdby = $USER->id;

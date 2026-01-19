@@ -27,7 +27,6 @@ use auth_outage\dml\outagedb;
 use auth_outage\form\outage\edit;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
-use auth_outage\output\renderer;
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -90,6 +89,7 @@ if ($clone) {
         'warntime' => $time - $config->default_warning_duration,
         'title' => $config->default_title,
         'description' => $config->default_description,
+        'metadata' => $config->default_metadata,
     ]);
     $action = 'outagecreate';
 }

@@ -160,7 +160,7 @@ final class waitforit_test extends cli_testcase {
     /**
      * Tests the countdown.
      */
-    public function test_countdown() {
+    public function test_countdown(): void {
         self::setAdminUser();
         $now = time();
         outagedb::save(new outage([
@@ -189,7 +189,7 @@ final class waitforit_test extends cli_testcase {
     /**
      * Tests if the outage changed while waiting.
      */
-    public function test_outagechanged() {
+    public function test_outagechanged(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([

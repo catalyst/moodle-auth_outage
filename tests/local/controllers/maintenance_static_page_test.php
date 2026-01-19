@@ -583,7 +583,7 @@ final class maintenance_static_page_test extends \auth_outage\base_testcase {
     /**
      * Test meta refresh maximum 5 minutes.
      */
-    public function test_meta_refresh_maximum_5seconds() {
+    public function test_meta_refresh_maximum_5seconds(): void {
         $this->resetAfterTest(true);
         $html = "<!DOCTYPE html>\n" .
                 '<html><head><title>Title</title></head>' .
@@ -593,7 +593,6 @@ final class maintenance_static_page_test extends \auth_outage\base_testcase {
         $page->set_max_refresh_time(5);
         $page->generate();
         $generated = trim(file_get_contents($page->get_io()->get_template_file()));
-        return $generated;
 
         self::assertStringContainsString('<meta http-equiv="refresh" content="5">', $generated);
     }

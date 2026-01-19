@@ -61,5 +61,19 @@ function xmldb_auth_outage_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024081900, 'auth', 'outage');
     }
 
+    if ($oldversion < 2026011301) {
+        // Define field metadata to be added to auth_outage.
+        $table = new xmldb_table('auth_outage');
+        $field = new xmldb_field('metadata', XMLDB_TYPE_TEXT, null, null, null, null, null, 'accesskey');
+
+        // Conditionally launch add field metadata.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Outage savepoint reached.
+        upgrade_plugin_savepoint(true, 2026011301, 'auth', 'outage');
+    }
+
     return true;
 }

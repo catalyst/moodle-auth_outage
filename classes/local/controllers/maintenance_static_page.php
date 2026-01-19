@@ -49,6 +49,12 @@ class maintenance_static_page {
         } else if (PHPUNIT_TEST || defined('BEHAT_SITE_RUNNING')) {
             $html = '<html></html>';
         } else {
+            // Inject metadata into the header before output.
+            if (!empty($outage->metadata)) {
+                header('X-Outage-Metadata: ' . $outage->metadata);
+                header('X-Outage-StartTime: ' . $outage->starttime);
+                header('X-Outage-EndTime: ' . $outage->stoptime);
+            }
             $data = maintenance_static_page_io::file_get_data(
                 $CFG->wwwroot . '/auth/outage/info.php?auth_outage_hide_warning=1&static=1&id=' . $outage->id
             );

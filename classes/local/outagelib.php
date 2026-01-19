@@ -283,7 +283,7 @@ class outagelib {
      * @return string
      * @throws invalid_parameter_exception
      */
-    public static function create_climaintenancephp_code($starttime, $stoptime, $allowedips, $accesskey = null) {
+    public static function create_climaintenancephp_code($starttime, $stoptime, $allowedips, $accesskey = null, $metadata = null) {
         global $CFG;
         if (!is_int($starttime) || !is_int($stoptime)) {
             throw new invalid_parameter_exception('Make sure $startime and $stoptime are integers.');
@@ -337,6 +337,11 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Accept-Ranges: none');
             header('X-Moodle-Maintenance: manager');
+            if (!empty({{METADATA}})) {
+                header('X-Outage-Metadata: ' . {{METADATA}});
+            }
+            header('X-Outage-StartTime: ' . '{{STARTTIME}}');
+            header('X-Outage-EndTime: ' . '{{STOPTIME}}');
         }
 
         if (!$isphpunit && ((defined('AJAX_SCRIPT') && AJAX_SCRIPT) || (defined('WS_SERVER') && WS_SERVER))) {
@@ -363,10 +368,10 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
 }
 EOT;
         $search = ['{{STARTTIME}}', '{{STOPTIME}}', '{{USEALLOWEDIPS}}', '{{ALLOWEDIPS}}', '{{USEACCESSKEY}}', '{{ACCESSKEY}}',
-            '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}'];
+            '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}', '{{METADATA}}'];
         // Note that var_export is required because (string) false == '', not 'false'.
         $replace = [$starttime, $stoptime, var_export(!empty($allowedips), true), $allowedips, var_export(!empty($accesskey), true),
-            $accesskey, getremoteaddr('n/a'), var_export($cookiesecure, true), var_export($cookiehttponly, true)];
+            $accesskey, getremoteaddr('n/a'), var_export($cookiesecure, true), var_export($cookiehttponly, true), var_export($metadata, true)];
         return str_replace($search, $replace, $code);
     }
 
@@ -389,6 +394,7 @@ EOT;
         $config = self::get_config();
         $allowedips = trim($config->allowedips);
         $accesskey = $outage->accesskey ?? null;
+        $metadata = $outage->metadata ?? null;
 
         // If no outage, or allowed ips is null and access key is null (i.e. no blocking required).
         if (is_null($outage) || ($allowedips == '' && empty($accesskey))) {
@@ -396,7 +402,7 @@ EOT;
                 unlink($file);
             }
         } else {
-            $code = self::create_climaintenancephp_code($outage->starttime, $outage->stoptime, $allowedips, $accesskey);
+            $code = self::create_climaintenancephp_code($outage->starttime, $outage->stoptime, $allowedips, $accesskey, $metadata);
 
             $dir = dirname($file);
             if (!file_exists($dir) || !is_dir($dir)) {

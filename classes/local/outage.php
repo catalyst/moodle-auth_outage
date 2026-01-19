@@ -114,6 +114,11 @@ class outage {
     public $accesskey = null;
 
     /**
+     * @var string|null metadata string, or null if not enabled.
+     */
+    public $metadata = null;
+
+    /**
      * outage constructor.
      * @param stdClass|array|null $data The data for the outage.
      * @throws coding_exception

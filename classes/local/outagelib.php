@@ -279,6 +279,7 @@ class outagelib {
      * @param int    $stoptime   Outage stop time.
      * @param string $allowedips List of IPs allowed.
      * @param string|null $accesskey access key, or null if no access key set.
+     * @param string|null $metadata Metadata to set in headers, or null if none.
      *
      * @return string
      * @throws invalid_parameter_exception
@@ -370,8 +371,17 @@ EOT;
         $search = ['{{STARTTIME}}', '{{STOPTIME}}', '{{USEALLOWEDIPS}}', '{{ALLOWEDIPS}}', '{{USEACCESSKEY}}', '{{ACCESSKEY}}',
             '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}', '{{METADATA}}'];
         // Note that var_export is required because (string) false == '', not 'false'.
-        $replace = [$starttime, $stoptime, var_export(!empty($allowedips), true), $allowedips, var_export(!empty($accesskey), true),
-            $accesskey, getremoteaddr('n/a'), var_export($cookiesecure, true), var_export($cookiehttponly, true), var_export($metadata, true)];
+        $replace = [
+            $starttime,
+            $stoptime,
+            var_export(!empty($allowedips), true),
+            $allowedips,
+            var_export(!empty($accesskey), true),
+            $accesskey,
+            getremoteaddr('n/a'),
+            var_export($cookiesecure, true),
+            var_export($cookiehttponly, true),
+            var_export($metadata, true)];
         return str_replace($search, $replace, $code);
     }
 

@@ -62,7 +62,6 @@ function xmldb_auth_outage_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026011301) {
-
         // Define field metadata to be added to auth_outage.
         $table = new xmldb_table('auth_outage');
         $field = new xmldb_field('metadata', XMLDB_TYPE_TEXT, null, null, null, null, null, 'accesskey');

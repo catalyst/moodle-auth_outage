@@ -44,14 +44,13 @@ defined('MOODLE_INTERNAL') || die();
     <?php if ($viewbag['admin']) : ?>
         <?php
         $adminlinks = [];
-        foreach (
-            [
+        $params = [
             'startofwarning' => -$viewbag['outage']->get_warning_duration(),
             '15secondsbefore' => -15,
             'start' => 0,
             'endofoutage' => $viewbag['outage']->get_duration_planned() - 1,
-            ] as $title => $delta
-        ) {
+        ];
+        foreach ($params as $title => $delta) {
             $adminlinks[] = html_writer::link(
                 new moodle_url(
                     '/auth/outage/info.php',

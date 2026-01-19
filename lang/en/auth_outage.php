@@ -32,9 +32,9 @@ $string['allowedipsnoconfig'] = 'Your config.php does not have the extra setup t
 $string['auth_outagedescription'] = 'Auxiliary plugin that warns users about a future outage and prevents them from logging in once the outage starts.';
 $string['autostart'] = 'Auto start maintenance mode.';
 $string['autostart_help'] = 'If selected, when the outage starts it will automatically turn on Moodle maintenance mode.';
+$string['autostartforcedoff'] = 'Force off';
 $string['autostartoff'] = 'Default off';
 $string['autostarton'] = 'Default on';
-$string['autostartforcedoff'] = 'Force off';
 $string['builtinallowediplist'] = 'Builtin Allowed IP List';
 $string['builtinallowediplist_desc'] = 'A second allowed IP list which makes it easier to have some IPs forced in config.php and others editable in the UI';
 $string['clicreateexamples'] = "Create an outage starting in 10 seconds\n\n> php create.php -s=10";
@@ -144,6 +144,7 @@ $string['outagefinishwarning'] = 'You are about to mark this outage as finished.
 $string['outageslistfuture'] = 'Planned outages';
 $string['outageslistpast'] = 'Outage history';
 $string['pluginname'] = 'Outage manager';
+$string["privacy:no_data_reason"] = "The Outage authentication plugin does not store any personal data.";
 $string['removeselectors'] = 'Remove selectors';
 $string['removeselectorsdescription'] = 'CSS selectors to remove when rendering a static themed maintenance page. One selector per line.';
 $string['settingssectiondefaults'] = 'Default Outage Parameters';
@@ -173,8 +174,3 @@ $string['warningduration'] = 'Warning duration';
 $string['warningduration_help'] = 'How long before the start of the outage should the warning be displayed.';
 $string['warningdurationerrorinvalid'] = 'Warning duration must be positive.';
 $string['warningreenablemaintenancemode'] = 'Please note that saving this outage will re-enable maintenance mode.<br />Untick "Auto start maintenance mode" if you want to prevent this.';
-
-/*
- * Privacy provider (GDPR)
- */
-$string["privacy:no_data_reason"] = "The Outage authentication plugin does not store any personal data.";

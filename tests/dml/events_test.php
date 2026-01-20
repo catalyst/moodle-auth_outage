@@ -62,7 +62,6 @@ final class events_test extends \advanced_testcase {
         // Save new outage.
         $now = time();
         $outage = new outage([
-            'autostart' => false,
             'warntime' => $now - 60,
             'starttime' => 60,
             'stoptime' => 120,
@@ -95,7 +94,6 @@ final class events_test extends \advanced_testcase {
         // Save new outage.
         $now = time();
         $outage = new outage([
-            'autostart' => false,
             'warntime' => $now - 60,
             'starttime' => 60,
             'stoptime' => 120,
@@ -133,7 +131,6 @@ final class events_test extends \advanced_testcase {
         // Save new outage.
         $now = time();
         $outage = new outage([
-            'autostart' => false,
             'warntime' => $now - 60,
             'starttime' => 60,
             'stoptime' => 120,

@@ -100,11 +100,6 @@ class outagedb {
         $outage->modifiedby = $USER->id;
         $outage->lastmodified = time();
 
-        // Setting autostart to false if the default autostart is configured to "Force off".
-        if (get_config('default_autostart', 'auth_outage') === '2') {
-            $outage->autostart = 0;
-        }
-
         if ($outage->id === null) {
             // If new outage, set its creator.
             $outage->createdby = $USER->id;
@@ -335,37 +330,6 @@ class outagedb {
         $data = $DB->get_records_select(
             'auth_outage',
             ':datetime <= starttime',
-            ['datetime' => $time],
-            'starttime ASC',
-            '*',
-            0,
-            1
-        );
-
-        // Not using $DB->get_record_select instead because there is no 'limit' parameter.
-        // Allowing multiple records still raises an internal error.
-        return (count($data) == 0) ? null : new outage(array_shift($data));
-    }
-
-    /**
-     * Gets the next outage which has not started yet and has the autostart flag set to true.
-     * @param null $time Timestamp reference for current time.
-     * @return outage|null The outage or null if not found.
-     * @throws coding_exception
-     */
-    public static function get_next_autostarting($time = null) {
-        global $DB;
-
-        if ($time === null) {
-            $time = time();
-        }
-        if (!is_int($time) || ($time <= 0)) {
-            throw new coding_exception('$time must be null or a positive int.', $time);
-        }
-
-        $data = $DB->get_records_select(
-            'auth_outage',
-            '(:datetime <= starttime) AND (autostart = 1)',
             ['datetime' => $time],
             'starttime ASC',
             '*',

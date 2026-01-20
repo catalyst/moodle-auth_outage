@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="auth/outage/db" VERSION="20260114" COMMENT="XMLDB file for Moodle auth/outage"
+<XMLDB PATH="auth/outage/db" VERSION="20260120" COMMENT="XMLDB file for Moodle auth/outage"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -7,7 +7,6 @@
     <TABLE NAME="auth_outage" COMMENT="Table used for auth/outage plugin. Holds information about all past, current and future outages.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="autostart" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="If the maintenance mode should be automatically triggered once this outage startes."/>
         <FIELD NAME="warntime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When the outage will start showing a warning for that outage."/>
         <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage starts."/>
         <FIELD NAME="stoptime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="When outage ends."/>

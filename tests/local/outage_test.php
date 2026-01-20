@@ -48,7 +48,6 @@ final class outage_test extends \auth_outage\base_testcase {
     public function test_constructor_object(): void {
         $obj = new \stdClass();
         $obj->id = 1;
-        $obj->autostart = true;
         $obj->warntime = 2;
         $obj->starttime = 3;
         $obj->finished = 4;
@@ -57,7 +56,6 @@ final class outage_test extends \auth_outage\base_testcase {
         $obj->description = 'Description';
         $outage = new outage($obj);
         self::assertSame($obj->id, $outage->id);
-        self::assertSame($obj->autostart, $outage->autostart);
         self::assertSame($obj->warntime, $outage->warntime);
         self::assertSame($obj->starttime, $outage->starttime);
         self::assertSame($obj->finished, $outage->finished);

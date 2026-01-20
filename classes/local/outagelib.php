@@ -371,7 +371,8 @@ EOT;
             '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}', '{{METADATA}}'];
         // Note that var_export is required because (string) false == '', not 'false'.
         $replace = [$starttime, $stoptime, var_export(!empty($allowedips), true), $allowedips, var_export(!empty($accesskey), true),
-            $accesskey, getremoteaddr('n/a'), var_export($cookiesecure, true), var_export($cookiehttponly, true), var_export($metadata, true)];
+            $accesskey, getremoteaddr('n/a'), var_export($cookiesecure, true),
+            var_export($cookiehttponly, true), var_export($metadata, true)];
         return str_replace($search, $replace, $code);
     }
 

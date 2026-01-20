@@ -76,6 +76,15 @@ function xmldb_auth_outage_upgrade($oldversion) {
     }
 
     if ($oldversion < 2024081902) {
+        // Getting the table auth_outage and target field to remove from the table.
+        $table = new xmldb_table('auth_outage');
+        $field = new xmldb_field('autostart');
+
+        // Conditionally launch drop field autostart.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
         // Removing the default_autostart config as it is no longer used.
         unset_config('default_autostart', 'auth_outage');
 

@@ -84,7 +84,6 @@ if ($clone) {
     }
 
     $outage = new outage([
-        'autostart' => $config->default_autostart,
         'starttime' => $time,
         'stoptime' => $time + $config->default_duration,
         'warntime' => $time - $config->default_warning_duration,

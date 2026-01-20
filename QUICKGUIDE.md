@@ -98,9 +98,8 @@ Execute the commands from your Moodle instalation directory and leave the browse
 1) Create an outage
 
     This command will create an outage starting in 30 seconds, with a warning period of 15 seconds.
-    It will automatically start (trigger maintenance mode).
 
-    `php auth/outage/cli/create.php -w=20 -s=30 --autostart=Y`
+    `php auth/outage/cli/create.php -w=20 -s=30`
 
     Refresh the page but you will not see anything yet.
 

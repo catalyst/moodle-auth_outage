@@ -88,7 +88,6 @@ class behat_auth_outage extends behat_base {
      */
     public function there_is_a_outage($type) {
         $data = [
-            'autostart' => false,
             'finished' => null,
             'title' => 'Example of ' . $type . ' outage',
             'description' => 'An outage: ' . $type,
@@ -272,7 +271,6 @@ class behat_auth_outage extends behat_base {
         // Set defaults.
         $row = array_merge(
             [
-                'autostart' => 'no',
                 'warnbefore' => 60,
                 'startsin' => 0,
                 'stopsafter' => 60,
@@ -282,16 +280,12 @@ class behat_auth_outage extends behat_base {
             ],
             $row
         );
-        if (($row['autostart'] != 'yes') && ($row['autostart'] != 'no')) {
-            throw new Exception('autostart must be yes or no, found: ' . $row['autostart']);
-        }
         if ($row['finished'] == '') {
             $row['finished'] = null;
         }
 
         $starttime = $time + $row['startsin'];
         $this->outage = new outage([
-            'autostart' => ($row['autostart'] == 'yes'),
             'warntime' => $starttime - $row['warnbefore'],
             'starttime' => $starttime,
             'stoptime' => $starttime + $row['stopsafter'],

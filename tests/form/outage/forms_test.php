@@ -67,7 +67,6 @@ final class forms_test extends \auth_outage\base_testcase {
         self::assertFalse($edit->is_cancelled());
         $outage = $edit->get_data();
         self::assertInstanceOf('\\auth_outage\\local\\outage', $outage);
-        self::assertSame(false, $outage->autostart);
         self::assertSame(60, $outage->get_warning_duration());
         self::assertSame(mktime(14, 15, 0, 2, 1, 2013), $outage->starttime);
         self::assertSame(2 * 60 * 60, $outage->get_duration_planned());
@@ -155,7 +154,6 @@ final class forms_test extends \auth_outage\base_testcase {
      */
     public function test_setdata(): void {
         $outage = new outage([
-            'autostart'   => false,
             'warntime'    => time() - 60,
             'starttime'   => time(),
             'stoptime'    => time() + 60,

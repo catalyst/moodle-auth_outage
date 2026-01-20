@@ -14,7 +14,6 @@ Feature: Change the default settings
   Scenario Outline: Check if I can save the default settings.
     When I navigate to "Plugins > Authentication > Outage manager > Settings" in site administration
     And I set the following fields to these values:
-      | s_auth_outage_default_autostart           | <autostart>   |
       | s_auth_outage_default_warning_duration[v] | <warning>     |
       | s_auth_outage_default_warning_duration[u] | 60            |
       | s_auth_outage_default_duration[v]         | <duration>    |
@@ -26,7 +25,6 @@ Feature: Change the default settings
     Then I should see "Changes saved"
     When I visit the Create Outage Page
     Then the following fields match these values:
-      | autostart                 | <autostart>   |
       | warningduration[number]   | <warning>     |
       | warningduration[timeunit] | 60            |
       | outageduration[number]    | <duration>    |
@@ -35,6 +33,6 @@ Feature: Change the default settings
       | description[text]         | <description> |
 
     Examples:
-      | autostart | warning | duration | title                   | description                 | css             |
-      | 1         | 15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
-      | 0         | 30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */ |
+      warning | duration | title                   | description                 | css             |
+      15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
+      30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */ |

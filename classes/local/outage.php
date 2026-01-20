@@ -59,11 +59,6 @@ class outage {
     public $id = null;
 
     /**
-     * @var bool|null Maintenance mode auto start flag.
-     */
-    public $autostart = null;
-
-    /**
      * @var int|null Start Time timestamp.
      */
     public $starttime = null;
@@ -294,9 +289,6 @@ class outage {
         foreach ($fs as $f) {
             $this->$f = ($this->$f === null) ? null : (int)$this->$f;
         }
-
-        // Adjust bool fields.
-        $this->autostart = ($this->autostart === null) ? null : (bool)$this->autostart;
     }
 
     /**

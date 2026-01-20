@@ -56,7 +56,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
     /**
      * Helper function to create an outage then save it to the database.
      *
-     * @param bool $autostart If outage should automatically start.
      * @param int $now Timestamp for now, such as time().
      * @param int $warning In how many hours the warning starts. Can be negative.
      * @param int $start In how many hours this outage starts. Can be negative.
@@ -65,9 +64,8 @@ final class outagedb_test extends \auth_outage\base_testcase {
      * @param int|null $finished In how many hours this outage is marked as finished. Can be negative or null.
      * @return int Id the of created outage.
      */
-    private static function saveoutage($autostart, $now, $warning, $start, $stop, $title, $finished = null) {
+    private static function saveoutage($now, $warning, $start, $stop, $title, $finished = null) {
         return outagedb::save(new outage([
-            'autostart' => $autostart,
             'warntime' => $now + ($warning * 60 * 60),
             'starttime' => $now + ($start * 60 * 60),
             'stoptime' => $now + ($stop * 60 * 60),
@@ -497,7 +495,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
         $this->resetAfterTest(true);
         $time = time();
         $outage = new outage([
-            'autostart' => false,
             'warntime' => $time + (60 * 60 * 24 * 1),
             'starttime' => $time + (60 * 60 * 24 * 2),
             'stoptime' => $time + (60 * 60 * 24 * 3),
@@ -522,22 +519,12 @@ final class outagedb_test extends \auth_outage\base_testcase {
     }
 
     /**
-     * Tests the outagedb::get_next_autostarting() with an invalid parameter.
-     */
-    public function test_getnextautostartinginvalid(): void {
-        $this->resetAfterTest(true);
-        $this->set_expected_exception('coding_exception');
-        outagedb::get_next_autostarting(-1);
-    }
-
-    /**
      * Helper function to create an outage for tests.
      * @param int $i Used to populate the information.
      * @return outage The created outage.
      */
     private function createoutage($i) {
         return new outage([
-            'autostart' => ($i % 2 == 0),
             'starttime' => $i * 100,
             'stoptime' => $i * 100 + 50,
             'warntime' => $i * 60,

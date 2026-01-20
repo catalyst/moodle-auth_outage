@@ -93,7 +93,6 @@ final class finish_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now - 50,
@@ -114,7 +113,6 @@ final class finish_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now + 100,

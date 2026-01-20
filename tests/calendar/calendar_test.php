@@ -55,7 +55,6 @@ final class calendar_test extends \advanced_testcase {
         $time = time();
         self::$outage = new outage([
             'id' => 1,
-            'autostart' => false,
             'warntime' => $time - 100,
             'starttime' => $time,
             'stoptime' => $time + (2 * 60 * 60),
@@ -76,7 +75,6 @@ final class calendar_test extends \advanced_testcase {
         $time = time();
         self::$outage = new outage([
             'id' => 1,
-            'autostart' => false,
             'warntime' => $time - 100,
             'starttime' => $time,
             'stoptime' => $time + (2 * 60 * 60),
@@ -100,7 +98,6 @@ final class calendar_test extends \advanced_testcase {
         $time = time();
         self::$outage = new outage([
             'id' => 1,
-            'autostart' => false,
             'warntime' => $time - 100,
             'starttime' => $time,
             'stoptime' => $time + (2 * 60 * 60),
@@ -125,7 +122,6 @@ final class calendar_test extends \advanced_testcase {
         $time = time();
         $outage = new outage([
             'id' => 1,
-            'autostart' => false,
             'warntime' => $time - 100,
             'starttime' => $time,
             'stoptime' => $time + (2 * 60 * 60),

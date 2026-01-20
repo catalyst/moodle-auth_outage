@@ -136,7 +136,6 @@ class edit extends moodleform {
         }
         $outagedata = [
             'id' => ($data->id === 0) ? null : $data->id,
-            'autostart' => (isset($data->autostart) && ($data->autostart == 1)),
             'starttime' => $data->starttime,
             'stoptime' => $data->starttime + $data->outageduration,
             'warntime' => $data->starttime - $data->warningduration,
@@ -161,7 +160,6 @@ class edit extends moodleform {
         if ($outage instanceof outage) {
             $this->_form->setDefaults([
                 'id' => $outage->id,
-                'autostart' => $outage->autostart,
                 'starttime' => $outage->starttime,
                 'outageduration' => $outage->get_duration_planned(),
                 'warningduration' => $outage->get_warning_duration(),

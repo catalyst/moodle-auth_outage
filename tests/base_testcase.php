@@ -79,7 +79,6 @@ abstract class base_testcase extends \advanced_testcase {
 
         return new outage([
             'id' => 1,
-            'autostart' => false,
             'warntime' => $now - 100,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,

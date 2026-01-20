@@ -28,6 +28,7 @@ use auth_outage\form\outage\edit;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
 
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');

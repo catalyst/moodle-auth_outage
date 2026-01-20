@@ -42,7 +42,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
 
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -82,7 +81,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -128,7 +126,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -171,7 +168,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -205,7 +201,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $this->resetAfterTest(true);
         $keys = [
             'css',
-            'default_autostart',
             'default_description',
             'default_duration',
             'default_title',
@@ -236,7 +231,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $keys = [
             'allowedips',
             'css',
-            'default_autostart',
             'default_description',
             'default_duration',
             'default_title',
@@ -257,7 +251,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         // Set config with invalid values.
         set_config('allowedips', " \n", 'auth_outage');
         set_config('css', " \n", 'auth_outage');
-        set_config('default_autostart', " \n", 'auth_outage');
         set_config('default_description', " \n", 'auth_outage');
         set_config('default_duration', " \n", 'auth_outage');
         set_config('default_title', " \n", 'auth_outage');
@@ -281,7 +274,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -532,21 +524,6 @@ EOT;
     }
 
     /**
-     * Related to Issue #70: Creating ongoing outage does not trigger maintenance file creation.
-     */
-    public function test_preparenextoutage_notautostart(): void {
-        global $CFG;
-
-        $this->create_outage();
-
-        // The method outagelib::prepare_next_outage() should have been called by save().
-        foreach ([$CFG->dataroot . '/climaintenance.template.html', $CFG->dataroot . '/climaintenance.php'] as $file) {
-            self::assertFileExists($file);
-            unlink($file);
-        }
-    }
-
-    /**
      * Regression Test - Issue #82: When changing the IP address list it should recreate the maintenance files.
      */
     public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates(): void {
@@ -583,36 +560,6 @@ EOT;
     }
 
     /**
-     * Related to Issue #72: IP Block still triggers cli maintenance mode even without autostart.
-     */
-    public function test_preparenextoutage_noautostarttrigger(): void {
-        global $CFG;
-
-        $this->resetAfterTest(true);
-        self::setAdminUser();
-        $now = time();
-        $outage = new outage([
-            'autostart' => false,
-            'warntime' => $now - 200,
-            'starttime' => $now - 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-        outagedb::save($outage);
-
-        // The method outagelib::prepare_next_outage() should have been called by save().
-        self::assertFalse(get_config('moodle', 'maintenance_later'));
-        // This file should not exist even if the statement above fails as Moodle does not create it immediately but test anyway.
-        // Backwards compatibility with older PHPUnit - use old assertFile method.
-        if (method_exists($this, 'assertFileDoesNotExist')) {
-            self::assertFileDoesNotExist($CFG->dataroot . '/climaintenance.html');
-        } else {
-            self::assertFileNotExists($CFG->dataroot . '/climaintenance.html');
-        }
-    }
-
-    /**
      * Regression test for issue #85.
      */
     public function test_it_can_inject_in_settings_if_not_additional_html(): void {
@@ -622,7 +569,6 @@ EOT;
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'warntime' => $now,
             'starttime' => $now + 100,
             'stoptime' => $now + 200,
@@ -652,7 +598,6 @@ EOT;
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart'   => false,
             'warntime'    => $now - 200,
             'starttime'   => $now - 100,
             'stoptime'    => $now + 200,
@@ -768,7 +713,6 @@ EOT;
         self::setAdminUser();
         $now = time();
         $outage = new outage([
-            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now + 200,

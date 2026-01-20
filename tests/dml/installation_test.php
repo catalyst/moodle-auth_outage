@@ -56,10 +56,9 @@ final class installation_test extends \auth_outage\base_testcase {
         static::setAdminUser();
         $dbman = $DB->get_manager();
 
-        // Create a future outage with autostart.
+        // Create a future outage.
         $now = time();
         $outage = new outage([
-            'autostart' => true,
             'starttime' => $now + (1 * 60 * 60),
             'stoptime' => $now + (2 * 60 * 60),
             'warntime' => $now - (2 * 60 * 60),

@@ -173,7 +173,6 @@ class outagelib {
             'allowedips'               => '',
             'css'                      => '',
             'default_time'             => '',
-            'default_autostart'        => '0',
             'default_duration'         => (string)(60 * 60),
             'default_warning_duration' => (string)(60 * 60),
             'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),
@@ -223,7 +222,7 @@ class outagelib {
      * @param outage|null $outage Outage or null if no scheduled outage.
      */
     private static function update_maintenance_later($outage) {
-        if (is_null($outage) || !$outage->autostart || get_config('default_autostart', 'auth_outage') === '2') {
+        if (is_null($outage)) {
             unset_config('maintenance_later');
         } else {
             $message = get_config('moodle', 'maintenance_message');

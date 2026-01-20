@@ -147,7 +147,6 @@ final class create_test extends cli_testcase {
      */
     public function test_create_withoptions(): void {
         $this->set_parameters([
-            '--autostart=true',
             '--warn=10',
             '--start=0',
             '--duration=30',
@@ -177,7 +176,6 @@ final class create_test extends cli_testcase {
     public function test_create_onlyid(): void {
         $this->set_parameters([
             '--onlyid',
-            '--autostart=N',
             '--warn=10',
             '--start=0',
             '--duration=30',
@@ -214,7 +212,6 @@ final class create_test extends cli_testcase {
         $cli = new create();
         $cli->set_referencetime($now);
         $cli->set_defaults([
-            'autostart' => false,
             'warn' => 50,
             'start' => 200,
             'duration' => 300,
@@ -243,7 +240,6 @@ final class create_test extends cli_testcase {
         $now = time();
         // Create the outage to clone.
         $original = new outage([
-            'autostart' => false,
             'warntime' => $now - 120,
             'starttime' => $now,
             'stoptime' => $now + 120,
@@ -288,7 +284,6 @@ final class create_test extends cli_testcase {
     public function test_create_withblock(): void {
         // Not an extensive test in the blocking API, cliwaitforit tests should cover them deeper.
         $this->set_parameters([
-            '--autostart=N',
             '--block',
             '--warn=60',
             '--start=0',
@@ -311,22 +306,5 @@ final class create_test extends cli_testcase {
         $cli = new create([]);
         $this->set_expected_exception('coding_exception');
         $cli->set_defaults(['aninvalidparameter' => 'value']);
-    }
-
-    /**
-     * Tests with an invalud autostart bool value.
-     */
-    public function test_invalid_bool(): void {
-        $this->set_parameters([
-            '--autostart=maybe',
-            '--warn=60',
-            '--start=0',
-            '--duration=600',
-            '--title=Title',
-            '--description=Description',
-        ]);
-        $cli = new create();
-        $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
-        $cli->execute();
     }
 }

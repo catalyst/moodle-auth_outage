@@ -43,7 +43,6 @@ class create extends clibase {
         return [
             'help' => false,
             'clone' => null,
-            'autostart' => null,
             'warn' => null,
             'start' => null,
             'duration' => null,
@@ -60,7 +59,6 @@ class create extends clibase {
      */
     public function generate_shortcuts() {
         return [
-            'a' => 'autostart',
             'b' => 'block',
             'c' => 'clone',
             'd' => 'duration',
@@ -165,7 +163,6 @@ class create extends clibase {
         // an outage 47 years in advance.
         $start = $options['start'] > 1500000000 ? $options['start'] : $this->time + $options['start'];
         $outage = new outage([
-            'autostart' => $options['autostart'],
             'warntime' => $start - $options['warn'],
             'starttime' => $start,
             'stoptime' => $start + $options['duration'],
@@ -199,7 +196,6 @@ class create extends clibase {
 
         $outage = outagedb::get_by_id((int)$id);
         $this->set_defaults([
-            'autostart' => $outage->autostart,
             'warn' => $outage->get_warning_duration(),
             'duration' => $outage->get_duration_planned(),
             'title' => $outage->title,
@@ -220,10 +216,6 @@ class create extends clibase {
 
         foreach (['title', 'description'] as $param) {
             $options[$param] = $this->merge_options_check_parameters_string_nonempty($options[$param], $param);
-        }
-
-        foreach (['autostart'] as $param) {
-            $options[$param] = $this->merge_options_check_parameters_bool($options[$param], $param);
         }
 
         return $options;

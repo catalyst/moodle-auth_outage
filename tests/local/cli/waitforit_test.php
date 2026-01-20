@@ -120,7 +120,6 @@ final class waitforit_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now - 200,
             'starttime' => $now - 100,
             'stoptime' => $now - 50,
@@ -141,7 +140,6 @@ final class waitforit_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now - 10,
             'starttime' => $now + 1,
             'stoptime' => $now + 10,
@@ -164,7 +162,6 @@ final class waitforit_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now,
             'starttime' => $now + 45,
             'stoptime' => $now + (60 * 60),
@@ -193,7 +190,6 @@ final class waitforit_test extends cli_testcase {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
-            'autostart' => false,
             'warntime' => $now,
             'starttime' => $now + (2 * 60 * 60),
             'stoptime' => $now + (60 * 60),

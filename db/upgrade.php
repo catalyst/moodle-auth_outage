@@ -76,5 +76,14 @@ function xmldb_auth_outage_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024081901, 'auth', 'outage');
     }
 
+    if ($oldversion < 2024081902) {
+
+        // Removing the default_autostart config as it is no longer used.
+        unset_config('default_autostart', 'auth_outage');
+
+        // Outage savepoint reached.
+        upgrade_plugin_savepoint(true, 2024081902, 'auth', 'outage');
+    }
+
     return true;
 }

@@ -75,7 +75,7 @@ function xmldb_auth_outage_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026011301, 'auth', 'outage');
     }
 
-    if ($oldversion < 2024081902) {
+    if ($oldversion < 2026011302) {
         // Getting the table auth_outage and target field to remove from the table.
         $table = new xmldb_table('auth_outage');
         $field = new xmldb_field('autostart');

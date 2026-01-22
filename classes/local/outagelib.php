@@ -253,6 +253,7 @@ class outagelib {
      * @param int    $stoptime   Outage stop time.
      * @param string $allowedips List of IPs allowed.
      * @param string|null $accesskey access key, or null if no access key set.
+     * @param string|null $metadata metadata to be added to the outage headers, or null if none.
      *
      * @return string
      * @throws invalid_parameter_exception

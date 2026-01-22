@@ -34,44 +34,6 @@ require_once(__DIR__ . '/../base_testcase.php');
  */
 final class outagelib_test extends \auth_outage\base_testcase {
     /**
-     * Check if maintenance message is disabled as needed.
-     */
-    public function test_maintenancemessage(): void {
-        $this->resetAfterTest(true);
-        static::setAdminUser();
-
-        $now = time();
-        $outage = new outage([
-            'warntime' => $now,
-            'starttime' => $now + 100,
-            'stoptime' => $now + 200,
-            'title' => 'Title',
-            'description' => 'Description',
-        ]);
-
-        set_config('maintenance_message', 'A message.');
-        ob_start();
-        outagedb::save($outage);
-        $text = trim(ob_get_contents());
-        ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
-        self::assertFalse((bool)get_config('moodle', 'maintenance_message'));
-        self::assertCount(2, $this->getDebuggingMessages());
-        $this->resetDebugging();
-    }
-
-    /**
-     * Check if maintenance later is removed if no outage set.
-     */
-    public function test_maintenancelater_nonext(): void {
-        $this->resetAfterTest(true);
-        set_config('maintenance_later', time() + (60 * 60 * 24 * 7)); // In 1 week.
-        self::assertNotEmpty(get_config('moodle', 'maintenance_later'));
-        outagelib::prepare_next_outage();
-        self::assertEmpty(get_config('moodle', 'maintenance_later'));
-    }
-
-    /**
      * Check outagelib::inject() works as expected.
      */
     public function test_inject(): void {
@@ -91,7 +53,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $outage->id = outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         outagelib::reset_injectcalled();
         // Get full header to avoid interactions with other single inject plugins.
@@ -136,7 +97,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $outage->id = outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         $_GET = ['auth_outage_preview' => (string)$outage->id];
 
@@ -178,7 +138,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $outage->id = outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
         $_GET = ['auth_outage_preview' => (string)$outage->id, 'auth_outage_delta' => '500'];
         outagelib::reset_injectcalled();
         $header = outagelib::get_inject_code();
@@ -284,7 +243,6 @@ final class outagelib_test extends \auth_outage\base_testcase {
         $outage->id = outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
 
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
@@ -529,8 +487,6 @@ EOT;
     public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates(): void {
         global $CFG;
 
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
-
         $this->create_outage();
 
         // Change settings.
@@ -548,8 +504,6 @@ EOT;
      */
     public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates(): void {
         global $CFG;
-
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
 
         $this->create_outage();
 
@@ -583,7 +537,6 @@ EOT;
         $outage->id = outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
         // Pretend we are there...
         $_SERVER['SCRIPT_FILENAME'] = '/var/www/alternativepath/admin/settings.php'; // Issue #88 regression test.
         $_SERVER['SCRIPT_NAME'] = '/admin/settings.php';

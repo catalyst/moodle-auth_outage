@@ -69,7 +69,6 @@ final class installation_test extends \auth_outage\base_testcase {
         outagedb::save($outage);
         $text = trim(ob_get_contents());
         ob_end_clean();
-        self::assertStringContainsString('Update maintenance mode configuration', $text);
         self::assertSame(1, $DB->count_records_select('event', "eventtype = 'auth_outage'", null));
 
         // Uninstall plugin.

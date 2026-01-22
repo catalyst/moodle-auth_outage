@@ -28,7 +28,8 @@ use coding_exception;
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create extends clibase {
+class create extends clibase
+{
     /**
      * @var mixed[] Defaults to use if given option is null.
      */
@@ -123,7 +124,7 @@ class create extends clibase {
         $options = $this->merge_options();
         $id = $this->create_outage($options);
 
-        if ($options['block']) {
+        if ($options['block'] && !$options['onlyid']) {
             $block = new waitforit(['outageid' => $id]);
             $block->execute();
         }

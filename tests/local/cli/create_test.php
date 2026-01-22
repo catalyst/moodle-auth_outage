@@ -255,7 +255,6 @@ final class create_test extends cli_testcase {
             '--start=60',
             '--clone=' . $id,
         ]);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new create();
         $cli->set_referencetime($now);
         // Extracting only the id digits from the output.

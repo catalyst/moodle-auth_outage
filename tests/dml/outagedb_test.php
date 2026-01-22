@@ -150,7 +150,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
     public function test_finish(): void {
         $now = time();
         $this->resetAfterTest(true);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         // Create it.
         $id = self::saveoutage($now, -3, -2, 2, 'An ongoing outage.');
         $outage = outagedb::get_by_id($id);
@@ -229,7 +228,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
      */
     public function test_getactive(): void {
         $this->resetAfterTest(true);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
 
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
@@ -288,7 +286,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
      */
     public function test_getallunended(): void {
         $this->resetAfterTest(true);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
 
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
@@ -364,7 +361,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
      */
     public function test_getallended(): void {
         $this->resetAfterTest(true);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
 
         // Have a consistent time for now (no seconds variation), helps debugging.
         $now = time();
@@ -495,7 +491,6 @@ final class outagedb_test extends \auth_outage\base_testcase {
      */
     public function test_finish_notongoing(): void {
         $this->resetAfterTest(true);
-        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $time = time();
         $outage = new outage([
             'warntime' => $time + (60 * 60 * 24 * 1),

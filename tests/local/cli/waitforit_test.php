@@ -147,6 +147,7 @@ final class waitforit_test extends cli_testcase {
             'description' => 'Description',
         ]));
         $this->set_parameters(['-v', '--active']);
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $output = $this->execute($cli);
@@ -169,6 +170,7 @@ final class waitforit_test extends cli_testcase {
             'description' => 'Description',
         ]));
         $this->set_parameters(['-v', '--active', '--sleep=30']);
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $cli->set_sleepcallback(function ($sleep) use (&$now) {
@@ -197,6 +199,7 @@ final class waitforit_test extends cli_testcase {
             'description' => 'Description',
         ]));
         $this->set_parameters(['-v', '--active', '--sleep=30']);
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $cli->set_sleepcallback(function () use ($id) {

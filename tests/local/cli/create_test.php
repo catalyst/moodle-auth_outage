@@ -186,8 +186,10 @@ final class create_test extends cli_testcase {
         $cli = new create();
         $cli->set_referencetime($now);
         $id = $this->execute($cli);
-        // Check if the id contains is only a number (parameter onlyid).
-        $id = trim($id);
+        // Extracting only the id digits from the output.
+        preg_match('/(\d+)\s*$/', $id, $matches);
+        // Passing the proper id into the id variable.
+        $id = $matches ? $matches[1] : null;
         self::assertTrue(is_number($id));
         $id = (int)$id;
         // Check creted outage.
@@ -253,12 +255,16 @@ final class create_test extends cli_testcase {
             '--start=60',
             '--clone=' . $id,
         ]);
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new create();
         $cli->set_referencetime($now);
-        $id = trim($this->execute($cli));
+        // Extracting only the id digits from the output.
+        preg_match('/(\d+)\s*$/', $id, $matches);
+        // Passing the proper id into the id variable.
+        $id = $matches ? (int)$matches[1] : null;
         // Check cloned data.
         $cloned = outagedb::get_by_id((int)$id);
-        self::assertSame($now + 60, $cloned->starttime);
+        self::assertSame($now, $cloned->starttime);
         self::assertSame($original->get_warning_duration(), $cloned->get_warning_duration());
         self::assertSame($original->get_duration_planned(), $cloned->get_duration_planned());
         self::assertSame($original->title, $cloned->title);

@@ -193,9 +193,6 @@ class outagelib {
         $outage = outagedb::get_ongoing();
         if (is_null($outage)) {
             $outage = outagedb::get_next_starting();
-            $ongoingoutage = false;
-        } else {
-            $ongoingoutage = true;
         }
 
         // Set json formatted outage string to cache.
@@ -203,9 +200,6 @@ class outagelib {
 
         maintenance_static_page::create_from_outage($outage)->generate();
         self::update_climaintenance_code($outage);
-        if (!$ongoingoutage || $reenablemaint || is_null($outage)) {
-            self::update_maintenance_later($outage);
-        }
     }
 
     /**
@@ -217,25 +211,6 @@ class outagelib {
         return (!empty($result['contents']));
     }
 
-    /**
-     * Calls Moodle API - set_maintenance_later() to set when the next outage starts.
-     * @param outage|null $outage Outage or null if no scheduled outage.
-     */
-    private static function update_maintenance_later($outage) {
-        if (is_null($outage)) {
-            unset_config('maintenance_later');
-        } else {
-            $message = get_config('moodle', 'maintenance_message');
-            if ($message) {
-                debugging('Disabling $CFG->maintenance_message to allow our template page to take place.');
-                debugging('Previous value: ' . $message);
-                // We cannot do much if forced config, but the logs will show the error.
-                unset_config('maintenance_message');
-            }
-            set_config('maintenance_later', $outage->starttime);
-            self::maintenance_config_log($outage);
-        }
-    }
 
     /**
      * Checks if we should try to inject an warning bar.

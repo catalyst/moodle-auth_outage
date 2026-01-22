@@ -33,6 +33,6 @@ Feature: Change the default settings
       | description[text]         | <description> |
 
     Examples:
-      warning | duration | title                   | description                 | css             |
-      15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */ |
-      30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */ |
+      | warning | duration | title                   | description                 | css              |
+      | 15      | 30       | An Outage               | My outage until {stop}.     | /* Some CSS. */  |
+      | 30      | 45       | My Behat Outage {start} | My outage with <b>HTML</b>. | /* More CSS. */  |

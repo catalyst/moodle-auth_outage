@@ -120,6 +120,7 @@ final class finish_test extends cli_testcase {
             'description' => 'Description',
         ]));
         $this->set_parameters(['-id=' . $id]);
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
         $cli = new finish();
         $cli->set_referencetime($now);
         $this->execute($cli);

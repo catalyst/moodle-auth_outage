@@ -529,6 +529,8 @@ EOT;
     public function test_when_we_change_allowed_ips_in_settings_it_updates_the_templates(): void {
         global $CFG;
 
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
+
         $this->create_outage();
 
         // Change settings.
@@ -546,6 +548,8 @@ EOT;
      */
     public function test_when_we_change_remove_selectors_in_settings_it_updates_the_templates(): void {
         global $CFG;
+
+        $this->expectOutputRegex('/Update maintenance mode configuration\..*Updating maintenance mode configuration complete\./s');
 
         $this->create_outage();
 

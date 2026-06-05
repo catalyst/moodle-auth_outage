@@ -34,4 +34,13 @@ $capabilities = [
             'user' => CAP_ALLOW,
         ],
     ],
+    'auth/outage:updatenotify' => [
+        'captype'       => 'write',
+        'riskbitmask'   => RISK_XSS,
+        'contextlevel'  => CONTEXT_SYSTEM,
+        'archetypes'    => [
+            'manager'   => CAP_ALLOW,
+        ]
+    ],
 ];
+

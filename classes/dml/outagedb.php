@@ -85,6 +85,82 @@ class outagedb {
     }
 
     /**
+     * Also sends all admins the event as a message
+     *
+     * @param $outage
+     * @param $event
+     */
+    private static function notify($outage, $event) {
+
+        $admins = get_admins();
+
+        foreach ($admins as $admin) {
+            self::notify_user($outage, $event, $admin);
+        }
+
+    }
+
+    /**
+     * Send outage info to one user
+     *
+     * @param $outage outage
+     * @param $event event
+     * @param $to user object
+     */
+    private static function notify_user($outage, $event, $to) {
+
+        global $SITE, $CFG;
+
+        $from = \core_user::get_user($event->userid);
+        if (!$from) {
+            return;
+        }
+        $fields = [
+            'site_shortname'    => $SITE->shortname,
+            'site_fullname'     => $SITE->fullname,
+            'site_wwwroot'      => $CFG->wwwroot,
+
+            'outage_id'         => $outage->id,
+            'outage_title'      => $outage->get_title(),
+            'outage_desc'       => clean_text($outage->get_description(), FORMAT_HTML),
+            'outage_start'      => userdate($outage->starttime, get_string('datetimeformat', 'auth_outage')),
+            'outage_stop'       => userdate($outage->stoptime, get_string('datetimeformat', 'auth_outage')),
+            'outage_duration'   => format_time($outage->get_duration_planned()),
+
+            'event_name'        => $event->get_name(),
+            'event_desc'        => $event->get_description(),
+            'event_link'        => $event->get_url()->out(),
+
+            'from_name'         => fullname($from),
+            'to_name'           => fullname($to),
+            'prefs_link'        => (new \moodle_url('/message/notificationpreferences.php'))->out(),
+
+        ];
+
+        $message = new \core\message\message();
+        $message->component = 'auth_outage';
+        $message->name = 'updatenotify';
+        $message->userto = $to;
+        $message->subject         = get_string('messagesubject', 'auth_outage', $fields);
+        $message->fullmessage     = get_string('messagetext',    'auth_outage', $fields);
+        $message->fullmessagehtml = get_string('messagehtml',    'auth_outage', $fields);
+        $message->fullmessageformat = FORMAT_HTML;
+
+        $threadid = generate_email_messageid('outage' . $outage->id);
+        $message->userfrom = $from;
+        $message->userfrom->customheaders = [
+            "In-Reply-To: $threadid",
+            "References: $threadid",
+            "Thread-Topic: " . $message->subject,
+            "Thread-Index: $threadid",
+        ];
+
+        $message->notification = 1;
+        message_send($message);
+
+    }
+
+    /**
      * Saves an outage to the database.
      *
      * @param outage $outage Outage to save.
@@ -114,6 +190,7 @@ class outagedb {
             ]);
             $event->add_record_snapshot('auth_outage', (object)(array) $outage);
             $event->trigger();
+            self::notify($outage, $event);
 
             // Create calendar entry.
             calendar::create($outage);
@@ -127,6 +204,7 @@ class outagedb {
 
             $event->add_record_snapshot('auth_outage', (object)(array) $outage);
             $event->trigger();
+            self::notify($outage, $event);
 
             // Remove the createdby field so it does not get updated.
             unset($outage->createdby);
@@ -170,6 +248,7 @@ class outagedb {
 
         $event->add_record_snapshot('auth_outage', $previous);
         $event->trigger();
+        self::notify($outage, $event);
 
         // Delete it and remove from calendar.
         $DB->delete_records('auth_outage', ['id' => $id]);

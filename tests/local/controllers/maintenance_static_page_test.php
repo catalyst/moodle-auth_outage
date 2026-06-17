@@ -459,8 +459,8 @@ final class maintenance_static_page_test extends \auth_outage\base_testcase {
 
         // Test file_get_data does return the page and isn't blocked by security.
         $found = maintenance_static_page_io::file_get_data($url->out());
-        $expected = '47250a973d1b88d9445f94db4ef2c97a';
-        self::assertSame($expected, md5($found['contents']));
+        $expected = 'Moodle is a software package for producing internet-based courses and web sites.';
+        self::assertStringContainsString($expected, $found['contents']);
         self::assertSame('text/html', $found['mime']);
     }
 

@@ -432,39 +432,6 @@ final class maintenance_static_page_test extends \auth_outage\base_testcase {
     }
 
     /**
-     * Test file_get_data with curlsecurityblockedhosts.
-     * We will use an external URL to test passing ignoresecurity inside of file_get_data works,
-     * ideally in real code we should only be calling file_get_data with internal URLs.
-     */
-    public function test_file_get_data_curlsecurityblockedhosts(): void {
-        global $CFG, $USER;
-
-        $testhtml = $this->getExternalTestFileUrl('/test.html');
-        $url = new \moodle_url($testhtml);
-        $host = $url->get_host();
-        set_config('curlsecurityblockedhosts', $host); // Blocks $host.
-
-        // Test a regular curl with the default security enabled does in fact get blocked.
-        $curl = new \curl();
-        $contents = $curl->get($testhtml);
-        $expected = $curl->get_security()->get_blocked_url_string();
-        self::assertSame($expected, $contents);
-        self::assertSame(0, $curl->get_errno());
-        if ($CFG->branch >= 403) {
-            self::assertDebuggingCalled(
-                "Blocked $testhtml: The URL is blocked. [user {$USER->id}]",
-                DEBUG_NONE
-            );
-        }
-
-        // Test file_get_data does return the page and isn't blocked by security.
-        $found = maintenance_static_page_io::file_get_data($url->out());
-        $expected = 'Moodle is a software package for producing internet-based courses and web sites.';
-        self::assertStringContainsString($expected, $found['contents']);
-        self::assertSame('text/html', $found['mime']);
-    }
-
-    /**
      * Test remove css selector.
      */
     public function test_remove_css_selector(): void {

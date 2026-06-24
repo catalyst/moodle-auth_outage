@@ -67,6 +67,7 @@ class edit extends moodleform {
         $mform->addHelpButton('title', 'title', 'auth_outage');
 
         $mform->addElement('editor', 'description', get_string('description', 'auth_outage'));
+        $mform->setType('description[text]', PARAM_RAW);
         $mform->addHelpButton('description', 'description', 'auth_outage');
 
         $mform->addElement('static', 'usagehints', '', get_string('textplaceholdershint', 'auth_outage'));
@@ -79,6 +80,7 @@ class edit extends moodleform {
             get_string('useaccesskey:desc', 'auth_outage'),
             0
         );
+        $mform->setType('useaccesskey', PARAM_BOOL);
 
         $mform->addElement('text', 'accesskey', get_string('accesskey', 'auth_outage'));
         $mform->setType('accesskey', PARAM_TEXT);

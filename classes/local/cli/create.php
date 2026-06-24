@@ -28,8 +28,7 @@ use coding_exception;
  * @copyright  2016 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create extends clibase
-{
+class create extends clibase {
     /**
      * @var mixed[] Defaults to use if given option is null.
      */
@@ -99,6 +98,7 @@ class create extends clibase
 
     /**
      * Executes the CLI.
+     * @throws cli_exception
      */
     public function execute() {
         // Help always overrides any other parameter.
@@ -270,31 +270,4 @@ class create extends clibase
         return $option;
     }
 
-    /**
-     * Ensures the given option is or can be converted to a bool.
-     * @param mixed $option The parameter to check.
-     * @param string $param Name of that parameter.
-     * @return bool The converted parameter.
-     * @throws cli_exception
-     */
-    private function merge_options_check_parameters_bool($option, $param) {
-        if (is_bool($option)) {
-            return $option;
-        }
-
-        if (is_string($option)) {
-            $option = strtoupper($option);
-            if (in_array($option, ['0', 'FALSE', 'NO', 'N'])) {
-                return false;
-            }
-            if (in_array($option, ['1', 'TRUE', 'YES', 'Y'])) {
-                return true;
-            }
-        }
-
-        throw new cli_exception(
-            get_string('clierrorinvalidvaluenotbool', 'auth_outage', ['param' => $param]),
-            cli_exception::ERROR_PARAMETER_INVALID
-        );
-    }
 }

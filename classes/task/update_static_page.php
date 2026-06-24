@@ -37,7 +37,10 @@ class update_static_page extends scheduled_task {
     }
 
     /**
-     * Executes the event.
+     * Executes the task: regenerates the maintenance static page for the next scheduled outage.
+     *
+     * @throws \coding_exception
+     * @throws \file_exception
      */
     public function execute() {
         outagelib::prepare_next_outage();

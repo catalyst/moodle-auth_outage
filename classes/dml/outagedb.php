@@ -48,6 +48,7 @@ class outagedb {
 
     /**
      * Gets all outage entries.
+     * @return outage[]
      */
     public static function get_all() {
         global $DB;
@@ -361,7 +362,7 @@ class outagedb {
         $data = $DB->get_records_select(
             'auth_outage',
             'starttime <= :datetime1 AND :datetime2 <= stoptime AND finished IS NULL',
-            ['datetime1' => $time, 'datetime2' => $time, 'datetime3' => $time],
+            ['datetime1' => $time, 'datetime2' => $time],
             'starttime ASC, stoptime DESC, title ASC',
             '*',
             0,

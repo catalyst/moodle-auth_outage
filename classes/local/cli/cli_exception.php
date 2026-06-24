@@ -79,6 +79,6 @@ class cli_exception extends Exception {
      * @param Exception|null $previous Another exception as reference or null.
      */
     public function __construct($message, $code = 1, ?Exception $previous = null) {
-        parent::__construct('*ERROR* ' . $message, $code, $previous = null);
+        parent::__construct('*ERROR* ' . $message, $code, $previous);
     }
 }

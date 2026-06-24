@@ -48,8 +48,9 @@ if ($mform->is_cancelled()) {
 
 $clone = optional_param('clone', 0, PARAM_INT);
 $edit = optional_param('edit', 0, PARAM_INT);
-if (array_key_exists('starttime', $_POST) && is_array($_POST['starttime'])) {
-    $start = optional_param_array('starttime', [], PARAM_INT);
+$startraw = optional_param_array('starttime', null, PARAM_INT);
+if (is_array($startraw) && !empty($startraw)) {
+    $start = $startraw;
 } else {
     $start = optional_param('starttime', 0, PARAM_INT);
 }

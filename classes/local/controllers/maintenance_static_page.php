@@ -51,7 +51,8 @@ class maintenance_static_page {
         } else {
             // Inject metadata into the header before output.
             if (!empty($outage->metadata)) {
-                header('X-Outage-Metadata: ' . $outage->metadata);
+                $safemeta = str_replace(["\r", "\n"], '', $outage->metadata);
+                header('X-Outage-Metadata: ' . $safemeta);
                 header('X-Outage-StartTime: ' . $outage->starttime);
                 header('X-Outage-EndTime: ' . $outage->stoptime);
             }

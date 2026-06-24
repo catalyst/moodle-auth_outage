@@ -68,7 +68,7 @@ if (!$viewbag['static']) {
     <style>
         <?php
             readfile($CFG->dirroot . '/auth/outage/views/warningbar/warningbar.css');
-            echo outagelib::get_config()->css;
+            echo preg_replace('/<\s*\/\s*style\s*>/i', '', outagelib::get_config()->css);
         ?>
     </style>
 

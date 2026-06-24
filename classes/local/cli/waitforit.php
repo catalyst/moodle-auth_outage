@@ -101,6 +101,7 @@ class waitforit extends clibase {
         $outage = $this->get_outage();
 
         while ($sleep = $this->wait_for_outage_to_start($outage)) {
+            $sleep = max(1, $sleep);
             if (is_null($this->sleepcallback)) {
                 $this->verbose('Sleeping for ' . $sleep . ' second(s).');
                 sleep($sleep);

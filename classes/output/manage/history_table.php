@@ -36,7 +36,7 @@ class history_table extends base_table {
     public function __construct() {
         parent::__construct();
 
-        $this->define_columns(['warning', 'starts', 'durationplanned', 'durationactual', 'title', 'actions']);
+        $this->define_columns(['warning', 'starts', 'duration', 'durationactual', 'title', 'created', 'modified', 'actions']);
 
         $this->define_headers([
                 get_string('tableheaderwarnbefore', 'auth_outage'),
@@ -44,6 +44,8 @@ class history_table extends base_table {
                 get_string('tableheaderdurationplanned', 'auth_outage'),
                 get_string('tableheaderdurationactual', 'auth_outage'),
                 get_string('tableheadertitle', 'auth_outage'),
+                get_string('tableheadercreatedby', 'auth_outage'),
+                get_string('tableheadermodifiedby', 'auth_outage'),
                 get_string('actions'),
             ]);
 
@@ -64,6 +66,8 @@ class history_table extends base_table {
                 format_time($outage->get_duration_planned()),
                 $finished,
                 $outage->get_title(),
+                $this->format_created($outage),
+                $this->format_modified($outage),
                 $this->create_data_buttons($outage, false),
             ]);
         }

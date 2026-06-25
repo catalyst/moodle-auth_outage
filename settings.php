@@ -89,7 +89,8 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_heading(
         'plugin',
         get_string('settingssectionplugin', 'auth_outage'),
-        get_string('settingssectionplugindescription', 'auth_outage')));
+        get_string('settingssectionplugindescription', 'auth_outage')
+    ));
 
     $settings->add(new admin_setting_configtextarea(
         'auth_outage/css',
@@ -152,7 +153,8 @@ if ($hassiteconfig) {
     // Clear '$settings' to prevent adding again outsite category.
     $settings = null;
     // Add options.
-    $ADMIN->add('auth_outage',
+    $ADMIN->add(
+        'auth_outage',
         new admin_externalpage(
             'auth_outage_manage',
             get_string('menumanage', 'auth_outage'),

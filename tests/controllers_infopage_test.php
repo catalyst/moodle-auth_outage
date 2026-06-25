@@ -27,7 +27,7 @@ use auth_outage\local\outage;
 use auth_outage\local\controllers\infopage;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/base_testcase.php');
+require_once(__DIR__ . '/base_testcase.php');
 
 /**
  * Tests performed on infopage controller class and update_static_page task class.
@@ -38,8 +38,7 @@ require_once(__DIR__.'/base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\local\controllers\infopage
  */
-class controllers_infopage_test extends base_testcase {
-
+final class controllers_infopage_test extends base_testcase {
     public function tearDown(): void {
         parent::tearDown();
     }
@@ -47,7 +46,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Tests the constructor.
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         new infopage();
@@ -56,7 +55,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Tests the constructor with given parameters.
      */
-    public function test_constructor_withparams() {
+    public function test_constructor_withparams(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         $_GET = ['id' => 1, 'static' => 'true'];
@@ -66,7 +65,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Tests the constructor with different id and outage id.
      */
-    public function test_constructor_idmismatch() {
+    public function test_constructor_idmismatch(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         $outage = $this->get_dummy_outage();
@@ -77,7 +76,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Tests the constructor with an invalid outage.
      */
-    public function test_constructor_invalidoutage() {
+    public function test_constructor_invalidoutage(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         $this->set_expected_exception('coding_exception', 'Provided outage is not a valid outage object. (My outage)');
@@ -87,7 +86,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Checks the output of the info page.
      */
-    public function test_output() {
+    public function test_output(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         $outage = $this->get_dummy_outage();
@@ -100,7 +99,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Checks the output of the info page.
      */
-    public function test_output_without_permission() {
+    public function test_output_without_permission(): void {
         $this->revoke_info_page_permissions();
         $this->assertFalse(has_capability('auth/outage:viewinfo', context_system::instance()));
 
@@ -114,7 +113,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Checks the output of the info page.
      */
-    public function test_output_without_permission_but_static() {
+    public function test_output_without_permission_but_static(): void {
         $this->revoke_info_page_permissions();
         $this->assertFalse(has_capability('auth/outage:viewinfo', context_system::instance()));
 
@@ -128,7 +127,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Checks the output of the info page.
      */
-    public function test_output_with_forcelogin() {
+    public function test_output_with_forcelogin(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         set_config('forcelogin', true);
@@ -143,7 +142,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Checks the output of the info page.
      */
-    public function test_output_with_forcelogin_if_static() {
+    public function test_output_with_forcelogin_if_static(): void {
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
         set_config('forcelogin', true);
@@ -159,7 +158,7 @@ class controllers_infopage_test extends base_testcase {
     /**
      * Tests the constructor enables SVG support.
      */
-    public function test_svgicons_is_true() {
+    public function test_svgicons_is_true(): void {
         global $CFG;
 
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));

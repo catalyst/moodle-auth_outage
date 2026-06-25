@@ -26,7 +26,7 @@ use invalid_parameter_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../../lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * outagelib class.
@@ -37,7 +37,6 @@ require_once(__DIR__.'/../../lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class outagelib {
-
     /** Outage start. */
     const OUTAGE_START = '<!-- OUTAGESTART -->';
 
@@ -135,7 +134,7 @@ class outagelib {
             $renderer = $PAGE->get_renderer('auth_outage');
             return $renderer->render_warningbar($active, $time, false, $preview);
         } catch (Exception $e) {
-            debugging('Exception occured while injecting our code: '.$e->getMessage());
+            debugging('Exception occured while injecting our code: ' . $e->getMessage());
             debugging($e->getTraceAsString(), DEBUG_DEVELOPER);
         }
     }
@@ -230,7 +229,7 @@ class outagelib {
             $message = get_config('moodle', 'maintenance_message');
             if ($message) {
                 debugging('Disabling $CFG->maintenance_message to allow our template page to take place.');
-                debugging('Previous value: '.$message);
+                debugging('Previous value: ' . $message);
                 // We cannot do much if forced config, but the logs will show the error.
                 unset_config('maintenance_message');
             }
@@ -253,7 +252,7 @@ class outagelib {
         self::$injectcalled = true;
 
         // Do not inject into admin/settings.php.
-        if ($_SERVER['SCRIPT_NAME'] == '/'.$CFG->admin.'/settings.php') {
+        if ($_SERVER['SCRIPT_NAME'] == '/' . $CFG->admin . '/settings.php') {
             if (optional_param('section', '', PARAM_RAW) === 'additionalhtml') {
                 return false;
             }
@@ -385,7 +384,7 @@ EOT;
      */
     public static function update_climaintenance_code($outage) {
         global $CFG;
-        $file = $CFG->dataroot.'/climaintenance.php';
+        $file = $CFG->dataroot . '/climaintenance.php';
 
         if (!is_null($outage) && !($outage instanceof outage)) {
             throw new coding_exception('$outage must be null or an outage object.');
@@ -405,7 +404,7 @@ EOT;
 
             $dir = dirname($file);
             if (!file_exists($dir) || !is_dir($dir)) {
-                throw new file_exception('Directory must exists: '.$dir);
+                throw new file_exception('Directory must exists: ' . $dir);
             }
             file_put_contents($file, $code);
         }
@@ -421,8 +420,10 @@ EOT;
 
         $message = [];
 
-        if (trim(self::get_config()->allowedips) != ''
-                && (!isset($CFG->auth_outage_bootstrap_loaded) || !$CFG->auth_outage_bootstrap_loaded)) {
+        if (
+            trim(self::get_config()->allowedips) != ''
+                && (!isset($CFG->auth_outage_bootstrap_loaded) || !$CFG->auth_outage_bootstrap_loaded)
+        ) {
             $message[] = get_string('configurationwarning', 'auth_outage');
         }
 

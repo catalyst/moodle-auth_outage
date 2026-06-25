@@ -30,7 +30,7 @@ use auth_outage\local\outage;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 
-require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 /**
  * Steps definitions related to auth_outage.
@@ -90,8 +90,8 @@ class behat_auth_outage extends behat_base {
         $data = [
             'autostart' => false,
             'finished' => null,
-            'title' => 'Example of '.$type.' outage',
-            'description' => 'An outage: '.$type,
+            'title' => 'Example of ' . $type . ' outage',
+            'description' => 'An outage: ' . $type,
         ];
         switch ($type) {
             case 'waiting':
@@ -121,7 +121,7 @@ class behat_auth_outage extends behat_base {
                 $data['stoptime'] = time() - (60 * 60 * 2); // Stopped 1 hour ago.
                 break;
             default:
-                throw new InvalidArgumentException('$type='.$type.' is not valid.');
+                throw new InvalidArgumentException('$type=' . $type . ' is not valid.');
         }
         outagedb::save(new outage($data));
     }
@@ -136,8 +136,8 @@ class behat_auth_outage extends behat_base {
         $expected = ($action == 'Edit') ? 2 : 1; // Edit is an action through the title or button.
         $found = $this->how_many_times_can_i_see_action($action);
         if ($found != $expected) {
-            throw new ExpectationException('"'.$action.'" action not found, expected '.$expected.
-                                           ' but found '.$found.'.', $this->getSession());
+            throw new ExpectationException('"' . $action . '" action not found, expected ' . $expected .
+                                           ' but found ' . $found . '.', $this->getSession());
         }
     }
 
@@ -149,7 +149,7 @@ class behat_auth_outage extends behat_base {
      */
     public function i_should_not_see_the_action($action) {
         if ($this->how_many_times_can_i_see_action($action) != 0) {
-            throw new ExpectationException('"'.$action.'" action was found', $this->getSession());
+            throw new ExpectationException('"' . $action . '" action was found', $this->getSession());
         }
     }
 
@@ -159,7 +159,7 @@ class behat_auth_outage extends behat_base {
      * @param string $name
      */
     public function i_should_see_an_empty_settings_text_area($name) {
-        $this->assertSession()->fieldValueEquals('s_auth_outage_'.$name, '');
+        $this->assertSession()->fieldValueEquals('s_auth_outage_' . $name, '');
     }
 
     /**
@@ -177,7 +177,7 @@ class behat_auth_outage extends behat_base {
      */
     private function how_many_times_can_i_see_action($action) {
         $selector = 'css';
-        $locator = "div[role='main'] a[title='".$action."']";
+        $locator = "div[role='main'] a[title='" . $action . "']";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
         return count($items);
     }
@@ -188,7 +188,7 @@ class behat_auth_outage extends behat_base {
      * @param string $action Action button to click.
      */
     public function i_click_on_the_action_button($action) {
-        $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='".$action."']");
+        $node = $this->get_selected_node('css_element', "div[role='main'] table nobr a[title='" . $action . "']");
         $this->ensure_node_is_visible($node);
         $node->click();
     }
@@ -205,7 +205,7 @@ class behat_auth_outage extends behat_base {
 
         $count = count($this->getSession()->getWindowNames());
         if ($count != 2) {
-            throw new ExpectationException('Number of windows: '.$count, $this->getSession());
+            throw new ExpectationException('Number of windows: ' . $count, $this->getSession());
         }
     }
 
@@ -220,17 +220,17 @@ class behat_auth_outage extends behat_base {
 
         $container = $this->getSession()->getPage()->findAll('css', $element);
         if (count($container) == 0) {
-            throw new ExpectationException('"'.$element.'" element not found', $this->getSession());
+            throw new ExpectationException('"' . $element . '" element not found', $this->getSession());
         }
         $container = $container[0];
 
         $xpathliteral = $this->getSession()->getSelectorsHandler()->xpathLiteral($text);
-        $xpath = "/descendant-or-self::*[contains(., $xpathliteral)]".
+        $xpath = "/descendant-or-self::*[contains(., $xpathliteral)]" .
                  "[count(descendant::*[contains(., $xpathliteral)]) = 0]";
 
         $found = $this->find_all('xpath', $xpath, false, $container);
         if (count($found) == 0) {
-            throw new ExpectationException('"'.$text.'" text was not found in the "'.$element.'" element', $this->getSession());
+            throw new ExpectationException('"' . $text . '" text was not found in the "' . $element . '" element', $this->getSession());
         }
 
         foreach ($found as $node) {
@@ -238,8 +238,10 @@ class behat_auth_outage extends behat_base {
                 return;
             }
         }
-        throw new ExpectationException('"'.$text.'" text was found in the "'.$element.'" element but was not visible',
-            $this->getSession());
+        throw new ExpectationException(
+            '"' . $text . '" text was found in the "' . $element . '" element but was not visible',
+            $this->getSession()
+        );
     }
 
     /**
@@ -252,7 +254,7 @@ class behat_auth_outage extends behat_base {
         $locator = "#auth_outage_warningbar_box";
         $items = $this->getSession()->getPage()->findAll($selector, $locator);
         if (count($items) > 0) {
-            throw new ExpectationException($locator.' found, not expected.', $this->getSession());
+            throw new ExpectationException($locator . ' found, not expected.', $this->getSession());
         }
     }
 
@@ -280,7 +282,7 @@ class behat_auth_outage extends behat_base {
             $row
         );
         if (($row['autostart'] != 'yes') && ($row['autostart'] != 'no')) {
-            throw new Exception('autostart must be yes or no, found: '.$row['autostart']);
+            throw new Exception('autostart must be yes or no, found: ' . $row['autostart']);
         }
         if ($row['finished'] == '') {
             $row['finished'] = null;
@@ -318,7 +320,7 @@ class behat_auth_outage extends behat_base {
                 $seconds += 5; // Give it some extra time to pool the server.
                 break;
             default:
-                throw new Exception('Invalid $what='.$what);
+                throw new Exception('Invalid $what=' . $what);
         }
         if ($seconds >= 0) {
             $seconds++; // Give one extra second for things to happen.
@@ -332,7 +334,7 @@ class behat_auth_outage extends behat_base {
      */
     private function is_behat_3() {
         global $version;
-        list($behat) = explode('.', $version);
+        [$behat] = explode('.', $version);
         return ($behat >= 3);
     }
 }

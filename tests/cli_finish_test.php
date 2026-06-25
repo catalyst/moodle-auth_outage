@@ -29,7 +29,7 @@ use auth_outage\local\cli\finish;
 use auth_outage\local\cli\cli_exception;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/cli_testcase.php');
+require_once(__DIR__ . '/cli_testcase.php');
 
 /**
  * finish_test test class.
@@ -40,8 +40,7 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\finish
  */
-class cli_finish_test extends cli_testcase {
-
+final class cli_finish_test extends cli_testcase {
     public function tearDown(): void {
         parent::tearDown();
     }
@@ -49,7 +48,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests the constructor.
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         $cli = new finish();
         self::assertNotNull($cli);
     }
@@ -57,7 +56,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests the generated options and shortcuts.
      */
-    public function test_options() {
+    public function test_options(): void {
         $cli = new finish();
 
         $options = $cli->generate_options();
@@ -74,7 +73,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests the help.
      */
-    public function test_help() {
+    public function test_help(): void {
         $this->set_parameters(['--help']);
         $cli = new finish();
         $text = $this->execute($cli);
@@ -85,7 +84,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests if running without arguments.
      */
-    public function test_noarguments() {
+    public function test_noarguments(): void {
         $cli = new finish();
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_MISSING);
         $this->execute($cli);
@@ -94,7 +93,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests finishing an already ended outage.
      */
-    public function test_endedoutage() {
+    public function test_endedoutage(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
@@ -105,7 +104,7 @@ class cli_finish_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id='.$id]);
+        $this->set_parameters(['-id=' . $id]);
         $cli = new finish();
         $cli->set_referencetime($now);
         $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_INVALID);
@@ -115,7 +114,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests finishing an outage.
      */
-    public function test_finish() {
+    public function test_finish(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
@@ -126,7 +125,7 @@ class cli_finish_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id='.$id]);
+        $this->set_parameters(['-id=' . $id]);
         $cli = new finish();
         $cli->set_referencetime($now);
         $this->execute($cli);
@@ -135,7 +134,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests finishing an active outage when it does not exists.
      */
-    public function test_activenotfound() {
+    public function test_activenotfound(): void {
         self::setAdminUser();
         $this->set_parameters(['-a']);
         $cli = new finish();
@@ -146,7 +145,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests providing an invalid outage id.
      */
-    public function test_invalidid() {
+    public function test_invalidid(): void {
         self::setAdminUser();
         $this->set_parameters(['-id=theid']);
         $cli = new finish();
@@ -157,7 +156,7 @@ class cli_finish_test extends cli_testcase {
     /**
      * Tests when the outage is not found.
      */
-    public function test_idnotfound() {
+    public function test_idnotfound(): void {
         self::setAdminUser();
         $this->set_parameters(['-id=99999']);
         $cli = new finish();

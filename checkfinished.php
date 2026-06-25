@@ -31,7 +31,7 @@ header('Cache-Control: public, max-age=10,s-maxage=10');
  // @codingStandardsIgnoreEnd
 define('NO_AUTH_OUTAGE', true);
 
-require_once(__DIR__.'/../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $active = outagedb::get_active();
 

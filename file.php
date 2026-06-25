@@ -45,13 +45,13 @@ if (count($parts) != 2) {
 $mime = base64_decode($parts[1]);
 
 // Detect type, we only support css or PNG images.
-header('Content-Type: '.$mime);
+header('Content-Type: ' . $mime);
 
 // Use cache.
 $lifetime = 60 * 60 * 24; // 1 day.
-header('Expires: '.gmdate('D, d M Y H:i:s', time() + $lifetime).' GMT');
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $lifetime) . ' GMT');
 header('Pragma: ');
-header('Cache-Control: public, max-age='.$lifetime);
+header('Cache-Control: public, max-age=' . $lifetime);
 header('Accept-Ranges: none');
 
 
@@ -60,7 +60,7 @@ header('Accept-Ranges: none');
  */
 function auth_outage_bootstrap_callback() {
     // Not using classes as classloader has not been initialized yet. Keep it minimalist.
-    require_once(__DIR__.'/lib.php');
+    require_once(__DIR__ . '/lib.php');
     $file = auth_outage_get_climaintenance_resource_file($_GET['file']);
     if (is_null($file)) {
         // @codingStandardsIgnoreStart
@@ -79,5 +79,5 @@ require_once(__DIR__.'/../../config.php');
 
 // We should never reach here if config.php and auth/outage/bootstrap.php intercepted it correctly.
 // If config.php did not execute the callback function we can use the debugging function here.
-debugging('Your config.php is not properly configured for auth/outage plugin. '.
+debugging('Your config.php is not properly configured for auth/outage plugin. ' .
           'Please check the plugin settings for information.');

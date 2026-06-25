@@ -38,7 +38,7 @@ use auth_outage\dml\outagedb;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\dml\outagedb
  */
-class dml_events_test extends \core_phpunit\testcase {
+final class dml_events_test extends \core_phpunit\testcase {
     /**
      * @var outage|null Outage used in the tests.
      */
@@ -53,7 +53,7 @@ class dml_events_test extends \core_phpunit\testcase {
      * Saves an outage and check if the event was created.
      * @return array With the outage id and the event id.
      */
-    public function test_save() {
+    public function test_save(): void {
         global $DB;
         self::setAdminUser();
         $this->resetAfterTest(true);
@@ -85,7 +85,7 @@ class dml_events_test extends \core_phpunit\testcase {
     /**
      * Updates an outage and checks if the event was updated.
      */
-    public function test_update() {
+    public function test_update(): void {
         global $DB;
 
         self::setAdminUser();
@@ -123,7 +123,7 @@ class dml_events_test extends \core_phpunit\testcase {
     /**
      * Deletes an outage and checks if the event was deleted.
      */
-    public function test_delete() {
+    public function test_delete(): void {
         global $DB;
 
         self::setAdminUser();

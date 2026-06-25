@@ -22,7 +22,7 @@ use html_writer;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/tablelib.php');
+require_once($CFG->libdir . '/tablelib.php');
 
 /**
  * base_table class.
@@ -58,7 +58,7 @@ class base_table extends flexible_table {
         global $PAGE;
 
         $id = (is_null($id) ? self::$autoid++ : $id);
-        parent::__construct('auth_outage_manage_'.$id);
+        parent::__construct('auth_outage_manage_' . $id);
 
         $this->define_baseurl($PAGE->url);
         $this->set_attribute('class', 'generaltable admintable');
@@ -77,7 +77,7 @@ class base_table extends flexible_table {
         // View button.
         $buttons .= html_writer::link(
             new moodle_url('/auth/outage/info.php', ['id' => $outage->id]),
-            $OUTPUT->pix_icon('t/preview', get_string('view'), 'moodle', array('class' => 'iconsmall')),
+            $OUTPUT->pix_icon('t/preview', get_string('view'), 'moodle', ['class' => 'iconsmall']),
             [
                 'title' => get_string('view'),
                 'target' => '_blank',
@@ -88,7 +88,7 @@ class base_table extends flexible_table {
         if ($editdelete) {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/edit.php', ['edit' => $outage->id]),
-                $OUTPUT->pix_icon('t/edit', get_string('edit'), 'moodle', array('class' => 'iconsmall')),
+                $OUTPUT->pix_icon('t/edit', get_string('edit'), 'moodle', ['class' => 'iconsmall']),
                 ['title' => get_string('edit')]
             );
         }
@@ -96,7 +96,7 @@ class base_table extends flexible_table {
         // Clone button.
         $buttons .= html_writer::link(
             new moodle_url('/auth/outage/edit.php', ['clone' => $outage->id]),
-            $OUTPUT->pix_icon('t/copy', get_string('clone', 'auth_outage'), 'moodle', array('class' => 'iconsmall')),
+            $OUTPUT->pix_icon('t/copy', get_string('clone', 'auth_outage'), 'moodle', ['class' => 'iconsmall']),
             ['title' => get_string('clone', 'auth_outage')]
         );
 
@@ -104,7 +104,7 @@ class base_table extends flexible_table {
         if ($outage->is_ongoing()) {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/finish.php', ['id' => $outage->id]),
-                $OUTPUT->pix_icon('t/check', get_string('finish', 'auth_outage'), 'moodle', array('class' => 'iconsmall')),
+                $OUTPUT->pix_icon('t/check', get_string('finish', 'auth_outage'), 'moodle', ['class' => 'iconsmall']),
                 ['title' => get_string('finish', 'auth_outage')]
             );
         }
@@ -113,7 +113,7 @@ class base_table extends flexible_table {
         if ($editdelete) {
             $buttons .= html_writer::link(
                 new moodle_url('/auth/outage/delete.php', ['id' => $outage->id]),
-                $OUTPUT->pix_icon('t/delete', get_string('delete'), 'moodle', array('class' => 'iconsmall')),
+                $OUTPUT->pix_icon('t/delete', get_string('delete'), 'moodle', ['class' => 'iconsmall']),
                 ['title' => get_string('delete')]
             );
         }

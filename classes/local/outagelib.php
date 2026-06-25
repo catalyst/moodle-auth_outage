@@ -293,6 +293,10 @@ class outagelib {
         // single-quotes (and double for the sake of it) are present otherwise it would break the code.
         $allowedips = addslashes($allowedips);
 
+        // Escape the access key before substitution into the PHP literal to prevent
+        // code injection via a maliciously crafted access key value.
+        $accesskey = addslashes((string)$accesskey);
+
         $cookiesecure = is_moodle_cookie_secure();
 
         // Since Moodle 4.3 cookiehttponly is default to true and this CFG is not set.

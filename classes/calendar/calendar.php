@@ -40,16 +40,18 @@ class calendar {
     /**
      * Create an event on the calendar for this outage.
      * @param outage $outage Outage to be added to the calendar.
+     * @return void
      */
-    public static function create(outage $outage) {
+    public static function create(outage $outage): void {
         calendar_event::create(self::create_data($outage));
     }
 
     /**
      * Updates an event on the calendar based on this outage.
      * @param outage $outage Outage to be updated in the calendar.
+     * @return void
      */
-    public static function update(outage $outage) {
+    public static function update(outage $outage): void {
         $event = self::load($outage->id);
 
         if (is_null($event)) {
@@ -63,8 +65,9 @@ class calendar {
     /**
      * Removes an event from the calendar related to this outage.
      * @param int $outageid Id of outage to be deleted from the calendar.
+     * @return void
      */
-    public static function delete($outageid) {
+    public static function delete(int $outageid): void {
         $event = self::load($outageid);
 
         // If not found (was not created before) ignore it.

@@ -47,11 +47,6 @@ class infopage {
      * @param array|null $params Parameters to use or null to get from Moodle API (request).
      */
     public function __construct(?array $params = null) {
-        global $CFG;
-        // Enable SVG support here to make sure all SVG files
-        // used in the current theme are served properly.
-        $CFG->svgicons = true;
-
         if (is_null($params)) {
             $params = [
                 'id' => optional_param('id', null, PARAM_INT),
@@ -92,6 +87,8 @@ class infopage {
      */
     public function output() {
         global $PAGE, $CFG, $OUTPUT;
+        $previoussvg = $CFG->svgicons ?? null;
+        $CFG->svgicons = true;
 
         if (is_null($this->outage)) {
             redirect(new moodle_url('/'));
@@ -111,7 +108,8 @@ class infopage {
 
         // Inject metadata into the header before output.
         if (!empty($this->outage->metadata)) {
-            header('X-Outage-Metadata: ' . $this->outage->metadata);
+            $safemeta = str_replace(["\r", "\n"], '', $this->outage->metadata);
+            header('X-Outage-Metadata: ' . $safemeta);
             header('X-Outage-StartTime: ' . $this->outage->starttime);
             header('X-Outage-EndTime: ' . $this->outage->stoptime);
         }
@@ -123,10 +121,8 @@ class infopage {
         ];
         require($CFG->dirroot . '/auth/outage/views/info/content.php');
 
-        // Moodle 2.7 did not check for CLI mode, which was fixed later.
-        if (!($CFG->branch == '27' && CLI_SCRIPT)) {
-            echo $OUTPUT->footer();
-        }
+        echo $OUTPUT->footer();
+        $CFG->svgicons = $previoussvg;
     }
 
     /**

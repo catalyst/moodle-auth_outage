@@ -69,6 +69,7 @@ if (is_callable('auth_outage_bootstrap_callback')) {
 }
 
 // 3) Check for allowed scripts or IPs during outages.
+$outageinfo = false;
 if (!empty($_SERVER['REQUEST_URI'])) {
     $rooturl = parse_url($CFG->wwwroot);
     $path = '';

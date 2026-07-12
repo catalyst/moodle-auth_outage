@@ -187,8 +187,8 @@ class renderer extends plugin_renderer_base {
         $outagehtml = html_writer::div(
             html_writer::tag(
                 'blockquote',
-                html_writer::div(html_writer::tag('b', $outage->get_title(), ['data-id' => $outage->id])) .
-                             html_writer::div(html_writer::tag('i', $outage->get_description())) .
+                html_writer::div(html_writer::tag('b', format_string($outage->get_title()), ['data-id' => $outage->id])) .
+                             html_writer::div(html_writer::tag('i', format_text($outage->get_description(), FORMAT_HTML))) .
                              html_writer::div(
                                  html_writer::tag('b', get_string('tableheaderwarnbefore', 'auth_outage') . ': ') .
                                  format_time($outage->get_warning_duration())

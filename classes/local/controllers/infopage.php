@@ -87,10 +87,6 @@ class infopage {
      */
     public function output() {
         global $PAGE, $CFG, $OUTPUT;
-        // Enable SVG support here to make sure all SVG files
-        // used in the current theme are served properly.
-        $previoussvg = $CFG->svgicons ?? null;
-        $CFG->svgicons = true;
 
         if (is_null($this->outage)) {
             redirect(new moodle_url('/'));
@@ -100,6 +96,12 @@ class infopage {
         if (!$this->static && !has_capability('auth/outage:viewinfo', context_system::instance())) {
             redirect(new moodle_url('/'));
         }
+
+        // Enable SVG support here to make sure all SVG files
+        // used in the current theme are served properly.
+        $previoussvg = $CFG->svgicons ?? null;
+        $CFG->svgicons = true;
+
         $PAGE->set_context(context_system::instance());
         $PAGE->set_title($this->outage->get_title());
         $PAGE->set_heading($this->outage->get_title());

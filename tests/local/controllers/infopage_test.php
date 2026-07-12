@@ -154,15 +154,23 @@ final class infopage_test extends \auth_outage\base_testcase {
     }
 
     /**
-     * Tests the constructor enables SVG support.
+     * Tests that rendering the page enables SVG support and restores the previous value afterwards.
      */
-    public function test_svgicons_is_true(): void {
+    public function test_svgicons_is_restored_after_output(): void {
         global $CFG;
 
         $this->assertTrue(has_capability('auth/outage:viewinfo', context_system::instance()));
 
+        $outage = $this->get_dummy_outage();
         $CFG->svgicons = false;
-        new infopage();
-        self::assertTrue($CFG->svgicons);
+
+        $info = new infopage(['outage' => $outage, 'static' => false]);
+        // Constructing the page should not touch $CFG->svgicons.
+        self::assertFalse($CFG->svgicons);
+
+        $info->get_output();
+
+        // Svgicons should be restored to its original value once rendering has finished.
+        self::assertFalse($CFG->svgicons);
     }
 }

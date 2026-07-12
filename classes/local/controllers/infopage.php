@@ -123,10 +123,7 @@ class infopage {
         ];
         require($CFG->dirroot . '/auth/outage/views/info/content.php');
 
-        // Moodle 2.7 did not check for CLI mode, which was fixed later.
-        if (!($CFG->branch == '27' && CLI_SCRIPT)) {
-            echo $OUTPUT->footer();
-        }
+        echo $OUTPUT->footer();
         $CFG->svgicons = $previoussvg;
     }
 

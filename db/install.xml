@@ -21,9 +21,14 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_createdby" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="fk_modifiedby" TYPE="foreign" FIELDS="modifiedby" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
         <INDEX NAME="start_stop_title" UNIQUE="false" FIELDS="starttime, stoptime, title"/>
+        <INDEX NAME="ix_stoptime_finished" UNIQUE="false" FIELDS="stoptime, finished"/>
+        <INDEX NAME="ix_createdby" UNIQUE="false" FIELDS="createdby"/>
+        <INDEX NAME="ix_modifiedby" UNIQUE="false" FIELDS="modifiedby"/>
       </INDEXES>
     </TABLE>
   </TABLES>

@@ -51,6 +51,7 @@ class outagelib {
     /**
      * Fetches page.
      * @param string $file file to be fetched
+     * @return array{contents: string|false, mime: string}
      */
     public static function fetch_page($file) {
         global $CFG;
@@ -69,6 +70,7 @@ class outagelib {
 
     /**
      * Resets inject called to allow the code to be regenerated.
+     * @return void
      */
     public static function reset_injectcalled() {
         self::$injectcalled = false;
@@ -77,6 +79,7 @@ class outagelib {
     /**
      * Given a time, usually now, when is the next outage window?
      * @param int $time time for next window
+     * @return int
      */
     public static function get_next_window($time = null) {
 

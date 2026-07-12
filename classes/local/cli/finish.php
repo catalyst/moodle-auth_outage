@@ -56,6 +56,7 @@ class finish extends clibase {
 
     /**
      * Executes the CLI.
+     * @throws cli_exception
      */
     public function execute() {
         // Help always overrides any other parameter.

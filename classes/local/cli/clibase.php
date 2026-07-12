@@ -114,7 +114,6 @@ abstract class clibase {
      * Change session to admin user.
      */
     protected function become_admin_user() {
-        global $DB;
         $user = get_admin();
         unset($user->description);
         unset($user->access);

@@ -318,7 +318,8 @@ e.e.e.e/20');
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' -->';
+            $safeaccesskey = htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . $safeaccesskey . ' -->';
         }
 
         if (!$isphpunit) {
@@ -402,7 +403,8 @@ if ((time() >= 123) && (time() < 456)) {
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' -->';
+            $safeaccesskey = htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . $safeaccesskey . ' -->';
         }
 
         if (!$isphpunit) {

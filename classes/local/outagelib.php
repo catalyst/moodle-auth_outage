@@ -331,7 +331,8 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
         }
 
         if ({{USEACCESSKEY}} && $accesskeyblocked) {
-            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' -->';
+            $safeaccesskey = htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . $safeaccesskey . ' -->';
         }
 
         if (!$isphpunit) {

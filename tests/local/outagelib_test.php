@@ -272,7 +272,7 @@ if ((time() >= 123) && (time() < 456)) {
         require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
     }
     // Put access key as a cookie if given. This stops the need to put it as a url param on every request.
-    $urlaccesskey = optional_param('accesskey', null, PARAM_TEXT);
+    $urlaccesskey = optional_param('accesskey', null, PARAM_ALPHANUM);
     $isphpunit = defined('PHPUNIT_TEST');
 
     if (!empty($urlaccesskey) && !$isphpunit) {
@@ -318,7 +318,8 @@ e.e.e.e/20');
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
+            $safeaccesskey = htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . $safeaccesskey . ' -->';
         }
 
         if (!$isphpunit) {
@@ -358,7 +359,7 @@ if ((time() >= 123) && (time() < 456)) {
         require_once($CFG->dirroot.'/lib/classes/ip_utils.php');
     }
     // Put access key as a cookie if given. This stops the need to put it as a url param on every request.
-    $urlaccesskey = optional_param('accesskey', null, PARAM_TEXT);
+    $urlaccesskey = optional_param('accesskey', null, PARAM_ALPHANUM);
     $isphpunit = defined('PHPUNIT_TEST');
 
     if (!empty($urlaccesskey) && !$isphpunit) {
@@ -402,7 +403,8 @@ if ((time() >= 123) && (time() < 456)) {
         }
 
         if (true && $accesskeyblocked) {
-            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: '. $useraccesskey .' -->';
+            $safeaccesskey = htmlspecialchars($useraccesskey ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            echo '<!-- auth_outage blocked by missing or incorrect access key, access key given: ' . $safeaccesskey . ' -->';
         }
 
         if (!$isphpunit) {

@@ -37,14 +37,31 @@ if (!isset($_GET['file'])) {
     die('Missing file parameter.');
 }
 
-$parts = explode('.', $_GET['file']);
+$rawfile = $_GET['file'];
+if (!preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $rawfile)) {
+    http_response_code(400);
+    die('Invalid file parameter.');
+}
+
+$parts = explode('.', $rawfile);
 if (count($parts) != 2) {
     http_response_code(400);
     die('Invalid file requested.');
 }
-$mime = base64_decode($parts[1]);
+$extension = strtolower(pathinfo($parts[0], PATHINFO_EXTENSION));
+$allowedmimes = [
+    'css'  => 'text/css',
+    'png'  => 'image/png',
+    'jpg'  => 'image/jpeg',
+    'jpeg' => 'image/jpeg',
+    'gif'  => 'image/gif',
+];
+if (!array_key_exists($extension, $allowedmimes)) {
+    http_response_code(400);
+    die('Unsupported file type.');
+}
+$mime = $allowedmimes[$extension];
 
-// Detect type, we only support css or PNG images.
 header('Content-Type: ' . $mime);
 
 // Use cache.

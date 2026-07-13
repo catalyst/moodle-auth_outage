@@ -180,6 +180,7 @@ class outagelib {
             'default_warning_duration' => (string)(60 * 60),
             'default_title'            => get_string('defaulttitlevalue', 'auth_outage'),
             'default_description'      => get_string('defaultdescriptionvalue', 'auth_outage'),
+            'default_metadata'         => '',
             'remove_selectors'         => ".usermenu\n.logininfo\n.homelink",
         ];
     }

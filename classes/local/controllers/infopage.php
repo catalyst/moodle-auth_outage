@@ -107,16 +107,17 @@ class infopage {
         $PAGE->set_heading($this->outage->get_title());
         $PAGE->set_url(new moodle_url('/auth/outage/info.php'));
 
-        // No hooks injecting into this page, do it manually.
-        echo outagelib::get_inject_code();
-
-        // Inject metadata into the header before output.
+        // Inject metadata into the header before any output starts, otherwise header() will
+        // fail once outagelib::get_inject_code() below has echoed anything.
         if (!empty($this->outage->metadata)) {
             $safemeta = str_replace(["\r", "\n"], '', $this->outage->metadata);
             header('X-Outage-Metadata: ' . $safemeta);
             header('X-Outage-StartTime: ' . $this->outage->starttime);
             header('X-Outage-EndTime: ' . $this->outage->stoptime);
         }
+
+        // No hooks injecting into this page, do it manually.
+        echo outagelib::get_inject_code();
 
         echo $OUTPUT->header();
         $viewbag = [

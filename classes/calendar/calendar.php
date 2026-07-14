@@ -20,7 +20,7 @@ use auth_outage\local\outage;
 use calendar_event;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/calendar/lib.php');
+require_once($CFG->dirroot . '/calendar/lib.php');
 
 /**
  * calendar class.
@@ -53,7 +53,7 @@ class calendar {
         $event = self::load($outage->id);
 
         if (is_null($event)) {
-            debugging('Cannot update calendar entry for outage #'.$outage->id.', event not found. Creating it...');
+            debugging('Cannot update calendar entry for outage #' . $outage->id . ', event not found. Creating it...');
             self::create($outage);
         } else {
             $event->update(self::create_data($outage), false);
@@ -69,7 +69,7 @@ class calendar {
 
         // If not found (was not created before) ignore it.
         if (is_null($event)) {
-            debugging('Cannot delete calendar entry for outage #'.$outageid.', event not found. Ignoring it...');
+            debugging('Cannot delete calendar entry for outage #' . $outageid . ', event not found. Ignoring it...');
         } else {
             $event->delete();
         }

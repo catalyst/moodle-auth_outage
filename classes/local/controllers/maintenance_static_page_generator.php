@@ -74,7 +74,6 @@ class maintenance_static_page_generator {
         $this->io->cleanup();
 
         if (!is_null($this->dom)) {
-
             // This can take a while to process using repeated curls.
             core_php_time_limit::raise();
 
@@ -184,9 +183,9 @@ class maintenance_static_page_generator {
                 $fullurl = $originalurl;
             } else if ($originalurl[0] == '/') {
                 $rooturl = parse_url($CFG->wwwroot);
-                $fullurl = $rooturl['scheme'].'://'.$rooturl['host'].$originalurl;
+                $fullurl = $rooturl['scheme'] . '://' . $rooturl['host'] . $originalurl;
             } else {
-                $fullurl = $baseref.'/'.$originalurl;
+                $fullurl = $baseref . '/' . $originalurl;
             }
 
             $saved = $this->io->save_url_file($fullurl);
@@ -253,7 +252,7 @@ class maintenance_static_page_generator {
                     $fullurl = (string) new moodle_url($matches[1]);
                 }
                 $newurl = $this->io->generate_file_url($fullurl);
-                $updated = preg_replace(self::PATTERN, ' url('.$newurl.') ', $style);
+                $updated = preg_replace(self::PATTERN, ' url(' . $newurl . ') ', $style);
                 $element->setAttribute('style', $updated);
             }
         }

@@ -38,7 +38,7 @@ use auth_outage\calendar\calendar;
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers          \auth_outage\calendar\calendar
  */
-class calendar_test extends \core_phpunit\testcase {
+final class calendar_test extends \core_phpunit\testcase {
     /**
      * @var outage|null The calendar entry owner.
      */
@@ -47,7 +47,7 @@ class calendar_test extends \core_phpunit\testcase {
     /**
      * Creates an outage and checks if its in the calendar.
      */
-    public function test_create() {
+    public function test_create(): void {
         $this->resetAfterTest(true);
         self::setAdminUser();
 
@@ -68,7 +68,7 @@ class calendar_test extends \core_phpunit\testcase {
     /**
      * Updates an outage and checks the calendar.
      */
-    public function test_update() {
+    public function test_update(): void {
         $this->resetAfterTest(true);
         self::setAdminUser();
 
@@ -92,7 +92,7 @@ class calendar_test extends \core_phpunit\testcase {
     /**
      * Deletes an outage and checks the calendar.
      */
-    public function test_delete() {
+    public function test_delete(): void {
         $this->resetAfterTest(true);
         self::setAdminUser();
 
@@ -117,7 +117,7 @@ class calendar_test extends \core_phpunit\testcase {
     /**
      * Try to update a non existing outage.
      */
-    public function test_update_notfound() {
+    public function test_update_notfound(): void {
         $this->resetAfterTest(true);
         self::setAdminUser();
 
@@ -140,7 +140,7 @@ class calendar_test extends \core_phpunit\testcase {
     /**
      * Try to delete a non existing outage.
      */
-    public function test_delete_notfound() {
+    public function test_delete_notfound(): void {
         $this->resetAfterTest(true);
         self::setAdminUser();
 

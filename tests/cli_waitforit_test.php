@@ -29,7 +29,7 @@ use auth_outage\local\cli\waitforit;
 use auth_outage\local\cli\cli_exception;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/cli_testcase.php');
+require_once(__DIR__ . '/cli_testcase.php');
 
 /**
  * waitforit_test test class.
@@ -40,8 +40,7 @@ require_once(__DIR__.'/cli_testcase.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \auth_outage\local\cli\waitforit
  */
-class cli_waitforit_test extends cli_testcase {
-
+final class cli_waitforit_test extends cli_testcase {
     public function tearDown(): void {
         parent::tearDown();
     }
@@ -49,7 +48,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests the constructor.
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         $cli = new waitforit();
         self::assertNotNull($cli);
     }
@@ -57,7 +56,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests the generated options.
      */
-    public function test_generateoptions() {
+    public function test_generateoptions(): void {
         $cli = new waitforit();
         $options = $cli->generate_options();
         foreach (array_keys($options) as $k) {
@@ -68,7 +67,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests the generated shortcut options.
      */
-    public function test_generateshortcuts() {
+    public function test_generateshortcuts(): void {
         $cli = new waitforit();
         $options = $cli->generate_options();
         $shorts = $cli->generate_shortcuts();
@@ -80,7 +79,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests if help works.
      */
-    public function test_help() {
+    public function test_help(): void {
         $this->set_parameters(['--help']);
         $cli = new waitforit();
         $text = $this->execute($cli);
@@ -91,7 +90,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Checks if providing an outageid and active parameter.
      */
-    public function test_bothparams() {
+    public function test_bothparams(): void {
         $this->set_parameters(['--outageid=1', '--active']);
         $cli = new waitforit();
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
@@ -101,7 +100,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests with an invalid outage id
      */
-    public function test_invalidoutageid() {
+    public function test_invalidoutageid(): void {
         $this->set_parameters(['-id=-1']);
         $cli = new waitforit();
         $this->set_expected_cli_exception(cli_exception::ERROR_PARAMETER_INVALID);
@@ -111,7 +110,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests with an active outage when it does not exists.
      */
-    public function test_outagenotfound() {
+    public function test_outagenotfound(): void {
         $this->set_parameters(['-a']);
         $cli = new waitforit();
         $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_NOT_FOUND);
@@ -121,7 +120,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests with an outage that already ended.
      */
-    public function test_endedoutage() {
+    public function test_endedoutage(): void {
         self::setAdminUser();
         $now = time();
         $id = outagedb::save(new outage([
@@ -132,7 +131,7 @@ class cli_waitforit_test extends cli_testcase {
             'title' => 'Title',
             'description' => 'Description',
         ]));
-        $this->set_parameters(['-id='.$id]);
+        $this->set_parameters(['-id=' . $id]);
         $cli = new waitforit();
         $cli->set_referencetime($now);
         $this->set_expected_cli_exception(cli_exception::ERROR_OUTAGE_INVALID);
@@ -142,7 +141,7 @@ class cli_waitforit_test extends cli_testcase {
     /**
      * Tests waiting for an existing active outage, verbose mode.
      */
-    public function test_activeverbose() {
+    public function test_activeverbose(): void {
         self::setAdminUser();
         $now = time();
         outagedb::save(new outage([

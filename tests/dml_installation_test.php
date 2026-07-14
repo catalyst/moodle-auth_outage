@@ -29,7 +29,7 @@ use auth_outage\local\outage;
 use auth_outage\dml\outagedb;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/base_testcase.php');
+require_once(__DIR__ . '/base_testcase.php');
 
 /**
  * installation_test test class.
@@ -42,8 +42,7 @@ require_once(__DIR__.'/base_testcase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \auth_outage\dml\outagedb
  */
-class dml_installation_test extends base_testcase {
-
+final class dml_installation_test extends base_testcase {
     public function tearDown(): void {
         parent::tearDown();
     }
@@ -53,7 +52,7 @@ class dml_installation_test extends base_testcase {
      *
      * See Issue #57.
      */
-    public function test_uninstall() {
+    public function test_uninstall(): void {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -78,24 +77,33 @@ class dml_installation_test extends base_testcase {
         self::assertSame(1, $DB->count_records_select('event', "eventtype = 'auth_outage'", null));
 
         // Uninstall plugin.
-        require_once($CFG->libdir.'/adminlib.php');
+        require_once($CFG->libdir . '/adminlib.php');
         $progress = new \progress_trace_buffer(new \text_progress_trace(), false);
         \core_plugin_manager::instance()->uninstall_plugin('auth_outage', $progress);
         $progress->finished();
         self::assertStringContainsString('++ Success ++', $progress->get_buffer());
 
         // Check ...
-        self::assertSame(0, $DB->count_records_select('event', "eventtype = 'auth_outage'", null),
-            'The outage events were not removed.');
-        self::assertFalse(file_exists($CFG->dataroot.'/climaintenance.php'),
-            'The maintenance template file was not deleted.');
-        self::assertFalse(get_config('moodle', 'maintenance_later'),
-            'Maintenance later must not be set.'); // Issue #57.
-        self::assertFalse($dbman->table_exists('auth_outage'),
-            'Table "auth_outage" was not dropped.');
+        self::assertSame(
+            0,
+            $DB->count_records_select('event', "eventtype = 'auth_outage'", null),
+            'The outage events were not removed.'
+        );
+        self::assertFalse(
+            file_exists($CFG->dataroot . '/climaintenance.php'),
+            'The maintenance template file was not deleted.'
+        );
+        self::assertFalse(
+            get_config('moodle', 'maintenance_later'),
+            'Maintenance later must not be set.'
+        ); // Issue #57.
+        self::assertFalse(
+            $dbman->table_exists('auth_outage'),
+            'Table "auth_outage" was not dropped.'
+        );
 
         // Create tables back so tests do not fail with MySQL ...
-        require_once($CFG->libdir.'/upgradelib.php');
-        $DB->get_manager()->install_from_xmldb_file($CFG->dirroot.'/auth/outage/db/install.xml');
+        require_once($CFG->libdir . '/upgradelib.php');
+        $DB->get_manager()->install_from_xmldb_file($CFG->dirroot . '/auth/outage/db/install.xml');
     }
 }

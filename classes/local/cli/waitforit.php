@@ -90,8 +90,10 @@ class waitforit extends clibase {
         $byid = !is_null($this->options['outageid']);
         $byactive = $this->options['active'];
         if ($byid == $byactive) {
-            throw new cli_exception(get_string('cliwaitforiterroridxoractive', 'auth_outage'),
-                cli_exception::ERROR_PARAMETER_INVALID);
+            throw new cli_exception(
+                get_string('cliwaitforiterroridxoractive', 'auth_outage'),
+                cli_exception::ERROR_PARAMETER_INVALID
+            );
         }
 
         $this->verbose('Verbose mode activated.');
@@ -100,11 +102,11 @@ class waitforit extends clibase {
 
         while ($sleep = $this->wait_for_outage_to_start($outage)) {
             if (is_null($this->sleepcallback)) {
-                $this->verbose('Sleeping for '.$sleep.' second(s).');
+                $this->verbose('Sleeping for ' . $sleep . ' second(s).');
                 sleep($sleep);
                 $this->time = time();
             } else {
-                $this->verbose('Calling callback to sleep '.$sleep.' second(s).');
+                $this->verbose('Calling callback to sleep ' . $sleep . ' second(s).');
                 $callback = $this->sleepcallback;
                 $this->time = $callback($sleep);
             }
@@ -136,10 +138,12 @@ class waitforit extends clibase {
         } else {
             $id = $this->options['outageid'];
             if (!is_number($id) || ($id <= 0)) {
-                throw new cli_exception(get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']),
-                    cli_exception::ERROR_PARAMETER_INVALID);
+                throw new cli_exception(
+                    get_string('clierrorinvalidvalue', 'auth_outage', ['param' => 'outageid']),
+                    cli_exception::ERROR_PARAMETER_INVALID
+                );
             }
-            $this->verbose('Querying database for outage #'.$id.'...');
+            $this->verbose('Querying database for outage #' . $id . '...');
             $outage = outagedb::get_by_id((int)$id);
         }
 
@@ -147,7 +151,7 @@ class waitforit extends clibase {
             throw new cli_exception(get_string('clierroroutagenotfound', 'auth_outage'), cli_exception::ERROR_OUTAGE_NOT_FOUND);
         }
 
-        $this->verbose('Found outage #'.$outage->id.': '.$outage->get_title());
+        $this->verbose('Found outage #' . $outage->id . ': ' . $outage->get_title());
         return $outage;
     }
 

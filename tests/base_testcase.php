@@ -95,6 +95,9 @@ abstract class base_testcase extends \advanced_testcase {
 
         parent::setUp();
         $this->resetAfterTest(true);
+
+        // These tests rely on force login being disabled, but Moodle 5.2 enables it by default (MDL-87523).
+        set_config('forcelogin', 0);
     }
 
     /**

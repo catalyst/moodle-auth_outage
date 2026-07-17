@@ -53,10 +53,14 @@ class infopage {
         $CFG->svgicons = true;
 
         if (is_null($params)) {
+            $id = optional_param('id', null, PARAM_INT);
             $params = [
-                'id' => optional_param('id', null, PARAM_INT),
+                'id' => $id,
                 'outage' => null,
-                'static' => optional_param('static', false, PARAM_BOOL),
+                'static' => !is_null($id) && hash_equals(
+                    self::statickey($id),
+                    optional_param('statickey', '', PARAM_ALPHANUM)
+                ),
             ];
         } else {
             $defaults = [
@@ -151,5 +155,22 @@ class infopage {
 
         $this->outage = $params['outage'];
         $this->static = $params['static'];
+    }
+
+    /**
+     * Computes the secret token that proves a request to view an outage's static
+     * rendering came from this plugin's own static-page generator, not an external
+     * client forging the request. Used to gate the 'static' flag (see constructor).
+     *
+     * @param int $outageid
+     * @return string
+     */
+    public static function statickey($outageid) {
+        $secret = get_config('auth_outage', 'staticsecret');
+        if (empty($secret)) {
+            $secret = random_string(64);
+            set_config('staticsecret', $secret, 'auth_outage');
+        }
+        return hash_hmac('sha256', (string)$outageid, $secret);
     }
 }

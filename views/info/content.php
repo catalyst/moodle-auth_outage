@@ -39,7 +39,15 @@ defined('MOODLE_INTERNAL') || die();
         <b><?php echo get_string('infountil', 'auth_outage'); ?></b>
         <?php echo userdate($viewbag['outage']->stoptime, get_string('datetimeformat', 'auth_outage')); ?>
     </div>
-    <div class="auth_outage_info_description"><?php echo $viewbag['outage']->get_description(); ?></div>
+    <div class="auth_outage_info_description">
+        <?php
+        echo format_text(
+            $viewbag['outage']->get_description(),
+            FORMAT_HTML,
+            ['context' => context_system::instance()]
+        );
+        ?>
+    </div>
 
     <?php if ($viewbag['admin']) : ?>
         <?php

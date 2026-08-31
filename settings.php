@@ -23,12 +23,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @var stdClass $CFG
- * @var admin_settingpage $settings
+ * @var core\setting\part\page $settings
  * @var bootstrap_renderer $OUTPUT
- * @var admin_root $ADMIN
+ * @var core\setting\root $ADMIN
  * @var moodle_page $PAGE
  */
+
 use auth_outage\local\outagelib;
+use core\setting\heading;
+use core\setting\part\category;
+use core\setting\page\externalpage;
+use core\setting\type\checkbox;
+use core\setting\type\duration;
+use core\setting\type\list_ipaddresses;
+use core\setting\type\text;
+use core\setting\type\textarea;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -37,48 +46,48 @@ if ($hassiteconfig) {
     $settings->visiblename = get_string('menusettings', 'auth_outage');
     $description = outagelib::generate_plugin_configuration_warning();
 
-    $settings->add(new admin_setting_heading(
+    $settings->add(new heading(
         'defaults',
         get_string('settingssectiondefaults', 'auth_outage'),
         get_string('settingssectiondefaultsdescription', 'auth_outage') . $description
     ));
 
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new checkbox(
         'auth_outage/default_autostart',
         get_string('defaultoutageautostart', 'auth_outage'),
         get_string('defaultoutageautostartdescription', 'auth_outage'),
         $defaults['default_autostart']
     ));
 
-    $settings->add(new admin_setting_configduration(
+    $settings->add(new duration(
         'auth_outage/default_warning_duration',
         get_string('defaultwarningduration', 'auth_outage'),
         get_string('defaultwarningdurationdescription', 'auth_outage'),
         $defaults['default_warning_duration'],
         60
     ));
-    $settings->add(new admin_setting_configduration(
+    $settings->add(new duration(
         'auth_outage/default_duration',
         get_string('defaultoutageduration', 'auth_outage'),
         get_string('defaultoutagedurationdescription', 'auth_outage'),
         $defaults['default_duration'],
         60
     ));
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new text(
         'auth_outage/default_time',
         get_string('defaulttime', 'auth_outage'),
         get_string('defaulttimedescription', 'auth_outage'),
         '',
         PARAM_TEXT
     ));
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new text(
         'auth_outage/default_title',
         get_string('defaulttitle', 'auth_outage'),
         get_string('defaulttitledescription', 'auth_outage'),
         $defaults['default_title'],
         PARAM_TEXT
     ));
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new textarea(
         'auth_outage/default_description',
         get_string('defaultdescription', 'auth_outage'),
         get_string('defaultdescriptiondescription', 'auth_outage'),
@@ -86,13 +95,13 @@ if ($hassiteconfig) {
         PARAM_RAW
     ));
 
-    $settings->add(new admin_setting_heading(
+    $settings->add(new heading(
         'plugin',
         get_string('settingssectionplugin', 'auth_outage'),
         get_string('settingssectionplugindescription', 'auth_outage')
     ));
 
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new textarea(
         'auth_outage/css',
         get_string('defaultlayoutcss', 'auth_outage'),
         get_string('defaultlayoutcssdescription', 'auth_outage'),
@@ -119,7 +128,7 @@ if ($hassiteconfig) {
     $description .= '<p>' . get_string('ipblockersyntax', 'admin') . '</p>';
     $description .= '<p>' . get_string('ips_combine', 'auth_outage') . '</p>';
 
-    $iplist = new admin_setting_configiplist(
+    $iplist = new list_ipaddresses(
         'auth_outage/allowedips',
         get_string('allowediplist', 'admin'),
         $description,
@@ -128,7 +137,7 @@ if ($hassiteconfig) {
     $iplist->set_updatedcallback('auth_outage_outagelib_prepare_next_outage');
     $settings->add($iplist);
 
-    $iplist = new admin_setting_configiplist(
+    $iplist = new list_ipaddresses(
         'auth_outage/allowedips_forced',
         get_string('builtinallowediplist', 'auth_outage'),
         get_string('builtinallowediplist_desc', 'auth_outage'),
@@ -137,7 +146,7 @@ if ($hassiteconfig) {
     $settings->add($iplist);
 
     // Create 'Static Page - Elements to Remove' settings.
-    $toremove = new admin_setting_configtextarea(
+    $toremove = new textarea(
         'auth_outage/remove_selectors',
         get_string('removeselectors', 'auth_outage'),
         get_string('removeselectorsdescription', 'auth_outage'),
@@ -147,7 +156,7 @@ if ($hassiteconfig) {
     $settings->add($toremove);
 
     // Create category for Outage.
-    $ADMIN->add('authsettings', new admin_category('auth_outage', get_string('pluginname', 'auth_outage')));
+    $ADMIN->add('authsettings', new category('auth_outage', get_string('pluginname', 'auth_outage')));
     // Add settings page toconfigure defaults.
     $ADMIN->add('auth_outage', $settings);
     // Clear '$settings' to prevent adding again outsite category.
@@ -155,7 +164,7 @@ if ($hassiteconfig) {
     // Add options.
     $ADMIN->add(
         'auth_outage',
-        new admin_externalpage(
+        new externalpage(
             'auth_outage_manage',
             get_string('menumanage', 'auth_outage'),
             new moodle_url($CFG->wwwroot . '/auth/outage/manage.php')

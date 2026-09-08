@@ -32,4 +32,4 @@ $plugin->version = 2026011308;          // The current plugin version (Date: YYY
 $plugin->release = 2026011308;          // Human-readable release information.
 $plugin->requires = 2025100600;         // Moodle 5.1.
 $plugin->maturity = MATURITY_STABLE;    // Suitable for PRODUCTION environments!
-$plugin->supported = [501, 501];        // A range of branch numbers of supported moodle versions.
+$plugin->supported = [501, 502];        // A range of branch numbers of supported moodle versions.

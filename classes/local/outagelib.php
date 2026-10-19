@@ -276,6 +276,8 @@ class outagelib {
         // Since Moodle 4.3 cookiehttponly is default to true and this CFG is not set.
         // so if not set, default to true.
         $cookiehttponly = isset($CFG->cookiehttponly) ? (bool) $CFG->cookiehttponly : true;
+        // SameSite=None lets the cookie accompany the IdP's cross-site POST back to the site.
+        $cookiesamesite = $cookiesecure ? 'None' : 'Lax';
 
         $code = <<<'EOT'
 <?php
@@ -292,7 +294,14 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
     $isphpunit = defined('PHPUNIT_TEST');
 
     if (!empty($urlaccesskey) && !$isphpunit) {
-        setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', {{COOKIESECURE}}, {{COOKIEHTTPONLY}});
+        setcookie('auth_outage_accesskey', $urlaccesskey, [
+            'expires' => time() + 86400,
+            'path' => '/',
+            'domain' => '',
+            'secure' => {{COOKIESECURE}},
+            'httponly' => {{COOKIEHTTPONLY}},
+            'samesite' => {{COOKIESAMESITE}},
+        ]);
     }
 
     // Use url access key if given, else the cookie, else null.
@@ -347,7 +356,7 @@ if ((time() >= {{STARTTIME}}) && (time() < {{STOPTIME}})) {
 }
 EOT;
         $search = ['{{STARTTIME}}', '{{STOPTIME}}', '{{USEALLOWEDIPS}}', '{{ALLOWEDIPS}}', '{{USEACCESSKEY}}', '{{ACCESSKEY}}',
-            '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}', '{{METADATA}}'];
+            '{{YOURIP}}', '{{COOKIESECURE}}', '{{COOKIEHTTPONLY}}', '{{COOKIESAMESITE}}', '{{METADATA}}'];
         // Note that var_export is required because (string) false == '', not 'false'.
         $replace = [
             $starttime,
@@ -359,6 +368,7 @@ EOT;
             getremoteaddr('n/a'),
             var_export($cookiesecure, true),
             var_export($cookiehttponly, true),
+            var_export($cookiesamesite, true),
             var_export($metadata, true)];
         return str_replace($search, $replace, $code);
     }

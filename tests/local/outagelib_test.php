@@ -276,7 +276,14 @@ if ((time() >= 123) && (time() < 456)) {
     $isphpunit = defined('PHPUNIT_TEST');
 
     if (!empty($urlaccesskey) && !$isphpunit) {
-        setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', true, false);
+        setcookie('auth_outage_accesskey', $urlaccesskey, [
+            'expires' => time() + 86400,
+            'path' => '/',
+            'domain' => '',
+            'secure' => true,
+            'httponly' => false,
+            'samesite' => 'None',
+        ]);
     }
 
     // Use url access key if given, else the cookie, else null.
@@ -362,7 +369,14 @@ if ((time() >= 123) && (time() < 456)) {
     $isphpunit = defined('PHPUNIT_TEST');
 
     if (!empty($urlaccesskey) && !$isphpunit) {
-        setcookie('auth_outage_accesskey', $urlaccesskey, time() + 86400, '/', '', true, false);
+        setcookie('auth_outage_accesskey', $urlaccesskey, [
+            'expires' => time() + 86400,
+            'path' => '/',
+            'domain' => '',
+            'secure' => true,
+            'httponly' => false,
+            'samesite' => 'None',
+        ]);
     }
 
     // Use url access key if given, else the cookie, else null.

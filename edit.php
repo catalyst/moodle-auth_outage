@@ -88,7 +88,7 @@ if ($clone) {
         'warntime' => $time - $config->default_warning_duration,
         'title' => $config->default_title,
         'description' => $config->default_description,
-        'metadata' => $config->default_metadata,
+        'metadata' => $config->default_metadata ?? '',
     ]);
     $action = 'outagecreate';
 }

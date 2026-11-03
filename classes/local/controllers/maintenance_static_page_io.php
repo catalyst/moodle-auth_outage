@@ -70,6 +70,17 @@ class maintenance_static_page_io {
     /** @var bool */
     protected $preview = false;
 
+    /** @var callable|null Called with the URL before each local file is fetched. */
+    protected $progresscallback = null;
+
+    /**
+     * Sets a callback invoked with the URL before each local file is fetched.
+     * @param callable|null $callback
+     */
+    public function set_progress_callback($callback) {
+        $this->progresscallback = $callback;
+    }
+
     /**
      * Sets preview
      * @param boolean $preview
@@ -217,6 +228,10 @@ class maintenance_static_page_io {
 
         if (substr($url, 0, strlen($CFG->wwwroot)) !== $CFG->wwwroot) {
             return null; // External URL, leave it.
+        }
+
+        if ($this->progresscallback) {
+            ($this->progresscallback)($url);
         }
 
         // PHPUnit does not expose a web interface to fetch, point to local file instead.

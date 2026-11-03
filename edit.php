@@ -28,6 +28,9 @@ use auth_outage\form\outage\edit;
 use auth_outage\local\outage;
 use auth_outage\local\outagelib;
 
+// Output must not be buffered so the progress bar shown after saving updates live.
+define('NO_OUTPUT_BUFFERING', true);
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
@@ -42,8 +45,33 @@ $mform = new edit();
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/auth/outage/manage.php'));
 } else if ($outage = $mform->get_data()) {
-    $id = outagedb::save($outage);
-    redirect(new moodle_url('/auth/outage/manage.php'));
+    outagedb::save($outage, false);
+
+    // Show progress while the static maintenance page is pre-baked, then let the user continue.
+    $PAGE->navbar->add(get_string('prebaketitle', 'auth_outage'));
+    echo $output->header();
+    echo $output->rendersubtitle('prebaketitle');
+    echo html_writer::tag('p', get_string('prebakeintro', 'auth_outage'));
+    $bar = new progress_bar('auth_outage_prebake', 500, true);
+    // The footer is rendered up front; the bar's updates are inline scripts that target it by id.
+    echo $output->footer();
+    $bar->update(0, 1, get_string('prebakeinfopage', 'auth_outage'));
+    outagelib::prepare_next_outage(true, function ($url, $done, $total) use ($bar, $CFG) {
+        $path = parse_url(str_replace($CFG->wwwroot, '', $url), PHP_URL_PATH) ?: $url;
+        if (core_text::strlen($path) > 40) {
+            $path = '...' . core_text::substr($path, -37);
+        }
+        $bar->update(
+            $done - 1,
+            $total,
+            get_string('prebakefetching', 'auth_outage', ['url' => s($path), 'done' => $done, 'total' => $total])
+        );
+    });
+    $bar->update(1, 1, get_string('prebakecomplete', 'auth_outage'));
+    $manageurl = new moodle_url('/auth/outage/manage.php');
+    // The page is already complete, so redirect() cannot be used here.
+    echo html_writer::empty_tag('meta', ['http-equiv' => 'refresh', 'content' => '0;url=' . $manageurl->out(false)]);
+    exit;
 }
 
 $clone = optional_param('clone', 0, PARAM_INT);

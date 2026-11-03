@@ -185,10 +185,11 @@ class outagelib {
      * Executed when outages are modified (created, updated or deleted).
      *
      * @param bool $reenablemaint should we re-enable maintenance mode for ongoing outage
+     * @param callable|null $progress Called with (string $url, int $done, int $total) before each file is pre-baked.
      * @throws coding_exception
      * @throws file_exception
      */
-    public static function prepare_next_outage($reenablemaint = false) {
+    public static function prepare_next_outage($reenablemaint = false, $progress = null) {
         // If there is an ongoing outage, prepare it instead.
         $outage = outagedb::get_ongoing();
         if (is_null($outage)) {
@@ -198,7 +199,7 @@ class outagelib {
         // Set json formatted outage string to cache.
         set_config('auth_outage_active_outage', (string)$outage);
 
-        maintenance_static_page::create_from_outage($outage)->generate();
+        maintenance_static_page::create_from_outage($outage)->generate($progress);
         self::update_climaintenance_code($outage);
     }
 

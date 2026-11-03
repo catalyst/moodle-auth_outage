@@ -67,11 +67,42 @@ class maintenance_static_page_generator {
         $this->io = $io;
     }
 
+    /** @var int Files processed so far, for progress reporting. */
+    private $done = 0;
+
+    /** @var int Estimated total files, grows when more are discovered in stylesheets. */
+    private $total = 0;
+
+    /**
+     * Estimates how many files will be fetched from the page.
+     * @return int
+     */
+    private function estimate_file_count() {
+        $count = $this->dom->getElementsByTagName('img')->length;
+        foreach ($this->dom->getElementsByTagName('link') as $link) {
+            $rel = $link->getAttribute('rel');
+            if (($rel == 'stylesheet' || $rel == 'shortcut icon') && $link->getAttribute('href') != '') {
+                $count++;
+            }
+        }
+        $xpath = new \DOMXPath($this->dom);
+        return $count + $xpath->query("//*[contains(@style,'background')]")->length;
+    }
+
     /**
      * Generates the page.
+     *
+     * @param callable|null $progress Called with (string $url, int $done, int $total) before each file is fetched.
      */
-    public function generate() {
+    public function generate($progress = null) {
         $this->io->cleanup();
+        $this->done = 0;
+        $this->total = is_null($this->dom) ? 0 : $this->estimate_file_count();
+        $this->io->set_progress_callback($progress ? function ($url) use ($progress) {
+            $this->done++;
+            $this->total = max($this->total, $this->done);
+            $progress($url, $this->done, $this->total);
+        } : null);
 
         if (!is_null($this->dom)) {
             // This can take a while to process using repeated curls.
@@ -176,6 +207,7 @@ class maintenance_static_page_generator {
 
         $contents = file_get_contents($filename);
         $matches = $this->get_urls_from_stylesheet($contents);
+        $this->total += count($matches[1]);
 
         foreach ($matches[1] as $originalurl) {
             // Allow incomplete URLs in CSS, assume it is from moodle root.

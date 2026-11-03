@@ -113,9 +113,11 @@ class maintenance_static_page {
 
     /**
      * Requests to generate the static page.
+     *
+     * @param callable|null $progress Called with (string $url, int $done, int $total) before each file is fetched.
      */
-    public function generate() {
-        $this->generator->generate();
+    public function generate($progress = null) {
+        $this->generator->generate($progress);
     }
 
     /**

@@ -32,9 +32,10 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/formslib.php');
 
+// Match the admin tree against the manage page so the tab and breadcrumbs are active here too.
+navigation_node::override_active_url(new moodle_url('/auth/outage/manage.php'), true);
 admin_externalpage_setup('auth_outage_manage');
 $output = $PAGE->get_renderer('auth_outage');
-$PAGE->set_url(new moodle_url('/auth/outage/manage.php'));
 
 $mform = new edit();
 

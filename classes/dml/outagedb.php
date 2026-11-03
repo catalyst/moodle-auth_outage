@@ -88,9 +88,10 @@ class outagedb {
      * Saves an outage to the database.
      *
      * @param outage $outage Outage to save.
+     * @param bool $prepare Prepare the next outage's static page now; false if the caller will do it.
      * @return int Outage ID.
      */
-    public static function save(outage $outage) {
+    public static function save(outage $outage, $prepare = true) {
         global $DB, $USER;
 
         // Do not change the original object.
@@ -137,7 +138,9 @@ class outagedb {
         }
 
         // Trigger outages modified events.
-        outagelib::prepare_next_outage(true);
+        if ($prepare) {
+            outagelib::prepare_next_outage(true);
+        }
 
         // All done, return the id.
         return $outage->id;

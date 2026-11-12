@@ -37,9 +37,10 @@ final class outagelib_test extends \auth_outage\base_testcase {
      * Check outagelib::inject() works as expected.
      */
     public function test_inject(): void {
-        global $OUTPUT;
+        global $OUTPUT, $PAGE;
 
         $this->resetAfterTest(true);
+        $PAGE->set_url('/');
         self::setAdminUser();
         $now = time();
         $outage = new outage([

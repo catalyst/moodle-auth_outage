@@ -42,10 +42,11 @@ if (!isset($CFG->dataroot)) {
 // 1) Make sure we replace the configurations for behat as we have not ran 'lib/setup.php' yet.
 if (!empty($CFG->behat_wwwroot) || !empty($CFG->behat_dataroot) || !empty($CFG->behat_prefix)) {
     require_once(__DIR__ . '/../../lib/behat/lib.php');
+    // Work on a clone so the vars update below is not applied twice (setup.php does it again).
+    $beforebehatcfg = $CFG;
+    $CFG = clone($CFG);
     behat_update_vars_for_process();
     if (behat_is_test_site()) {
-        $beforebehatcfg = $CFG;
-        $CFG = clone($CFG);
         clearstatcache();
         behat_check_config_vars();
         behat_clean_init_config();
@@ -96,5 +97,6 @@ $CFG->auth_outage_bootstrap_loaded = true;
 
 // 5) Restore behat config as needed (let setup.php execute which is more complex than our quick-check).
 if (isset($beforebehatcfg)) {
+    $beforebehatcfg->auth_outage_bootstrap_loaded = true;
     $CFG = $beforebehatcfg;
 }

@@ -93,8 +93,8 @@ before the `require('/lib/setup.php')` call:
 
 ```
 // Insert this after $CFG->dataroot is defined.
-if (file_exists(__DIR__.'/auth/outage/bootstrap.php')) {
-    require(__DIR__.'/auth/outage/bootstrap.php');
+if (file_exists(__DIR__.'/public/auth/outage/bootstrap.php')) {
+    require(__DIR__.'/public/auth/outage/bootstrap.php');
 }
 ```
 

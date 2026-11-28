@@ -85,7 +85,7 @@ class edit extends moodleform {
         $mform->disabledIf('accesskey', 'useaccesskey');
         $mform->addHelpButton('accesskey', 'accesskey', 'auth_outage');
 
-        $mform->addElement('text', 'metadata', get_string('metadata', 'auth_outage'));
+        $mform->addElement('text', 'metadata', get_string('metadata', 'auth_outage'), ['size' => 80]);
         $mform->setType('metadata', PARAM_TEXT);
         $mform->addHelpButton('metadata', 'metadata', 'auth_outage');
 

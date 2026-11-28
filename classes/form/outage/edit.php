@@ -88,6 +88,15 @@ class edit extends moodleform {
         $mform->addElement('text', 'metadata', get_string('metadata', 'auth_outage'), ['size' => 80]);
         $mform->setType('metadata', PARAM_TEXT);
         $mform->addHelpButton('metadata', 'metadata', 'auth_outage');
+        $metadataregex = trim((string)get_config('auth_outage', 'metadata_regex'));
+        if ($metadataregex !== '') {
+            $mform->addElement(
+                'static',
+                'metadatapattern',
+                '',
+                get_string('metadatapatternhint', 'auth_outage', s($metadataregex))
+            );
+        }
 
         $this->add_action_buttons();
     }
@@ -115,6 +124,13 @@ class edit extends moodleform {
         }
         if ($titlelen > self::TITLE_MAX_CHARS) {
             $errors['title'] = get_string('titleerrortoolong', 'auth_outage', self::TITLE_MAX_CHARS);
+        }
+
+        $metadataregex = trim((string)get_config('auth_outage', 'metadata_regex'));
+        $metadata = trim($data['metadata'] ?? '');
+        $pattern = \auth_outage\admin\setting_regex::to_pattern($metadataregex);
+        if ($metadataregex !== '' && $metadata !== '' && !preg_match($pattern, $metadata)) {
+            $errors['metadata'] = get_string('metadataerrorinvalid', 'auth_outage', $metadataregex);
         }
 
         return $errors;

@@ -39,6 +39,9 @@ if (!isset($CFG->dataroot)) {
     return;
 }
 
+// Set flag this file was loaded. Done before the behat clone below so it survives restoring the original $CFG.
+$CFG->auth_outage_bootstrap_loaded = true;
+
 // 1) Make sure we replace the configurations for behat as we have not ran 'lib/setup.php' yet.
 if (!empty($CFG->behat_wwwroot) || !empty($CFG->behat_dataroot) || !empty($CFG->behat_prefix)) {
     require_once(__DIR__ . '/../../lib/behat/lib.php');
@@ -70,6 +73,7 @@ if (is_callable('auth_outage_bootstrap_callback')) {
 }
 
 // 3) Check for allowed scripts or IPs during outages.
+$outageinfo = false;
 if (!empty($_SERVER['REQUEST_URI'])) {
     $rooturl = parse_url($CFG->wwwroot);
     $path = '';
@@ -92,11 +96,7 @@ if (!$allowed) {
     require($CFG->dataroot . '/climaintenance.php'); // This call may terminate the script here or not.
 }
 
-// 4) Set flag this file was loaded.
-$CFG->auth_outage_bootstrap_loaded = true;
-
-// 5) Restore behat config as needed (let setup.php execute which is more complex than our quick-check).
+// 4) Restore behat config as needed (let setup.php execute which is more complex than our quick-check).
 if (isset($beforebehatcfg)) {
-    $beforebehatcfg->auth_outage_bootstrap_loaded = true;
     $CFG = $beforebehatcfg;
 }

@@ -417,7 +417,7 @@ EOT;
      * @return string
      */
     public static function generate_plugin_configuration_warning() {
-        global $CFG, $OUTPUT, $PAGE;
+        global $CFG, $PAGE;
 
         $message = [];
 
@@ -442,7 +442,8 @@ EOT;
         if (CLI_SCRIPT) {
             $message = html_to_text(implode("; ", $message));
         } else {
-            $message = $OUTPUT->notification(implode("<br />", $message), 'notifyerror');
+            // Avoid $OUTPUT: this runs while the admin tree is built and rendering can rebuild the tree.
+            $message = html_writer::div(implode('<br />', $message), 'alert alert-danger', ['role' => 'alert']);
         }
 
         return $message;

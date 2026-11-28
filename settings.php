@@ -81,6 +81,15 @@ if ($hassiteconfig) {
         )
     );
 
+    $settings->add(new \auth_outage\admin\setting_regex(
+        'auth_outage/metadata_regex',
+        get_string('metadataregex', 'auth_outage'),
+        get_string('metadataregexdescription', 'auth_outage'),
+        '',
+        PARAM_RAW,
+        80
+    ));
+
     $settings->add(new admin_setting_configtextarea(
         'auth_outage/default_description',
         get_string('defaultdescription', 'auth_outage'),

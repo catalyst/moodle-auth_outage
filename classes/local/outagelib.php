@@ -64,7 +64,10 @@ class outagelib {
         } else {
             $mime = '';
         }
-        return compact('contents', 'mime');
+        $headers = array_change_key_case($curl->getResponse(), CASE_LOWER);
+        $cachecontrol = (string) ($headers['cache-control'] ?? '');
+        $expires = (string) ($headers['expires'] ?? '');
+        return compact('contents', 'mime', 'cachecontrol', 'expires');
     }
 
     /**

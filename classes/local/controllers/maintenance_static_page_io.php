@@ -31,6 +31,9 @@ use moodle_url;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class maintenance_static_page_io {
+    /** Minimum lifetime in seconds (30 days) for a fetched file to be kept in the shared cache. */
+    const MIN_CACHE_LIFETIME = 30 * DAYSECS;
+
     /**
      * Checks if the given string starts with "http://" or "https://".
      * Also checks for "//" at the start of image, which setting_file_url still uses.
@@ -234,22 +237,81 @@ class maintenance_static_page_io {
             ($this->progresscallback)($url);
         }
 
+        $data = $this->fetch_cached($url);
+
+        $mime = trim(base64_encode($data['mime']), '=');
+        $name = sha1($data['contents']) . '.' . $mime;
+        $filepath = $this->get_resources_folder() . '/' . $name;
+        file_put_contents($filepath, $data['contents']);
+
+        if ($this->preview) {
+            $name = 'preview/' . $name;
+        }
+
+        return ['file' => $filepath, 'url' => $name];
+    }
+
+    /**
+     * Fetches the URL, reusing a copy from the shared cache directory when one is still valid.
+     *
+     * Only responses that are immutable or valid for at least 30 days are cached, so a page prepared
+     * well ahead of an outage never contains files that have since changed. A normal cache purge clears them.
+     *
+     * @param string $url Moodle URL to fetch.
+     * @return array Array with contents and mime.
+     */
+    private function fetch_cached($url) {
+        global $CFG;
+
+        $cachefile = $CFG->cachedir . '/auth_outage/' . sha1($url);
+        if (is_file($cachefile) && filemtime($cachefile) > time()) {
+            // First line is the mime type, the rest is the file contents.
+            $stored = (string) file_get_contents($cachefile);
+            $eol = strpos($stored, "\n");
+            if ($eol !== false) {
+                return ['mime' => substr($stored, 0, $eol), 'contents' => substr($stored, $eol + 1)];
+            }
+        }
+
         // PHPUnit does not expose a web interface to fetch, point to local file instead.
         if (PHPUNIT_TEST) {
             $url = str_replace($CFG->wwwroot, $CFG->dirroot, $url);
         }
-
         $data = self::file_get_data($url);
 
-        $mime = trim(base64_encode($data['mime']), '=');
-        $url = sha1($data['contents']) . '.' . $mime;
-        $filepath = $this->get_resources_folder() . '/' . $url;
-        file_put_contents($filepath, $data['contents']);
+        $expires = self::get_cache_expiry($data['cachecontrol'] ?? '', $data['expires'] ?? '');
+        if ($expires > 0 && $data['contents'] !== '' && !strpos($data['mime'], "\n")) {
+            check_dir_exists(dirname($cachefile));
+            $temp = $cachefile . '.' . getmypid() . '.tmp';
+            file_put_contents($temp, $data['mime'] . "\n" . $data['contents']);
+            // The modified time holds the expiry, so no index is needed.
+            touch($temp, $expires);
+            rename($temp, $cachefile);
+        }
+        return $data;
+    }
 
-        if ($this->preview) {
-            $url = 'preview/' . $url;
+    /**
+     * Time until which a response can be cached, or 0 if it should not be.
+     *
+     * @param string $cachecontrol Cache-Control header value.
+     * @param string $expires Expires header value.
+     * @return int Unix time, 0 if the response is not immutable or long lived enough.
+     */
+    private static function get_cache_expiry($cachecontrol, $expires) {
+        if (preg_match('/\b(no-store|no-cache|private)\b/i', $cachecontrol)) {
+            return 0;
         }
 
-        return ['file' => $filepath, 'url' => $url];
+        $lifetime = 0;
+        if (preg_match('/\bmax-age=(\d+)/i', $cachecontrol, $matches)) {
+            $lifetime = (int) $matches[1];
+        } else if ($expires !== '' && ($time = strtotime($expires)) !== false) {
+            $lifetime = $time - time();
+        }
+        if (preg_match('/\bimmutable\b/i', $cachecontrol)) {
+            $lifetime = max($lifetime, self::MIN_CACHE_LIFETIME);
+        }
+        return $lifetime >= self::MIN_CACHE_LIFETIME ? time() + $lifetime : 0;
     }
 }

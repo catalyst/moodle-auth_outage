@@ -421,10 +421,7 @@ EOT;
 
         $message = [];
 
-        if (
-            trim(self::get_config()->allowedips) != ''
-                && (!isset($CFG->auth_outage_bootstrap_loaded) || !$CFG->auth_outage_bootstrap_loaded)
-        ) {
+        if (empty($CFG->auth_outage_bootstrap_loaded)) {
             $message[] = get_string('configurationwarning', 'auth_outage');
         }
 

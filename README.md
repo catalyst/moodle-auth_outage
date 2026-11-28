@@ -88,8 +88,8 @@ https://github.com/catalyst/moodle-auth_outage/issues
 3. Go to `Dashboard ► Site administration ► Plugins ► Authentication ► Manage authentication`,
 enable the `Outage manager` plugin and place it on the top.
 
-4. If you need to use the IP Blocking, please add the following lines into your `config.php`
-before the `require('/lib/setup.php')` call:
+4. Add the following lines into your `config.php`
+before the `require('/lib/setup.php')` call. This is required for IP and access key blocking to work:
 
 ```
 // Insert this after $CFG->dataroot is defined.

@@ -31,15 +31,6 @@ and testers letting them know what is about to happen and why.
 
 ![image](https://user-images.githubusercontent.com/187449/149717343-1d2c5237-dbc6-4d2a-a08c-2bdb343e87d2.png)
 
-Moodle Requirements
--------------------
-
-This plugin will work out-of-the-box with Moodle 3.0 and Moodle 3.1.
-
-If you have an older version of Moodle you can still make it work but you will
-need to manually add one extra plugin, please check:
-* https://github.com/catalyst/moodle-local_outage
-
 Moodle supported branches
 --------
 | Version        | Branch              | PHP  |

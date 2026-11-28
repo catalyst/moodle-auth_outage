@@ -68,7 +68,7 @@ Moodle plugin directory, or you can use git to clone it into your source:
 
     Or install via the Moodle plugin directory:
     
-     https://moodle.org/plugins/auth_outage
+     https://marketplace.moodle.com/plugins/auth_outage
 
 2. Then run the Moodle upgrade
 
